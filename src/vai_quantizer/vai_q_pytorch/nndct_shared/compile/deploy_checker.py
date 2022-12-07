@@ -25,6 +25,7 @@ from nndct_shared.quantization import quantize_data2int
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP
 from nndct_shared import utils as nndct_utils
 from nndct_shared.utils import NndctScreenLogger
+from nndct_shared.quantization.quant_ops import normal_quant_neuron
 
 NndctQuantInfo = Dict[str, Dict[str, List[int]]]
 
@@ -50,6 +51,15 @@ class DeployChecker(object):
     pattern = re.compile(r'[^0-9A-Za-z\/]')
     formal_sub_dir = re.sub(pattern, "_", sub_dir)
     self._full_folder = os.path.join(self._dump_folder, formal_sub_dir)
+
+  def quant_data_for_dump(self, quantizer, depoly_info):
+    for node in depoly_info.dev_graph.reverse_nodes:
+      if (node.name in depoly_info.quant_info['output']) and (not node.name in quantizer.quant_config['output']):
+        for i, tensor in enumerate(node.out_tensors):
+            if i > 0:
+              break
+            bit_width, fix_point = depoly_info.quant_info['output'][node.name][i]
+            node.out_tensors[i].from_ndarray(normal_quant_neuron(node.out_tensors[i].data.flatten(), maxamps=[[2**(bit_width - 1)], [2**fix_point]], round_method=-1, as_int=False).reshape(node.out_tensors[i].shape))
 
   def _dump_floating_model(self, nndct_graph, enable_dump_weight, round_method, select_batch) -> NoReturn:
     for node in nndct_graph.reverse_nodes:
@@ -119,7 +129,7 @@ class DeployChecker(object):
         if enable_dump_weight:
           for param_type, param_tensor in node.op.params.items():
             if param_tensor.name in quant_configs['param']:
-              bit_width, fix_point = quant_configs['param'][param_tensor.name]
+              bit_width, fix_point = quant_configs['param'][param_tensor.name][0]
               data = param_tensor.data
               if node.op.type in [NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
                 data = np.flip(data.copy(), (1, 2, 3))
@@ -142,7 +152,7 @@ class DeployChecker(object):
             if node.name not in quant_configs['output'].keys():
               quantizer = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
               end = quantizer.configer.quant_output(node).name
-              bit_width, fix_point = quant_configs['output'][end]
+              bit_width, fix_point = quant_configs['output'][end][0]
               self.dump_tensor_to_file(
                   node.name + NNDCT_KEYS.FIX_OP_SUFFIX,
                   tensor.data,
@@ -155,7 +165,9 @@ class DeployChecker(object):
           for i, tensor in enumerate(node.out_tensors):
             if i > 0:
               break
-            bit_width, fix_point = quant_configs['output'][node.name]
+            if quant_configs['output'][node.name][0] is None:
+              continue
+            bit_width, fix_point = quant_configs['output'][node.name][i]
             _, int_file = self.dump_tensor_to_file(
                 node.name + NNDCT_KEYS.FIX_OP_SUFFIX,
                 tensor.data,
@@ -170,8 +182,10 @@ class DeployChecker(object):
             break
             
         if node.name in quant_configs['input']:
-          bit_width, fix_point = quant_configs['input'][node.name]
           for idx, tensor in enumerate(node.in_tensors):
+            if quant_configs['input'][node.name][idx] is None:
+              continue
+            bit_width, fix_point = quant_configs['input'][node.name][idx]
             self.dump_tensor_to_file(
                 node.name + NNDCT_KEYS.PRE_FIX_OP_SUFFIX + f"_i{idx}",
                 tensor.data,

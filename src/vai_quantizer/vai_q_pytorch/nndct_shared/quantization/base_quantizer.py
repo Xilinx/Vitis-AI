@@ -1,5 +1,4 @@
 
-
 #
 # Copyright 2019 Xilinx Inc.
 #
@@ -25,7 +24,7 @@ from typing import Dict, Union
 
 from nndct_shared import utils as nndct_utils
 from nndct_shared.base import NNDCT_KEYS, NNDCT_OP
-from nndct_shared.utils import NndctScreenLogger, NndctOption
+from nndct_shared.utils import NndctScreenLogger, NndctOption, QError, QWarning
 from .quant_info import QuantInfoMgr
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -60,9 +59,11 @@ class BaseQuantizer():
     if NndctOption.nndct_param_corr.value > 0:
       self.bias_corr = {}
     self.bias_corr_file = '/'.join([output_dir, 'bias_corr.pth'])
-    self.param_file = '/'.join([output_dir, 'param.pth'])
+    self.param_file = '/'.join([output_dir, 'param'])
+    self.float_param_path = '/'.join([output_dir, '.float_params'])
     self.keep_fp = False
     self.quant_strategy = None
+    self._QuantInfo = {"input": {}, "output": {}, "param": {}}
 
   @classmethod
   def create_from_strategy(cls, quant_mode, output_dir, quant_strategy_info, is_lstm=False):
@@ -71,6 +72,61 @@ class BaseQuantizer():
                quant_strategy_info,
                is_lstm = is_lstm)
   
+  def setup_for_target(self, target, nndct_graph, dev_graph):
+    from nndct_shared.quantization.target_quant_info import TargetQuantInfoMgr
+
+    self.Nndctgraph = nndct_graph
+    self.calibration_method = 'Diffs'
+
+    if self.quant_mode > 0:
+      model_type = self.get_model_type()
+      self._configer = TargetQuantInfoMgr(target, self.Nndctgraph, model_type)
+      self._configer.setup_quant_info(dev_graph)
+      self._configer.setup_quant_group()
+      self._QuantInfo = self._configer.quant_info
+    
+    if NndctOption.nndct_stat.value > 0:
+      import pprint
+      pp = pprint.PrettyPrinter(indent=4)
+      print('Quantization groups:')
+      pp.pprint(self._configer.quant_groups)
+      print('Initialized quantization infos:')
+      pp.pprint(self._configer.quant_info)
+
+
+    self.quant_opt = {
+        'range': 2,
+        'round_method': 2,
+    }
+
+    if self.quant_mode in [1, 3]:
+      self.init_quant_config()
+    
+
+    if self.quant_mode > 1:
+      # param/output/input names 
+      paramBak = self._QuantInfo['param'].keys()
+      outputBak = self._QuantInfo['output'].keys()
+      inputBak = self._QuantInfo['input'].keys()
+      self.load_quant_config()
+      # check node names in loaded quant_info.json are all the same as those in test mode
+      NndctScreenLogger().check2user(QError.CALIB_RESULT_MISMATCH,
+        f"Node name mismatch is found when \
+          loading quantization steps of tensors. \
+          Please make sure Vai_q_pytorch version and pytorch version for test mode \
+          are the same as those in calibration (or QAT training) mode.", 
+          not (any([p not in self._QuantInfo['param'].keys() for p in paramBak]) or
+          any([o not in self._QuantInfo['output'].keys() for o in outputBak]) or
+          any([i not in self._QuantInfo['input'].keys() for i in inputBak]))) 
+
+      if NndctOption.nndct_stat.value > 0:
+        print('Loaded quantization infos:')
+        pp.pprint(self._QuantInfo)
+      
+    # initialize param correction
+    self.init_param_correction()
+
+
   def setup(self, nndct_graph, rnn_front_end=False, lstm=False, custom_quant_ops=None):
 
     self.Nndctgraph = nndct_graph
@@ -106,14 +162,15 @@ class BaseQuantizer():
         inputBak = self._QuantInfo['input'].keys()
         self.load_quant_config()
         # check node names in loaded quant_info.json are all the same as those in test mode
-        if (paramBak != self._QuantInfo['param'].keys() or
-            outputBak != self._QuantInfo['output'].keys() or
-            inputBak != self._QuantInfo['input'].keys()):
-          NndctScreenLogger().error(f"Node name mismatch is found when \
+        if ( any([p not in self._QuantInfo['param'].keys() for p in paramBak]) or
+            any([o not in self._QuantInfo['output'].keys() for o in outputBak]) or
+            any([i not in self._QuantInfo['input'].keys() for i in inputBak]) ):
+          NndctScreenLogger().error2user(QError.CALIB_RESULT_MISMATCH, f"Node name mismatch is found when \
 loading quantization steps of tensors. \
 Please make sure Vai_q_pytorch version and pytorch version for test mode \
 are the same as those in calibration (or QAT training) mode.") 
-          #exit(2)
+          # Some fix neuron after Strided_slice are added in post-process of calibration 
+          exit(0)
         if NndctOption.nndct_stat.value > 0:
           print('Loaded quantization infos:')
           pp.pprint(self._QuantInfo)
@@ -123,11 +180,11 @@ are the same as those in calibration (or QAT training) mode.")
       self.init_param_correction()
 
   @nndct_utils.not_implement
-  def do_scan(self, res, max, min, name, node, tensor_type='input'):
+  def do_scan(self, res, max, min, name, node, tensor_type='input', idx=0, method=None):
     pass
 
   @nndct_utils.not_implement
-  def do_quantize(self, blob, name, node, tensor_type='input'):
+  def do_quantize(self, blob, name, node, tensor_type='input', idx=0):
     pass
 
   def init_quant_config(self):
@@ -138,15 +195,33 @@ are the same as those in calibration (or QAT training) mode.")
       self.__config_history['input'][item] = []
     self._QuantInfo['fast_finetuned'] = False
     self._QuantInfo['bias_corrected'] = False
+    self._QuantInfo['version'] = "Uknown"
+
+  def get_quant_len(self, name, tensor_type='output'):
+    if (tensor_type == 'output' and 
+      name not in self._QuantInfo[tensor_type].keys()):
+      name = self.configer.quant_output(name).name
+    return len(self._QuantInfo[tensor_type][name])
 
   #@abstractmethod
   @nndct_utils.not_implement
-  def get_quant_config(self, name, real_value=True, tensor_type='output'):
+  def get_quant_config(self, name, real_value=True, tensor_type='output', idx=0):
     pass
 
   #@abstractmethod
-  def set_quant_config(self, name, config, tensor_type='output'):
+  def set_quant_config(self, name, config, tensor_type='output', idx=0):
     pass
+  
+  def have_quant_or_not(self, name, tensor_type='output'):
+    if name not in self._QuantInfo[tensor_type].keys() or \
+        self._QuantInfo[tensor_type][name] is None or \
+        len(self._QuantInfo[tensor_type][name])==0:
+      return False
+    else:
+      for config in self._QuantInfo[tensor_type][name]:
+        if len(config)>1 and config[1] is not None and isinstance(config[1], int):
+          return True
+      return False
 
   # def get_quant_algo(self, name, tensor_type='output'):
   #   if (tensor_type == 'output' and 
@@ -161,7 +236,8 @@ are the same as those in calibration (or QAT training) mode.")
   def load_quant_config(self, config=None):
     path = pathlib.Path(self.quant_file)
     if not (path.exists() and path.is_file()):
-      NndctScreenLogger().error(f"quantization result file does not exist. \
+      NndctScreenLogger().error2user(QError.NO_CALIB_RESULT, f"Quantization \
+calibration result file does not exist. \
 Please check calibration is done or not.")
       exit(2)
     config = config or self.quant_file
@@ -170,7 +246,7 @@ Please check calibration is done or not.")
   def init_param_correction(self):
     if NndctOption.nndct_param_corr.value > 0:
       if self.quant_mode == 1: 
-        for node in self.Nndctgraph.nodes:
+        for node in self.Nndctgraph.all_nodes():
           if node.op.type in [NNDCT_OP.CONV2D,
                               NNDCT_OP.CONVTRANSPOSE2D,
                               NNDCT_OP.DEPTHWISE_CONV2D,
@@ -252,19 +328,47 @@ Please check calibration is done or not.")
   @bias_corrected.setter
   def bias_corrected(self, val):
     self.quant_config['bias_corrected'] = val
+  
+  @property
+  def version(self):
+    return self.quant_config['version']
+ 
+  @version.setter
+  def version(self, val):
+    self.quant_config['version'] = val
+
 
 class OriginBaseQuantizer(BaseQuantizer):
 
-  def get_quant_config(self, name, real_value=True, tensor_type='output'):
+  @staticmethod
+  def _get_in_node_quant_config_index(node, in_node_index):
+    """
+    Maybe the node input tensor comes from a mult-outputs op outputs, 
+    so we need to figure out which output is the node input tensor.
+    """
+    pn = node.owning_graph.parents(node)[in_node_index]
+    for idx, o_tensor in enumerate(pn.out_tensors):
+      if any([use.user is node for use in o_tensor.uses]):
+        return idx
+
+  def get_in_node_config(self, node, in_node_index, real_value=True, tensor_type='output'):
+    idx = self._get_in_node_quant_config_index(node, in_node_index)
+    return self.get_quant_config(node.in_nodes[in_node_index], real_value, tensor_type, idx=idx)
+
+
+  def get_quant_config(self, name, real_value=True, tensor_type='output', idx=0):
     if (tensor_type == 'output' and 
         name not in self._QuantInfo[tensor_type].keys()):
       name = self.configer.quant_output(name).name
-    bnfp = copy.deepcopy(self._QuantInfo[tensor_type][name])
+
+    if idx >= len(self._QuantInfo[tensor_type][name]):
+      idx = len(self._QuantInfo[tensor_type][name]) - 1
+    bnfp = copy.deepcopy(self._QuantInfo[tensor_type][name][idx]) 
     # get max quantized integer and 2^fix_pos
-    if real_value:
+    if real_value and bnfp is not None:
       # BN layers are not quantized
       if self.quant_mode == 2 and bnfp[1] is None:
-        print('Warning!!! The parameter/activation is not quantized: %s' % name)
+        NndctScreenLogger().warning2user(QWarning.TENSOR_NOT_QUANTIZED, 'The tensor is not quantized: %s' % name)
         bnfp[0] = 65536 * 1024
         bnfp[1] = 4096
         return bnfp
@@ -273,6 +377,7 @@ class OriginBaseQuantizer(BaseQuantizer):
       except OverflowError as e:
         print("fragpos of {} : {}".format(name, repr(e)))
     return bnfp
+  
 
   def _get_amp_bnfps(self, bnfp):
     bn, fp = bnfp
@@ -280,22 +385,35 @@ class OriginBaseQuantizer(BaseQuantizer):
     if fp is not None:
       fp = 2**fp if fp > 0 else 1.0 / 2**(-fp)
     return [bn, fp]
+  
+  def get_fix_position(self, name, tensor_type='output', idx=0):
+    if (tensor_type == 'output' and 
+        name not in self._QuantInfo[tensor_type].keys()):
+      name = self.configer.quant_output(name).name
+    bnfp = copy.deepcopy(self._QuantInfo[tensor_type][name][idx])
+    return bnfp[1]
 
-  def set_quant_config(self, name, config, tensor_type='output'):
+  def set_quant_config(self, name, config, tensor_type='output', idx=0):
     assert len(config)==2, "expect 2 parameters, got " + str(config)
     if (tensor_type == 'output' and 
         name not in self._QuantInfo[tensor_type].keys()):
       name = self.configer.quant_output(name).name
-    self._QuantInfo[tensor_type][name][0] = config[0]
-    self._QuantInfo[tensor_type][name][1] = config[1]
-
-class NewBaseQuantizer(BaseQuantizer):
-
-  def get_quant_config(self, name, real_value=True, tensor_type='output'):
+    self._QuantInfo[tensor_type][name][idx][0] = config[0]
+    self._QuantInfo[tensor_type][name][idx][1] = config[1]
+  
+  def set_fix_position(self, name, fp, tensor_type='output', idx=0):
     if (tensor_type == 'output' and 
         name not in self._QuantInfo[tensor_type].keys()):
       name = self.configer.quant_output(name).name
-    quant_config = copy.deepcopy(self._QuantInfo[tensor_type][name])
+    self._QuantInfo[tensor_type][name][idx][1] = fp
+
+class NewBaseQuantizer(BaseQuantizer):
+
+  def get_quant_config(self, name, real_value=True, tensor_type='output', idx=0):
+    if (tensor_type == 'output' and 
+        name not in self._QuantInfo[tensor_type].keys()):
+      name = self.configer.quant_output(name).name
+    quant_config = copy.deepcopy(self._QuantInfo[tensor_type][name][idx])
     # get max quantized integer and 2^fix_pos
     if real_value:
       # BN layers are not quantized
@@ -317,23 +435,23 @@ class NewBaseQuantizer(BaseQuantizer):
     #bn = 2**(bn - 1)
     return [bn, scale, zero_point, float_max]
 
-  def set_quant_config(self, name, config, tensor_type='output'):
+  def set_quant_config(self, name, config, tensor_type='output', idx=0):
     assert len(config)==4, "expect 4 parameters, got " + str(config)
     if (tensor_type == 'output' and 
         name not in self._QuantInfo[tensor_type].keys()):
       name = self.configer.quant_output(name).name
-    self._QuantInfo[tensor_type][name][0] = config[0]
-    self._QuantInfo[tensor_type][name][1] = config[1]
-    self._QuantInfo[tensor_type][name][2] = config[2]
-    self._QuantInfo[tensor_type][name][3] = config[3]
+    self._QuantInfo[tensor_type][name][idx][0] = config[0]
+    self._QuantInfo[tensor_type][name][idx][1] = config[1]
+    self._QuantInfo[tensor_type][name][idx][2] = config[2]
+    self._QuantInfo[tensor_type][name][idx][3] = config[3]
 
-  def get_quant_algo(self, name, tensor_type='output'):
+  def get_quant_algo(self, name, tensor_type='output', idx=0):
     if (tensor_type == 'output' and 
         name not in self._QuantAlgo[tensor_type].keys()):
       name = self.configer.quant_output(name).name
     #quant_algo = self._QuantAlgo[tensor_type][name]
     #quant_algo = copy.deepcopy(self._QuantAlgo[tensor_type][name])
-    quant_algo = self._QuantAlgo[tensor_type].get(name, None)
+    quant_algo = (self._QuantAlgo[tensor_type].get(name, None))[idx]
     return quant_algo
 
 

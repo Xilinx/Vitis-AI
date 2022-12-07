@@ -21,7 +21,7 @@ import inspect
 import types
 from typing import List, Optional
 
-from nndct_shared.utils import GLOBAL_MAP, NNDCT_KEYS, NndctScreenLogger, NNDCT_OP
+from nndct_shared.utils import GLOBAL_MAP, NNDCT_KEYS, NndctScreenLogger, NNDCT_OP, QError, QWarning, QNote 
 import torch
 
 from .nndct2torch_op_map import add_mapping_item
@@ -70,7 +70,7 @@ def register_custom_op(op_type: str, attrs_list: Optional[List[str]] = None, map
   """
   def decorate(func):    
     if op_type in NNDCT_OP.__dict__.values() and (not mapping_to_xir):
-      NndctScreenLogger().error(f"'{op_type}' has been defined in pytorch_nndct, please use other type name.")     
+      NndctScreenLogger().error2user(QError.OP_REGIST, f"'{op_type}' has been defined in pytorch_nndct, please use other type name.")     
       exit(1)                                                                                                                                                                                                                       
     if not inspect.isfunction(func):
       RuntimeError("This api only decorate a function object")
@@ -80,7 +80,7 @@ def register_custom_op(op_type: str, attrs_list: Optional[List[str]] = None, map
       custom_op_attr_map = {}
       GLOBAL_MAP.set_map(NNDCT_KEYS.CUSTOM_OP_ATTRS_MAP, custom_op_attr_map)
     if op_type in custom_op_attr_map:
-      NndctScreenLogger().error(f"'{op_type}' can't be registered multiple times.")
+      NndctScreenLogger().error2user(QError.OP_REGIST, f"'{op_type}' can't be registered multiple times.")
     else:
       custom_op_attr_map[op_type] = attrs_list if attrs_list is not None else []
       

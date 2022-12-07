@@ -71,7 +71,7 @@ class deephi_QuantInput(_PrimModule):
       print('Network input channel-wise statistic [Min, Max, Mean, Std]:')
       t = output.transpose(0, 1)
       for c in range(t.shape[0]):
-        print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].mean(), t[c].std() ))
+        print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].float().mean(), t[c].float().std() ))
         print('histogram: {}'.format( t[c].histc(bins = 10).cpu().detach().numpy() ))
 
     output = quantize_tensors([output], self.node)[0]
@@ -100,12 +100,21 @@ class deephi_Input(_PrimModule):
     super().__init__()
 
   def forward(self, input):
+    if self.quantizer is not None and self.quantizer.exporting and isinstance(input, (tuple, list)):
+      input = input[0]
+
+    elif isinstance(input, (tuple, list)):
+      for idx in range(len(input)):
+        if isinstance(input[idx], torch.Tensor) and input[idx].storage().size() != input[idx].numel():
+          input[idx] = torch.clone(input[idx])
+          NndctScreenLogger().warning_once(f"The element number of tensor is not equal to its storage size. Please check input tensor in node {self.node.name}!")
+
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
     # check input shape
     if self.node.out_tensors[0].is_complete_tensor() and self.node.out_tensors[0].ndim == 4:
       # py_utils.blob_to_torch_format(self.node.out_tensors[0])
       if not (self.node.out_tensors[0].shape[1:] == list(input.size())[1:]):
-        NndctScreenLogger().warning(f"The shape of input ({input.shape[1:]}) should be the same with that of dummy input ({self.node.out_tensors[0].shape[1:]})")
+        NndctScreenLogger().warning_once(f"The shape of input ({input.shape[1:]}) should be the same with that of dummy input ({self.node.out_tensors[0].shape[1:]})")
       # py_utils.blob_to_nndct_format(self.node.out_tensors[0])
     output = qinput
 
@@ -115,11 +124,14 @@ class deephi_Input(_PrimModule):
       print('Network input channel-wise statistic [Min, Max, Mean, Std]:')
       t = output.transpose(0, 1)
       for c in range(t.shape[0]):
-        print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].mean(), t[c].std() ))
+        print('[{}, {}, {}, {}]'.format( t[c].min(), t[c].max(), t[c].float().mean(), t[c].float().std() ))
         print('histogram: {}'.format( t[c].histc(bins = 10).cpu().detach().numpy() ))
 
     if self.node.in_quant_part:
-      output = quantize_tensors([output], self.node)[0]
+      if isinstance(output, (tuple, list)):
+        output = quantize_tensors(output, self.node)
+      else:
+        output = quantize_tensors([output], self.node)[0]
 
     return output
 
@@ -423,3 +435,31 @@ class deephi_CostVolume(_PrimModule):
 @py_utils.register_quant_op
 def CostVolume(*args, **kwargs):
   return deephi_CostVolume(*args, **kwargs)
+
+
+
+class deephi_TupleUnpack(_PrimModule):
+
+  def __init__(self):
+    super().__init__()
+
+  def forward(self, input):
+    if len(self.node.out_tensors) == 1:
+      output = input[0]
+    else:
+      output = []
+      for i, tensor in enumerate(self.node.out_tensors):
+        output.append(input[i])
+
+    if self.node.in_quant_part:
+      if isinstance(output, (tuple, list)):
+        output = quantize_tensors(output, self.node)
+      else:
+        output = quantize_tensors([output], self.node)[0]
+
+    return output
+
+
+@py_utils.register_quant_op
+def TupleUnpack(*args, **kwargs):
+  return deephi_TupleUnpack(*args, **kwargs)

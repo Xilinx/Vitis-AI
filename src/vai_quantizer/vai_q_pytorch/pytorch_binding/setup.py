@@ -210,6 +210,7 @@ def get_version():
     pass
   if sha != "Unknown":
     version += "+" + sha[:7]
+    version += "+" + f"torch{torch.__version__}"
   return sha
 
 
@@ -233,9 +234,7 @@ if __name__ == '__main__':
   with open(version_path, "w") as f:
     f.write(f"__version__ = '{version}'\n")
     f.write(f"git_version = '{sha}'\n")
-
-  if BDIST:
-    version += f"%torch{torch.__version__}"
+    f.write(f"Ctorch_version = '{torch.__version__}'\n")
 
   setup(
       name=package_name,

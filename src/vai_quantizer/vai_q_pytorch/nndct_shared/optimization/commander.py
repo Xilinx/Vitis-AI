@@ -22,11 +22,12 @@ import numpy as np
 import math
 
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.nndct_graph import Graph, Node, Tensor, GraphSearcher
+from nndct_shared.nndct_graph import Graph, Node, Tensor, GraphSearcher, graph_searcher
 # from nndct_shared.nndct_graph.operator_definition import Conv2d
-from nndct_shared.utils import NndctOption, PatternType
+from nndct_shared.utils import NndctOption, PatternType, NndctScreenLogger, QError, QWarning, QNote
 from .fuse_conv_bn import ConvBnHandler
-from .insert_node import NodeInsertHandler
+from .fuse_embed_ln_actv import EmbedLnActvHandler
+from nndct_shared.quantization import maybe_get_quantizer
 #from nndct_shared.optimization.parse_utils import _GRAPH_SCOPE_SYM, get_full_name
 
 #_ACT_TYPES = [NNDCT_OP.RELU, NNDCT_OP.RELU6]
@@ -48,9 +49,21 @@ class OptimizeCommander(object):
   def __init__(self, graph):
     self._graph = graph
   
+  def SetNegativeSlope(self):
+    for node in self._graph.nodes:
+      if node.op.type == NNDCT_OP.LEAKY_RELU:
+        quant_mode, _ = maybe_get_quantizer()
+        if quant_mode is None or NndctOption.nndct_quant_off.value:
+          print('no quant')
+        else:
+          if node.node_attr(node.op.AttrName.ALPHA) != 0.1015625:
+            NndctScreenLogger().warning2user_once(QWarning.LEAKYRELU, f"Force to change negative_slope of LeakyReLU from {node.node_attr(node.op.AttrName.ALPHA)} to 0.1015625 because DPU only supports this value. It is recommended to change all negative_slope of LeakyReLU to 0.1015625 and re-train the float model for better deployed model accuracy.")
+          node.set_node_attr(node.op.AttrName.ALPHA, 0.1015625)
+
   def ConvertBNParams(self):
     for node in self._graph.nodes:
       if node.op.type in _BN_TYPES:
+        NndctScreenLogger().info2user(QNote.NOT_FUSED_BN, f"Node {node.name} cannot be fused into CONV layers, this is not quantization friendly. It is recommended to adjsut the pattern to CONV+BN.")
         gamma = node.op.params[node.op.ParamName.GAMMA].data
         beta = node.op.params[node.op.ParamName.BETA].data
         mean = node.op.params[node.op.ParamName.MOVING_MEAN].data
@@ -69,6 +82,27 @@ class OptimizeCommander(object):
         node.op.set_param_from_data(node.op.ParamName.MOVING_MEAN, new_mean)
         node.op.set_param_from_data(node.op.ParamName.MOVING_VAR, new_var)
 
+  def FuseEmbedLnActv(self):
+    fuse_embed_handler = EmbedLnActvHandler()
+    graph_searcher = GraphSearcher(self._graph)
+    node_sets = graph_searcher.find_nodes_from_type(
+      [PatternType(pattern=[NNDCT_OP.EMBEDDING, NNDCT_OP.LAYER_NORM, NNDCT_OP.SIGMOID],
+                   action=fuse_embed_handler),
+       PatternType(pattern=[NNDCT_OP.EMBEDDING, NNDCT_OP.LAYER_NORM, NNDCT_OP.TANH],
+                   action=fuse_embed_handler)])
+    removed_nodes = set()
+    for id, node_list in node_sets.items():
+      for nodeset in node_list:
+        ln_node = nodeset[1]
+        if ln_node.merged and ln_node not in removed_nodes:
+          self._graph.remove_node(ln_node)
+          removed_nodes.add(ln_node)
+        
+        actv_node = nodeset[2]
+        if actv_node.merged and actv_node not in removed_nodes:
+          self._graph.remove_node(actv_node)
+          removed_nodes.add(actv_node)
+    
   def FuseBnToConv(self):
     # find fusable bathnorm node
     fuse_bn_handler = ConvBnHandler()
@@ -114,7 +148,8 @@ class OptimizeCommander(object):
         if bn_node.merged and bn_node not in removed_bn:
           self._graph.remove_node(bn_node)
           removed_bn.add(bn_node)
-  
+
+
   def DecoupleSharedParamsInConv(self):
     # decouple shared parameters in graph
     bias_tensor_list = []
@@ -179,17 +214,6 @@ class OptimizeCommander(object):
     # do equalization
     for i in range(1):
       cle_info_set = self._cross_layer_equalization_for_conv(equalized_groups)
-    
-    # do weight equalizing shift
-    if NndctOption.nndct_wes_in_cle.value:
-      equalized_conv = set([node for group in equalized_groups for node in group if node.op.type in _CLE_TYPES])
-      conv_nodes = set(self._graph.find_nodes_by_types(_CLE_TYPES))
-      
-      wes_conv_nodes = list(conv_nodes - equalized_conv)
-      wes_conv_nodes.sort(key=lambda x:x.idx)
-      
-      #wes_conv_nodes = [self._graph.get_node_by_idx(6)]
-      self._do_conv_weights_equalizing_shift(wes_conv_nodes)
       
     return self._graph
     
@@ -578,162 +602,3 @@ class OptimizeCommander(object):
         prev_conv = next_node
       left_nodes = others
     return equalized_groups
-  
-  
-  # def weights_equalizing_shift(self):
-    
-  #   # find input and conv layers  
-  #   graph_searcher = GraphSearcher(self._graph)
-  #   conv_node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=[NNDCT_OP.CONV2D, 
-  #                                                                              NNDCT_OP.CHANNEL_SCALE],
-  #                                                                     action=None), 
-  #                                                         PatternType(pattern=[NNDCT_OP.DEPTHWISE_CONV2D, 
-  #                                                                              NNDCT_OP.CHANNEL_SCALE], 
-  #                                                                     action=None),
-  #                                                         PatternType(pattern=[NNDCT_OP.CONVTRANSPOSE2D, 
-  #                                                                              NNDCT_OP.CHANNEL_SCALE],
-  #                                                                     action=None)])
-    
-  #   # do weights equalizing shift
-  #   #self._cross_layer_equalization_for_conv(equalized_groups)
-  #   self._do_weights_equalizing_shift(conv_node_sets)
-  #   return self._graph
-  
-  # @classmethod
-  # def _do_weights_equalizing_shift(cls, conv_sets):
-    
-  #   # do wes for conv layers
-  #   for nodes_index, nodes_list in conv_sets.items():
-  #     for nodes in nodes_list:
-  #       cls._conv_layer_wes(nodes)
-
-  # @classmethod
-  # def _conv_layer_wes(cls, node_sets):
-  #   # get conv layer weights and bias
-  #   conv_layer = node_sets[0]
-  #   layer_weight = cls._get_weight_data(conv_layer, layout="OHWI")
-  #   layer_bias = None
-  #   if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
-  #     layer_bias = cls._get_bias_data(conv_layer)
-  #     #bias_cov_before = layer_bias.std()/layer_bias.mean()
-      
-  #   layer_weight_ihw = layer_weight.reshape(layer_weight.shape[0], -1)
-  #   layer_weight_bias = cls._combine_weight_and_bias(layer_weight_ihw, layer_bias)
-    
-  #   # get the absolute maxinum of weights
-  #   range_channel = np.max(np.fabs(layer_weight_bias), axis=1)
-  #   range_layer = np.max(np.fabs(layer_weight_bias))
-    
-  #   # calculate the overlap of the absolute maxinum of weights between layer and channel
-  #   overlap_mean = np.mean(range_channel/range_layer)
-  #   overlap_min = np.min(range_channel/range_layer)
-  #   if (overlap_mean > 0.33) and (overlap_min > 0.25):
-  #     return
-    
-  #   # calculate the wes scale of every channel
-  #   scale_channel = np.floor(np.log2(range_layer/range_channel))
-  #   #scale_channel = np.floor(np.log2(np.sqrt(range_layer/range_channel)))
-  #   scale_channel = np.where(scale_channel > 15, 15, scale_channel)
-    
-  #   # weights divided by the wes scale of channel
-  #   scale_channel = 2**scale_channel
-  #   #scale_channel = np.sqrt(2**scale_channel)
-  #   #scale_channel = np.ones_like(scale_channel)*2.0
-    
-  #   rescale_weight = layer_weight.transpose(3,1,2,0)*scale_channel
-  #   rescale_weight = rescale_weight.transpose(3, 1, 2, 0)
-  #   if conv_layer.node_attr(conv_layer.op.AttrName.BIAS_TERM):
-  #     rescale_bias = layer_bias*scale_channel
-  #     #bias_cov_after = rescale_bias.std()/rescale_bias.mean()
-  #     #if math.fabs(bias_cov_after) - math.fabs(bias_cov_before) > 0:
-  #     #  return
-    
-  #   cls._set_weight_data(node_sets[0], rescale_weight, layout="OHWI")
-  #   if layer_bias is not None:
-  #     cls._set_bias_data(node_sets[0], rescale_bias)
-   
-  #   # TODO: insert one scale op after conv layer
-  #   cls._insert_channel_wise_scale_layer(node_sets, scale_channel)
-    
-  
-  # @classmethod
-  # def _insert_channel_wise_scale_layer(cls, nodes, scale):
-  #   channel_num = scale.shape[0]
-  #   channel_scale = nodes[1].op.channel_scale
-  #   if (isinstance(channel_scale, float) 
-  #     or isinstance(channel_scale, int) 
-  #     or (isinstance(channel_scale, np.array) and channel_scale.ndim == 1)):
-  #     nodes[1].op.channel_scale = (channel_scale/scale).reshape((1,channel_num,1,1)).tolist()
-  #   elif (isinstance(channel_scale, np.array) and channel_scale.ndim == 4):
-  #     nodes[1].op.channel_scale = (channel_scale/(scale.reshape((1,channel_num,1,1)))).tolist()
-
-
-  def _do_conv_weights_equalizing_shift(self, conv_nodes):
-    ops_display_layout = {NNDCT_OP.CONV2D: "OHWI", NNDCT_OP.CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "OHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "OHWI", \
-                          NNDCT_OP.CONV3D: "ODHWI", NNDCT_OP.CONVTRANSPOSE3D: "ODHWI",\
-                          NNDCT_OP.DEPTHWISE_CONV3D: "ODHWI", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "ODHWI"}
-    ops_scale_layout = {NNDCT_OP.CONV2D: "IHWO", NNDCT_OP.CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.DEPTHWISE_CONV2D: "IHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: "IHWO", \
-                          NNDCT_OP.CONV3D: "IDHWO", NNDCT_OP.CONVTRANSPOSE3D: "IDHWO",\
-                          NNDCT_OP.DEPTHWISE_CONV3D: "IDHWO", NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: "IDHWO"}    
-    
-    node_idx_max = np.array([node.idx for node in self._graph.nodes]).max()
-    node_inserter = NodeInsertHandler(self._graph)
-    # do wes for conv nodes
-    for node in conv_nodes:
-      # get conv layer weights and bias
-      # conv_layer = node_sets[0]
-      layer_weight = self._get_weight_data(node, layout=ops_display_layout[node.op.type])
-      layer_bias = None
-      if node.node_attr(node.op.AttrName.BIAS_TERM):
-        layer_bias = self._get_bias_data(node)
-        #bias_cov_before = layer_bias.std()/layer_bias.mean()
-        
-      layer_weight_ihw = layer_weight.reshape(layer_weight.shape[0], -1)
-      layer_weight_bias = self._combine_weight_and_bias(layer_weight_ihw, layer_bias)
-      
-      # get the absolute maxinum of weights
-      range_channel = np.max(np.fabs(layer_weight_bias), axis=1)
-      range_layer = np.max(np.fabs(layer_weight_bias))
-      
-      # calculate the overlap of the absolute maxinum of weights between layer and channel
-      overlap_mean = np.mean(range_channel/range_layer)
-      overlap_min = np.min(range_channel/range_layer)
-      if (overlap_mean > 0.33) and (overlap_min > 0.25):
-        continue
-      
-      # calculate the wes scale of every channel
-      scale_channel = np.floor(np.log2(range_layer/range_channel))
-      #scale_channel = np.floor(np.log2(np.sqrt(range_layer/range_channel)))
-      scale_channel = np.where(scale_channel > 15, 15, scale_channel)
-      
-      # weights divided by the wes scale of channel
-      scale_channel = 2**scale_channel
-      #scale_channel = np.sqrt(2**scale_channel)
-      #scale_channel = np.ones_like(scale_channel)*2.0
-      
-      scale_transpose = self._compute_transpose_order(ops_display_layout[node.op.type], 
-                                               ops_scale_layout[node.op.type])
-      rescale_weight = layer_weight.transpose(scale_transpose)*scale_channel
-      rescale_weight = rescale_weight.transpose(scale_transpose)
-      if node.node_attr(node.op.AttrName.BIAS_TERM):
-        rescale_bias = layer_bias*scale_channel
-        #bias_cov_after = rescale_bias.std()/rescale_bias.mean()
-        #if math.fabs(bias_cov_after) - math.fabs(bias_cov_before) > 0:
-        #  continue
-      
-      self._set_weight_data(node, rescale_weight, layout="OHWI")
-      if layer_bias is not None:
-        self._set_bias_data(node, rescale_bias)
-
-      node_idx_max = node_idx_max + 1
-      
-      # TODO: insert one scale op after conv layer
-      channel_num = scale_channel.shape[0]
-      channel_scale = (1.0/scale_channel).reshape((1,channel_num,1,1)).tolist()
-      # self._insert_channel_wise_scale_node(node, channel_scale, node_idx_max)
-      node_inserter.insert_scale_node(node, channel_scale, node_idx_max)
-      
-    # refactor the model after add the scale node
-    self._graph = node_inserter.refactor_graph()

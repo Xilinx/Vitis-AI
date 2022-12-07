@@ -29,12 +29,14 @@ void cuda_sigmoid_table_lookup(const int N,
 template<typename Dtype>
 void cuda_sigmoid_simulation(const int N, 
                                const Dtype* input, 
-                               Dtype* output);  
+                               Dtype* output,
+                               int fragpos);  
 
 template<typename Dtype>
 void cuda_tanh_simulation(const int N, 
                             const Dtype* input, 
-                            Dtype* output);  
+                            Dtype* output,
+                            int fragpos);  
 
 template<typename Dtype>
 void cuda_tanh_table_lookup(const int N, 
@@ -92,4 +94,42 @@ template<typename Dtype>
 void cuda_softmax_simulation_part_2(const int N,
                             const Dtype* sum,
                             Dtype* output);  
+
+template<typename Dtype>
+void cuda_sigmoid_table_lookup_aie2(const int N, 
+                               const Dtype* input, 
+                               Dtype* output,
+                               int fragpos);
+
+template<typename Dtype>
+void cuda_tanh_table_lookup_aie2(const int N, 
+                            const Dtype* input, 
+                            Dtype* output,
+                            int fragpos); 
+
+template<typename Dtype>
+void cuda_exp_appr_aie2(const int N, 
+                            const Dtype* input, 
+                            Dtype* output,
+                            const int bit_width);  
+template<typename Dtype>
+void cuda_log_softmax_fast_ln(const int N,
+                            const Dtype* input,
+                            Dtype* output);  
+
+template<typename Dtype>
+void cuda_log_softmax_sub(const int N,
+                            const Dtype* input,
+                            Dtype* output,
+                            const Dtype* sub);  
+
+template<typename Dtype>
+void cuda_layernorm_invsqrt(const int N,
+                            const Dtype* input,
+                            Dtype* output); 
+template<typename Dtype>
+void cuda_inverse_aie2(const int N, 
+                            const Dtype* input, 
+                            Dtype* output); 
+
 #endif //_NNDCT_FIX_KERELS_H_

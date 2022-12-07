@@ -20,7 +20,7 @@ import torch
 import types
 
 from nndct_shared.base import NNDCT_OP
-from pytorch_nndct.parse.torch_graph import _NODE_NAME_SEPERATOR
+from pytorch_nndct.utils import TorchGraphSymbol
 from pytorch_nndct.utils import tensor_util
 
 def module_name_from_node(node):
@@ -32,11 +32,11 @@ def module_name_from_node(node):
     then extracted module name is 'layer4.1.conv1'
   """
   node_name = node if isinstance(node, str) else node.name
-  if _NODE_NAME_SEPERATOR not in node_name:
+  if TorchGraphSymbol.NODE_NAME_SEPERATOR not in node_name:
     return None
 
   name_parts = []
-  parts = node_name.split(_NODE_NAME_SEPERATOR)[1:-1]
+  parts = node_name.split(TorchGraphSymbol.NODE_NAME_SEPERATOR)[1:-1]
   for part in parts:
     if '[' not in part or ']' not in part:
       raise RuntimeError(
@@ -70,59 +70,59 @@ def set_module(model, submodule_key, module):
 
   setattr(cur_mod, tokens[-1], module)
 
-def load_modules_ckpt_copy(old_modules, new_modules):
+def copy_module_weights(src_module, dst_module):
 
-  if isinstance(old_modules,
+  if isinstance(src_module,
                 (torch.nn.Conv2d, torch.nn.ConvTranspose2d)) or isinstance(
-                    new_modules, (torch.nn.Conv2d, torch.nn.ConvTranspose2d)):
-    if isinstance(old_modules, (torch.nn.Conv2d, torch.nn.ConvTranspose2d)):
-      new_modules.conv.weight.data.copy_(old_modules.weight.data)
-      if old_modules.bias is not None:
-        new_modules.conv.bias.data.copy_(old_modules.bias.data)
+                    dst_module, (torch.nn.Conv2d, torch.nn.ConvTranspose2d)):
+    if isinstance(src_module, (torch.nn.Conv2d, torch.nn.ConvTranspose2d)):
+      dst_module.conv.weight.data.copy_(src_module.weight.data)
+      if src_module.bias is not None:
+        dst_module.conv.bias.data.copy_(src_module.bias.data)
     else:
-      new_modules.weight.data.copy_(
-          old_modules.get_active_filter(new_modules.in_channels,
-                                        new_modules.out_channels,
-                                        new_modules.kernel_size[0]).data)
-      if new_modules.bias is not None:
-        new_modules.bias.data.copy_(
-            old_modules.get_active_bias(new_modules.out_channels).data)
+      dst_module.weight.data.copy_(
+          src_module.get_active_filter(dst_module.in_channels,
+                                       dst_module.out_channels,
+                                       dst_module.kernel_size).data)
+      if dst_module.bias is not None:
+        dst_module.bias.data.copy_(
+            src_module.get_active_bias(dst_module.out_channels).data)
 
-  elif isinstance(old_modules, torch.nn.Linear) or isinstance(
-      new_modules, torch.nn.Linear):
+  elif isinstance(src_module, torch.nn.Linear) or isinstance(
+      dst_module, torch.nn.Linear):
 
-    if isinstance(old_modules, torch.nn.Linear):
-      new_modules.linear.weight.data.copy_(old_modules.weight.data)
-      if old_modules.bias is not None:
-        new_modules.linear.bias.data.copy_(old_modules.bias.data)
+    if isinstance(src_module, torch.nn.Linear):
+      dst_module.linear.weight.data.copy_(src_module.weight.data)
+      if src_module.bias is not None:
+        dst_module.linear.bias.data.copy_(src_module.bias.data)
     else:
-      new_modules.weight.data.copy_(
-          old_modules.get_active_filter(new_modules.in_features,
-                                        new_modules.out_features).data)
-      if new_modules.bias is not None:
-        new_modules.bias.data.copy_(
-            old_modules.get_active_bias(new_modules.out_features).data)
+      dst_module.weight.data.copy_(
+          src_module.get_active_filter(dst_module.in_features,
+                                       dst_module.out_features).data)
+      if dst_module.bias is not None:
+        dst_module.bias.data.copy_(
+            src_module.get_active_bias(dst_module.out_features).data)
 
-  elif isinstance(old_modules, torch.nn.BatchNorm2d) or isinstance(
-      new_modules, torch.nn.BatchNorm2d):
-    if isinstance(old_modules, torch.nn.BatchNorm2d):
-      new_modules.bn.weight.data.copy_(
-          old_modules.weight.data[:new_modules.bn.num_features])
-      new_modules.bn.bias.data.copy_(
-          old_modules.bias.data[:new_modules.bn.num_features])
-      new_modules.bn.running_mean.data.copy_(
-          old_modules.running_mean.data[:new_modules.bn.num_features])
-      new_modules.bn.running_var.data.copy_(
-          old_modules.running_var.data[:new_modules.bn.num_features])
+  elif isinstance(src_module, torch.nn.BatchNorm2d) or isinstance(
+      dst_module, torch.nn.BatchNorm2d):
+    if isinstance(src_module, torch.nn.BatchNorm2d):
+      dst_module.bn.weight.data.copy_(
+          src_module.weight.data[:dst_module.bn.num_features])
+      dst_module.bn.bias.data.copy_(
+          src_module.bias.data[:dst_module.bn.num_features])
+      dst_module.bn.running_mean.data.copy_(
+          src_module.running_mean.data[:dst_module.bn.num_features])
+      dst_module.bn.running_var.data.copy_(
+          src_module.running_var.data[:dst_module.bn.num_features])
     else:
-      new_modules.weight.data.copy_(
-          old_modules.bn.weight.data[:new_modules.num_features])
-      new_modules.bias.data.copy_(
-          old_modules.bn.bias.data[:new_modules.num_features])
-      new_modules.running_mean.data.copy_(
-          old_modules.bn.running_mean.data[:new_modules.num_features])
-      new_modules.running_var.data.copy_(
-          old_modules.bn.running_var.data[:new_modules.num_features])
+      dst_module.weight.data.copy_(
+          src_module.bn.weight.data[:dst_module.num_features])
+      dst_module.bias.data.copy_(
+          src_module.bn.bias.data[:dst_module.num_features])
+      dst_module.running_mean.data.copy_(
+          src_module.bn.running_mean.data[:dst_module.num_features])
+      dst_module.running_var.data.copy_(
+          src_module.bn.running_var.data[:dst_module.num_features])
 
 def replace_modules(model, module_names, new_modules, copy_ckpt=False):
   if not isinstance(module_names, (tuple, list)):
@@ -150,13 +150,18 @@ def replace_modules(model, module_names, new_modules, copy_ckpt=False):
 
   for i, name in enumerate(module_names):
     set_module(model, name, new_modules[i])
-    if copy_ckpt == True:
-      load_modules_ckpt_copy(modules[i], new_modules[i])
+    if copy_ckpt:
+      copy_module_weights(modules[i], new_modules[i])
 
 def create_module_by_node(module_cls, node):
   attrs = {name: node.op.get_config(name) for name in node.op.configs}
   module = module_cls(**attrs)
-  module.load_state_dict(state_dict_from_node(node))
+  state_dict = state_dict_from_node(node)
+  module_state_dict = {
+      tensor_name.split('.')[-1]: tensor
+      for tensor_name, tensor in state_dict.items()
+  }
+  module.load_state_dict(module_state_dict)
   return module
 
 def state_dict_from_node(node):
@@ -187,103 +192,8 @@ def state_dict_from_node(node):
       data = data.swapaxes(0, 1)
       data = np.ascontiguousarray(data)
 
-    name = tensor.name.split('.')[-1]
-    state_dict[name] = torch.from_numpy(data)
+    state_dict[tensor.name] = torch.from_numpy(data)
   return state_dict
-
-def slim_model_from_state_dict_and_pruning_info(model, state_dict, json_path):
-  """Modify modules according to pruning information saved in json file and
-  load the state dict to the model.
-
-    Args:
-      model: An torch.nn.Module instance to load state dict.
-      state_dict: A state dict to be loaded.
-      json_path: A json file to save pruning information.
-
-    Returns:
-      A modified model generated by pruning information saved in json file.
-
-  """
-  with open(json_path, 'r') as f:
-    pruning_info = json.load(f)
-
-  tensorname_to_nodename = pruning_info['MapOfTensornameToNodename']
-
-  def change_conv_module(module, tensor_name):
-    if module.groups == 1:
-      if pruning_info[node_name]['in_dim'] != 0:
-        module.in_channels = pruning_info[node_name]['in_dim']
-      if pruning_info[node_name]['out_dim'] != 0:
-        module.out_channels = pruning_info[node_name]['out_dim']
-    else:
-      module.groups = pruning_info[node_name]['out_dim']
-      if pruning_info[node_name]['in_dim'] != 0:
-        module.in_channels = pruning_info[node_name]['in_dim']
-      if pruning_info[node_name]['out_dim'] != 0:
-        module.out_channels = pruning_info[node_name]['out_dim']
-
-  def change_tensor(tensor_name):
-    node_name = tensorname_to_nodename[tensor_name]
-    tensor = state_dict[tensor_name]
-    removed_inputs = pruning_info[node_name]['removed_inputs']
-    removed_outputs = pruning_info[node_name]['removed_outputs']
-    if tensor.ndim == 4 or tensor.ndim == 2:
-      new_tensor = np.delete(tensor, removed_outputs, axis=0)
-      new_tensor = np.delete(new_tensor, removed_inputs, axis=1)
-    elif tensor.ndim == 1:
-      new_tensor = np.delete(tensor, removed_outputs, axis=0)
-    else:
-      pass
-    return new_tensor
-
-  for key, module in model.named_modules():
-    weight_key = key + '.weight'
-    if weight_key in tensorname_to_nodename:
-      node_name = tensorname_to_nodename[weight_key]
-    bias_key = key + '.bias'
-    if isinstance(module, (nn.BatchNorm2d, nn.BatchNorm3d)):
-      state_dict[weight_key] = change_tensor(weight_key)
-      module.weight = nn.Parameter(state_dict[weight_key])
-      state_dict[bias_key] = change_tensor(bias_key)
-      module.bias = nn.Parameter(state_dict[bias_key])
-      running_mean_key = key + '.running_mean'
-      state_dict[running_mean_key] = change_tensor(running_mean_key)
-      module.running_mean = state_dict[running_mean_key]
-      running_var_key = key + '.running_var'
-      state_dict[running_var_key] = change_tensor(running_var_key)
-      module.running_var = state_dict[running_var_key]
-      if pruning_info[node_name]['out_dim'] != 0:
-        module.num_features = pruning_info[node_name]['out_dim']
-
-    elif isinstance(module, (nn.Conv2d, nn.Conv3d)):
-      change_conv_module(module, node_name)
-      state_dict[weight_key] = change_tensor(weight_key)
-      module.weight = nn.Parameter(state_dict[weight_key])
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(bias_key)
-        module.bias = nn.Parameter(state_dict[bias_key])
-
-    elif isinstance(module, (nn.ConvTranspose2d, nn.ConvTranspose3d)):
-      change_conv_module(module, node_name)
-      state_dict[weight_key] = change_tensor(weight_key)
-      module.weight = nn.Parameter(state_dict[weight_key])
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(bias_key)
-        module.bias = nn.Parameter(state_dict[bias_key])
-
-    elif isinstance(module, nn.Linear):
-      state_dict[weight_key] = change_tensor(weight_key)
-      module.weight = nn.Parameter(state_dict[weight_key])
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(bias_key)
-        module.bias = nn.Parameter(state_dict[bias_key])
-      if pruning_info[node_name]['out_dim'] != 0:
-        module.out_features = pruning_info[node_name]['out_dim']
-      if pruning_info[node_name]['in_dim'] != 0:
-        module.in_features = pruning_info[node_name]['in_dim']
-    else:
-      pass
-  model.load_state_dict(state_dict)
 
 def slim_model_from_state_dict(model, state_dict):
   """Modify modules according to their weights in the state dict and
@@ -417,6 +327,10 @@ def enable_print_blob(model, graph=False):
 def enable_save_blob(model, graph=False):
   enable_dump_blob(model, graph, mode='save')
 
+def get_module_name(module):
+  if isinstance(module, torch.jit.ScriptModule):
+    return module.original_name
+
 def visualize_tensors(model):
   from nndct_shared.utils import Plotter
 
@@ -428,3 +342,53 @@ def visualize_tensors(model):
   for mod in model.modules():
     if mod is not model:
       mod.register_forward_hook(plot_output_tensor)
+
+def get_flattened_input_args(input):
+
+  def _flatten_args(input_args, flattened_inputs):
+    if isinstance(input_args, (tuple, list)):
+      for inp in input_args:
+        _flatten_args(inp, flattened_inputs)
+    else:
+      flattened_inputs.append(input_args)
+
+  flattened_inputs = []
+  _flatten_args(input, flattened_inputs)
+  return tuple(flattened_inputs)
+
+def collect_input_devices(input_args):
+
+  def _collect_device(inp, device_type_set):
+    if isinstance(inp, torch.Tensor):
+      device_type_set.add(inp.device.type)
+    elif isinstance(inp, (list, tuple)):
+      for i in inp:
+        _collect_device(i, device_type_set)
+
+  device_type_set = set()
+
+  _collect_device(input_args, device_type_set)
+  return device_type_set
+
+def to_device(module, input_args, device):
+
+  if input_args is not None:
+    if isinstance(input_args, torch.Tensor):
+      input_args = input_args.to(device)
+    else:
+      is_tuple = True if isinstance(input_args, tuple) else False
+      input_args = list(input_args)
+      for i in range(len(input_args)):
+        _, inp = to_device(None, input_args[i], device)
+        input_args[i] = inp
+      if is_tuple:
+        input_args = tuple(input_args)
+  if module is not None:
+    module = module.to(device)
+  return module, input_args
+
+def get_module_name(module):
+  if isinstance(module, torch.jit.ScriptModule):
+    return module.original_name
+  else:
+    return module._get_name()

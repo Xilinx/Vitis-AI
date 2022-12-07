@@ -44,7 +44,7 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
   
   def _write_header(self, f: Callable, graph: Graph):
     f.write(f"# GENETARED BY NNDCT, DO NOT EDIT!\n\n")
-    f.write(f"import torch\n")
+    f.write(f"import torch\nfrom torch import tensor\n")
   
   def _write_graph(self, f: Callable, graph: Graph):
     self._write_init(f, graph)
@@ -101,6 +101,7 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
     
   def _write_forward(self, f: Callable, graph: Graph):
     indent_str = 4 * " "
+    f.write('\n' + indent_str + "@py_nndct.nn.forward_processor")
     f.write('\n' + indent_str + "def forward(self, *args):\n")
     indent_str += indent_str
     self._collect_reuse_output(graph)
@@ -136,7 +137,7 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
         'args', 'kwargs'
     ] else node.op.configs
     for name in attrs_template:
-      if hasattr(node.op, name):
+      if hasattr(node.op, name) or (hasattr(node.op, 'has_config') and node.op.has_config(name)):
         ordered_attrs[name] = node.node_config(name)
 
     return ordered_attrs
@@ -221,7 +222,10 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
         # else:
         #   value_list.append(str(element))
       if isinstance(value, tuple):
-        return '(' + self._to_list_str(value_list) + ')'
+        if len(value_list) == 1:
+          return self._to_list_str(value_list)
+        else:
+          return '(' + self._to_list_str(value_list) + ')'
       else:
         return '[' + self._to_list_str(value_list) + ']'
     elif isinstance(value, Tensor):
@@ -253,6 +257,15 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
       string = '{key}={value}'.format(key=k, value=v)
       str_list.append(string)
     return ', '.join(str_list)
+
+  @staticmethod
+  def _to_dict_str(input_map):
+    str_list = []
+    for k, v in input_map.items():
+      string = "'{key}': {value}".format(key=k, value=v)
+      str_list.append(string)
+    dict_str = ",".join(str_list)
+    return "{" + dict_str + "}"
 
   def _gen_module_name(self, node: Node):
     module_name = TorchSymbol.MODULE_NAME_SEPERATOR.join(
@@ -348,7 +361,6 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
     torch_op_attr = py_utils.get_torch_op_attr(torch_op_type)
     if torch_op_attr.op_class_type != TorchOpClassType.UNKNOWN:
       op_name, attrs_str = self._init_op_and_attrs_str(node)
-      
       return 'self.{module_name} = {op_name}({attrs}) #{node_name}'.format(module_name=self._gen_module_name(node), 
                                                                           op_name=op_name, 
                                                                           attrs=attrs_str, 
@@ -407,6 +419,14 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
       
     elif torch_op_attr.op_class_type == TorchOpClassType.UNKNOWN and node.op.type in MISC_OP_DISCR_MAP:
       forward_str = MISC_OP_DISCR_MAP[node.op.type](self, node, output_str)
+    elif  torch_op_attr.op_class_type == TorchOpClassType.AUTO_INFER_OP:
+      func_attrs = self._get_module_attrs_map(node, torch_op_type, torch_op_attr.attrs)
+      self._infer_attrs(func_attrs)
+      func_attrs_str = self._to_dict_str(func_attrs)
+      forward_str = "{output} = self.{module_name}({attrs})".format(
+            output=output_str,
+            module_name=self._get_module_name(node),
+            attrs=func_attrs_str)
 
     elif torch_op_attr.op_class_type in [TorchOpClassType.TORCH_SCRIPT_BUILTIN_FUNCTION,
                                          TorchOpClassType.MATH_BUILTIN_FUNCTION,
@@ -436,4 +456,4 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
   def _write_header(self, f, graph):
     super()._write_header(f, graph)
     f.write(f"import pytorch_nndct as py_nndct\n")
-    f.write("class {}(torch.nn.Module):\n".format(graph.name))
+    f.write("\nclass {}(py_nndct.nn.NndctQuantModel):\n".format(graph.name))

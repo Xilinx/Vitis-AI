@@ -25,7 +25,7 @@ import json
 from typing import Dict, List, Optional
 from abc import ABCMeta, abstractmethod
 
-from nndct_shared.utils import option_util, NndctScreenLogger
+from nndct_shared.utils import option_util, NndctScreenLogger, QError, QWarning
 
 class QConfigBase(metaclass=ABCMeta):
     #_quant_tensor_types = ["weights", "bias", "activation", "input"]
@@ -159,25 +159,26 @@ class QConfigBase(metaclass=ABCMeta):
         
         if bit_width_w:
             if self._qconfig['weights']['bit_width'] != bit_width_w:
-                NndctScreenLogger().warning(f"Bitwidth of weights in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
+                NndctScreenLogger().warning2user(QWarning.BITWIDTH_MISMATCH, f"Bitwidth of weights in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
             if self._qconfig['bias']['bit_width'] != bit_width_w:
-                NndctScreenLogger().warning(f"Bitwidth of bias in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
+                NndctScreenLogger().warning2user(QWarning.BITWIDTH_MISMATCH, f"Bitwidth of bias in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
         if bit_width_a:
             if self._qconfig['activation']['bit_width'] != bit_width_a:
-                NndctScreenLogger().warning(f"Bitwidth of activation in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
+                NndctScreenLogger().warning2user(QWarning.BITWIDTH_MISMATCH, f"Bitwidth of activation in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
             if self._qconfig['input']['bit_width'] != bit_width_a:
-                NndctScreenLogger().warning(f"Bitwidth of input in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
+                NndctScreenLogger().warning2user(QWarning.BITWIDTH_MISMATCH, f"Bitwidth of input in configuration file is different from that passed from torch_quantizer api, use the bitwidth in configuration file")
         if mix_bit:
             if self._qconfig['mix_bit'] != mix_bit:
-                NndctScreenLogger().warning(f"Mix_bit parameter in configuration file is different from that passed from torch_quantizer api, use mix_bit parameter in configuration file")
+                NndctScreenLogger().warning2user(QWarning.BITWIDTH_MISMATCH, f"Mix_bit parameter in configuration file is different from that passed from torch_quantizer api, use mix_bit parameter in configuration file")
         
         self._compute_q_maxmin()
         self._qconfig_handle_conflict()
     
     @staticmethod
     def _keywords_legel(json_configs):
-        model_config_keys = ["convert_relu6_to_relu", "include_cle", "keep_first_last_layer_accuracy", 
+        model_config_keys = ["convert_relu6_to_relu", "convert_silu_to_hswish", "include_cle", "keep_first_last_layer_accuracy", 
                             "keep_add_layer_accuracy", "include_bias_corr", "target_device",
+                            "change_concat_input_fix", "change_pool_input_fix",
                             "quantizable_data_type", "overall_quantize_config", "tensor_quantize_config",
                             "layer_quantize_config"]
         quant_param_keys = ["bit_width", "method", "round_mode", 
@@ -189,31 +190,27 @@ class QConfigBase(metaclass=ABCMeta):
                             "overall_quantize_config", "tensor_quantize_config"]
         for key_word, _ in json_configs.items():
             if key_word not in model_config_keys:
-                NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key_word}'. ")
-                #raise ValueError("Unsupported keyword {key_word}")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key_word}'. ")
                 exit(2)
                 
             if key_word == "overall_quantize_config":
                 overall_config = json_configs["overall_quantize_config"]
                 for key1_word, _ in overall_config.items():
                     if key1_word not in quant_param_keys:
-                        NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key1_word}'.")
-                        #raise ValueError("Unsupported keyword {key1_word}")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key1_word}'.")
                         exit(2)
             
             if key_word == "tensor_quantize_config":
                 tensor_config = json_configs["tensor_quantize_config"]
                 for key1_word, _ in tensor_config.items():
                     if key1_word not in tensor_keys:
-                        NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key1_word}'.")
-                        #raise ValueError("Unsupported keyword {key1_word}")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key1_word}'.")
                         exit(2)
                         
                     tensor_overall_config = tensor_config[key1_word]
                     for key2_word, _ in tensor_overall_config.items():
                         if key2_word not in quant_param_keys:
-                            NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key2_word}'.")
-                            #raise ValueError("Unsupported keyword {key2_word}")
+                            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key2_word}'.")
                             exit(2)
             
             if key_word == "layer_quantize_config":
@@ -221,31 +218,27 @@ class QConfigBase(metaclass=ABCMeta):
                 for layer_config in layer_configs:
                     for key_word1, _ in layer_config.items():
                         if key_word1 not in layer_quant_keys:
-                            NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key_word1}'.")
-                            #raise ValueError("Unsupported keyword {key_word1}")
+                            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key_word1}'.")
                             exit(2)
                         
                         if key_word1 == "overall_quantize_config":
                             overall_config = layer_config["overall_quantize_config"]
                             for key1_word, _ in overall_config.items():
                                 if key1_word not in quant_param_keys:
-                                    NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key1_word}'.")
-                                    #raise ValueError("Unsupported keyword {key1_word}")
+                                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key1_word}'.")
                                     exit(2)
                                     
                         if key_word1 == "tensor_quantize_config":
                             tensor_config = layer_config["tensor_quantize_config"]
                             for key1_word, _ in tensor_config.items():
                                 if key1_word not in tensor_keys:
-                                    NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key1_word}'.")
-                                    #raise ValueError("Unsupported keyword {key1_word}")
+                                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key1_word}'.")
                                     exit(2)
                                     
                                 tensor_overall_config = tensor_config[key1_word]
                                 for key2_word, _ in tensor_overall_config.items():
                                     if key2_word not in quant_param_keys:
-                                        NndctScreenLogger().error(f"Unsupported keyword in quantization config: '{key2_word}'.")
-                                        #raise ValueError("Unsupported keyword {key2_word}")
+                                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Unsupported keyword in quantization config: '{key2_word}'.")
                                         exit(2)
             
                 
@@ -253,8 +246,14 @@ class QConfigBase(metaclass=ABCMeta):
     def _nndct_switch_option(json_configs):
         if (json_configs.get('convert_relu6_to_relu', None) is not None) and isinstance(json_configs['convert_relu6_to_relu'], bool):
             option_util.set_option_value("nndct_convert_relu6_to_relu", json_configs['convert_relu6_to_relu'])
+        if (json_configs.get('convert_silu_to_hswish', None) is not None) and isinstance(json_configs['convert_silu_to_hswish'], bool):
+            option_util.set_option_value("nndct_convert_silu_to_hswish", json_configs['convert_silu_to_hswish'])
         if (json_configs.get('include_cle', None) is not None) and isinstance(json_configs['include_cle'], bool):
             option_util.set_option_value("nndct_equalization", json_configs['include_cle'])
+        if (json_configs.get('change_concat_input_fix', None) is not None) and isinstance(json_configs['change_concat_input_fix'], bool):
+            option_util.set_option_value("nndct_change_concat_input_fix", json_configs['change_concat_input_fix'])
+        if (json_configs.get('change_pool_input_fix', None) is not None) and isinstance(json_configs['change_pool_input_fix'], bool):
+            option_util.set_option_value("nndct_change_pool_input_fix", json_configs['change_pool_input_fix'])
         if (json_configs.get('include_bias_corr', None) is not None) and isinstance(json_configs['include_bias_corr'], bool):
             option_util.set_option_value("nndct_param_corr", json_configs['include_bias_corr'])
         if (json_configs.get('keep_first_last_layer_accuracy', None) is not None) and isinstance(json_configs['keep_first_last_layer_accuracy'], bool):
@@ -322,7 +321,7 @@ class QConfigBase(metaclass=ABCMeta):
                 config_to_use['method'] = export_config.get('method')
             else:
                 method_legels = self._legal_qconfigs[tensor_type]['method']
-                NndctScreenLogger().error(f"The method of {tensor_type} should be in the list {method_legels}")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The method of {tensor_type} should be in the list {method_legels}")
                 exit(2)
                 
         if (export_config.get('round_mode', None)):
@@ -330,7 +329,7 @@ class QConfigBase(metaclass=ABCMeta):
                 config_to_use['round_method'] = export_config.get('round_mode')
             else:
                 round_legels = self._legal_qconfigs[tensor_type]['round_method']
-                NndctScreenLogger().error(f"The round_mode of {tensor_type} should be in the list {round_legels}")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The round_mode of {tensor_type} should be in the list {round_legels}")
                 exit(2)
                 
         if (export_config.get('scale_type', None)):
@@ -338,35 +337,35 @@ class QConfigBase(metaclass=ABCMeta):
                 config_to_use['scale_type'] = export_config.get('scale_type')
             else:
                 scale_legels = self._legal_qconfigs[tensor_type]['scale_type']
-                NndctScreenLogger().error(f"The scale_type of {tensor_type} should be in the list {scale_legels}")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The scale_type of {tensor_type} should be in the list {scale_legels}")
                 exit(2)
             
         if (not export_config.get('symmetry', None) is None):
             if isinstance(export_config.get('symmetry'), bool):
                 config_to_use['symmetric_mode'] = 'symmetric' if export_config.get('symmetry') else 'asymmetric'
             else:
-                NndctScreenLogger().error(f"The symmetry parameter of {tensor_type} should be a boolean")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The symmetry parameter of {tensor_type} should be a boolean")
                 exit(2)
             
         if (not export_config.get('per_channel', None) is None):
             if isinstance(export_config.get('per_channel'), bool):
                 config_to_use['granularity'] = 'per_channel' if export_config.get('per_channel') else 'per_tensor'
             else:
-                NndctScreenLogger().error(f"The per_channel parameter of {tensor_type} should be a boolean")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The per_channel parameter of {tensor_type} should be a boolean")
                 exit(2)
                 
         if (not export_config.get('signed', None) is None):
             if isinstance(export_config.get('signed'), bool):
                 config_to_use['signed'] = export_config.get('signed')
             else:
-                NndctScreenLogger().error(f"The signed parameter of {tensor_type} should be a boolean")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The signed parameter of {tensor_type} should be a boolean")
                 exit(2)
             
         if (not export_config.get('narrow_range', None) is None):
             if isinstance(export_config.get('narrow_range'), bool):
                 config_to_use['narrow_range'] = export_config.get('narrow_range')
             else:
-                NndctScreenLogger().error(f"The narrow_range parameter of {tensor_type} should be a boolean")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The narrow_range parameter of {tensor_type} should be a boolean")
                 exit(2)
 
         if tensor_type in ['activation', 'input']:
@@ -375,7 +374,7 @@ class QConfigBase(metaclass=ABCMeta):
                     config_to_use['calib_statistic_method'] = export_config.get('calib_statistic_method')
                 else:
                     calib_legels = self._legal_qconfigs[tensor_type]['calib_statistic_method']
-                    NndctScreenLogger().error(f"The calib_statistic_method of {tensor_type} should be in the list {calib_legels}")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"The calib_statistic_method of {tensor_type} should be in the list {calib_legels}")
                     exit(2)
         
         if config_to_use.get('method') == 'percentile':
@@ -385,7 +384,7 @@ class QConfigBase(metaclass=ABCMeta):
                 if ((not isinstance(export_config.get('percentage'), float)) or \
                     (export_config['percentage'] <= 0.0) or \
                     (export_config['percentage'] > 100.0)):
-                    NndctScreenLogger().error(f"Percentage should be larger than 0.0 and smaller than 100.0")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Percentage should be larger than 0.0 and smaller than 100.0")
                     exit(2)
                 else:
                     config_to_use['percentage'] = export_config['percentage']
@@ -466,25 +465,25 @@ class QConfigBase(metaclass=ABCMeta):
         granularity = quant_param.get("granularity")
         if granularity == "per_channel":
             if tensor_type != "weights":
-                NndctScreenLogger().error(f"Only support per_channel quantization for weights for now")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support per_channel quantization for weights for now")
                 exit(2)
             scale_type = quant_param.get("scale_type")
             method = quant_param.get("method")
             if scale_type == "float":
                 if method != 'maxmin':
-                    NndctScreenLogger().error(f"Only support maxmin calibration method in per_channel float quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support maxmin calibration method in per_channel float quantization")
                     exit(2)
             elif scale_type == "poweroftwo":
                 if method not in ['diffs', 'maxmin']:
-                    NndctScreenLogger().error(f"Only support diffs and maxmin calibration method in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_channel power_of_two quantization")
                     exit(2)
                 symmetric_mode = quant_param.get("symmetric_mode")
                 if symmetric_mode == "asymmetric":
-                    NndctScreenLogger().error(f"Not support asymmetric quantization in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_channel power_of_two quantization")
                     exit(2)
                 signed = quant_param.get("signed")
                 if not signed:
-                    NndctScreenLogger().error(f"Not support unsigned quantization in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_channel power_of_two quantization")
                     exit(2)
                 
         if granularity == "per_tensor":
@@ -492,34 +491,34 @@ class QConfigBase(metaclass=ABCMeta):
             scale_type = quant_param.get("scale_type")
             if scale_type == "float":
                 if method not in ['maxmin', 'percentile', 'mse', 'entropy']:
-                    NndctScreenLogger().error(f"Only support maxmin, percentile, mse and entropy calibration method in per_tensor float quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support maxmin, percentile, mse and entropy calibration method in per_tensor float quantization")
                     exit(2)
                 if quant_param.get("calib_statistic_method", None):
                     calib_statistic_method = quant_param.get("calib_statistic_method")
                     if calib_statistic_method not in ["max", "mean", "median"]:
-                        NndctScreenLogger().error(f"Only support max, mean and median scale activation statistic method in per_tensor float quantization")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support max, mean and median scale activation statistic method in per_tensor float quantization")
                         exit(2)
                 symmetric_mode = quant_param.get("symmetric_mode")
                 if symmetric_mode == "asymmetric":
                     if method in ['percentile', 'entropy', 'mse']:
-                        NndctScreenLogger().error(f"Not support asymmetric quantization in percentile, entropy and mse calibration method")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in percentile, entropy and mse calibration method")
                         exit(2)
             elif scale_type == "poweroftwo":
                 if method not in ['diffs', 'maxmin']:
-                    NndctScreenLogger().error(f"Only support diffs and maxmin calibration method in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_tensor power_of_two quantization")
                     exit(2)
                 symmetric_mode = quant_param.get("symmetric_mode")
                 if symmetric_mode == "asymmetric":
-                    NndctScreenLogger().error(f"Not support asymmetric quantization in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_tensor power_of_two quantization")
                     exit(2)
                 signed = quant_param.get("signed")
                 if not signed:
-                    NndctScreenLogger().error(f"Not support unsigned quantization in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_tensor power_of_two quantization")
                     exit(2)
                 if quant_param.get("calib_statistic_method", None):
                     calib_statistic_method = quant_param.get("calib_statistic_method")
                     if calib_statistic_method != "modal":
-                        NndctScreenLogger().error(f"Only support modal scale activation statistic method in per_tensor power_of_two quantization")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support modal scale activation statistic method in per_tensor power_of_two quantization")
                         exit(2)
         
     @staticmethod
@@ -528,37 +527,37 @@ class QConfigBase(metaclass=ABCMeta):
         
         symmetric_mode = quant_param.get("symmetric_mode")
         if symmetric_mode != "symmetric":
-            NndctScreenLogger().error(f"Only support symmetric quantization in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support symmetric quantization in DPU device")
             exit(2)
         method = quant_param.get("method")
         if method != "diffs":
-            NndctScreenLogger().error(f"Only support diffs calibration method in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs calibration method in DPU device")
             exit(2)
         granularity = quant_param.get("granularity")
         if granularity != "per_tensor":
-            NndctScreenLogger().error(f"Only support per_tensor quantization in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support per_tensor quantization in DPU device")
             exit(2)
         scale_type = quant_param.get("scale_type")
         if scale_type != "poweroftwo":
-            NndctScreenLogger().error(f"Only support power_of_two scale type in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support power_of_two scale type in DPU device")
             exit(2)
         narrow_range = quant_param.get("narrow_range")
         if narrow_range:
-            NndctScreenLogger().error(f"Not support narrow_range in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support narrow_range in DPU device")
             exit(2)
         if quant_param.get("calib_statistic_method", None):
             calib_statistic_method = quant_param.get("calib_statistic_method")
             if calib_statistic_method != "modal":
-                NndctScreenLogger().error(f"Only support modal activation statistic method in DPU device")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support modal activation statistic method in DPU device")
                 exit(2)
         round_method = quant_param.get("round_method")
         if tensor_type == "activation":
             if round_method != "half_up":
-                NndctScreenLogger().error(f"Only support half_up round method in activation quantization of DPU device")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support half_up round method in activation quantization of DPU device")
                 exit(2)
         else:
             if round_method != "std_round":
-                NndctScreenLogger().error(f"Only support half_up round method in weights, bias and input quantization of DPU device")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support half_up round method in weights, bias and input quantization of DPU device")
                 exit(2)
 
     @staticmethod

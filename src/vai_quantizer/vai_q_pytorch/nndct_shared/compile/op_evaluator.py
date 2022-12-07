@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import numpy as np
 import math
 
 
@@ -34,7 +35,12 @@ class Evaluator(object):
     
   @staticmethod
   def mul(node): 
-    node.out_tensors[0].data = node.get_attr_val(node.op.AttrName.INPUT) * node.get_attr_val(node.op.AttrName.OTHER) 
+    operand_1 = node.get_attr_val(node.op.AttrName.INPUT) 
+    operand_2 = node.get_attr_val(node.op.AttrName.OTHER) 
+    data = operand_1 * operand_2
+    if isinstance(operand_1, np.ndarray) or isinstance(operand_2, np.ndarray):
+      data = np.array(data)
+    node.out_tensors[0].data = data
     
   @staticmethod
   def cast(node):
@@ -53,7 +59,12 @@ class Evaluator(object):
     
   @staticmethod
   def sub(node):
-    node.out_tensors[0].data = node.get_attr_val(node.op.AttrName.INPUT) - node.get_attr_val(node.op.AttrName.OTHER) 
+    operand_1 = node.get_attr_val(node.op.AttrName.INPUT)
+    operand_2 = node.get_attr_val(node.op.AttrName.OTHER)
+    data = operand_1 - operand_2
+    if isinstance(operand_1, np.ndarray) or isinstance(operand_2, np.ndarray):
+      data = np.array(data)
+    node.out_tensors[0].data = data
 
   @staticmethod
   def elemwise_div(node):
@@ -65,5 +76,18 @@ class Evaluator(object):
 
   @staticmethod
   def add(node):
-    node.out_tensors[0].data = node.get_attr_val(node.op.AttrName.INPUT) + node.get_attr_val(node.op.AttrName.OTHER) 
-    
+    operand_1 = node.get_attr_val(node.op.AttrName.INPUT)
+    operand_2 = node.get_attr_val(node.op.AttrName.OTHER)
+    data = operand_1 + operand_2
+    if isinstance(operand_1, np.ndarray) or isinstance(operand_2, np.ndarray):
+      data = np.array(data)
+    node.out_tensors[0].data = data
+  
+  @staticmethod
+  def remainder(node):
+    data = node.get_attr_val(node.op.AttrName.INPUT) % node.get_attr_val(node.op.AttrName.OTHER) 
+    if isinstance(data, np.int64):
+      data = np.array(data)
+    node.out_tensors[0].data = data
+
+

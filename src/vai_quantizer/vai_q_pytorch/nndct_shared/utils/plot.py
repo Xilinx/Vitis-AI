@@ -1,7 +1,7 @@
 import os
 import sys
 from nndct_shared.base import SingletonMeta
-from nndct_shared.utils import io, NndctScreenLogger
+from nndct_shared.utils import io, NndctScreenLogger, QError, QWarning, QNote
 
 try:
   import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ class Plotter(metaclass=SingletonMeta):
   
   def __init__(self):
     if not _enable_plot:
-      NndctScreenLogger().warning("Please install matplotlib for visualization.")
+      NndctScreenLogger().warning2user(QWarning.MATPLOTLIB, "Please install matplotlib for visualization.")
       sys.exit(1)
     self._dir = '.nndct_quant_stat_figures'
     io.create_work_dir(self._dir)

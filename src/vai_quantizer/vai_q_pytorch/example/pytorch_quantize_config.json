@@ -1,5 +1,6 @@
 {
   "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
   "include_cle": false,
   "keep_first_last_layer_accuracy": false,
   "keep_add_layer_accuracy": false,

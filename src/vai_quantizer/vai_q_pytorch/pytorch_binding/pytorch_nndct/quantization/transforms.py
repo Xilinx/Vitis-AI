@@ -13,10 +13,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from torch import nn
 try:
   from torch.nn.modules.conv import _ConvTransposeNd
@@ -25,13 +21,14 @@ except ImportError:
 
 from pytorch_nndct.nn import quantization as nnq
 from pytorch_nndct.quantization import module_transform
+from pytorch_nndct.utils import fusion
 from pytorch_nndct.utils import module_util as mod_util
 
 Transform = module_transform.Transform
 NodeMatch = module_transform.NodeMatch
 NodePattern = module_transform.NodePattern
 
-def fuse_conv_bn(conv, bn, spec):
+def quantize_conv_bn(conv, bn, spec):
   """Given the conv and bn modules, fuses them and returns the fused module
 
     Args:
@@ -70,25 +67,47 @@ def fuse_conv_bn(conv, bn, spec):
   #print('fuse', cls_pair, '->', fused_cls)
   return fused_cls.from_float(conv, bn, spec)
 
-class _FuseAndQuantizeConvNdBatchNorm(Transform):
+class _FuseConvNdBatchNorm(Transform):
+
+  def replace(self, model, match):
+    conv_match, bn_match = match.inputs[0].node, match.node
+    conv_name, bn_name = conv_match.name, bn_match.name
+    conv, bn = conv_match.module, bn_match.module
+
+    fusion.fuse_conv_bn(conv, bn)
+    mod_util.replace_modules(model, bn_name, nn.Identity())
+
+class FuseConv2dBatchNorm(_FuseConvNdBatchNorm):
+
+  def pattern(self):
+    return NodePattern(
+        'BatchNorm2d', inputs=[NodePattern('Conv2d|ConvTranspose2d')])
+
+class FuseConv3dBatchNorm(_FuseConvNdBatchNorm):
+
+  def pattern(self):
+    return NodePattern(
+        'BatchNorm3d', inputs=[NodePattern('Conv3d|ConvTranspose3d')])
+
+class QuantizeConvNdBatchNorm(Transform):
 
   def replace(self, model, match):
     # Fuse (Conv2d, BatchNorm2d) and (Conv3d, BatchNorm3d)
     conv_match, bn_match = match.inputs[0].node, match.node
     conv_name, bn_name = conv_match.name, bn_match.name
     conv, bn = conv_match.module, bn_match.module
-    transposed = True if isinstance(conv, _ConvTransposeNd) else False
-    conv_bn = fuse_conv_bn(conv, bn, conv_match.spec)
+    #transposed = True if isinstance(conv, _ConvTransposeNd) else False
+    conv_bn = quantize_conv_bn(conv, bn, conv_match.spec)
     mod_util.replace_modules(model, [conv_name, bn_name], conv_bn)
     return {bn_name: conv_name + '.bn'}
 
-class FuseAndQuantizeConv2dBatchNorm(_FuseAndQuantizeConvNdBatchNorm):
+class QuantizeConv2dBatchNorm(QuantizeConvNdBatchNorm):
 
   def pattern(self):
     return NodePattern(
         'BatchNorm2d', inputs=[NodePattern('Conv2d|ConvTranspose2d')])
 
-class FuseAndQuantizeConv3dBatchNorm(_FuseAndQuantizeConvNdBatchNorm):
+class QuantizeConv3dBatchNorm(QuantizeConvNdBatchNorm):
 
   def pattern(self):
     return NodePattern(
@@ -97,10 +116,11 @@ class FuseAndQuantizeConv3dBatchNorm(_FuseAndQuantizeConvNdBatchNorm):
 class QuantizeConvNd(Transform):
 
   def pattern(self):
-    return NodePattern('Conv2d|Conv3d|ConvTranspose2d|ConvTranspose3d')
+    return NodePattern('Conv1d|Conv2d|Conv3d|ConvTranspose2d|ConvTranspose3d')
 
   def replace(self, model, match):
     float_to_qat = {
+        nn.Conv1d: nnq.QuantizedConv1d,
         nn.Conv2d: nnq.QuantizedConv2d,
         nn.Conv3d: nnq.QuantizedConv3d,
         nn.ConvTranspose2d: nnq.QuantizedConvTranspose2d,
@@ -182,9 +202,20 @@ class ReplaceSigmoid(Transform):
 
   def replace(self, model, match):
     rt_cfg = match.node.spec.config
-    softmax = nnq.Sigmoid(rt_cfg.approx_mode,
+    sigmoid = nnq.Sigmoid(rt_cfg.approx_mode,
                           rt_cfg.approx_degree, rt_cfg.exp_table_size)
-    mod_util.replace_modules(model, match.node.name, softmax)
+    mod_util.replace_modules(model, match.node.name, sigmoid)
+
+class ReplaceTanh(Transform):
+
+  def pattern(self):
+    return NodePattern('Tanh')
+
+  def replace(self, model, match):
+    rt_cfg = match.node.spec.config
+    tanh = nnq.Tanh(rt_cfg.approx_mode,
+                    rt_cfg.approx_degree, rt_cfg.exp_table_size)
+    mod_util.replace_modules(model, match.node.name, tanh)
 
 class ReplaceLayerNorm(Transform):
 

@@ -27,9 +27,9 @@ from nndct_shared.utils import (NndctScreenLogger, create_work_dir,
 from pytorch_nndct.qproc.utils import (connect_module_with_graph,
                                        prepare_quantizable_module,
                                        register_output_hook,
-                                       set_outputs_recorder_status, to_device,
+                                       set_outputs_recorder_status,
                                        update_nndct_blob_data)
-
+from pytorch_nndct.utils.module_util import to_device
 from .dpu_partition import DPUPartition
 from .device import DeviceType
 from .target_helper import DPUTargetHelper
@@ -98,9 +98,9 @@ class InspectorImpl(object):
     register_output_hook(quant_module, record_once=True)
     set_outputs_recorder_status(quant_module, True)
     if isinstance(input_args, tuple):
-      _ = quant_module(*input_args)
+      _ = quant_module.to(device)(*input_args)
     else:
-      _ = quant_module(input_args)
+      _ = quant_module.to(device)(input_args)
     g_optmizer = DevGraphOptimizer(graph)
     connect_module_with_graph(quant_module, g_optmizer.dev_graph, recover_param=False)
     update_nndct_blob_data(quant_module, g_optmizer.dev_graph)

@@ -17,13 +17,14 @@
 #
 
 from enum import auto, unique
+from typing import Dict, List, Callable, Optional, Union, Any, Set
 
 import pytorch_nndct.utils as utils
 from nndct_shared.base import NNDCT_CONSTANT, NNDCT_OP
 from nndct_shared.nndct_graph import Operation
 from nndct_shared.nndct_graph import operator_definition as base_op
 from nndct_shared.nndct_graph import Tensor
-from nndct_shared.utils import transformed_axis, DataFormat
+from nndct_shared.utils import transformed_axis, DataFormat, AutoName
 
 class TorchFlatten(base_op.Flatten):
 
@@ -48,13 +49,28 @@ class TorchFlatten(base_op.Flatten):
     self._attr_value_mem[self.AttrName.END_DIM][:] = [value]
 
 
-class TorchAdd(Operation):
+class TorchAdd(base_op.BinaryOp):
   # TODO: Change class Operation to base_op.BinaryOp
   def __init__(self, *args, **kwargs):
     super(TorchAdd, self).__init__(NNDCT_OP.ADD, *args, **kwargs)
     utils.op_register(NNDCT_OP.ADD, 'add')
 
+  @property
+  def input(self):
+    return self.get_attr(self.AttrName.INPUT)
 
+  @input.setter
+  def input(self, input):
+    self.set_attr(self.AttrName.INPUT, input)
+
+  @property
+  def other(self):
+    return self.get_attr(self.AttrName.OTHER)
+
+  @other.setter
+  def other(self, other):
+    self.set_attr(self.AttrName.OTHER, other)
+    
 class TorchReLU(Operation):
 
   def __init__(self, *args, **kwargs):
@@ -67,16 +83,51 @@ class TorchLeakyReLU(base_op.LeakyReLU):
   def __init__(self):
     super().__init__()
     utils.op_register(NNDCT_OP.LEAKY_RELU, 'LeakyReLU')
-    self._negative_slope = 0.01
 
   @property
   def negative_slope(self):
-    return self._negative_slope
+    return self.get_attr(self.AttrName.ALPHA)
 
   @negative_slope.setter
   def negative_slope(self, value):
-    self._negative_slope = value
-    self.set_attr(self.AttrName.ALPHA, 0.1015625)
+    self.set_attr(self.AttrName.ALPHA, value)
+
+
+class TorchPReLU(base_op.PReLU):
+  
+  def __init__(self, *args, **kwargs):
+    super(TorchPReLU, self).__init__(*args, **kwargs)
+    utils.op_register(NNDCT_OP.PRELU, 'PReLU')
+
+  @property
+  def num_parameters(self):
+    return self.get_attr(self.AttrName.NUM_PARAMETERS)
+
+  @num_parameters.setter
+  def num_parameters(self, value):
+    self.set_attr(self.AttrName.NUM_PARAMETERS, value)
+
+
+class TorchGELU(base_op.GELU):
+
+  def __init__(self, *args, **kwargs):
+    super(TorchGELU, self).__init__(*args, **kwargs)
+    utils.op_register(NNDCT_OP.GELU, 'GELU')
+
+  @property
+  def approximate(self):
+    return self.get_attr(self.AttrName.APPROXIMATE)
+
+  @approximate.setter
+  def approximate(self, value):
+    self.set_attr(self.AttrName.APPROXIMATE, value)
+
+
+class TorchMish(Operation):
+
+  def __init__(self, *args, **kwargs):
+    super(TorchMish, self).__init__(NNDCT_OP.MISH, *args, **kwargs)
+    utils.op_register(NNDCT_OP.MISH, 'Mish')
 
 
 class TorchTanh(Operation):
@@ -109,7 +160,7 @@ class TorchReturn(Operation):
 class TorchLinear(base_op.Dense):
 
   @unique
-  class ParamName(base_op.AutoName):
+  class ParamName(AutoName):
     WEIGHTS = "weight"
     BIAS = auto()
 
@@ -171,6 +222,87 @@ class TorchBatchNorm(base_op.BatchNorm):
   def num_features(self, value):
     self._attr_value_mem[self.AttrName.OUT_DIM][:] = [value]
 
+
+class TorchInstanceNorm(base_op.InstanceNorm):
+
+  @unique
+  class ParamName(base_op.AutoName):
+    GAMMA = "weight"
+    BETA = "bias"
+
+  def __init__(self):
+    super().__init__(NNDCT_OP.INSTANCE_NORM)
+    utils.op_register(NNDCT_OP.INSTANCE_NORM, "InstanceNorm", class_type=utils.TorchOpClassType.NN_MODULE)
+
+  @property
+  def eps(self):
+    return self.get_attr(self.AttrName.EPS)
+
+  @eps.setter
+  def eps(self, value):
+    self.set_attr(self.AttrName.EPS, value)
+
+  @property
+  def num_features(self):
+    return self.get_attr(self.AttrName.NUM_FEATURES)
+
+  @num_features.setter
+  def num_features(self, value):
+    self.set_attr(self.AttrName.NUM_FEATURES, value)
+
+  @property
+  def affine(self):
+    return self.get_attr(self.AttrName.AFFINE)
+
+  @affine.setter
+  def affine(self, value):
+    self.set_attr(self.AttrName.AFFINE, value)
+
+
+class TorchGroupNorm(base_op.GroupNorm):
+
+  @unique
+  class ParamName(base_op.AutoName):
+    GAMMA = "weight"
+    BETA = "bias"
+
+  def __init__(self):
+    super().__init__(NNDCT_OP.GROUP_NORM)
+    utils.op_register(NNDCT_OP.GROUP_NORM, "GroupNorm")
+
+  @property
+  def eps(self):
+    return self.get_attr(self.AttrName.EPS)
+
+  @eps.setter
+  def eps(self, value):
+    self.set_attr(self.AttrName.EPS, value)
+
+  @property
+  def num_groups(self):
+    return self.get_attr(self.AttrName.NUM_GROUPS)
+
+  @num_groups.setter
+  def num_groups(self, value):
+    self.set_attr(self.AttrName.NUM_GROUPS, value)
+
+  @property
+  def affine(self):
+    return self.get_attr(self.AttrName.AFFINE)
+
+  @affine.setter
+  def affine(self, value):
+    self.set_attr(self.AttrName.AFFINE, value)
+
+  @property
+  def num_channels(self):
+    return self.get_attr(self.AttrName.NUM_CHANNELS)
+
+  @num_channels.setter
+  def num_channels(self, value):
+    self.set_attr(self.AttrName.NUM_CHANNELS, value)
+
+
 class _TorchConv1d(base_op.Conv1d):
 
   def __init__(self, op_type, *args, **kwargs):
@@ -194,15 +326,13 @@ class _TorchConv1d(base_op.Conv1d):
 
   @property
   def padding(self):
-    return self.get_attr(self.AttrName.PAD)[0]
-
+    return [self.get_attr(self.AttrName.PAD)[0]]
 
   @padding.setter
   def padding(self, value):
     
     self.set_attr(self.AttrName.PAD, [value[0], value[0]])
     self.set_attr(self.AttrName.PAD_MODE, 'FLOOR')
-
 
   @property
   def stride(self):
@@ -542,7 +672,7 @@ class TorchMaxPool1d(base_op.MaxPool1d):
 
   @property
   def padding(self):
-    return self.get_attr(self.AttrName.PAD)[0]
+    return [self.get_attr(self.AttrName.PAD)[0]]
 
   @padding.setter
   def padding(self, value):
@@ -609,11 +739,11 @@ class TorchAvgPool(base_op.AvgPool):
     self.set_attr(self.AttrName.COUNT_INCLUDE_PAD, bool(value))
 
 
-class TorchAdaptiveAvgPool(base_op.AvgPool):
-   def __init__(self, *args, **kwargs):
+class TorchAdaptiveAvgPool(base_op.UnaryOp):
+  def __init__(self, *args, **kwargs):
     super(TorchAdaptiveAvgPool, self).__init__(NNDCT_OP.ADAPTIVEAVGPOOL2D, *args, **kwargs)
     utils.op_register(NNDCT_OP.ADAPTIVEAVGPOOL2D, "AdaptiveAvgPool2d")
-
+    
 
 class TorchSize(base_op.Shape):
 
@@ -655,10 +785,7 @@ class TorchView(base_op.Reshape):
 
   @property
   def shape(self):
-    if len(self.get_attr(self.AttrName.SHAPE)) == 1:
-      return self.get_attr(self.AttrName.SHAPE)[0]
-    else:
-      return self.get_attr(self.AttrName.SHAPE)
+    return self.get_attr(self.AttrName.SHAPE)
 
   @shape.setter
   def shape(self, value):
@@ -1029,27 +1156,6 @@ class TorchDetach(Operation):
     utils.op_register(NNDCT_OP.DETACH, 'detach')
 
 
-class TorchSub(base_op.Sub):
-
-  def __init__(self):
-    super().__init__(NNDCT_OP.SUB)
-    utils.op_register(NNDCT_OP.SUB, 'sub')
-
-  @property
-  def input(self):
-    return self.get_attr(self.AttrName.INPUT)
-
-  @input.setter
-  def input(self, input):
-    self.set_attr(self.AttrName.INPUT, input)
-
-  @property
-  def other(self):
-    return self.get_attr(self.AttrName.OTHER)
-
-  @other.setter
-  def other(self, other):
-    self.set_attr(self.AttrName.OTHER, other)
 
 
 class TorchRsub(base_op.Sub):
@@ -1124,11 +1230,6 @@ class TorchUnsqueeze(Operation):
     super(TorchUnsqueeze, self).__init__(NNDCT_OP.UNSQUEEZE, *args, **kwargs)
     utils.op_register(NNDCT_OP.UNSQUEEZE, 'unsqueeze')
 
-
-class TorchList(Operation):
-
-  def __init__(self, *args, **kwargs):
-    super(TorchList, self).__init__(NNDCT_OP.LIST, *args, **kwargs)
 
 
 class TorchLstm(base_op.Lstm):
@@ -1294,25 +1395,26 @@ class TorchPad(base_op.Pad):
     self.set_attr(self.AttrName.CONSTANT_VALUES, [float(constant)] * 8)
 
 
-class TorchMatmul(Operation):
+class TorchMatmul(base_op.Matmul):
 
   def __init__(self, *args, **kwargs):
     super(TorchMatmul, self).__init__(NNDCT_OP.MATMUL, *args, **kwargs)
     utils.op_register(NNDCT_OP.MATMUL, 'matmul')
 
 
-class TorchClamp(base_op.CustomOp):
+class TorchClamp(Operation):
 
   def __init__(self, *args, **kwargs):
     super(TorchClamp, self).__init__(NNDCT_OP.CLAMP, *args, **kwargs)
     utils.op_register(NNDCT_OP.CLAMP, 'clamp')
+ 
 
 # TODO
 class TorchSlice(base_op.StridedSlice):
 
   def __init__(self):
     super().__init__()
-    utils.op_register(NNDCT_OP.STRIDED_SLICE, NNDCT_OP.STRIDED_SLICE, force_to_primitive=True)
+    utils.op_register(NNDCT_OP.STRIDED_SLICE, 'strided_slice', force_to_primitive=True)
 
   @property
   def dim(self):
@@ -1465,10 +1567,33 @@ class TorchEmbedding(base_op.Embedding):
 
 
 class TorchBaseOperation(base_op.CustomOp):
-  def __init__(self, nndct_op_type, torch_op_type=None, force_to_primitive=False, schema=None):
+  def __init__(self, nndct_op_type, torch_op_type=None, force_to_primitive=False, schema=None, class_type=None):
     super().__init__(nndct_op_type)
     if torch_op_type is not None:
-      utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive, schema=schema)
+      utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive, schema=schema, class_type=class_type)
+
+class TorchAutoInferOperation(base_op.CustomOp):
+  def __init__(self, nndct_op_type, torch_op_type=None, force_to_primitive=False, schema=None, class_type=None):
+    super().__init__(nndct_op_type)
+    self._config_list = {}
+    if torch_op_type is not None:
+      utils.op_register(nndct_op_type, torch_op_type, force_to_primitive=force_to_primitive, schema=schema, class_type=class_type)
+
+  def has_config(self, config_name):
+    return config_name in self._config_list.keys()
+
+  def get_config(self, config_name: str) -> Any:
+    return self._config_list[config_name]      
+
+  def set_config(self, config_name: str, value: Any) -> None:
+    if config_name not in self._configs:
+      self._configs.append(config_name)
+      self._config_list[config_name] = value
+      self._set_attr_user(config_name, value)
+    else:
+      self._release_attr_user(config_name)
+      self._set_attr_user(config_name, value)
+      self._config_list[config_name] = value
 
 
 class TorchCustomOperation(base_op.CustomOp):
@@ -1500,9 +1625,39 @@ class TorchSqueeze(base_op.Squeeze):
 
 
 class TorchLayerNorm(base_op.LayerNorm):
+
+  @unique
+  class ParamName(base_op.AutoName):
+    GAMMA = "weight"
+    BETA = "bias"
+
   def __init__(self):
     super().__init__(NNDCT_OP.LAYER_NORM)
     utils.op_register(NNDCT_OP.LAYER_NORM, "LayerNorm")
+
+  @property
+  def eps(self):
+    return self.get_attr(self.AttrName.EPS)
+
+  @eps.setter
+  def eps(self, value):
+    self.set_attr(self.AttrName.EPS, value)
+
+  @property
+  def normalized_shape(self):
+    return self.get_attr(self.AttrName.NORMALIZED_SHAPE)
+
+  @normalized_shape.setter
+  def normalized_shape(self, value):
+    self.set_attr(self.AttrName.NORMALIZED_SHAPE, value)
+
+  @property
+  def elementwise_affine(self):
+    return self.get_attr(self.AttrName.ELEMENTWISE_AFFINE)
+
+  @elementwise_affine.setter
+  def elementwise_affine(self, value):
+    self.set_attr(self.AttrName.ELEMENTWISE_AFFINE, value)
 
 
 class TorchUnknownOperation(Operation):
@@ -1567,3 +1722,31 @@ class TorchCostVolumeOperation(base_op.CostVolume):
   @maxdisp.setter
   def maxdisp(self, value):
     self.set_attr(self.AttrName.MAXDISP, value)
+
+class TorchLogSoftmax(base_op.LogSoftmax):
+
+  def __init__(self, *args, **kwargs):
+    super().__init__()
+    utils.op_register(NNDCT_OP.LOG_SOFTMAX, 'LogSoftmax')
+
+  @property
+  def dim(self):
+    return self._attr_value_mem[self.AttrName.AXIS][0]
+                         
+  @dim.setter
+  def dim(self, value):
+    self._attr_value_mem[self.AttrName.AXIS][:] = [value]
+
+class TorchArgMax_DIM(base_op.ArgMax_DIM):
+
+  def __init__(self, *args, **kwargs):
+    super().__init__()
+    utils.op_register(NNDCT_OP.ARGMAX_DIM, 'argmax')
+
+  @property
+  def dim(self):
+    return self.get_attr(self.AttrName.AXIS)
+                         
+  @dim.setter
+  def dim(self, value):
+    self.set_attr(self.AttrName.AXIS, value)

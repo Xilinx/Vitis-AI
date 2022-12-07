@@ -93,7 +93,7 @@ class OpDescriptor(object):
         slice_tensor=slice_tensor, symbols=symbols, input_tensor=input)
 
   @staticmethod
-  def _sequence(ctx, node, output_str):
+  def _sequence(ctx, node, op_desc_str, output_str):
     inputs = node.op.get_config('input')
     for idx, ip in enumerate(inputs):
       if isinstance(ip, Tensor):
@@ -101,12 +101,12 @@ class OpDescriptor(object):
 
     return "{output} = {op_name}([{inputs}])".format(
         output=output_str,
-        op_name=node.op.type,
+        op_name=op_desc_str,
         inputs=ctx._to_list_str(inputs))
 
   @staticmethod
   def list(ctx, node, output_str):
-    return OpDescriptor._sequence(ctx, node, output_str)
+    return OpDescriptor._sequence(ctx, node, 'list', output_str)
 
   @staticmethod
   def index(ctx, node, output_str):
@@ -213,7 +213,7 @@ class OpDescriptor(object):
     for inner_node in node.blocks[0].nodes:
       if inner_node.op.type == NNDCT_OP.RETURN:
         continue
-      if inner_node.op.type == NNDCT_OP.INPUT:
+      if inner_node.op.type in [NNDCT_OP.INPUT, NNDCT_OP.TUPLE_INPUT]:
         output_str = ctx._to_list_str(ctx._get_module_output(inner_node))
         if block_inputs_idx == 0:
           iter_var_str = output_str
@@ -232,8 +232,9 @@ class OpDescriptor(object):
         body_str += forward_str + '\n'
         
     block_inputs_str = ",".join(block_inputs)
-    
-    body_ret_str = ",".join([ctx.infer_attr_value(ret_val) for ret_val in node.blocks[0].return_node.in_tensors[1:]])
+    body_ret_str = ctx.infer_attr_value(node.blocks[0].return_node.node_config("input")[1:])
+
+    # body_ret_str = ",".join([ctx.infer_attr_value(ret_val) for ret_val in node.blocks[0].return_node.in_tensors[1:]])
     iter_end_str = "+".join([max_trip_count_str, iter_start_str])
     iter_conditon_str = ctx.infer_attr_value(node.blocks[0].return_node.in_tensors[0])
     loop_pattern = None
@@ -299,9 +300,9 @@ for $iter_var in range($iter_start, $iter_end):
 
   @staticmethod
   def floor_div(ctx, node, output_str):
-    inputs = node.node_config("input")
-    others = node.node_config("other")
-    return f"{output_str} = {ctx.get_output_tensor_name(inputs)} // {ctx.get_output_tensor_name(others)}"
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    other_str = ctx.infer_attr_value(node.node_config("other"))
+    return f"{output_str} = {input_str} // {other_str}"
   
   @staticmethod
   def sequence_unpack(ctx, node, output_str):
@@ -403,31 +404,78 @@ else:
 
   @staticmethod
   def return_(ctx, node, output_str):
-    def _find_ret_val(n):
-      ret_val = []
-      for inp in n.in_tensors:
-        ret_val.append(inp)
-      return ret_val
-    
-    ret_val_list = _find_ret_val(node)
-    return_str = ctx._to_list_str([ctx.infer_attr_value(ret_val) for ret_val in ret_val_list])
+    return_str = ctx.infer_attr_value(node.node_config("input"))
     return "return {}".format(return_str)
 
   @staticmethod
-  def default(ctx, node, output_str):
+  def tuple_index(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    index_str = ctx.infer_attr_value(node.node_config("index"))
+    return "{output} = {input}[{index}]".format(output=output_str, input=input_str, index=index_str)
+
+
+  @staticmethod
+  def _tuple(ctx, node, output_str):
+    return OpDescriptor._sequence(ctx, node, output_str)
+
+  @staticmethod
+  def device(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    return "{output} = {input}.device".format(output=output_str, input=input_str)
+    return op
+
+  
+  @staticmethod
+  def dtype(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    return "{output} = {input}.dtype".format(output=output_str, input=input_str)
+    return op
+
+  @staticmethod
+  def neg(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    return "{output} = -{input}".format(output=output_str, input=input_str)
+    return op
+  
+  @staticmethod
+  def remainder(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    other_str = ctx.infer_attr_value(node.node_config("other"))
+    return "{output} = {input} % {other}".format(output=output_str, input=input_str, other=other_str)
+
+
+  @staticmethod
+  def mul(ctx, node, output_str):
+    input_str = ctx.infer_attr_value(node.node_config("input"))
+    other_str = ctx.infer_attr_value(node.node_config("other"))
+    return "{output} = {input} * {other}".format(output=output_str, input=input_str, other=other_str)
+
+  @staticmethod
+  def int_(ctx, node, output_str):
     return "{output} = {op_name}({inputs})".format(
         output=output_str,
-        op_name=node.op.type,
+        op_name="int",
         inputs=ctx._to_list_str(ctx._get_module_input(node)))
+
+  @staticmethod
+  def constant_with_reshape(ctx, node, output_str):
+    data_str = ctx.infer_attr_value(node.node_config("data"))
+    data_shape_str = ctx.infer_attr_value(node.node_config("data_shape"))
+    dtype_str = ctx.infer_attr_value(node.node_config("dtype"))
+    device_str = ctx.infer_attr_value(node.node_config("device"))
+    inputs = "torch.tensor(data=" + data_str + ", dtype=" + dtype_str + ", device=" + device_str + ").reshape(" + data_shape_str + ")"
+    return "{output} = {inputs}".format(output=output_str, inputs=inputs)
+    
 
 
 MISC_OP_DISCR_MAP = {
     NNDCT_OP.INPUT: OpDescriptor.input,
+    NNDCT_OP.TUPLE_INPUT: OpDescriptor.input,
     NNDCT_OP.RSUB: OpDescriptor.rsub,
     NNDCT_OP.STRIDED_SLICE: OpDescriptor.strided_slice,
     NNDCT_OP.SLICE_TENSOR_INPLACE_COPY: OpDescriptor.slice_tensor_inplace_copy,
     NNDCT_OP.INDEX: OpDescriptor.index,
-    NNDCT_OP.INT: OpDescriptor.default,
+    NNDCT_OP.INT: OpDescriptor.int_,
     NNDCT_OP.STRIDED_SLICE_INPLACE_COPY: OpDescriptor.strided_slice_inplace_copy,
     NNDCT_OP.INDEX_INPUT_INPLACE: OpDescriptor.index_put_inplace,
     NNDCT_OP.LOOP: OpDescriptor.loop,
@@ -439,5 +487,14 @@ MISC_OP_DISCR_MAP = {
     NNDCT_OP.IF: OpDescriptor.If,
     NNDCT_OP.SCALAR_LESS_THAN: OpDescriptor.lt,
     NNDCT_OP.SCALAR_EQUAL: OpDescriptor.eq,
-    NNDCT_OP.RETURN: OpDescriptor.return_
+    NNDCT_OP.RETURN: OpDescriptor.return_,
+    NNDCT_OP.LIST: OpDescriptor.list,
+    NNDCT_OP.TUPLE: OpDescriptor._tuple,
+    NNDCT_OP.TUPLE_INDEX: OpDescriptor.tuple_index,
+    NNDCT_OP.DEVICE: OpDescriptor.device,
+    NNDCT_OP.DTYPE: OpDescriptor.dtype,
+    NNDCT_OP.NEG: OpDescriptor.neg,
+    NNDCT_OP.SCALAR_REMAINDER: OpDescriptor.remainder,
+    NNDCT_OP.SCALAR_MUL: OpDescriptor.mul,
+    NNDCT_OP.CONSTANT_WITH_RESHAPE:OpDescriptor.constant_with_reshape
 }

@@ -67,3 +67,10 @@ class DefineOptionError(Exception):
     Exception.__init__(
         self, "Option '{option_name}' initiate failed '{detail_msg}'!".format(
             option_name=option_name, detail_msg=msg))
+
+class DataXopError(Exception):
+
+  def __init__(self, op_name: Union[Sequence, str], shape):
+      Exception.__init__(
+          self, "Failed to add data op(name:{}, shape:{}) in xGraph.".format(
+              op_name, shape))

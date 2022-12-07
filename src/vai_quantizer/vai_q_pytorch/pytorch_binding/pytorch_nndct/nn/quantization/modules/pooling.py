@@ -64,7 +64,7 @@ class DPUAdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
                    (tuple, list)) and tuple(self.output_size) !=
         (1, 1)) or self.output_size != 1:
       print(
-          "[WARNING] For adaptive average pooling, DPU only supports output size=1"
+          "[WARNING] For AdaptiveAvgPooling, DPU only supports output size=1"
       )
 
     scale = 1.0

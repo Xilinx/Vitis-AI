@@ -34,7 +34,7 @@ class NndctOption(object):
   nndct_option_list = Option(name="option_list", dtype=bool, default=False, action="store_true", 
                              help="list all the options in nndct")
 
-  nndct_parse_debug = Option(name="parse_debug", dtype=int, default=0, 
+  nndct_parse_debug = Option(name="parse_debug", dtype=int, default=0, env="NNDCT_PARSE_DEBUG",
                              help="logging graph, 1: torch raw graph, 2: nndct graph 3: nndct quant graph")
 
   nndct_logging_level = Option(name="logging_level", dtype=int, default=0, help="logging level")
@@ -48,14 +48,9 @@ class NndctOption(object):
   nndct_record_slow_mode = Option(name="record_slow_mode", dtype=bool, default=False, action="store_true", 
                                   help="record outputs every iteration")
   
-  nndct_deploy_check = Option(name="deploy_check", dtype=bool, default=False, action="store_true", 
-                              help="dump deploy data")
-  
   nndct_quant_opt = Option(name="quant_opt", dtype=int, default=3, help="quant opt level")
   
   nndct_relu6_replace = Option(name="relu6_replace", dtype=str, default='relu', help="relu6 replace operator")
-  
-  nndct_sigmoid_replace = Option(name="sigmoid_replace", dtype=int, default=0, help="0: keep sigmoid, 1: replace sigmoid to hsigmoid")
 
   nndct_equalization = Option(name="equalization", dtype=bool, default=True, action="store_true", 
                               help="enable weights equalization")
@@ -63,8 +58,8 @@ class NndctOption(object):
   # nndct_wes = Option(name="weights_equalizing_shift", dtype=bool, default=False, action="store_true",
   #                    help="enable weights equalizing shift")
   
-  nndct_wes_in_cle = Option(name="weights_equalizing_shift in cle", dtype=bool, default=False, action="store_true",
-                     help="enable weights equalizing shift in cle")
+  # nndct_wes_in_cle = Option(name="weights_equalizing_shift in cle", dtype=bool, default=False, action="store_true",
+  #                    help="enable weights equalizing shift in cle")
 
   nndct_param_corr = Option(name="param_corr", dtype=bool, default=True, action="store_true", 
                             help="enable parameter correction")
@@ -85,8 +80,7 @@ class NndctOption(object):
   nndct_diffs_mode = Option(name="diffs_mode", dtype=str, default='mse', help="diffs_mode: mse, maxmin")
 
   nndct_ft_mode = Option(name="ft_mode", dtype=int, default=1, help="1: mix mode 0: cache mode")
-  nndct_tanh_sigmoid_sim = Option(name="tanh_sigmoid_sim", dtype=int, default=0, help="0: look up from table 1: simulate by exp simulation")
-  nndct_softmax_sim = Option(name="softmax_sim", dtype=int, default=0, help="0: no quant softmax 1: hardware pl softmax 2: liyi softmax")
+  
   nndct_visualize = Option(name="visualize", dtype=bool, default=False, action="store_true", help="visualize tensors")
 
   nndct_dump_no_quant_part = Option(name="dump_no_quant_part", dtype=bool, default=False, action="store_true", help="dump no quantized nodes")
@@ -94,7 +88,9 @@ class NndctOption(object):
   nndct_max_fix_position = Option(name="max_fix_position", dtype=int, default=12, help="maximum of fix position")
 
   nndct_use_torch_quantizer = Option(name="use_torch_quantizer", dtype=bool, default=False, action="store_true", help="enable torch quantizer")
-  nndct_jit_trace = Option(name="jit_trace", dtype=bool, default=False, action="store_true", help="parse graph from script tracing")
+  
+  nndct_jit_trace = Option(name="jit_trace", dtype=bool, default=False, action="store_true", env="NNDCT_JIT_TRACE", help="parse graph from script tracing")
+  
   nndct_jit_script = Option(name="jit_script", dtype=bool, default=False, action="store_true", help="parse graph from script")
   
   nndct_calib_histogram_bins = Option(name="calib_histogram_bins", dtype=int, default=2048, help="calibration histogram bins number")
@@ -108,6 +104,10 @@ class NndctOption(object):
   nndct_entropy_stride = Option(name="entropy_stride", dtype=int, default=16, help="entropy calibration method stride")
   
   nndct_convert_relu6_to_relu = Option(name="convert_relu6_to_relu", dtype=bool, default=False, help="convert relu6 to relu")
+
+  nndct_convert_sigmoid_to_hsigmoid = Option(name="convert_sigmoid_to_hsigmoid", dtype=bool, default=False, action="store_true", help="convert sigmoid to hsigmoid")
+  
+  nndct_convert_silu_to_hswish = Option(name="convert_silu_to_hswish", dtype=bool, default=False, action="store_true", help="convert silu to hswish")
   
   nndct_keep_first_last_layer_accuracy = Option(name="keep_first_last_layer_accuracy", dtype=bool, default=False, help="keep accuracy of first and last layer")
   
@@ -126,3 +126,42 @@ class NndctOption(object):
   nndct_tensorrt_quant_algo = Option(name="tensorrt_quant_algo", dtype=bool, default=False, action="store_true", help="use tensorrt quantization algorithm")
 
   nndct_calibration_local = Option(name="calibration_local", dtype=bool, default=True, action="store_true", help="calibration in local batch data")
+
+  nndct_change_concat_input_fix = Option(name="change_concat_input_fix", dtype=bool, default=False, action="store_true", help="change concat input nodes fix point to be the same as concat output node")
+
+  nndct_change_pool_input_fix = Option(name="change_pool_input_fix", dtype=bool, default=False, action="store_true", help="change pooling input nodes fix point to be the same as their output node")
+
+  nndct_change_add_input_fix = Option(name="change_add_input_fix", dtype=bool, default=False, action="store_true", help="change add input nodes fix point to be the identical")
+  
+  nndct_export_jit = Option(name="export_jit", dtype=bool, default=False, action="store_true", env="NNDCT_EXPORT_JIT", help="export quant script by inserting fixneuron")
+
+  nndct_deploy_check = Option(name="deploy_check", dtype=bool, default=False, action="store_true", help="dump deploy data in forward process")
+  
+  nndct_input_check = Option(name="input_check", dtype=bool, default=False, action="store_true", help="dump input float data in forward process")
+  
+  nndct_op_tanh_sigmoid_mode = Option(name="tanh_sigmoid_mode", dtype=str, default='quant_input_output', help="Tanh/sigmoid quantization mode: quant_input_output, table_look_up, simulation, aie2_lut_16bw")
+  
+  nndct_op_softmax_mode = Option(name="softmax_mode", dtype=str, default='quant_input_output', help="Softmax quantization mode: quant_input_output, hardware_pl, liyi, aie2_lut_16bw, bert_8bw")
+  
+  nndct_op_logsoftmax_mode = Option(name="logsoftmax_mode", dtype=str, default='quant_input_output', help="Logsoftmax quantization mode: quant_input_output, aie2_lut_16bw")
+
+  nndct_op_gelu_mode = Option(name="gelu_mode", dtype=str, default='quant_input_output', help="GELU quantization mode: quant_input_output, dynamic_table")
+  
+  nndct_op_layernorm_mode = Option(name="layernorm_mode", dtype=str, default='quant_input_output', help="Layernorm quantization mode: quant_input_output, aie2_16bw, bert_8bw")
+
+  nndct_ip_asr = Option(name="ip_asr", dtype=bool, default=False, action="store_true", help="asr quant method")
+  
+  nndct_ip_v70_bert = Option(name="ip_v70_bert", dtype=bool, default=False, action="store_true", help="bert v70 quant method")
+
+  nndct_ip_v70_bert_qat = Option(name="ip_v70_bert_qat", dtype=bool, default=False, action="store_true", help="bert v70 quant method")
+
+  nndct_use_old_inspector = Option(name="use_old_inspector", dtype=bool, default=False, action="store_true", env="NNDCT_USE_OLD_INSPECTOR", help="switch to old inspector")
+  
+  nndct_calib_before_finetune = Option(name="calib_before_finetune", dtype=bool, default=False, action="store_true", help="calibration before fast finetune")
+
+  nndct_inspect_debug = Option(name="inspect_debug", dtype=bool, default=False, action="store_true", env="NNDCT_INSPECT_DEBUG", help="turn on inspector")
+
+  nndct_op_instancenorm_mode = Option(name="instancenorm_mode", dtype=str, default='quant_input_output', help="Instancenorm quantization mode: quant_input_output, ipu")
+  
+  nndct_check_onnx = Option(name="check_onnx", dtype=bool, default=False, action="store_true", help="check exported onnx")
+  

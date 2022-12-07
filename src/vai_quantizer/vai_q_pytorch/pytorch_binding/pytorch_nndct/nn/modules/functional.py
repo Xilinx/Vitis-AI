@@ -85,6 +85,7 @@ class Max(Functional):
 
 class Sum(Functional):
   """Operation equivalent to `torch.sum(input, dim, keepdim=False, dtype=None)`"""
+
   def forward(self, input, dim, keepdim=False, dtype=None):
     #if not isinstance(dim, tuple):
     #  dim = (dim, )
@@ -92,7 +93,6 @@ class Sum(Functional):
       return torch.sum(input, dim, keepdim, dtype=dtype)
     else:
       return torch.sum(input, dim, keepdim)
-
 
 class Interpolate(Functional):
   """Operation equivalent to``torch.nn.functional.interpolate``"""
@@ -105,8 +105,7 @@ class Interpolate(Functional):
                 scale_factor=None,
                 mode='nearest',
                 align_corners=None):
-      return F.interpolate(input, size, scale_factor, mode,
-                                             align_corners)
+      return F.interpolate(input, size, scale_factor, mode, align_corners)
   else:
 
     def forward(self,
@@ -116,26 +115,62 @@ class Interpolate(Functional):
                 mode='nearest',
                 align_corners=None,
                 recompute_scale_factor=None):
-      return F.interpolate(input, size, scale_factor, mode,
-                                             align_corners,
-                                             recompute_scale_factor)
+      return F.interpolate(input, size, scale_factor, mode, align_corners,
+                           recompute_scale_factor)
 
 class Upsample(Functional):
 
-  def forward(self, input, size=None, scale_factor=None, mode='nearest', align_corners=None):
+  def forward(self,
+              input,
+              size=None,
+              scale_factor=None,
+              mode='nearest',
+              align_corners=None):
     return F.upsample(input, size, scale_factor, mode, align_corners)
 
 class Pad(Functional):
 
   def forward(self, input, pad, mode='constant', value=0):
     if mode != 'replicate':
-        print(('[WARN] DPU only supports padding mode=replicate. '
-            'Other modes of padding will be run on CPU, which will results in poor performance.'))
+      print((
+          '[WARN] DPU only supports padding mode=replicate. '
+          'Other modes of padding will be run on CPU, which will results in poor performance.'
+      ))
     return F.pad(input, pad, mode, value)
 
 class Mean(Functional):
+
   def forward(self, x, dim, keepdim=False, out=None):
     if out is not None:
       return torch.mean(x, dim, keepdim, out)
     return torch.mean(x, dim, keepdim)
+
+class Softmax(Functional):
+  """Operation equivalent to `torch.nn.functional.softmax(input, dim=None, dtype=None)`"""
+
+  def forward(self, input, dim=None, dtype=None):
+    return torch.nn.functional.softmax(input, dim, dtype)
+
+class Clamp(Functional):
+  """Operation equivalent to ``torch.clamp(input, min=None, max=None)``"""
+
+  def forward(self, input, min=None, max=None):
+    return torch.clamp(input, min, max)
+
+  @property
+  def is_quantized(self):
+    return True
+
+class Const(Functional):
+  """Const Module """
+
+  def __init__(self, value):
+    super(Const, self).__init__()
+
+    if not isinstance(value, torch.Tensor):
+      value = torch.tensor(value)
+    self.register_buffer('value', value)
+
+  def forward(self):
+    return self.value
 

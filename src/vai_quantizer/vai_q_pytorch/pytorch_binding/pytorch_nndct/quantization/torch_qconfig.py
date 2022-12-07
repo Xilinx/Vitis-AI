@@ -18,7 +18,7 @@
 
 import copy
 from nndct_shared.quantization import QConfigBase
-from nndct_shared.utils import NndctScreenLogger
+from nndct_shared.utils import NndctScreenLogger, QError, QWarning, QNote
 #from pytorch_nndct.utils.nndct2torch_op_map import get_nndct_op_type
 
 class TorchQConfig(QConfigBase):
@@ -29,9 +29,8 @@ class TorchQConfig(QConfigBase):
         if isinstance(config_value, int) and (config_value >= 0  and config_value <= 32):
             config_use[key] = config_value
         else:
-            NndctScreenLogger().error(f"The {key} type of {name} should be int, and in range of [0,32]")
+            NndctScreenLogger().error2user(QError.ILLEGAL_BITWIDTH, f"The {key} type of {name} should be int, and in range of [0,32].")
             exit(2)
-            #raise TypeError("The {key} type of {name} should be int, and in range of [0,32]")
 
 class RNNTorchQConfig(QConfigBase):
     def __init__(self):
@@ -52,14 +51,12 @@ class RNNTorchQConfig(QConfigBase):
                 config_use[key] = config_value
             else:
                 bitwidth_legels = self._legal_qconfigs[name][key]
-                NndctScreenLogger().error(f"The {key} configuration of {name} should be in the list {bitwidth_legels}")
+                NndctScreenLogger().error2user(QError.ILLEGAL_BITWIDTH, f"The {key} configuration of {name} should be in the list {bitwidth_legels}.")
                 exit(2)
-                #raise TypeError("The {key} configuration of {name} should be in the list {self._legal_qconfigs[name][key]}")
         else:
             if isinstance(config_value, int) and (config_value >= 0  and config_value <= 32):
                 config_use[key] = config_value
             else:
-                NndctScreenLogger().error(f"The {key} configuration of {name} type should be int, and in range of [0, 32]")
+                NndctScreenLogger().error2user(QError.ILLEGAL_BITWIDTH, f"The {key} configuration of {name} type should be int, and in range of [0, 32].")
                 exit(2)
-                #raise TypeError("The {key} configuration of {name} type should be int, and in range of [0, 32]")
 

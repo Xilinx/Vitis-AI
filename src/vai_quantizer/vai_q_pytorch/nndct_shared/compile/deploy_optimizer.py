@@ -17,18 +17,70 @@
 #
 
 import copy
-from collections import defaultdict, deque
+from collections import defaultdict, deque, namedtuple
 from typing import List
-
+from nndct_shared.quantization import BaseQuantizer
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.nndct_graph import Graph, Node, Tensor
+from nndct_shared.nndct_graph import Graph, Node, Tensor, GraphSearcher
 from nndct_shared.nndct_graph import operator_definition as base_op
-from nndct_shared.utils import (GLOBAL_MAP, NNDCT_KEYS,
-                                NndctDebugLogger, NndctOption, NndctScreenLogger)
-
+from nndct_shared.utils import (GLOBAL_MAP, NNDCT_KEYS, QError, QWarning,
+                               NndctOption, NndctScreenLogger)
+from nndct_shared.utils import PatternType, permute_data
+from .fuse_trans_matmul import TransMatmulActvHandler
+from .fuse_trans_reduction_op import TransReductionOpActvHandler
+from nndct_shared.optimization.fuse_pad import PadFuseHandler
+from nndct_shared.optimization.merge_permute_in_linear import PermuteMergeHandler
+from nndct_shared.optimization.merge_reshape import ReshapeMergeHandler
+# from nndct_shared.nndct_graph.operator_definition import Reshape
 from .attr_transform import *
 from .op_evaluator import Evaluator
+import numpy as np
+DeployGraphInfo = namedtuple("DeployGraphInfo", ["dev_graph", "quant_info"])
 
+
+def get_xmodel_and_dump_infos(quantizer: BaseQuantizer, deploy_graphs_list: List[List[Graph]]):
+  if len(deploy_graphs_list) == 1:
+    graph_quant_info = get_deploy_graph_infos(quantizer, deploy_graphs_list[0])
+    return graph_quant_info, graph_quant_info
+  elif len(deploy_graphs_list) == 2:
+    xmodel_quant_info = get_deploy_graph_infos(quantizer, deploy_graphs_list[0])
+    dump_quant_info = get_deploy_graph_infos(quantizer, deploy_graphs_list[1])
+    return xmodel_quant_info, dump_quant_info
+  else:
+    raise RuntimeError("Length of graphs list to deploy should be 1 or 2")
+
+
+def get_deploy_graph_infos(quantizer: BaseQuantizer, deploy_graphs: List[Graph]) -> List[DeployGraphInfo]:
+  graph_quant_info_list = []
+  quant_groups = copy.deepcopy(quantizer.configer.quant_groups)
+  quant_config = {"param": {}, "output": {}, "input": {}}
+  if not NndctOption.nndct_quant_off.value:
+    quant_config["param"].update(quantizer.quant_config["param"])
+    quant_config["input"].update(quantizer.quant_config["input"])
+    for blob_name, quant_info in quantizer.quant_config["output"].items():
+      if any([blob_name in dev_graph for dev_graph in deploy_graphs]):
+        quant_config["output"][blob_name] = copy.deepcopy(quant_info)
+      else:
+        
+        def find_possible_quant_pn(node):
+          if len(node.in_nodes) == 1 and len(node.out_tensors) == 1: 
+            pn = quantizer.Nndctgraph.parents(node)[0]
+            if any([pn.name in dev_graph for dev_graph in deploy_graphs]):
+              if len(pn.out_tensors) == 1:
+                return pn
+          
+            else:
+              return find_possible_quant_pn(pn) 
+        node = quantizer.Nndctgraph.node(blob_name)
+        pn = find_possible_quant_pn(node)
+        if pn is not None and pn.name not in quant_config["output"]:
+          quant_config['output'][pn.name] = copy.deepcopy(quant_info)
+        
+  for dev_graph in deploy_graphs:
+    graph_quant_info_list.append(DeployGraphInfo(dev_graph=dev_graph, quant_info=quant_config))
+  
+  return graph_quant_info_list
+    
 
 class DevGraphOptimizer(object):
   """Optimze graph for device computation
@@ -48,7 +100,8 @@ class DevGraphOptimizer(object):
         NNDCT_OP.DIV: Evaluator.elemwise_div,
         NNDCT_OP.FLOOR_DIV: Evaluator.floor_div, 
         NNDCT_OP.ADD: Evaluator.add,
-        NNDCT_OP.SCALAR_ADD: Evaluator.add
+        NNDCT_OP.SCALAR_ADD: Evaluator.add,
+        NNDCT_OP.SCALAR_REMAINDER: Evaluator.remainder
         
     }
 
@@ -61,7 +114,7 @@ class DevGraphOptimizer(object):
     
 
   def update_op_attrs(self):
-    for node in self._dev_graph.all_nodes():
+    for node in self._dev_graph.nodes:
       if node.op.type == NNDCT_OP.STRIDED_SLICE:
         input_dims = node.in_tensors[0].ndim
         begin = [0] * input_dims
@@ -96,11 +149,14 @@ class DevGraphOptimizer(object):
       elif node.op.type in [NNDCT_OP.SQUEEZE, NNDCT_OP.SUM, NNDCT_OP.MAX, NNDCT_OP.MEAN]:
         new_dims = []
         input_dims = node.in_tensors[0].ndim
-        for dim in node.node_attr(node.op.AttrName.DIMS):
-          if dim < 0:
-            new_dims.append(input_dims + dim)
-          else:
-            new_dims.append(dim)
+        if node.node_attr(node.op.AttrName.DIMS) == [None]:
+          new_dims = [i for i in range(len(node.in_tensors[0].shape))]
+        else:
+          for dim in node.node_attr(node.op.AttrName.DIMS):
+            if isinstance(dim, int) and dim < 0:
+              new_dims.append(input_dims + dim)
+            else:
+              new_dims.append(dim)
         node.set_node_attr(node.op.AttrName.DIMS, new_dims)
         
       elif node.op.type == NNDCT_OP.TRANSPOSE:
@@ -111,27 +167,38 @@ class DevGraphOptimizer(object):
         new_order[transpose_order[0]] = new_order[transpose_order[1]]
         new_order[transpose_order[1]] = tmp
         node.set_node_attr(node.op.AttrName.ORDER, new_order)
+        node.op.type = NNDCT_OP.PERMUTE
       elif node.op.type in [NNDCT_OP.CONCAT, NNDCT_OP.SHAPE, NNDCT_OP.SOFTMAX]:
         input_dims = node.in_tensors[0].ndim
         dim = node.node_attr(node.op.AttrName.AXIS)
-        if dim < 0:
+        if isinstance(dim, int) and dim < 0:
           dim = input_dims + dim
-          node.set_node_attr(node.op.AttrName.AXIS, dim)
-      
-      elif node.op.type == NNDCT_OP.ADAPTIVEAVGPOOL2D:
-        input_size = node.in_tensors[0].shape # NCHW
-        kernel = [input_size[3], input_size[2]]
-        node.set_node_attr(node.op.AttrName.KERNEL, kernel)
-        node.set_node_attr(node.op.AttrName.STRIDE, kernel)   
+          node.set_node_attr(node.op.AttrName.AXIS, dim)   
+
+      elif node.op.type == NNDCT_OP.FLATTEN:
+        input_dims = node.in_tensors[0].ndim
+        start_dim = node.node_attr(node.op.AttrName.START_DIM)
+        end_dim = node.node_attr(node.op.AttrName.END_DIM)
+        if isinstance(start_dim, int) and start_dim < 0:
+          start_dim = start_dim + input_dims
+        node.set_node_attr(node.op.AttrName.START_DIM, start_dim)
+        if isinstance(end_dim, int) and end_dim < 0:
+          end_dim = end_dim + input_dims
+        node.set_node_attr(node.op.AttrName.END_DIM, end_dim)
+
+    
+            
 
   def constant_folding(self):
     folding_nodes = set()
     for node in self._dev_graph.nodes:    
       if node.in_quant_part is False:
           continue
-      if hasattr(node.op, "AttrName") and node.op.type not in [NNDCT_OP.ADD, NNDCT_OP.SUB, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV]:
-        # TODO: Add condition when node.op.type is NNDCT_OP.DIV
+      # if hasattr(node.op, "AttrName") and node.op.type not in [NNDCT_OP.ADD, NNDCT_OP.SUB, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV]:
+      if hasattr(node.op, "AttrName"):
         for attr_name in node.op.attrs.keys():
+          if attr_name.name in ["INPUT", "OTHER"]:
+            continue
           attr_val = node.node_attr(attr_name)
           if isinstance(attr_val, list):
             for i, val in enumerate(attr_val):
@@ -160,7 +227,34 @@ class DevGraphOptimizer(object):
   def _eval_node_value(self, node):
     if node.out_tensors[0].data is None:
       self._evalute_func_map[node.op.type](node)
-      
+
+  def _materialize(self, cur_node, value, folding_nodes):
+    if not isinstance(value, Tensor) or value.node is None:
+      return value
+    
+    evaluator_s = []
+    tran_q = deque()
+    value_node = value.node
+    tran_q.append(value_node)
+    while len(tran_q) > 0:
+      node = tran_q.popleft()
+      evaluator_s.append(node)
+      if node.op.type not in [NNDCT_OP.SHAPE, NNDCT_OP.CONST] and node.name not in folding_nodes:
+        for pn in node.owning_graph.parents(node):
+          tran_q.append(pn)
+
+    while len(evaluator_s) > 0:
+      node = evaluator_s.pop()
+      self._eval_node_value(node)
+      folding_nodes.add(node.name)
+    
+
+    return value_node.out_tensors[0].data            
+
+
+
+    
+  """     
   def _materialize(self, cur_node, value, folding_nodes):
     visited = set()
 
@@ -207,9 +301,23 @@ class DevGraphOptimizer(object):
         return data
       else:
         return value
-  
-  
-  
+  """
+  def fuse_transpose_matmul(self):
+    fuse_trans_handler = TransMatmulActvHandler()
+    graph_searcher = GraphSearcher(self._dev_graph)
+    node_sets = graph_searcher.find_nodes_from_type(
+      [PatternType(pattern=[NNDCT_OP.PERMUTE, NNDCT_OP.MATMUL],
+                   action=fuse_trans_handler)])
+    removed_nodes = set()
+    for _, node_list in node_sets.items():
+      for nodeset in node_list:
+        trans_node = nodeset[0]
+        matmul_node = nodeset[1]
+        if matmul_node.is_trans_b and trans_node not in removed_nodes:
+          removed_nodes.add(trans_node)
+
+    for trans_node in removed_nodes:
+      self._dev_graph.remove_node(trans_node)
     
   def layout_tranform(self):
     """layout_transform TORCH(NCHW) -> XIR(NHWC)"""
@@ -238,6 +346,18 @@ class DevGraphOptimizer(object):
     def _is_dim_transparent(node):
       return node.in_tensors[0].ndim and node.out_tensors[0].ndim and node.in_tensors[0].ndim == node.out_tensors[0].ndim
     
+    def _not_change_memory_reshape(node, transpose_order):
+      if node.op.type in [NNDCT_OP.RESHAPE]:
+        rand_in_tensor = np.random.random(node.in_tensors[0].shape)
+        reshape_transpose_tensor = rand_in_tensor.reshape(node.out_tensors[0].shape).transpose(transpose_order).flatten()
+        transpose_reshape_tensor = rand_in_tensor.transpose(transpose_order).reshape(node.out_tensors[0].shape).flatten()
+        if any(reshape_transpose_tensor != transpose_reshape_tensor):
+          return False
+        else:
+          return True
+      else:
+        return True
+    
     def _is_shape_transparent(node):
       return node.in_tensors[0].shape and node.out_tensors[0].shape and node.in_tensors[0].shape == node.out_tensors[0].shape
     
@@ -252,6 +372,9 @@ class DevGraphOptimizer(object):
 
     def _is_terminate_op(node):
       return node.op.type == NNDCT_OP.RETURN
+
+    def _is_same_scope(node_1, node_2):
+      return node_1.owning_graph == node_2.owning_graph and node_1.owning_block == node_2.owning_block
     
     implicit_ops = [NNDCT_OP.CONV2D, 
                     NNDCT_OP.DEPTHWISE_CONV2D, 
@@ -289,6 +412,8 @@ class DevGraphOptimizer(object):
       NNDCT_OP.SHAPE: axis_attr_transform_fn,
       NNDCT_OP.SOFTMAX: axis_attr_transform_fn,
       NNDCT_OP.ZEROS: shape_attr_transform_fn,
+      NNDCT_OP.ARGMAX_DIM: axis_attr_transform_fn,
+
     }          
     
     
@@ -331,7 +456,7 @@ class DevGraphOptimizer(object):
               if not _have_special_layout(pn) or pn.op.type in implicit_ops:
                 continue
       
-              elif pn.op.type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB, NNDCT_OP.CONST, NNDCT_OP.ZEROS]  or _is_dim_transparent(pn) and (not _is_permute_op(pn)) and  (not _is_custom_op(pn)):
+              elif pn.op.type in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB, NNDCT_OP.CONST, NNDCT_OP.ZEROS]  or _is_dim_transparent(pn) and (not _is_permute_op(pn)) and  (not _is_custom_op(pn)) and _not_change_memory_reshape(pn, node.transpose_in_order):
                 pn.transpose_out_order = node.transpose_in_order
                 pn.transpose_in_order = pn.transpose_out_order
                 if pn.op.type in special_ops_fn:
@@ -346,6 +471,8 @@ class DevGraphOptimizer(object):
     index = 0
     for transpose_order, node_pairs in transpose_insert_between_swim.items():
       for pn, cn in node_pairs:
+        if not _is_same_scope(pn, cn):
+          continue
         node_name = "_".join([pn.name, "swim_transpose", f"{index}"])
         op = base_op.Permute(NNDCT_OP.PERMUTE)
         new_node = Node(node_name, op=op, dtype=pn.dtype, in_quant_part=pn.in_quant_part)
@@ -369,7 +496,7 @@ class DevGraphOptimizer(object):
         nodes = sink_transpose[tuple(_find_sink_order(len(node.transpose_out_order)))]
         if node not in nodes:
           nodes.append(node)
-    
+
     for sink_transpose_order, nodes in sink_transpose.items():
       for insert_node in nodes:
         if insert_node not in visited:
@@ -390,7 +517,7 @@ class DevGraphOptimizer(object):
                 elif cn.transpose_out_order:
                   q.append(cn)
                   visited.append(cn)
-                elif _is_dim_transparent(cn) and (not _is_permute_op(cn)) and (not _is_custom_op(cn)):
+                elif _is_dim_transparent(cn) and (not _is_permute_op(cn)) and (not _is_custom_op(cn)) and _not_change_memory_reshape(cn, node.transpose_out_order):
                   cn.transpose_in_order = node.transpose_out_order
                   cn.transpose_out_order = cn.transpose_in_order
                   q.append(cn)
@@ -403,7 +530,8 @@ class DevGraphOptimizer(object):
     index = 0
     for transpose_order, node_pairs in transpose_insert_between_sink.items():
       for pn, cn in node_pairs:
-       
+        if not _is_same_scope(pn, cn):
+          continue
         node_name = "_".join([pn.name, "sink_transpose", f"{index}"])
         op = base_op.Permute(NNDCT_OP.PERMUTE)
         new_node = Node(node_name, op=op, dtype=pn.dtype, in_quant_part=cn.in_quant_part)
@@ -422,7 +550,7 @@ class DevGraphOptimizer(object):
     #   print(node.op.type, node.name, node.transpose_out_order)
     neighbor_broadcast = {}
     for node in self._dev_graph.nodes:
-      if len(node.in_nodes) <= 1 or node in implicit_ops:
+      if len(node.in_nodes) <= 1 or len(node.out_nodes) == 0 or node in implicit_ops:
         continue
       if all([node.transpose_out_order is None for node in self._dev_graph.parents(node)]) or all([node.transpose_out_order is not None for node in self._dev_graph.parents(node)]):
         continue
@@ -440,7 +568,7 @@ class DevGraphOptimizer(object):
     for node, transpose_order in neighbor_broadcast.items():
       index = 0
       for pn in self._dev_graph.parents(node):
-        if pn.transpose_out_order is None and pn.out_tensors[0].ndim and node.out_tensors[0].ndim and pn.out_tensors[0].ndim == node.out_tensors[0].ndim:
+        if pn.transpose_out_order is None and pn.out_tensors[0].ndim and node.out_tensors[0].ndim and pn.out_tensors[0].ndim == node.out_tensors[0].ndim and _is_same_scope(pn, node):
           # pn.transpose_out_order = node.transpose_out_order
           node_name = "_".join([node.name, "neighbor_transpose", f"{index}"])
           op = base_op.Permute(NNDCT_OP.PERMUTE)
@@ -625,9 +753,29 @@ class DevGraphOptimizer(object):
 
     delete_transpose_of_correlation(self)
 
-   
+  def fuse_redundant_transpose(self):
+    def fuse_transpose_reduction_op(self):
+      fuse_trans_handler = TransReductionOpActvHandler()
+      graph_searcher = GraphSearcher(self._dev_graph)
+      node_sets = graph_searcher.find_nodes_from_type(
+        [PatternType(pattern=[NNDCT_OP.PERMUTE, NNDCT_OP.MEAN],
+                    action=fuse_trans_handler)])
+      removed_nodes = set()
+      for _, node_list in node_sets.items():
+        for nodeset in node_list:
+          trans_node = nodeset[0]
+          reduction_op_node = nodeset[1]
+          if hasattr(reduction_op_node, "fuse_trans_reduction_op") and reduction_op_node.fuse_trans_reduction_op and trans_node not in removed_nodes:
+            removed_nodes.add(trans_node)
+            reduction_op_node.set_node_attr(reduction_op_node.op.AttrName.DIMS, reduction_op_node.new_dims)
+
+      for trans_node in removed_nodes:
+        self._dev_graph.remove_node(trans_node)
+    
+    fuse_transpose_reduction_op(self)
       
   def partition_by_quant_part(self) -> List[List[Graph]]:
+
     if not any([node.op.type == NNDCT_OP.QUANT_STUB for node in self._dev_graph.nodes]):
       return [[self._dev_graph]]
     
@@ -657,7 +805,7 @@ class DevGraphOptimizer(object):
     def partition_check(quant_graphs, node_graph_id):
       for node_name, graph_id in node_graph_id.items():
         if len(graph_id) > 1:
-          NndctScreenLogger().error(f"The subgraph{graph_id} hold {node_name} at the same time.")
+          NndctScreenLogger().error2user(QError.GRAPH_PARTITION, f"The subgraph{graph_id} hold {node_name} at the same time.")
       for node in self._dev_graph.nodes:
         if node.op.type == NNDCT_OP.RETURN:
           continue
@@ -673,6 +821,12 @@ class DevGraphOptimizer(object):
         collect_node_set(node, set_id, visited)
         set_id += 1
     
+    # for _, nodeset in id2nodes.items():
+    #   sorted_node = self._dev_graph.top_sort_nodeset(nodeset)
+    #   print(f"id: {_}")
+    #   for node in sorted_node:
+    #     print(node.name, node.op.type)
+
     merged_id2nodes = defaultdict(set)
     for _, nodeset in id2nodes.items():
       id = get_set_id_from_nodeset(nodeset)
@@ -697,3 +851,174 @@ class DevGraphOptimizer(object):
   def dev_graph(self):
     return self._dev_graph
 
+
+  def fuse_pad(self):
+    fuse_pad_handler = PadFuseHandler()
+    graph_searcher = GraphSearcher(self._dev_graph)
+    nodesets = graph_searcher.find_nodes_from_type(
+        [PatternType(pattern=[NNDCT_OP.PAD],
+                     action=fuse_pad_handler), 
+        ])
+    removed_pad = set()
+    for id, node_list in nodesets.items():
+      for nodeset in node_list:
+        pad_node = nodeset[0]
+        if pad_node.merged and pad_node.name not in removed_pad:
+          removed_pad.add(pad_node)
+          self._dev_graph.remove_node(pad_node)
+
+  def convert_reshapelike_to_reshape(self):
+    def _mem_layout_changed(node):
+      order = node.node_attr(node.op.AttrName.ORDER)
+      input_shape = node.in_tensors[0].shape
+      output_shape = node.out_tensors[0].shape
+      q = deque()
+      for i, dim_shape in enumerate(input_shape):
+        if dim_shape > 1:
+          q.append(i)
+
+      for dim_shape, dim in zip(output_shape, order):
+        if dim_shape > 1:
+          if dim != q.popleft():
+            return True
+      
+      return False
+
+    for node in self._dev_graph.nodes:
+      if node.op.type in [NNDCT_OP.FLATTEN, NNDCT_OP.SQUEEZE, NNDCT_OP.UNSQUEEZE] or node.op.type in [NNDCT_OP.PERMUTE, NNDCT_OP.TRANSPOSE] and (not _mem_layout_changed(node)):
+        output_shape = node.out_tensors[0].shape
+        new_reshape_op = base_op.Reshape(NNDCT_OP.RESHAPE)
+        new_reshape_op.set_attr(new_reshape_op.AttrName.SHAPE, output_shape)
+        node.op = new_reshape_op
+  
+  def convert_shape_tensor_to_const(self):
+    for node in self._dev_graph.nodes:
+      if node.op.type == NNDCT_OP.SHAPE_AS_TENSOR:
+        input_shape = node.in_tensors[0].shape
+        new_const_op = base_op.Constant(NNDCT_OP.CONST)
+        new_const_op.set_attr(new_const_op.AttrName.DATA, list(input_shape))
+        node.op = new_const_op
+        node.remove_all_inputs()
+
+
+  def merge_permute_to_linear(self):
+    merge_permute_handler = PermuteMergeHandler()
+    graph_searcher = GraphSearcher(self._dev_graph)
+    nodesets = graph_searcher.find_nodes_from_type(
+        [PatternType(pattern=[NNDCT_OP.PERMUTE, NNDCT_OP.FLATTEN, NNDCT_OP.DENSE],
+                     action=merge_permute_handler), 
+         PatternType(pattern=[NNDCT_OP.PERMUTE, NNDCT_OP.RESHAPE, NNDCT_OP.DENSE], 
+                     action=merge_permute_handler),
+         PatternType(pattern=[NNDCT_OP.PERMUTE, NNDCT_OP.SQUEEZE, NNDCT_OP.DENSE], 
+                     action=merge_permute_handler),
+        ])
+
+    removed_permute = set()
+    for id, node_list in nodesets.items():
+      for nodeset in node_list:
+        permute_node = nodeset[0]
+        if permute_node.merged and permute_node.name not in removed_permute:
+          removed_permute.add(permute_node)
+          self._dev_graph.remove_node(permute_node)
+
+  def merge_consecutive_reshape(self):
+    while True:
+      merge_reshape_handler = ReshapeMergeHandler()
+      graph_searcher = GraphSearcher(self._dev_graph)
+      nodesets = graph_searcher.find_nodes_from_type(
+          [PatternType(pattern=[NNDCT_OP.RESHAPE, NNDCT_OP.RESHAPE],
+                      action=merge_reshape_handler)])
+    
+      nodes_list = []
+      for _, nodes in nodesets.items():
+        nodes_list.extend(nodes)
+      if all([not nodeset for nodeset in nodes_list]):
+        break
+     
+      removed_reshape = set()
+      for node in self._dev_graph.nodes:
+        if node.op.type == NNDCT_OP.RESHAPE and len(node.out_tensors[0].uses) == 0:
+          removed_reshape.add(node)
+      
+      if not removed_reshape:
+        break
+      
+      for node in removed_reshape:
+        node.destroy()
+
+  def broadcast_const_for_binary_op(self):
+    for node in self._dev_graph.nodes:
+      if node.op.type in [NNDCT_OP.ADD, NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV]:
+        input, other = node.node_attr(node.op.AttrName.INPUT), node.node_attr(node.op.AttrName.OTHER)
+        if input.data.shape == other.data.shape:
+          continue
+       
+        if other.is_param_tensor():
+          dtype = input.data.dtype
+          operand2 = np.array(np.ones(input.shape, dtype=dtype) * other.data)
+          other.from_ndarray(operand2)
+        elif other.node.op.type == NNDCT_OP.CONST:
+          dtype = input.data.dtype
+          operand2 = np.array(np.ones(input.shape, dtype=dtype) * other.data)
+          other.from_ndarray(operand2)
+          if not other.is_param_tensor():
+            other.node.set_node_attr(other.node.op.AttrName.DATA, operand2)
+
+
+  def convert_rsub_to_sub(self):
+    for node in self._dev_graph.nodes:
+      if node.op.type == NNDCT_OP.RSUB:
+        new_sub_op = base_op.BinaryOp(NNDCT_OP.SUB)
+        input, other = node.node_attr(node.op.AttrName.INPUT), node.node_attr(node.op.AttrName.OTHER)
+        new_sub_op.set_attr(new_sub_op.AttrName.INPUT, other)
+        new_sub_op.set_attr(new_sub_op.AttrName.OTHER, input)
+        node.op = new_sub_op
+
+  def update_node_data(self):
+    for node in self._dev_graph.nodes:
+      for tensor in node.out_tensors:
+        if isinstance(tensor.data, np.ndarray):
+          output_data = permute_data(tensor.data, node.transpose_out_order)
+          tensor.from_ndarray(output_data) 
+    
+    permute_nodes = self._dev_graph.find_nodes_by_types([NNDCT_OP.PERMUTE])
+    for node in permute_nodes:
+      in_data = node.in_tensors[0].data
+      if in_data is not None:
+        data = permute_data(in_data, node.node_attr(node.op.AttrName.ORDER))
+        node.out_tensors[0].from_ndarray(data)
+      else:
+        NndctScreenLogger().warning2user(QWarning.DATA_DUMP, f"{node.__repr__()} has no data.")
+ 
+  def convert_adaptive_pool_to_pool(self):
+    for node in self._dev_graph.nodes:
+      if node.op.type == NNDCT_OP.ADAPTIVEAVGPOOL2D:
+        input_size = node.in_tensors[0].shape[1:3]
+        output_size = node.out_tensors[0].shape[1:3]
+        mod = [input_size[i] % output_size[i] for i in range(0, len(input_size))]
+        if mod != [0] * len(mod):
+          continue
+
+        stride_h = int(input_size[0] / output_size[0])
+        stride_w = int(input_size[1] / output_size[1])
+        kernel_h = input_size[0] - (output_size[0] - 1) * stride_h
+        kernel_w = input_size[1] - (output_size[1] - 1) * stride_w
+        op = base_op.AvgPool(NNDCT_OP.AVG_POOL)
+        op.set_attr(op.AttrName.KERNEL, [kernel_w, kernel_h])
+        op.set_attr(op.AttrName.STRIDE, [stride_w, stride_h])
+        op.set_attr(op.AttrName.COUNT_INCLUDE_PAD, True)
+        op.set_attr(op.AttrName.PAD_MODE, 0)
+        op.set_attr(op.AttrName.PAD, [0, 0, 0, 0])
+        if list(output_size) == [1, 1]:
+          op.set_attr(op.AttrName.GLOBAL, True)
+          
+        node.op = op
+
+
+
+
+        
+    
+  
+
+    

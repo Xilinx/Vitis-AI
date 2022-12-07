@@ -34,7 +34,7 @@ class DPUPartition(object):
       NNDCT_OP.RSUB,
     ]
 
-    self._supported_xir_type = [
+    self._supported_nndct_type = [
       NNDCT_OP.INPUT,
       # NNDCT_OP.CONV1D,
       NNDCT_OP.CONV2D,
@@ -95,7 +95,7 @@ class DPUPartition(object):
       if node.in_quant_part is False:
         node.target_device = DeviceInfo(DeviceType.CPU)
         node.target_device.set_filter_message("Not in quantizable part.")
-      elif node.op.type not in self._supported_xir_type:
+      elif node.op.type not in self._supported_nndct_type:
         node.target_device = DeviceInfo(DeviceType.CPU)
         node.target_device.set_filter_message(f"{node.op.type} can't be converted to XIR.")
       elif node.op.type in self._cpu_only_xir_type:
@@ -119,7 +119,7 @@ class DPUPartition(object):
           node.target_device = DeviceInfo(DeviceType.CPU)
           node.target_device.set_filter_message("Not in quantizable part.")
         elif any([cn.target_device.get_device_type() == DeviceType.DPU for cn in graph.children(node)]):
-          if node.op.type in self._supported_xir_type:
+          if node.op.type in self._supported_nndct_type:
             node.target_device = DeviceInfo(DeviceType.DPU)
           else:
             node.target_device = DeviceInfo(DeviceType.CPU)

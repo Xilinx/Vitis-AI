@@ -5,3 +5,4 @@ from .torch_const import *
 from .tensor_util import *
 from .schema import *
 #from .torch_qconfig import *
+from .function_util import *

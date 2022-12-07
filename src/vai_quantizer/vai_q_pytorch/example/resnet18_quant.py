@@ -58,6 +58,13 @@ parser.add_argument('--inspect',
     dest='inspect',
     action='store_true',
     help='inspect model')
+
+parser.add_argument('--target', 
+    dest='target',
+    nargs="?",
+    const="",
+    help='specify target device')
+
 args, _ = parser.parse_known_args()
 
 def load_data(train=True,
@@ -201,6 +208,7 @@ def quantization(title='optimize',
   subset_len = args.subset_len
   inspect = args.inspect
   config_file = args.config_file
+  target = args.target
   if quant_mode != 'test' and deploy:
     deploy = False
     print(r'Warning: Exporting xmodel needs to be done in quantization test mode, turn off it in this running!')
@@ -216,19 +224,21 @@ def quantization(title='optimize',
   if quant_mode == 'float':
     quant_model = model
     if inspect:
+      if not target:
+          raise RuntimeError("A target should be specified for inspector.")
       import sys
       from pytorch_nndct.apis import Inspector
       # create inspector
-      # inspector = Inspector("0x603000b16013831") # by fingerprint
-      inspector = Inspector("DPUCAHX8L_ISA0_SP")  # by name
+      inspector = Inspector(target)  # by name
       # start to inspect
       inspector.inspect(quant_model, (input,), device=device)
       sys.exit()
+      
   else:
     ## new api
     ####################################################################################
     quantizer = torch_quantizer(
-        quant_mode, model, (input), device=device, quant_config_file=config_file)
+        quant_mode, model, (input), device=device, quant_config_file=config_file, target=target)
 
     quant_model = quantizer.quant_model
     #####################################################################################
@@ -275,8 +285,9 @@ def quantization(title='optimize',
   if quant_mode == 'calib':
     quantizer.export_quant_config()
   if deploy:
-    quantizer.export_xmodel(deploy_check=False)
+    quantizer.export_torch_script()
     quantizer.export_onnx_model()
+    quantizer.export_xmodel(deploy_check=False)
 
 
 if __name__ == '__main__':

@@ -17,8 +17,9 @@
 #
 
 from nndct_shared.nndct_graph.base_tensor import Tensor
+from pytorch_nndct.utils import TorchGraphSymbol
+_GRAPH_SCOPE_SYM = TorchGraphSymbol.GRAPH_SCOPE_SYM
 
-_GRAPH_SCOPE_SYM = "::"
 # IGNORE_STATEDICT_KEYS = ['num_batches_tracked']
 scalar_type_to_pytorch_type = [
     'torch.uint8',        # 0
@@ -47,6 +48,22 @@ def convert_np_type_to_pytorch_type(np_type):
   'float64': 'torch.double'
   }.get(np_type, np_type)
 
+
+def convert_dtype_between_np_and_pytorch(dtype):
+  return {
+  'int64': 'torch.int64',
+  'int32': 'torch.int32',
+  'float32': 'torch.float',
+  'float64': 'torch.double',
+  'torch.int64': 'int64',
+  'torch.long': 'int64',
+  'torch.int32': 'int32',
+  'torch.int': 'int32',
+  'torch.float32': 'float32',
+  'torch.float': 'float32',
+  'torch.float64': 'float64',
+  'torch.double': 'float64',
+  }.get(dtype, dtype)
 
 
 def get_full_name(graph_name: str, name: str) -> str:
@@ -103,14 +120,45 @@ def python_dtype(value):
     "torch.long": "int",
     "torch.short": "int",
     "torch.float": "float",
+    "torch.half": "float",
     "torch.double": "float",
     "torch.bool": "bool",
     int: "int",
     float: "float",
     bool: "bool",
     str: "str",
+    "int64": "int",
+    "int32": "int",
+    "float32": "float",
+    "float64": "float",
+    "float16": "float"
   }
   if isinstance(value, Tensor):
     return type_map.get(value.dtype, value.dtype)
   else:
     return type_map[type(value)]
+
+
+class TorchDeviceType(object):
+  CUDA = "cuda"
+  CPU = "cpu"
+  UNKOWN = "unkown"
+
+
+
+class ValueDeviceInfo(object):
+  def __init__(self, torch_device="unkown"):
+    self._device_map = {
+      "cpu": TorchDeviceType.CPU,
+      "cuda": TorchDeviceType.CUDA,
+      "unkown": TorchDeviceType.UNKOWN
+    }
+    if hasattr(torch_device, "type"):
+      self._type = self._device_map.get(torch_device.type, TorchDeviceType.UNKOWN)
+    else:
+      self._type = self._device_map.get(torch_device, TorchDeviceType.UNKOWN)
+  
+  @property
+  def device_type(self):
+    return self._type 
+

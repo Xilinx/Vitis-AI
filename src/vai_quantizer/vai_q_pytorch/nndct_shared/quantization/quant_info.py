@@ -18,11 +18,13 @@
 
 import copy
 from nndct_shared.nndct_graph import NndctGraphHolder
-from nndct_shared.utils import NndctScreenLogger
+from nndct_shared.utils import NndctScreenLogger, QError, QWarning, QNote
 from .commander import QuantConfigerCommander
-#from .quant_strategy import create_quant_strategy
 from nndct_shared.utils import NndctOption
 from nndct_shared.base import NNDCT_OP
+
+
+
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -39,9 +41,8 @@ class QuantInfoMgr(NndctGraphHolder):
         if op not in self.QUANTIZABLE_OPS:
           self.QUANTIZABLE_OPS.append(op)
           NndctScreenLogger().info(f"Convert `{op}` to quantizable op.")
-          
+
     self.group_graph()
-    #quant_strategy = create_quant_strategy(quant_strategy_info, lstm)
     self._quant_info, self._quant_algo = quant_strategy.create_quant_config(self)
 
     if NndctOption.nndct_stat.value > 0:
@@ -51,11 +52,12 @@ class QuantInfoMgr(NndctGraphHolder):
       pp.pprint(self._quant_info)
 
     # check groups, only permit one quantizable node in one group in quant part
-    ignored_list = [NNDCT_OP.SHAPE]
+  
+    ignored_list = [NNDCT_OP.SHAPE, NNDCT_OP.RETURN, NNDCT_OP.BLOCK]
     for k, v in self._QuantGroups.items():
       if len(v) == 1:
         if len(self.Nndctgraph.parents(k)) == 0:
-          break
+          continue
       findQuantizableNode = False
       isIgnored = False
       type_list = self.LSTM_QUANTIZABLE_OPS if lstm else self.QUANTIZABLE_OPS
@@ -63,20 +65,16 @@ class QuantInfoMgr(NndctGraphHolder):
         node = self.get_Nndctnode(node_name=n)
         if node.op.type in type_list:
           if findQuantizableNode:
-            NndctScreenLogger().warning(f'Multiple quantizable node is found in group:')
-            NndctScreenLogger().warning(f'{v}')
+            NndctScreenLogger().warning2user(QWarning.QUANT_GROUP, f'Multiple quantizable node is found in group: \n{v}.')
           else:
             findQuantizableNode = True
         elif node.op.type in ignored_list:
           isIgnored = True
-      #if not findQuantizableNode and not isIgnored:
-      #  NndctScreenLogger().warning(f'No quantizable node is found in group, confirm no numerical calculation in the nodes:')
-      #  NndctScreenLogger().warning(f'{v}')
 
   def group_graph(self):
     QuantConfigerCommander.register(self, 'scan_commander')
     commands = [k for k in self.scan_commander]
-    quant_groups = {n.name: [n.name] for n in self.Nndctgraph.nodes if n.in_quant_part}
+    quant_groups = {n.name: [n.name] for n in self.Nndctgraph.all_nodes() if n.in_quant_part and (not n.blocks)}
     while True:
       org_groups = copy.deepcopy(quant_groups)
       for c in commands:
@@ -99,7 +97,6 @@ class QuantInfoMgr(NndctGraphHolder):
  
   @property
   def quant_algo(self):
-    #if self._quant_algo is None:
-    #  NndctScreenLogger().warning(f'Quantization algorithm is not set')
     return self._quant_algo
+
 

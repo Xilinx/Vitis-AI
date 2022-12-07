@@ -20,11 +20,12 @@ import torch
 from torch.autograd import Variable
 import math
 
-from nndct_shared.utils import NndctOption, NndctScreenLogger
+from nndct_shared.utils import NndctOption, NndctScreenLogger, QError, QWarning
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors 
 from .quant_noise import eval_qnoise
 import pytorch_nndct.utils as py_utils
+import pytorch_nndct.utils.jit_utils as jit_utils
 import torch.nn.functional as F
 __all__ = ['ConvTranspose2d']
 
@@ -59,11 +60,12 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
         # adjust bias
         if self.quant_mode == 2 and self.bias is not None:
           if self.node.name not in self.quantizer.bias_corr.keys():
-            NndctScreenLogger().error(f"Bias correction file in quantization result directory does not match current model.")
+            NndctScreenLogger().error2user(QError.BIAS_CORRECTION, f"Bias correction file in quantization result directory does not match current model.")
             exit(2)
           self.bias.data = torch.sub(self.bias.data, torch.tensor(
               self.quantizer.bias_corr[self.node.name],
-              device=self.bias.data.device))
+              device=self.bias.data.device,
+              dtype=self.bias.data.dtype))
       self.param_saved = True
 
     # quantize parameters
@@ -98,18 +100,24 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
               self.node,
               tensor_names = [self.params_name[1]],
               tensor_type = 'param')[0]
-      self.param_quantized = True
+      if not NndctOption.nndct_quant_off.value:
+        self.param_quantized = True
     else:
       qweight = self.weight
       qbias = self.bias
 
     # quantize input tensor
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
-    output_padding = self._output_padding(qinput, 
-                                          None, 
-                                          self.stride, 
-                                          self.padding, 
-                                          self.kernel_size)
+    if jit_utils.get_torch_version() <= 1110:
+      output_padding = self._output_padding(qinput, 
+                                            None, 
+                                            self.stride, 
+                                            self.padding, 
+                                            self.kernel_size)
+    else:
+      num_spatial_dims = 2
+      output_padding = self._output_padding(
+            qinput, None, self.stride, self.padding, self.kernel_size, num_spatial_dims, self.dilation) 
     output = torch.nn.functional.conv_transpose2d(qinput,
                                         weight = qweight,
                                         bias = qbias,
@@ -125,11 +133,16 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
       #rate = NndctOption.nndct_param_corr_rate.value
       # statistic of quantization error
       if (self.quant_mode == 1 and not self.stop):
-        output_padding = self._output_padding(input, 
-                                              None, 
-                                              self.stride, 
-                                              self.padding, 
-                                              self.kernel_size)
+        if jit_utils.get_torch_version() <= 1110:
+          output_padding = self._output_padding(input, 
+                                                None, 
+                                                self.stride, 
+                                                self.padding, 
+                                                self.kernel_size)
+        else:
+          num_spatial_dims = 2
+          output_padding = self._output_padding(input, None, self.stride, self.padding, self.kernel_size, num_spatial_dims, self.dilation) 
+          
         res_f = torch.nn.functional.conv_transpose2d(input,
                                            self.weight_bak, 
                                            bias = self.bias_bak,
@@ -158,6 +171,7 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
       return bias_err.cpu().numpy().tolist()
     else:
       return None
+
   
 @py_utils.register_quant_op
 def ConvTranspose2d(*args, **kwargs):

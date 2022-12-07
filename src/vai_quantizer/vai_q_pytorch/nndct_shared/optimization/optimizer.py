@@ -20,7 +20,6 @@ from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph import Graph
 from .commander import OptimizeCommander
 from nndct_shared.utils import NndctOption, NndctScreenLogger
-from .insert_node import NodeInsertHandler
 import numpy as np
 
 class QuantOptimizer(object):
@@ -29,6 +28,7 @@ class QuantOptimizer(object):
     
     commander = OptimizeCommander(graph=graph)
     commander.DecoupleSharedParamsInConv()
+    commander.FuseEmbedLnActv()
     if fuse_conv_bn:
       commander.FuseBnToConv()
       commander.ConvertBNParams()
@@ -37,12 +37,15 @@ class QuantOptimizer(object):
       NndctScreenLogger().info(f"=>Doing weights equalization...")
       graph = commander.equalize_weights_cross_conv_layers()
 
-      
     if NndctOption.nndct_partition_mode.value > 0:
       self._tag_quant_nodes_v2(graph)
     else:
       self._tag_quant_nodes(graph)
+
     graph.remove_node_by_types([NNDCT_OP.DROPOUT])
+
+    if NndctOption.nndct_leaky_relu_approximate.value:
+      commander.SetNegativeSlope()
     # print(f"quant_state:")
     # for node in graph.nodes:
     #   print(f"{node.name}:{node.in_quant_part}")
@@ -112,7 +115,7 @@ class QuantOptimizer(object):
               node.in_quant_part = True
 
     else:
-      for node in graph.nodes:
+      for node in graph.all_nodes():
         node.in_quant_part = True
         
     # Debug   

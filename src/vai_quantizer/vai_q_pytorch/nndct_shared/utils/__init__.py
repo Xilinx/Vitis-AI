@@ -2,6 +2,7 @@
 and avoid wildcard imports.
 See https://pep8.org/#imports
 """
+from nndct_shared.utils.msg_code import QError, QWarning, QNote
 from nndct_shared.utils.logging import NndctScreenLogger, NndctDebugLogger
 from nndct_shared.utils.commander import *
 from nndct_shared.utils.exception import *
@@ -18,3 +19,4 @@ from nndct_shared.utils.pattern_matcher import *
 from nndct_shared.utils.tensor_util import *
 from nndct_shared.utils.plot import *
 from nndct_shared.utils.dpu_utils import *
+from nndct_shared.utils.device import *

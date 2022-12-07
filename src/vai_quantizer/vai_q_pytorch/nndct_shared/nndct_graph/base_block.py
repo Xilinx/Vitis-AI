@@ -72,7 +72,13 @@ class Block(object):
   @property
   def owning_graph(self):
     return self._graph
-  
+
+  @owning_graph.setter
+  def owning_graph(self, graph):
+    self._graph = graph
+    if self._graph:
+      self._graph.add_block(self)
+
   @property
   def owning_node(self):
     return self._node

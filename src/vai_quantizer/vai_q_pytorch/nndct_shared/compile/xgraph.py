@@ -29,7 +29,7 @@ from pathlib import Path
 from collections import ChainMap
 import re
 from nndct_shared.base import NNDCT_KEYS
-from nndct_shared.utils import NndctScreenLogger, ExportXmodelError
+from nndct_shared.utils import NndctScreenLogger, ExportXmodelError, QError, QWarning
 
 import numpy as np
 
@@ -50,6 +50,8 @@ class XGraph(object):
       raise RuntimeError('The input op is `None`, please check graph.')
     
   def create_const_op(self, name: str, data: Optional[np.ndarray]) -> NoReturn:
+    if data is not None and data.ndim == 0:
+      data = np.array([data], data.dtype)
     const_op = self._graph.create_const_op(name, data)
     if name in self._const_ops:
       raise RuntimeError('The const op {} has already in graph'.format(name))
@@ -138,7 +140,7 @@ class XGraph(object):
       if name in combinded_fix_infos.keys():
         return combinded_fix_infos[name]
       else:
-        return None, None
+        return None
 
     # if NNDCT_KEYS.FIX_OP_SUFFIX in input.get_name():
     #   raise RuntimeError("The consecutive fix ops in graph is forbidden!")
@@ -146,7 +148,13 @@ class XGraph(object):
     if not isinstance(quant_info, dict):
       return None
 
-    bit_width, fix_point = _get_fix_info(key_name, quant_info)
+    # bit_width, fix_point = _get_fix_info(key_name, quant_info)[0]
+    # if bit_width is None or fix_point is None:
+    #   return None
+    bit_info = _get_fix_info(key_name, quant_info)
+    if bit_info is None:
+      return None
+    bit_width, fix_point = bit_info[0]
     if bit_width is None or fix_point is None:
       return None
 
@@ -185,7 +193,7 @@ class XGraph(object):
     if op:
       return op.get_output_tensor().dims
     else:
-      NndctScreenLogger().warning("{name} is not in xmodel. Please check it.")
+      NndctScreenLogger().warning2user(QWarning.EXPORT_XMODEL, f"{name} is not in xmodel. Please check it.")
       
   def export_to_xmodel(self, fname: str) -> NoReturn:
     fname += NNDCT_KEYS.XMODEL_SUFFIX
@@ -206,15 +214,15 @@ class XGraph(object):
       except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
-        NndctScreenLogger().error(f"{errs}")
+        NndctScreenLogger().error2user(QError.PROC_TIMEOUT, f"{errs}")
         raise
       if outs:
         self._graph.save_as_dot(fname)
       else:
-        NndctScreenLogger().warning(("Can't find dot command in the system, please install it."
-                                     " Otherwise, the xmodel image will not be generated."))
+        NndctScreenLogger().warning2user(QWarning.EXPORT_XMODEL, f"Can't find dot command in the system, please install it." \
+                                     " Otherwise, the xmodel image will not be generated.")
     except Exception as e:
-      NndctScreenLogger().warning(f"Failed to generate xmodel image!({str(e)})")
+      NndctScreenLogger().warning2user(QWarning.EXPORT_XMODEL, f"Failed to generate xmodel image!({str(e)})")
 
   @property
   def graph(self):

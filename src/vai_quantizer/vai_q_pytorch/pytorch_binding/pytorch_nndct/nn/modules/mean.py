@@ -33,9 +33,24 @@ class deephi_Mean(torch.nn.Module):
 
   def forward(self, input, dim, keepdim):
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
-    output = torch.mean(qinput, dim, keepdim)
-    if len(self.node.node_attr(self.node.op.AttrName.DIMS)) == 1:
-      scale = calculate_op_scale(self.node.in_tensors[0].shape[self.node.node_attr(self.node.op.AttrName.DIMS)[0]], self.node)
+    if dim is None:
+      output = torch.mean(qinput)
+    else:
+      output = torch.mean(qinput, dim, keepdim)
+
+    input_shape = self.node.in_tensors[0].shape
+    if self.node.node_attr(self.node.op.AttrName.DIMS) == [None]:
+      dim_list = [i for i in range(len(input_shape))]
+    else:
+      dim_list = self.node.node_attr(self.node.op.AttrName.DIMS)
+
+    rec = 1
+    for i in dim_list:
+      input_shape = input.shape[i].item() if isinstance(input.shape[i], torch.Tensor) else input.shape[i]
+      rec = rec * input_shape
+
+    if (rec & (rec - 1)) != 0:
+      scale = calculate_op_scale(rec, self.node)
       output = output * scale
 
     output = quantize_tensors([output], self.node)[0]

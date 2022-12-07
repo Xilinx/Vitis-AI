@@ -131,7 +131,7 @@ class Graph(GraphBase):
         node.add_in_tensor(tensor)
     node.clone_from(src_node, local_map)
     for src_block in src_node.blocks:
-      head_node = self.create_node_from(src_block.head_node, local_map, converted_nodes)
+      head_node = self.create_node_from(src_block.input_node, local_map, converted_nodes)
       return_node = self.create_node_from(src_block.return_node, local_map, converted_nodes)
       block = Block(self, node, head_node, return_node)
       block.clone_from(src_block, local_map, converted_nodes)
@@ -152,9 +152,33 @@ class Graph(GraphBase):
   def get_input_nodes(self):
     input_nodes = []
     for node in self.nodes:
-      if len(self.parents(node)) == 0:
+      if (len(self.parents(node)) == 0) and \
+        (node.op.type==NNDCT_OP.INPUT or node.op.type==NNDCT_OP.TUPLE_INPUT):
         input_nodes.append(node)
     return input_nodes
+  
+  def get_input_tensors(self, input_args):
+    input_tensors = []
+    graph_name = self.name
+    input_nodes = self.get_input_nodes()
+    for idx in range(len(input_args)):
+      #input_node_name = graph_name + "::input_" + str(idx)
+      #input_node = self.node(input_node_name)
+      input_node = input_nodes[idx]
+      input_tensor = input_node.out_tensors[0]
+      if input_node.op.type == NNDCT_OP.INPUT:
+        input_tensors.append(input_tensor.name)
+      elif input_node.op.type == NNDCT_OP.TUPLE_INPUT:
+        for index in range(len(input_args[idx])):
+          input_tensor_name = input_tensor.name + '.' + str(index)
+          input_tensors.append(input_tensor_name)
+    return input_tensors
+  
+  def get_return_tensors(self):
+    return_tensors = []
+    for tensor in self.return_node.in_tensors:
+      return_tensors.append(tensor.name)
+    return return_tensors
 
   def add_node(self, node: Node) -> None:
 
@@ -164,11 +188,11 @@ class Graph(GraphBase):
       raise RuntimeError(f"The id `{node.idx}` of {node.name} has been added into graph")
 
     if node.idx == -1:
-      if not self._nodes_by_id:
-        node._idx = 0
-      else:
+      # if not self._nodes_by_id:
+      #   node._idx = 0
+      # else:
         # node._idx = max([node.idx for node in self.all_nodes()]) + 1
-        node._idx = -sys.maxsize + len(list(self.all_nodes()))
+      node._idx = -sys.maxsize + len(list(self.all_nodes()))
     self._nodes_by_name[node.name] = node
     self._nodes_by_id[node.idx] = node
 
@@ -242,7 +266,7 @@ class Graph(GraphBase):
     return self._tensors.get(name, None)
 
   def param_tensor(self, name):
-    for node in self.nodes:
+    for node in self.all_nodes():
       for _, tensor in node.op.params.items():
         if tensor.name == name:
           return tensor
@@ -254,7 +278,7 @@ class Graph(GraphBase):
     return f"Graph(name={self.name})"
 
   def __str__(self):
-    return json.dumps(self.description(), indent=4, separators=(',', ': '))
+    return json.dumps(self.description(), indent=2, separators=(',', ': '))
 
   def description(self):
     graph_des = {}
@@ -334,15 +358,15 @@ class Graph(GraphBase):
 
   @property
   def inputs(self):
-    return [node for node in self.nodes if not node.in_nodes]
+    return [node for node in self.all_nodes() if not node.in_nodes]
 
   @property
   def outputs(self):
-    return [node for node in self.nodes if not node.out_nodes]
+    return [node for node in self.all_nodes() if not node.out_nodes]
 
   @property
   def op_types(self):
-    return {node.op.type for node in self.nodes}
+    return {node.op.type for node in self.all_nodes()}
 
 
   def append_node(self, node):

@@ -57,15 +57,6 @@ class OptPass(object):
             
       for node, i in node2idx.items():
         node.inputs[i] = tuple_node.inputs[index]  
-        
-      # if index_node.outputs[0].name in raw_graph.ret_values():
-      #   ori_return_values = copy.copy(raw_graph.ret_values())
-      #   raw_graph.ret_values().clear()
-      #   for name, value in ori_return_values.items():
-      #     if name == index_node.outputs[0].name:
-      #       raw_graph.add_ret_value(tuple_node.inputs[index])
-      #     else:
-      #       raw_graph.add_ret_value(value)
     
     for r_node in remove_nodes:
       r_node.destroy()
@@ -86,15 +77,6 @@ class OptPass(object):
           if outp in node.inputs:
             index = node.inputs.index(outp)
             node.inputs[index] = inp
-          
-        # if outp.name in raw_graph.ret_values():
-        #   ori_return_values = copy.copy(raw_graph.ret_values())
-        #   raw_graph.ret_values().clear()
-        #   for name, value in ori_return_values.items():
-        #     if name == outp.name:
-        #       raw_graph.add_ret_value(inp)
-        #     else:
-        #       raw_graph.add_ret_value(value)
               
     for r_node in remove_nodes:
       r_node.destroy()
@@ -110,7 +92,6 @@ class OptPass(object):
     if not nodes_list:
       return 
     for nodeset in nodes_list:
-      # unpack_in_node = nodeset[0]
       unpack_node = nodeset[0]
       if len(unpack_node.outputs) < 2:
         continue
@@ -147,21 +128,24 @@ class OptPass(object):
       return
     for nodeset in nodes_list:
       packed_node = nodeset[0]
+      if not packed_node.inputs:
+        continue
       for packed_out_node in raw_graph.children(packed_node):
         id2list = {}
         for i, ip in enumerate(packed_out_node.inputs):
-          if isinstance(ip, list):
+          if isinstance(ip, (tuple, list)):
             continue
           if ip.node and ip.node is packed_node and len(ip.node.outputs) == 1:
-            id2list[i] = packed_node.inputs
+            if "tuple" in packed_node.dtype:
+              id2list[i] = tuple(packed_node.inputs)
+            else:
+              id2list[i] = packed_node.inputs
             ListConstruct_nodes.add(packed_node)
           
         for i, lst in id2list.items():
           packed_out_node.inputs[i] = lst
       
-      # if packed_node.outputs[0].name in raw_graph.ret_values():
-      #   ListConstruct_nodes.add(packed_node)
-      #   raw_graph.ret_values()[packed_node.outputs[0].name] = packed_node.inputs
+   
 
     for node in ListConstruct_nodes:
       node.destroy()
@@ -184,7 +168,7 @@ class OptPass(object):
     for nodeset in sorted_node_list:
       node = nodeset[0]
       slice_nodes.append(node)
-      if node.inputs[0].node.kind != "strided_slice" or (node.inputs[0].node in slice_end_point):
+      if node.inputs[0].node is None or (node.inputs[0].node.kind != "strided_slice" or (node.inputs[0].node in slice_end_point)):
         strided_node = TorchNode()
         strided_node.idx = node.block_idx
         strided_node.kind = "strided_slice"
@@ -197,7 +181,6 @@ class OptPass(object):
         for ip in node.inputs[1:]:
           strided_node.add_input([ip])
         strided_node.add_output(node.outputs[0])
-        # strided_node.outputs
         strided_slice_nodes[node.name] = strided_node
       else:
         node.name = node.inputs[0].node.name
@@ -209,7 +192,6 @@ class OptPass(object):
         strided_node.outputs[0].node = strided_node
     
     for node in strided_slice_nodes.values():
-      # raw_graph.nodes[node.idx] = node
       raw_graph.insert_node_with_idx(node, node.idx)
 
     for node in slice_nodes:
@@ -259,8 +241,6 @@ class OptPass(object):
       copy_node.kind = "strided_slice_inplace_copy"
       source_input = copy_node.inputs[1]
       copy_node.inputs.clear()
-      # inputs = stride_slice_node.inputs[1:]
-      # copy_node.inputs[0] = select_node.inputs[0]
       for ip in stride_slice_node.inputs + [source_input]:
         copy_node.add_input(ip)
   
@@ -432,7 +412,7 @@ class OptPass(object):
     
     filter_nodes_list = [node_set for node_set in nodes_list if len(node_set[0].out_nodes) == 1]
 
-    sorted_node_list = sorted(filter_nodes_list, key=lambda nodeset: nodeset[0].idx)
+    sorted_node_list = sorted(filter_nodes_list, key=lambda nodeset: nodeset[0].block_idx)
         
     consecutive_slice_group = []
     for nodeset in sorted_node_list:
@@ -525,12 +505,16 @@ class OptPass(object):
     nodes_list = OptPass.merge_node_sets_to_list(node_sets)
     if not nodes_list:
       return   
-    
+  
     const_nodes = []
     for nodeset in nodes_list:
-      binary_op = nodeset[0]
-      if not binary_op.inputs[0].is_plain_value() and binary_op.inputs[1].is_plain_value():
-        binary_op.inputs[1].convert_plain_value_to_tensor()
+      binary_op = nodeset[0] 
+      if isinstance(binary_op.inputs[0], list) or isinstance(binary_op.inputs[1], list):
+        continue
+
+      if binary_op.inputs[0].is_tensor() and binary_op.inputs[1].is_plain_value() and binary_op.inputs[1].dtype in ["torch.int", "torch.long", "torch.float", "torch.float32", "torch.double", "torch.float64"]:
+        dtype = binary_op.inputs[0].dtype if binary_op.inputs[0].dtype != "tensor" else binary_op.inputs[1].dtype 
+        binary_op.inputs[1].convert_plain_value_to_tensor(dtype, binary_op.inputs[0].device)
         const_node = TorchNode()
         const_node.kind = "Constant"
         const_node.name = binary_op.inputs[1].name
@@ -540,6 +524,48 @@ class OptPass(object):
         const_node.scope_name = binary_op.scope_name
         const_node.source_range = binary_op.source_range
         const_nodes.append(const_node)
+       
+                
+    if const_nodes:
+      copied_nodes = list(raw_graph.nodes)
+      raw_graph.clean_nodes()
+      for node in const_nodes + copied_nodes:
+        raw_graph.append_node(node)
+      raw_graph.reconnect_nodes()
+
+      
+  @staticmethod
+  def transform_const_scalar_to_const_tensor_clamp(raw_graph, node_sets):
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return   
+  
+    def add_const_node(binary_op, i, const_nodes, raw_graph):
+      binary_op.inputs[i].convert_plain_value_to_tensor(binary_op.inputs[0].dtype)
+      const_node = TorchNode()
+      const_node.kind = "Constant"
+      const_node.name = binary_op.inputs[i].name
+      const_node.owning_graph = raw_graph.owning_graph
+      const_node.add_output(binary_op.inputs[i])
+      binary_op.inputs[i].node = const_node
+      const_node.scope_name = binary_op.scope_name
+      const_node.source_range = binary_op.source_range
+      const_nodes.append(const_node)
+      return const_nodes
+
+    const_nodes = []
+    for nodeset in nodes_list:
+      binary_op = nodeset[0] 
+      if isinstance(binary_op.inputs[0], list) or isinstance(binary_op.inputs[1], list):
+        continue
+
+      if not binary_op.inputs[0].is_tensor():
+          continue
+      if len(binary_op.inputs) == 2:
+        const_nodes = add_const_node(binary_op, 1, const_nodes, raw_graph)
+      elif len(binary_op.inputs) == 3:
+        const_nodes = add_const_node(binary_op, 1, const_nodes, raw_graph)
+        const_nodes = add_const_node(binary_op, 2, const_nodes, raw_graph)
        
                 
     if const_nodes:
@@ -616,5 +642,55 @@ class OptPass(object):
       
     if remove_nodes:
       raw_graph.reconnect_nodes()
+
+  @staticmethod
+  def merge_consecutive_tuple(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return
+
+    filter_nodes_list = [node_set for node_set in nodes_list if len(node_set[0].out_nodes) == 1]
+
+    sorted_node_list = sorted(filter_nodes_list, key=lambda nodeset: nodeset[0].block_idx) 
       
+    for nodeset in sorted_node_list:
+      pre_tuple = nodeset[0]
+      post_tuple = nodeset[1] 
+      for i, inp in enumerate(post_tuple.inputs):
+        if inp is pre_tuple.outputs[0]:
+          post_tuple.inputs[i] = tuple(pre_tuple.inputs)
+      remove_nodes.append(pre_tuple)   
+    
+    for node in remove_nodes:
+      node.destroy()
       
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+
+
+  @staticmethod
+  def remove_tensor2scalar(raw_graph, node_sets):
+    remove_nodes = []
+    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
+    if not nodes_list:
+      return   
+    
+    for nodeset in nodes_list:
+      tensor2scalar_op = nodeset[0]
+      remove_nodes.append(tensor2scalar_op)
+      for node in raw_graph.children(tensor2scalar_op):
+        for i, inp in enumerate(node.inputs):
+          if inp is tensor2scalar_op.outputs[0]:
+            node.inputs[i] = tensor2scalar_op.inputs[0]
+      
+    for node in remove_nodes:
+      node.destroy()
+      
+    if remove_nodes:
+      raw_graph.reconnect_nodes()
+
+  
+   
+
+

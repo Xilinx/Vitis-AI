@@ -312,19 +312,27 @@ class LSTM(torch.nn.Module):
     super().__init__()
     self.layers = init_stacked_lstm(num_layers, layer, first_layer_args,
                                     other_layer_args)
+    self.num_layers = num_layers
+    self.hidden_size = first_layer_args[2]
 
   def forward(
-      self, input: Tensor, states: List[Tuple[Tensor, Tensor]]
-  ) -> Tuple[Tensor, List[Tuple[Tensor, Tensor]]]:
-    # type: (Tensor, List[Tuple[Tensor, Tensor]]) -> Tuple[Tensor, List[Tuple[Tensor, Tensor]]]
-    # List[LSTMState]: One state per layer
-    output_states: List[Tuple[Tensor, Tensor]] = []
+      self, input: Tensor, states: Tuple[Tensor, Tensor]
+  ) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
+    # type: (Tensor, Tuple[Tensor, Tensor]) -> Tuple[Tensor, Tuple[Tensor, Tensor]]
+    # output_states = []
     output = input
+    h, c = states
+    h_stats = []
+    c_stats = []
     for (i, rnn_layer) in enumerate(self.layers):
-      state = states[i]
+      hi = h[i]
+      ci = c[i]
+      state = (hi, ci)
       output, out_state = rnn_layer(output, state)
-      output_states += [out_state]
-    return output, output_states
+      h_stats = h_stats + [out_state[0]]
+      c_stats = c_stats + [out_state[1]]
+
+    return output, (torch.stack(h_stats), torch.stack(c_stats))
 
 
 def get_normal_lstm_param_name(name):
@@ -344,12 +352,14 @@ def stacked_lstm(lstm_module: torch.nn.LSTM) -> LSTM:
   num_layers = lstm_module.num_layers
   input_size = lstm_module.input_size
   hidden_size = lstm_module.hidden_size
+  bias = lstm_module.bias
+
 
   stacked_lstm = LSTM(
       num_layers,
       LSTMLayer,
-      first_layer_args=[LSTMCell, input_size, hidden_size],
-      other_layer_args=[LSTMCell, hidden_size, hidden_size])
+      first_layer_args=[LSTMCell, input_size, hidden_size, bias],
+      other_layer_args=[LSTMCell, hidden_size, hidden_size, bias])
   param_num_per_layer = len(list(lstm_module.parameters())) // num_layers
   param_layer_list = []
 
@@ -360,7 +370,9 @@ def stacked_lstm(lstm_module: torch.nn.LSTM) -> LSTM:
 
   for layer_idx in range(num_layers):
     for name, param in stacked_lstm.layers[layer_idx].named_parameters():
-      param.data.copy_(
-          param_layer_list[layer_idx][get_normal_lstm_param_name(name)].data)
+      normalized_name = get_normal_lstm_param_name(name)
+      if normalized_name is not None and normalized_name in param_layer_list[layer_idx]:
+        param.data.copy_(param_layer_list[layer_idx][normalized_name].data)
+    stacked_lstm.layers[layer_idx].cell.init_weight()
 
   return stacked_lstm

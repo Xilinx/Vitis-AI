@@ -1,3 +1,4 @@
+from enum import Enum
 
 def readable_num(number):
   s = ''
@@ -17,3 +18,8 @@ def readable_num(number):
       unit_index += 1
     s += '%.2f%s' % (number / 1000.0, units[unit_index])
   return s
+
+
+class AutoName(Enum):
+  def _generate_next_value_(name, start, count, last_values):
+    return name.lower()

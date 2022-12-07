@@ -34,6 +34,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from distutils.version import LooseVersion
 from torch.nn import init
 from torch.nn.modules.utils import _pair
 from torch.nn.modules.utils import _triple
@@ -45,7 +46,7 @@ _BN_CLASS_MAP = {
     3: nn.BatchNorm3d,
 }
 
-# Adopted from https://github.com/pytorch/pytorch/blob/master/torch/nn/intrinsic/qat/modules/conv_fused.py
+# Adopted from https://github.com/pytorch/pytorch/blob/v1.7.1/torch/nn/intrinsic/qat/modules/conv_fused.py
 class _ConvBnNd(nn.modules.conv._ConvNd):
 
   _version = 2
@@ -218,7 +219,7 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
       self.weight.copy_(torch.from_numpy(weight))
 
       bias = self.bias.detach().cpu().numpy() if self.bias is not None else 0
-      bias = torch.from_numpy(bias * scale + offset)
+      bias = torch.from_numpy(bias * scale + offset).to(self.weight.device)
       if self.bias is not None:
         self.bias.copy_(bias)
       else:
@@ -496,7 +497,75 @@ class QuantizedConvBatchNorm3d(_ConvBnNd, nn.Conv3d):
     return F.conv3d(input, weight, bias, self.stride, self.padding,
                     self.dilation, self.groups)
 
+# Use nn.modules.conv._ConvTransposeMixin for PyTorch 1.4.
 class _ConvTransposeBnNd(_ConvBnNd, nn.modules.conv._ConvTransposeMixin):
+
+  def __init__(self,
+               in_channels,
+               out_channels,
+               kernel_size,
+               stride=1,
+               padding=0,
+               output_padding=0,
+               groups=1,
+               bias=True,
+               dilation=1,
+               padding_mode='zeros',
+               eps=1e-05,
+               momentum=0.1,
+               freeze_bn_stats=False,
+               rt_spec=None,
+               dim=2):
+
+    kernel_size = _pair(kernel_size)
+    stride = _pair(stride)
+    padding = _pair(padding)
+    dilation = _pair(dilation)
+    output_padding = _pair(output_padding)
+    super(_ConvTransposeBnNd,
+          self).__init__(in_channels, out_channels, kernel_size, stride,
+                         padding, dilation, True, output_padding, groups, bias,
+                         padding_mode, eps, momentum, freeze_bn_stats, rt_spec,
+                         dim)
+
+    self._transpose_fn = [
+        F.conv_transpose1d, F.conv_transpose2d, F.conv_transpose3d
+    ][dim - 1]
+    if torch.__version__ < LooseVersion('1.12.0'):
+      self._conv_forward = self._conv_forward_prior_torch112
+    else:
+      self._conv_forward = self._conv_forward_from_torch112
+
+  def _conv_forward_prior_torch112(self,
+                                   input,
+                                   weight,
+                                   bias=None,
+                                   output_size=None):
+    if self.padding_mode != 'zeros':
+      raise ValueError(
+          f'Only `zeros` padding mode is supported for {self.__class__.__name__}'
+      )
+
+    output_padding = self._output_padding(input, output_size, self.stride,
+                                          self.padding, self.kernel_size)
+    return self._transpose_fn(input, weight, bias, self.stride, self.padding,
+                              output_padding, self.groups, self.dilation)
+
+  def _conv_forward_from_torch112(self,
+                                  input,
+                                  weight,
+                                  bias=None,
+                                  output_size=None):
+    if self.padding_mode != 'zeros':
+      raise ValueError(
+          f'Only `zeros` padding mode is supported for {self.__class__.__name__}'
+      )
+
+    output_padding = self._output_padding(input, output_size, self.stride,
+                                          self.dim, self.padding,
+                                          self.kernel_size)
+    return self._transpose_fn(input, weight, bias, self.stride, self.padding,
+                              output_padding, self.groups, self.dilation)
 
   @classmethod
   def from_float(cls, conv, bn, rt_spec):
@@ -526,7 +595,7 @@ class QuantizedConvTransposeBatchNorm2d(_ConvTransposeBnNd):
                padding=0,
                output_padding=0,
                groups=1,
-               bias=None,
+               bias=True,
                dilation=1,
                padding_mode='zeros',
                eps=1e-05,
@@ -534,27 +603,22 @@ class QuantizedConvTransposeBatchNorm2d(_ConvTransposeBnNd):
                freeze_bn_stats=False,
                rt_spec=None):
 
-    kernel_size = _pair(kernel_size)
-    stride = _pair(stride)
-    padding = _pair(padding)
-    dilation = _pair(dilation)
-    output_padding = _pair(output_padding)
-    super(QuantizedConvTransposeBatchNorm2d,
-          self).__init__(in_channels, out_channels, kernel_size, stride,
-                         padding, dilation, False, output_padding, groups, bias,
-                         padding_mode, eps, momentum, freeze_bn_stats, rt_spec)
-
-  def _conv_forward(self, input, weight, bias=None, output_size=None):
-    if self.padding_mode != 'zeros':
-      raise ValueError(
-          'Only `zeros` padding mode is supported for QuantizedConvTransposeBatchNorm2d'
-      )
-
-    output_padding = self._output_padding(input, output_size, self.stride,
-                                          self.padding, self.kernel_size)
-
-    return F.conv_transpose2d(input, weight, bias, self.stride, self.padding,
-                              output_padding, self.groups, self.dilation)
+    super(QuantizedConvTransposeBatchNorm2d, self).__init__(
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride,
+        padding,
+        output_padding,
+        groups,
+        bias,
+        dilation,
+        padding_mode,
+        eps,
+        momentum,
+        freeze_bn_stats,
+        rt_spec,
+        dim=2)
 
   def broadcast_correction_weight(self, c):
     """Broadcasts a correction factor to the weight."""
@@ -574,7 +638,7 @@ class QuantizedConvTransposeBatchNorm3d(_ConvTransposeBnNd):
                padding=0,
                output_padding=0,
                groups=1,
-               bias=None,
+               bias=True,
                dilation=1,
                padding_mode='zeros',
                eps=1e-05,
@@ -582,40 +646,22 @@ class QuantizedConvTransposeBatchNorm3d(_ConvTransposeBnNd):
                freeze_bn_stats=False,
                rt_spec=None):
 
-    #kernel_size = _pair(kernel_size)
-    #stride = _pair(stride)
-    #padding = _pair(padding)
-    #dilation = _pair(dilation)
-    #output_padding = _pair(output_padding)
     super(QuantizedConvTransposeBatchNorm3d, self).__init__(
         in_channels,
         out_channels,
         kernel_size,
         stride,
         padding,
-        dilation,
-        False,
         output_padding,
         groups,
         bias,
+        dilation,
         padding_mode,
         eps,
         momentum,
         freeze_bn_stats,
         rt_spec,
         dim=3)
-
-  def _conv_forward(self, input, weight, bias=None, output_size=None):
-    if self.padding_mode != 'zeros':
-      raise ValueError(
-          'Only `zeros` padding mode is supported for QuantizedConvTransposeBatchNorm3d'
-      )
-
-    output_padding = self._output_padding(input, output_size, self.stride,
-                                          self.padding, self.kernel_size)
-
-    return F.conv_transpose3d(input, weight, bias, self.stride, self.padding,
-                              output_padding, self.groups, self.dilation)
 
   def broadcast_correction_weight(self, c):
     """Broadcasts a correction factor to the weight."""

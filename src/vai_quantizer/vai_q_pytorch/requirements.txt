@@ -6,3 +6,5 @@ ninja
 six
 tabulate==0.8.9 
 graphviz==0.19.1
+PyYAML==6.0
+networkx==2.5.1

@@ -25,7 +25,7 @@ import torch
 from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.nndct_graph import (Graph, Tensor, Block, Node,
                                       reorder_multi_subgraph_nodes)
-from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger
+from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger, QError, QWarning, QNote
 from pytorch_nndct.utils import build_aten_torch_ops_table
 
 from .op_dispatcher import *
@@ -43,13 +43,13 @@ def unknown_op_type_check(graph: Graph):
     elif node.has_custom_op():
       custom_ops.add(node.op.type)        
   for op in custom_ops:
-      NndctScreenLogger().warning(f"The quantizer recognize new op `{op}` as a float operator by default.")
+      NndctScreenLogger().warning2user(QWarning.FLOAT_OP, f"The quantizer recognize new op `{op}` as a float operator by default.")
 
 #   if custom_ops:
 #     NndctScreenLogger().info(f"You can make these new ops quantizable by add them to custom_quant_ops, \
 # e.g. quantizer= torch_quantizer(..., custom_quant_ops=['{list(custom_ops)[0]}',...])")
 
-  NndctScreenLogger().check(f"Unsupported Ops: {unkown_ops}", len(unkown_ops)==0)
+  NndctScreenLogger().check2user(QError.UNSUPPORTED_OPS, f"Unsupported Ops: {unkown_ops}.", len(unkown_ops)==0)
 
 class TorchParser(object):
   def __init__(self):
@@ -199,9 +199,7 @@ class TorchParser(object):
       if self.cur_graph and full_name in self.cur_graph.param_names():
         self.node_params[nndct_node].append(self.cur_graph.tensor(full_name))
       
-    #from ipdb import set_trace
-    #set_trace()
-    
+  
     node_input_args = []
     if not raw_node.inputs:
       node_input_args.extend(
@@ -227,14 +225,18 @@ class TorchParser(object):
           shape=value.shape,
           dtype=value.dtype,
           data=value.data.cpu().numpy(),
-          layout=value.layout)
+          layout=value.layout,
+          device=value.device,
+          requires_grad=value.requires_grad)
     else:
       nndct_tensor = Tensor(
           name=get_full_name(value_scope, value.name),
           shape=value.shape,
           dtype=value.dtype,
           data=value.data,
-          layout=value.layout)
+          layout=value.layout,
+          device=value.device,
+          requires_grad=value.requires_grad)
     return nndct_tensor
   
   @staticmethod
@@ -242,11 +244,15 @@ class TorchParser(object):
     op_creator = OpCreator()
     op_creator.cur_node = nndct_node
     op_type = op_creator.op_convert_map.get(node_kind, node_kind)
-    if hasattr(op_creator, op_type):
-      op = getattr(op_creator, op_type)(*node_input_args)
-    elif nndct_node.is_custom_extension:
-      op = op_creator.custom_op(nndct_node, op_type, *node_input_args)
-    else:
+    try:
+      if hasattr(op_creator, op_type):
+        op = getattr(op_creator, op_type)(*node_input_args)
+      elif nndct_node.is_custom_extension:
+        op = op_creator.custom_op(nndct_node, op_type, *node_input_args)
+      else:
+        op = op_creator.default(nndct_node, op_type, *node_input_args)
+    except Exception as e:
+      NndctScreenLogger().warning(f"The op `{node_kind}` parse error.\nException:`{str(e)}`")
       op = op_creator.default(nndct_node, op_type, *node_input_args)
     return op    
   
@@ -269,13 +275,21 @@ class TorchParser(object):
       #                                        tensor_util.FrameworkType.NNDCT)
       blob_tensor.dtype = self.convert_dtype(blob_tensor.dtype)
   
+
   @staticmethod
-  def _load_data(graph, module):
+  def _get_tensor_data_from_module(module, tensor):
+    if len(tensor.uses) == 1 and tensor.data is not None and isinstance(tensor.data, np.ndarray):
+      return np.copy(tensor.data)
+    else:
+      return module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+
+  @classmethod
+  def _load_data(cls, graph, module):
     for node in graph.nodes:
       if node.op.type in [NNDCT_OP.BASIC_LSTM, NNDCT_OP.BASIC_GRU]:
         for nndct_param, param_tensors in node.op.params.items():
           for tensor in param_tensors:
-            data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+            data = cls._get_tensor_data_from_module(module, tensor)
             tensor.from_ndarray(data)
             tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
@@ -299,7 +313,7 @@ class TorchParser(object):
               
       elif node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONVTRANSPOSE3D]:
         for param_name, tensor in node.op.params.items():
-          data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+          data = cls._get_tensor_data_from_module(module, tensor)
           if param_name == node.op.ParamName.WEIGHTS:
             data = np.copy(data).swapaxes(0, 1)
             data = np.ascontiguousarray(data)
@@ -310,7 +324,7 @@ class TorchParser(object):
 
       elif node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONV3D]:
         for param_name, tensor in node.op.params.items():
-          data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+          data = cls._get_tensor_data_from_module(module, tensor)
           if param_name == node.op.ParamName.WEIGHTS:
             in_channels = node.node_config("in_channels")
             out_channels = node.node_config("out_channels")
@@ -323,7 +337,7 @@ class TorchParser(object):
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
       elif node.op.type in [NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]:
           for param_name, tensor in node.op.params.items():
-            data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+            data = cls._get_tensor_data_from_module(module, tensor)
             if param_name == node.op.ParamName.WEIGHTS:
               # data = np.copy(data).transpose(1, 0, 2, 3)
               # data = np.ascontiguousarray(data)
@@ -342,13 +356,14 @@ class TorchParser(object):
           
       elif node.blocks:
         for block in node.blocks:
-          TorchParser._load_data(block, module)
+          cls._load_data(block, module)
       else:
         for param_name, tensor in node.op.params.items():
-          data = module.state_dict()[get_short_name(tensor.name)].cpu().numpy()
+          data = cls._get_tensor_data_from_module(module, tensor)
           tensor.from_ndarray(data)
-          tensor = tensor_util.convert_parameter_tensor_format(
-              tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
+          if node.has_bound_params():
+            tensor = tensor_util.convert_parameter_tensor_format(
+                tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
 
   def _get_device_info_from_inputs(self, inputs):
     if isinstance(inputs, torch.Tensor):
@@ -371,11 +386,11 @@ class TorchParser(object):
       return self._get_device_info_from_inputs(inputs)
       
   def get_nndct_value(self, value):
-    if isinstance(value, list):
+    if isinstance(value, (tuple, list)):
       values = []
       for ele in value:
         values.append(self.get_nndct_value(ele))
-      return values
+      return type(value)(values)
     else:
       if value.is_none():
         return None

@@ -17,10 +17,11 @@
 */
 
 
-#include <torch/extension.h> 
+#include <torch/extension.h>
 #include "../../include/nndct_fixneuron_op.h"
 #include "../../include/nndct_diffs_op.h"
 #include "../../include/nndct_math.h"
+#include "../../include/bfp.h"
 
 // For registration in torch script
 #ifdef TORCH_LIBRARY
@@ -35,18 +36,31 @@ TORCH_LIBRARY(vai, m) {
   m.def("SoftmaxLOD", SoftmaxLOD);
   m.def("SoftmaxSimulationPart1", SoftmaxSimulationPart1);
   m.def("SoftmaxSimulationPart2", SoftmaxSimulationPart2);
+  m.def("SigmoidTableLookupAIE2", SigmoidTableLookupAIE2);
+  m.def("TanhTableLookupAIE2", TanhTableLookupAIE2);
+  m.def("ExpApprAIE2", ExpApprAIE2);
+  m.def("LogSoftmaxFastLn", LogSoftmaxFastLn);
+  m.def("LogSoftmaxSub", LogSoftmaxSub);
+  m.def("LayernormInvSqrt", LayernormInvSqrt);
+  m.def("InverseAIE2", InverseAIE2);
+  m.def("to_bfp", to_bfp);
+  m.def("to_bfp_v2", to_bfp_v2);
+  //m.def("to_bfp_v2(Tensor input, int bit_width, int block_size, Tensor output) -> Tensor");
 }
 #else
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("SigmoidTableLookup", &SigmoidTableLookup, "SigmoidTableLookup");
-  m.def("SigmoidSimulation",  &SigmoidSimulation,  "SigmoidSimulation");
-  m.def("TanhTableLookup",    &TanhTableLookup,    "TanhTableLookup");
-  m.def("TanhSimulation",     &TanhSimulation,     "TanhSimulation");
-  m.def("FixNeuronV2",        &FixNeuronV2,        "FixNeuronV2");
-  m.def("DiffsFixPos",        &DiffsFixPos,        "DiffsFixPos");
-  m.def("SoftmaxExpApproximate",        &SoftmaxExpApproximate,        "SoftmaxExpApproximate");
-  m.def("SoftmaxLOD",        &SoftmaxLOD,        "SoftmaxLOD");
-  m.def("SoftmaxSimulationPart1",        &SoftmaxSimulationPart1,        "SoftmaxSimulationPart1");
-  m.def("SoftmaxSimulationPart2",        &SoftmaxSimulationPart2,        "SoftmaxSimulationPart2");
+  m.def("SigmoidSimulation", &SigmoidSimulation, "SigmoidSimulation");
+  m.def("TanhTableLookup", &TanhTableLookup, "TanhTableLookup");
+  m.def("TanhSimulation", &TanhSimulation, "TanhSimulation");
+  m.def("FixNeuronV2", &FixNeuronV2, "FixNeuronV2");
+  m.def("DiffsFixPos", &DiffsFixPos, "DiffsFixPos");
+  m.def("SoftmaxExpApproximate", &SoftmaxExpApproximate, "SoftmaxExpApproximate");
+  m.def("SoftmaxLOD", &SoftmaxLOD, "SoftmaxLOD");
+  m.def("SoftmaxSimulationPart1", &SoftmaxSimulationPart1, "SoftmaxSimulationPart1");
+  m.def("SoftmaxSimulationPart2", &SoftmaxSimulationPart2, "SoftmaxSimulationPart2");
+  m.def("InverseAIE2", &InverseAIE2, "InverseAIE2");
+  m.def("to_bfp", &to_bfp, "to_bfp");
+  m.def("to_bfp_v2", &to_bfp_v2, "to_bfp_v2");
 }
 #endif

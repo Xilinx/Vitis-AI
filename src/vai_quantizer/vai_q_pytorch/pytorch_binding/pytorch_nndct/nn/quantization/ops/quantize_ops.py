@@ -19,4 +19,5 @@ from pytorch_nndct.nn.quantization.ops import round_ops
 
 def quantize(tensor, scale, round_mode, min_v, max_v):
   round_fn = round_ops.get(round_mode)
-  return torch.min(torch.max(round_fn(tensor / scale) * scale, min_v), max_v)
+  #return torch.min(torch.max(round_fn(tensor / scale) * scale, min_v), max_v)
+  return torch.clamp(round_fn(tensor / scale) * scale, min_v, max_v)

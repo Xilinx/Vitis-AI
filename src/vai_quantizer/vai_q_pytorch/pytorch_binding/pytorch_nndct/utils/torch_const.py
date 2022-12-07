@@ -28,7 +28,10 @@ class TorchSymbol():
   MODULE_BASE_SYMBOL = "module"
   SCRIPT_SUFFIX = ".py"
   
-  
+class TorchGraphSymbol():
+  NODE_NAME_SEPERATOR = '/'
+  GRAPH_SCOPE_SYM = '::'
+
 @unique
 class TorchOpClassType(Enum):
   NN_MODULE = 'nn.module'
@@ -37,6 +40,7 @@ class TorchOpClassType(Enum):
   TENSOR = 'tensor'
   PRIMITIVE = 'primitive'
   UNKNOWN = 'unknown'
+  AUTO_INFER_OP = 'auto_infer_op'
   TORCH_SCRIPT_BUILTIN_FUNCTION = 'torch_bultin_funcion'
   MATH_BUILTIN_FUNCTION = 'math_builtin'
   GLOBAL_BUILTIN_FUNCTION = 'global_builtin'

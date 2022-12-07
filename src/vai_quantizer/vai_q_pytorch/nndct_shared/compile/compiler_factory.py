@@ -23,5 +23,8 @@ class CompilerFactory(object):
     if compile_backend == 'xmodel':
       from .xir_compiler import XirCompiler
       return XirCompiler()
+    elif compile_backend == 'xcompiler':
+      from .xcompiler import XCompiler
+      return XCompiler()
     else:
       raise NotImplementedError('other compiler is not implemented except xir')

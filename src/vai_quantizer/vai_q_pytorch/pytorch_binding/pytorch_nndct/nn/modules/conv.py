@@ -20,7 +20,7 @@ import torch
 from torch.autograd import Variable
 import math
 
-from nndct_shared.utils import NndctOption, NndctScreenLogger
+from nndct_shared.utils import NndctOption, NndctScreenLogger, QError, QWarning
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors 
 from .quant_noise import eval_qnoise
@@ -60,11 +60,12 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
         # adjust bias
         if self.quant_mode == 2 and self.bias is not None:
           if self.node.name not in self.quantizer.bias_corr.keys():
-            NndctScreenLogger().error(f"Bias correction file in quantization result directory does not match current model.")
+            NndctScreenLogger().error2user(QError.BIAS_CORRECTION, f"Bias correction file in quantization result directory does not match current model.")
             exit(2)
           self.bias.data = torch.sub(self.bias.data, torch.tensor(
               self.quantizer.bias_corr[self.node.name],
-              device=self.bias.data.device))
+              device=self.bias.data.device,
+              dtype=self.bias.data.dtype))
       self.param_saved = True
 
     # quantize parameters
@@ -99,7 +100,8 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
               self.node,
               tensor_names = [self.params_name[1]],
               tensor_type = 'param')[0]
-      self.param_quantized = True
+      if not NndctOption.nndct_quant_off.value:
+        self.param_quantized = True
     else:
       qweight = self.weight
       qbias = self.bias

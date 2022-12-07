@@ -23,7 +23,7 @@ from functools import partial
 from nndct_shared.base import NNDCT_OP, NNDCT_KEYS
 from nndct_shared.nndct_graph import Tensor, Node
 from .xgraph import XGraph
-from nndct_shared.utils import calculate_op_scale
+from nndct_shared.utils import calculate_op_scale, DataXopError
 
 NndctQuantInfo = Dict[str, Dict[str, List[int]]]
 
@@ -56,7 +56,6 @@ class _Converter:
                       NNDCT_OP.MAX_POOL: _pad_mode,
                       NNDCT_OP.MAX_POOL1D: _pad_mode,
                       NNDCT_OP.AVG_POOL: _pad_mode,
-                      NNDCT_OP.ADAPTIVEAVGPOOL2D: _pad_mode,
                       NNDCT_OP.PAD: {"mode": {0: "CONSTANT", 1: "REFLECT", 2: "SYMMETRIC"}}
                      
   }
@@ -120,57 +119,60 @@ def _pack(xgraph: XGraph, node: Node, pack_name: str, packed_item: List[Any],
   return sub_op_pack, pack_list
 
 
-def _sub(xgraph, name, input, other, quant_config):
-  if isinstance(input, Tensor) and (not isinstance(other, Tensor)):
-    operand1 = xgraph.get_op_by_name(input.node.name)
-    new_type = other.dtype if isinstance(other, np.ndarray) else type(other)
-    # if input.node.transpose_out_order:
-    #   shape = permute_axes(input.shape, input.node.transpose_out_order)
-    # else:
-    #   shape = input.shape
-    operand2 = np.ones(input.shape, dtype=new_type) * other
-    operand2 = xgraph.create_const_op(f"{name}_other", operand2)
-  elif isinstance(other, Tensor) and (not isinstance(input, Tensor)):
-    new_type = input.dtype if isinstance(input, np.ndarray) else type(input)
-    # if other.node.transpose_out_order:
-    #   shape = permute_axes(other.shape, other.node.transpose_out_order)
-    # else:
-    #   shape = other.shape
-    operand1 = np.ones(other.shape, dtype=new_type) * input
-    operand1 = xgraph.create_const_op(f"{name}_input", operand1)
-    operand2 = xgraph.get_op_by_name(other.node.name)
-  else:
-    operand1 = xgraph.get_op_by_name(input.node.name)
-    operand2 = xgraph.get_op_by_name(other.node.name)
+# def _sub(xgraph, name, input, other, quant_config):
+#   if isinstance(input, Tensor) and (not isinstance(other, Tensor)):
+#     operand1 = xgraph.get_op_by_name(input.node.name)
+#     new_type = other.dtype if isinstance(other, np.ndarray) else type(other)
+#     # if input.node.transpose_out_order:
+#     #   shape = permute_axes(input.shape, input.node.transpose_out_order)
+#     # else:
+#     #   shape = input.shape
+#     operand2 = np.ones(input.shape, dtype=new_type) * other
+#     operand2 = xgraph.create_const_op(f"{name}_other", operand2)
+#   elif isinstance(other, Tensor) and (not isinstance(input, Tensor)):
+#     new_type = input.dtype if isinstance(input, np.ndarray) else type(input)
+#     # if other.node.transpose_out_order:
+#     #   shape = permute_axes(other.shape, other.node.transpose_out_order)
+#     # else:
+#     #   shape = other.shape
+#     operand1 = np.ones(other.shape, dtype=new_type) * input
+#     operand1 = xgraph.create_const_op(f"{name}_input", operand1)
+#     operand2 = xgraph.get_op_by_name(other.node.name)
+#   else:
+#     operand1 = xgraph.get_op_by_name(input.node.name)
+#     operand2 = xgraph.get_op_by_name(other.node.name)
 
-  input_ops: Dict[str, List["xir.Op"]] = {}
-  input_ops["input"] = [operand1, operand2]
-  input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], name, quant_config)
-  xgraph.create_fixed_normal_op(name, "sub", quant_config, input_ops=input_ops)
+#   input_ops: Dict[str, List["xir.Op"]] = {}
+#   input_ops["input"] = [operand1, operand2]
+#   input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], name, quant_config)
+#   xgraph.create_fixed_normal_op(name, "sub", quant_config, input_ops=input_ops)
 
 
 def data_xop(xgraph: XGraph, node: Node,
              quant_config: NndctQuantInfo) -> NoReturn:
-  
   shape = node.out_tensors[0].shape
   if not shape:
     shape = [1]
   
+  if shape[0] == 0:
+    raise DataXopError("data", shape)
   # shape = permute_axes(shape, node.transpose_out_order)
-    
-  out_tensor = np.zeros(shape, dtype=np.float32)
-  attrs: Dict[str, Any] = {}
-  attrs["shape"] = shape
-  attrs["data_type"] = _Converter.to_xir_dtype(out_tensor.dtype.type)
-  xgraph.create_fixed_normal_op(
-      node.name, "data", quant_config, tensor=out_tensor, attrs=attrs)
+  try:  
+    out_tensor = np.zeros(shape, dtype=np.float32)
+    attrs: Dict[str, Any] = {}
+    attrs["shape"] = shape
+    attrs["data_type"] = _Converter.to_xir_dtype(out_tensor.dtype.type)
+    xgraph.create_fixed_normal_op(
+        node.name, "data", quant_config, tensor=out_tensor, attrs=attrs)
+  except:
+    raise DataXopError("data", shape)
 
 
 def const_xop(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
   data = node.node_attr(node.op.AttrName.DATA)
   data_type = np.dtype(node.out_tensors[0].dtype)
   data_type = np.float32 if data_type == np.float64 else data_type
-  if not isinstance(data, list):
+  if not isinstance(data, list) and (not isinstance(data, np.ndarray)):
     data = [data]
   
   data = np.array(data, dtype=data_type)
@@ -188,10 +190,21 @@ def reduction_mean(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> 
   input_ops: Dict[str, List[Op]] = {}
   input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
   input_ops["input"] = xgraph.create_input_fix_ops(input_ops["input"], node.name, quant_config)
-  if len(node.node_attr(node.op.AttrName.DIMS)) == 1:
+  
+  in_tensor_shape = node.in_tensors[0].shape
+  if node.node_attr(node.op.AttrName.DIMS) == [None]:
+    dim_list = [i for i in range(len(in_tensor_shape))]
+  else:
+    dim_list = node.node_attr(node.op.AttrName.DIMS)
+  
+  rec = 1
+  for i in dim_list:
+    rec = rec * in_tensor_shape[i]
+
+  if (rec & (rec - 1)) != 0:
     xgraph.create_fixed_normal_op(
       node.name + "_i0", "reduction_mean", quant_config, attrs=attrs, input_ops=input_ops)
-    scale = calculate_op_scale(node.in_tensors[0].shape[node.node_attr(node.op.AttrName.DIMS)[0]], node)
+    scale = calculate_op_scale(rec, node)
     scale = [scale]
     xgraph.create_fixed_const_op(name=node.name + "_i1", 
                                 data=np.array(scale, dtype=np.float32), 
@@ -249,29 +262,25 @@ def reshape(xgraph: XGraph, node: Node,
 
 
 
-def rsub(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  operand1, operand2 = node.node_attr(node.op.AttrName.INPUT), node.node_attr(
-      node.op.AttrName.OTHER)
+# def rsub(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+#   operand1, operand2 = node.node_attr(node.op.AttrName.INPUT), node.node_attr(
+#       node.op.AttrName.OTHER)
 
-  _sub(xgraph, node.name, operand1, operand2, quant_config)
+#   _sub(xgraph, node.name, operand1, operand2, quant_config)
 
 
-def sub(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  operand1, operand2 = node.node_attr(node.op.AttrName.INPUT), node.node_attr(
-      node.op.AttrName.OTHER)
-  _sub(xgraph, node.name, operand1, operand2, quant_config)
+# def sub(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+#   operand1, operand2 = node.node_attr(node.op.AttrName.INPUT), node.node_attr(
+#       node.op.AttrName.OTHER)
+#   _sub(xgraph, node.name, operand1, operand2, quant_config)
 
 
 def binary_op(op_type: str, xgraph: XGraph, node: Node, quant_config: NndctQuantInfo):
   input, other = node.node_attr(node.op.AttrName.INPUT), node.node_attr(node.op.AttrName.OTHER)
-  if isinstance(input, Tensor) and (not isinstance(other, Tensor)):
-    operand1 = xgraph.get_op_by_name(input.node.name)
-    dtype = other.dtype if isinstance(other, np.ndarray) else type(other)
-    operand2 = np.ones(input.shape, dtype=dtype) * other
-    operand2 = xgraph.create_const_op(f"{node.name}_other", operand2)
-  else:
-    operand1 = xgraph.get_op_by_name(input.node.name)
-    operand2 = xgraph.get_op_by_name(other.node.name)
+  input_name = input.name if input.is_param_tensor() else input.node.name
+  operand1 = xgraph.get_op_by_name(input_name)
+  other_name = other.name if other.is_param_tensor() else other.node.name
+  operand2 = xgraph.get_op_by_name(other_name)
 
   input_ops: Dict[str, List["xir.Op"]] = {}
   input_ops["input"] = [operand1, operand2]
@@ -285,7 +294,6 @@ def binary_op(op_type: str, xgraph: XGraph, node: Node, quant_config: NndctQuant
 def default_xop(xop_type: str, xgraph: XGraph, node: Node,
                 quant_config: NndctQuantInfo) -> NoReturn:
 
-  
   input_ops: Dict[str, List["xir.Op"]] = {}
   if node.has_bound_params():
     for param_name, param_tensor in node.op.params.items():
@@ -379,24 +387,6 @@ def dense(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
       node.name, "matmul", quant_config, attrs=attrs, input_ops=input_ops)
 
 
-def matmul(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-
-  input_ops: Dict[str, List["xir.Op"]] = {}
-  input_list = []
-  for input in node.in_nodes:
-    input_op = xgraph.get_op_by_name(input)
-    input_list.append(input_op)
-  input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
-
-  attrs: Dict[str, Any] = {}
-  attrs["transpose_a"] = False
-  attrs["transpose_b"] = False
-
-  xgraph.create_fixed_normal_op(
-      node.name, "matmul", quant_config, attrs=attrs, input_ops=input_ops)
-
-
-
 # def permute_invar_op(xop_type, xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
 #   to_xir(xop_type)(xgraph, node, quant_config)
     
@@ -406,7 +396,6 @@ def matmul(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
  
 
 def avgpool(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  
   scale = 1.0
   if node.node_attr(node.op.AttrName.KERNEL) == [3, 3]:
     scale = 9.0 * 7.0 / 64.0
@@ -550,6 +539,7 @@ def scale(xgraph, node, quant_config):
   input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
   xgraph.create_fixed_normal_op(node.name, "scale", quant_config, attrs=attrs, input_ops=input_ops)
 
+
 def hsigmoid(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
   scale = 6.0 * 2731.0 / 16384.0
     
@@ -588,33 +578,35 @@ def hswish(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
   
   input_ops["input"] = [hsigmoid_op, const_op]
   mul_op = xgraph.create_normal_op(node.name + '_mul', "mul", input_ops=input_ops)
+  if quant_config:
+    mul_fp = [8, None]
+    mul_fp[0], _ = quant_config['output'][node.name][0]
+    mul_fp[1] = mul_fp[0] - 1
+    attrs: Dict[str, Any] = {}
+    attrs['fix_point'] = mul_fp[1]
+    attrs['bit_width'] = mul_fp[0]
+    attrs['round_mode'] = "DPU_ROUND"
+    attrs['if_signed'] = True
+    input_ops['input'] = [mul_op]
+    op_name = mul_op.get_name() + NNDCT_KEYS.FIX_OP_SUFFIX
+    mul_fixed_op = xgraph.create_normal_op(op_name, 'fix', attrs=attrs, input_ops=input_ops)
 
-  mul_fp = [8, None]
-  mul_fp[0] = quant_config['output'][node.name][0] 
-  mul_fp[1] = mul_fp[0] - 1
-  attrs: Dict[str, Any] = {}
-  attrs['fix_point'] = mul_fp[1]
-  attrs['bit_width'] = mul_fp[0]
-  attrs['round_mode'] = "DPU_ROUND"
-  attrs['if_signed'] = True
-  input_ops['input'] = [mul_op]
-  op_name = mul_op.get_name() + NNDCT_KEYS.FIX_OP_SUFFIX
-  mul_fixed_op = xgraph.create_normal_op(op_name, 'fix', attrs=attrs, input_ops=input_ops)
-
-  input_ops["input"] = [mul_fixed_op, node_input_op]
+    input_ops["input"] = [mul_fixed_op, node_input_op]
+  else:
+    input_ops["input"] = [mul_op, node_input_op]
+  
   hswish_fixed_op = xgraph.create_fixed_normal_op(
       node.name, "mul", quant_config, input_ops=input_ops)
 
 
 def custom_xop(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
-  
   shape = node.out_tensors[0].shape
   if not shape:
     shape = [1]
  
   attrs = _get_xir_attr_from_node(node)
   attrs = {} if attrs is None else attrs
-  
+ 
   attrs["shape"] = shape
   numpy_type = _Converter.to_numpy_dtype(node.out_tensors[0].dtype)
   attrs["data_type"] = _Converter.to_xir_dtype(numpy_type)
@@ -645,56 +637,64 @@ def to_binary_op(xop_type):
 
 
 NNDCTIR2XIR_CONVERTOR = {
-    NNDCT_OP.INPUT: data_xop,
-    # NNDCT_OP.CONV1D: to_xir("conv1d"),
-    NNDCT_OP.CONV2D: to_xir("conv2d"),
-    NNDCT_OP.DEPTHWISE_CONV2D: to_xir("depthwise-conv2d"),
-    NNDCT_OP.CONVTRANSPOSE2D: to_xir("transposed-conv2d"),
-    NNDCT_OP.AVG_POOL: avgpool,
-    NNDCT_OP.ADAPTIVEAVGPOOL2D: avgpool,
-    NNDCT_OP.MAX_POOL: to_xir("maxpool2d"),
-    # NNDCT_OP.MAX_POOL1D: to_xir("maxpool1d"),
-    NNDCT_OP.RELU: to_xir("relu"),
-    NNDCT_OP.LEAKY_RELU: to_xir("leaky-relu"),
-    NNDCT_OP.TANH: to_xir("tanh"),
-    NNDCT_OP.SIGMOID: to_xir("sigmoid"),
-    NNDCT_OP.DENSE: dense,
-    NNDCT_OP.MATMUL: matmul,
-    NNDCT_OP.RESHAPE: reshape,
-    NNDCT_OP.ADD: to_xir("add"),
-    NNDCT_OP.SCALAR_ADD: to_xir("add"),
-    NNDCT_OP.FLATTEN: to_xir("flatten"),
-    NNDCT_OP.CONCAT: to_xir("concat"),
-    NNDCT_OP.MULTIPLY: to_binary_op("mul"),
-    NNDCT_OP.SCALAR_MUL: to_binary_op("mul"),
-    NNDCT_OP.STRIDED_SLICE: to_xir("strided_slice"),
-    NNDCT_OP.RSUB: rsub,
-    NNDCT_OP.SUB: sub,
-    NNDCT_OP.PAD: to_xir("pad"),
-    NNDCT_OP.RESIZE: resize,
-    NNDCT_OP.SOFTMAX: to_xir("softmax"),
-    NNDCT_OP.PERMUTE: to_xir("transpose"),
-    NNDCT_OP.CONST: const_xop,
-    NNDCT_OP.TENSOR: const_xop,
-    NNDCT_OP.RELU6: to_xir("relu6"),
-    NNDCT_OP.MEAN: reduction_mean,
-    NNDCT_OP.BATCH_NORM: scale,
-    NNDCT_OP.QUANT_STUB: data_xop,
-    NNDCT_OP.MAX: to_xir("reduction_max"),
-    NNDCT_OP.TRANSPOSE: to_xir("transpose"),
-    NNDCT_OP.SQUEEZE: to_xir("squeeze"),
-    NNDCT_OP.ZEROS: zeros,
-    NNDCT_OP.NEG: to_xir("neg"),
-    NNDCT_OP.DIV: to_binary_op("div"),
-    NNDCT_OP.SUM: to_xir("reduction_sum"),
-    NNDCT_OP.HSIGMOID: hsigmoid,
-    NNDCT_OP.HSWISH: hswish,
-    NNDCT_OP.PIXEL_SHUFFLE: to_xir("pixel-shuffle"),
-    NNDCT_OP.PIXEL_UNSHUFFLE: to_xir("pixel-shuffle"),
-    NNDCT_OP.CONV3D: to_xir("conv3d"),
-    NNDCT_OP.DEPTHWISE_CONV3D: to_xir("depthwise-conv3d"),
-    NNDCT_OP.CONVTRANSPOSE3D: to_xir("transposed-conv3d"),
-    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: to_xir("transposed-depthwise-conv3d"),
-    NNDCT_OP.RESIZE_3D: resize,
-    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: to_xir("transposed-depthwise-conv2d")
+    # NNDCT op type: (XIR op type , XIR_CONVERT_FUNCTION)
+    NNDCT_OP.INPUT: ("data", data_xop),
+    NNDCT_OP.CONV1D: ("conv1d", to_xir("conv1d")),
+    NNDCT_OP.CONV2D: ("conv2d", to_xir("conv2d")),
+    NNDCT_OP.DEPTHWISE_CONV2D: ("depthwise-conv2d", to_xir("depthwise-conv2d")),
+    NNDCT_OP.CONVTRANSPOSE2D: ("transposed-conv2d", to_xir("transposed-conv2d")),
+    NNDCT_OP.AVG_POOL: ("avgpool2d", avgpool),
+    NNDCT_OP.MAX_POOL1D: ("maxpool1d", to_xir("maxpool1d")),
+    NNDCT_OP.MAX_POOL: ("maxpool2d", to_xir("maxpool2d")),
+    NNDCT_OP.RELU: ("relu", to_xir("relu")),
+    NNDCT_OP.LEAKY_RELU: ("leaky-relu", to_xir("leaky-relu")),
+    NNDCT_OP.GELU: ("gelu", to_xir("gelu")),
+    NNDCT_OP.PRELU: ("prelu", to_xir("prelu")),
+    NNDCT_OP.TANH: ("tanh", to_xir("tanh")),
+    NNDCT_OP.SIGMOID: ("sigmoid", to_xir("sigmoid")),
+    NNDCT_OP.DENSE: ("matmul", dense),
+    NNDCT_OP.MATMUL: ("matmul", to_xir("matmul")),
+    NNDCT_OP.RESHAPE: ("reshape", reshape),
+    NNDCT_OP.ADD: ("add", to_binary_op("add")),
+    # NNDCT_OP.SCALAR_ADD: ("add", to_binary_op("add")),
+    NNDCT_OP.FLATTEN: ("flatten", to_xir("flatten")),
+    NNDCT_OP.CONCAT: ("concat", to_xir("concat")),
+    NNDCT_OP.MULTIPLY: ("mul", to_binary_op("mul")),
+    # NNDCT_OP.SCALAR_MUL: ("mul", to_binary_op("mul")),
+    NNDCT_OP.STRIDED_SLICE: ("strided_slice", to_xir("strided_slice")),
+    NNDCT_OP.RSUB: ("sub", to_binary_op("sub")),
+    NNDCT_OP.SUB: ("sub", to_binary_op("sub")),
+    NNDCT_OP.PAD: ("pad", to_xir("pad")),
+    NNDCT_OP.RESIZE: ("resize", resize),
+    NNDCT_OP.SOFTMAX: ("softmax", to_xir("softmax")),
+    NNDCT_OP.PERMUTE: ("transpose", to_xir("transpose")),
+    NNDCT_OP.CONST: ("const", const_xop),
+    NNDCT_OP.TENSOR: ("const", const_xop),
+    NNDCT_OP.RELU6: ("relu6", to_xir("relu6")),
+    NNDCT_OP.MEAN: ("reduction_mean", reduction_mean),
+    NNDCT_OP.BATCH_NORM: ("scale", scale),
+    NNDCT_OP.LAYER_NORM: ("layernorm", to_xir("layernorm")),
+    NNDCT_OP.QUANT_STUB: ("data", data_xop),
+    NNDCT_OP.MAX: ("reduction_max", to_xir("reduction_max")),
+    NNDCT_OP.TRANSPOSE: ("transpose", to_xir("transpose")),
+    NNDCT_OP.SQUEEZE: ("squeeze", to_xir("squeeze")),
+    NNDCT_OP.ZEROS: ("const", zeros),
+    NNDCT_OP.NEG: ("neg", to_xir("neg")),
+    NNDCT_OP.DIV: ("div", to_binary_op("div")),
+    NNDCT_OP.SUM: ("reduction_sum", to_xir("reduction_sum")),
+    NNDCT_OP.HSIGMOID: ("hard-sigmoid", hsigmoid),
+    NNDCT_OP.HSWISH: ("hard-swish", hswish),
+    NNDCT_OP.PIXEL_SHUFFLE: ("pixel-shuffle", to_xir("pixel-shuffle")),
+    NNDCT_OP.PIXEL_UNSHUFFLE: ("pixel-shuffle", to_xir("pixel-shuffle")),
+    NNDCT_OP.CONV3D: ("conv3d", to_xir("conv3d")),
+    NNDCT_OP.DEPTHWISE_CONV3D: ("depthwise-conv3d", to_xir("depthwise-conv3d")),
+    NNDCT_OP.CONVTRANSPOSE3D: ("transposed-conv3d", to_xir("transposed-conv3d")),
+    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: ("transposed-depthwise-conv3d", to_xir("transposed-depthwise-conv3d")),
+    NNDCT_OP.RESIZE_3D: ("resize", resize),
+    NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: ("transposed-depthwise-conv2d", to_xir("transposed-depthwise-conv2d")),
+    NNDCT_OP.ARGMAX_DIM: ("argmax", to_xir('argmax'))
+    # NNDCT_OP.MISH: ("mish", to_xir("mish")),
+    # NNDCT_OP.CLAMP: ("clamp", to_xir("clamp")),
+    # NNDCT_OP.INSTANCE_NORM: ("instancenorm", to_xir("instancenorm")),
+    # NNDCT_OP.GROUP_NORM: ("groupnorm". to_xir("groupnorm"))
 }

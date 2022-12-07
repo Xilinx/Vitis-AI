@@ -64,7 +64,7 @@ def get_flows_and_info(quant_mode,
   return None, quantizer.configer.quant_input_names(
       node, inputs, params), (quantizer.configer.quant_output(node).name, True)
 
-def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output'):
+def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output', method=None):
   quant_mode, quantizer = maybe_get_quantizer()
   if quantizer is None:
     return tensors
@@ -83,12 +83,17 @@ def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output'):
   for idx in range(len(tensors)):
     if tensor_type == 'param':
       tname = tensor_names[idx]
+      index = 0
+    else:
+      index = idx
     if (quantizer.need_quantize_tensor(tname, tensor_type)):
       qtensors.append(qfunc(
         tensors[idx],
         tname,
         node,
-        tensor_type))
+        tensor_type,
+        index,
+        method=method))
     else:
       qtensors.append(tensors[idx])
 

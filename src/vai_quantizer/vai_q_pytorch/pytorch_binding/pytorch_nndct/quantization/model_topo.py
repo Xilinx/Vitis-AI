@@ -15,16 +15,17 @@
 from pytorch_nndct.utils import module_util as mod_util
 
 class TopoNode(object):
+  """ A wrapper of graph node with addtional information."""
 
   def __init__(self,
-               graph_node,
                name,
+               in_quant_part,
                spec=None,
                module=None,
                inputs=None,
                op=None):
-    self.graph_node = graph_node
     self.name = name
+    self.in_quant_part = in_quant_part
     self.spec = spec
     self.module = module
     self.inputs = inputs
@@ -74,5 +75,11 @@ def build_model_topo(graph, node_to_spec):
       inputs.append(topo_node_name(input_name))
     spec = node_to_spec.get(node.name, None)
     model_topo.add_node(
-        TopoNode(node, name, spec, None, inputs, node.op))
+        TopoNode(
+            name,
+            node.in_quant_part,
+            spec,
+            module=None,
+            inputs=inputs,
+            op=node.op))
   return model_topo

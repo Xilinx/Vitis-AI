@@ -98,6 +98,7 @@ class RuntimeConfig(ConfigDict):
     self.approx_mode = 'exp_poly'
     self.approx_degree = 3
     self.exp_table_size = 1
+    self.training = False
     self.load(params)
 
   @classmethod

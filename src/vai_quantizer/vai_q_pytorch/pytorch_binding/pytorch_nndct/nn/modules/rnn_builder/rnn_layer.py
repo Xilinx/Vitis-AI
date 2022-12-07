@@ -184,14 +184,15 @@ class QuantGruLayer(torch.nn.Module):
 class LSTMLayer(torch.nn.Module):
     def __init__(self, cell, input_size: int, hidden_size: int, bias: bool = True):
         super().__init__()
-        cell_dummy_input = torch.randn(1, input_size)
-        cell_dummy_state = (torch.randn(1, hidden_size), torch.randn(1, hidden_size))
-        self.cell = torch.jit.trace(cell(input_size, hidden_size, bias), (cell_dummy_input, cell_dummy_state))
-
+        # cell_dummy_input = torch.randn(1, input_size)
+        # cell_dummy_state = (torch.randn(1, hidden_size), torch.randn(1, hidden_size))
+        # self.cell = torch.jit.trace(cell(input_size, hidden_size, bias), (cell_dummy_input, cell_dummy_state))
+        self.cell = cell(input_size, hidden_size, bias)
     def forward(self, input: Tensor, state: Tuple[Tensor, Tensor]) -> Tuple[Tensor, Tuple[Tensor, Tensor]]:
+        # type: (Tensor, Tuple[Tensor, Tensor]) -> Tuple[Tensor, Tuple[Tensor, Tensor]]
         outputs = []
         for i in range(input.size(0)):
-            state = self.cell(input[i], state)
-            outputs += [state[0]]
+            out, state = self.cell(input[i], state)
+            outputs = outputs + [out]
         return torch.stack(outputs), state
       

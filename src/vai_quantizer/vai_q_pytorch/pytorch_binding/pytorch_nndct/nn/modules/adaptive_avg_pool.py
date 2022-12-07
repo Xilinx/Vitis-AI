@@ -22,7 +22,7 @@ import torch
 import pytorch_nndct.utils as py_utils
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors 
-from nndct_shared.utils import NndctOption
+from nndct_shared.utils import NndctOption, NndctScreenLogger
 
 __all__ = ['AdaptiveAvgPool2d']
 
@@ -39,33 +39,29 @@ class deephi_AdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
     output = super().forward(qinput)
 
-    # scale to DPU accuracy
-    if (isinstance(self.output_size, (tuple, list)) and tuple(self.output_size) != (1, 1)) or self.output_size != 1:
-      print(
-          "NNDCT-Waring: For adaptive average pooling, DPU only supports output size 1"
-      )
-      
-    # kernel = [input.shape[3], input.shape[2]]
+    input_size = [int(dim) for dim in input.shape[2:]]
+    mod = [input_size[i] % self.output_size[i] for i in range(0, len(input_size))]
+    if mod != [0] * len(mod):
+      if self.node is not None:
+        NndctScreenLogger().warning_once(f"AdaptiveAvgpool2d op({self.node.name}) is not quantized. Because it's output size {self.output_size} are not factor of input size {input_size}.")
+      return output
     # During slow trace, the dim of shape will convert to tensor value which is not support in nndct.
-    kernel = [input.shape[3] if isinstance(input.shape[3], int) else input.shape[3].item(), input.shape[2] if isinstance(input.shape[2], int) else input.shape[2].item()]
-    self.node.set_node_attr(self.node.op.AttrName.KERNEL, kernel)
-    self.node.set_node_attr(self.node.op.AttrName.STRIDE, kernel)   
-
+    kernel = [int(input_size[i] / self.output_size[i]) for i in range(0, len(input_size))]
     # scale to DPU accuracy
     if NndctOption.nndct_avg_pool_approximate.value:
       scale = 1.0
-      if self.node.node_attr(self.node.op.AttrName.KERNEL) == [3, 3]:
+      if kernel == [3, 3]:
         scale = 9.0 * 7.0 / 64.0
-      elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [5, 5]:
+      elif kernel == [5, 5]:
         scale = 25.0 * 10.0 / 256.0
-      elif self.node.node_attr(self.node.op.AttrName.KERNEL) in [[6, 6], [3, 6], [6, 3]]:
+      elif kernel in [[6, 6], [3, 6], [6, 3]]:
         scale = 36.0 * 7.0 / 256.0
-      elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [7, 7]:
+      elif kernel == [7, 7]:
         scale = 49.0 * 21.0 / 1024.0
-      elif self.node.node_attr(self.node.op.AttrName.KERNEL) == [14, 14]:
+      elif kernel == [14, 14]:
         scale = 196.0 * 21.0 / 4096.0
       else:
-        rec = self.node.node_attr(self.node.op.AttrName.KERNEL)[0] * self.node.node_attr(self.node.op.AttrName.KERNEL)[1]
+        rec = kernel[0] * kernel[1]
         max_factor = math.ceil(math.log(rec * 128, 2))
         diff = 1.0
         multi_factor = 0.0

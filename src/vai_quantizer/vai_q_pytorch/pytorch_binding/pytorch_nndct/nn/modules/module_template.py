@@ -43,6 +43,7 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           self.quant_mode, self.quantizer = maybe_get_quantizer()
           self.param_quantized = False
           self.qparams = None
+          self.torch_op_type = torch_op_type
         
         def extra_repr(self):
           return f"'{module_cls.__name__}'"
@@ -50,7 +51,7 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
         def forward(self, *args, **kwargs):
           # quantize input tensor
           configer = NndctGraphHolder()
-          qinputs = quantize_tensors(list(args), self.node, tensor_type='input')[0]
+          qinputs = quantize_tensors(list(args), self.node, tensor_type='input')
           if (configer.node_quantizable_with_params(self.node)): 
             qparams = []
             inplace = (NndctOption.nndct_quant_off.value or 
@@ -76,12 +77,16 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
                     self.node,
                     tensor_names=param_names,
                     tensor_type='param')
-              self.param_quantized = True
+              if not NndctOption.nndct_quant_off.value:
+                self.param_quantized = True
             else:
               qparams = [p for p in params]
 
           output = super().forward(*args, **kwargs)
-          output = quantize_tensors([output], self.node)[0]
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
           return output
       
       return DeephiModule(*args, **kwargs)
@@ -94,11 +99,6 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
       TorchOpClassType.NN_CORE_FUNCTION: torch._C._nn
     }
     caller = getattr(module_map.get(torch_op_attr.op_class_type, None), torch_op_type)
-    # if getattr(torch.nn.functional, torch_op_type, None):
-    #   caller = getattr(torch.nn.functional, torch_op_type)
-    # else:
-    #   caller = getattr(torch, torch_op_type, None)
-      
     if caller:
       class DeephiFuncModule(torch.nn.Module):
         r"""quantizable operation"""
@@ -108,6 +108,7 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           self.node = None
           self.quant_mode, self.quantizer = maybe_get_quantizer()
           self.caller = caller
+          self.torch_op_type = torch_op_type
         
         def extra_repr(self):
           return f"'{caller.__name__}'"
@@ -129,14 +130,17 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           inputs = quantize_tensors(inputs, self.node, tensor_type='input')
           try:
             output = caller(*args, **kwargs)
-            if isinstance(output, torch.Tensor):
+            if isinstance(output, torch.Tensor) and (self.quantizer is not None) and (not self.quantizer.exporting):
               output = output.clone()
           except TypeError as e:
             NndctScreenLogger().warning_once(f"{str(e)}. The arguments of function will convert to positional arguments.")
             inputs = list(args) +  list(kwargs.values())
             output = caller(*inputs)
           
-          output = quantize_tensors([output], self.node)[0]
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
             
           return output
         
@@ -153,16 +157,26 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           self.node = None
           self.quant_mode, self.quantizer = maybe_get_quantizer()
           self.op_type = op_type
+          self.torch_op_type = torch_op_type
         
         def extra_repr(self):
           return f"'{self.op_type}'"
         
         def forward(self, input, *args, **kwargs):
-          input = quantize_tensors([input], self.node, tensor_type='input')[0]
           
+          if isinstance(input, (list, tuple)):
+            input = quantize_tensors(input, self.node, tensor_type='input')
+          else:
+            input = quantize_tensors([input], self.node, tensor_type='input')[0]
+       
+          if self.torch_op_type == "size" and self._forward_hooks:
+            self.node.in_tensors[0].shape = list(input.size())            
           output = getattr(input, self.op_type, None)(*args, **kwargs)
-          
-          output = quantize_tensors([output], self.node)[0]
+        
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
 
           return output 
           
@@ -176,6 +190,7 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           super().__init__()
           self.node = None
           self.quant_mode, self.quantizer = maybe_get_quantizer()
+          self.torch_op_type = torch_op_type
         
         def extra_repr(self):
           return f"'{self.node.caller.__name__}'"
@@ -199,7 +214,10 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           caller_map = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
           output = caller_map[self.node.name](*args)
 
-          output = quantize_tensors([output], self.node)[0]
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
             
           return output
         
@@ -211,6 +229,7 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
           super().__init__()
           self.node = None
           self.quant_mode, self.quantizer = maybe_get_quantizer()
+          self.torch_op_type = torch_op_type
         
         def extra_repr(self):
           return f"'{torch_op_type}'"
@@ -218,10 +237,37 @@ def creat_module(torch_op_type, torch_op_attr, *args, **kwargs):
         def forward(self, *args):
           caller_map = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
           output = caller_map[self.node.name](*args) 
-          output = quantize_tensors([output], self.node)[0]
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
           return output
         
     return DeephiCustomModule() 
+  elif torch_op_attr.op_class_type == TorchOpClassType.AUTO_INFER_OP:
+
+    class DeephiBuiltinFuncModule(torch.nn.Module):
+
+        def __init__(self):
+          super().__init__()
+          self.node = None
+          self.quant_mode, self.quantizer = maybe_get_quantizer()
+          self.torch_op_type = torch_op_type
+                  
+        def extra_repr(self):
+          return f"'{torch_op_type}'"
+         
+        def forward(self, args):
+          caller_map = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
+          output = caller_map[self.node.name](**args)
+          if isinstance(output, (list, tuple)):
+            output = quantize_tensors(output, self.node)
+          else:
+            output = quantize_tensors([output], self.node)[0]
+          return output
+        
+    return DeephiBuiltinFuncModule() 
+
   else:
     raise RuntimeError("Unkown op type:{torch_op_type}")
    

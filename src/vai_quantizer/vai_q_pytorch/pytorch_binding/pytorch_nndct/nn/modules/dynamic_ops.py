@@ -28,18 +28,19 @@ import torch
 from torch.nn.parameter import Parameter
 
 __all__ = [
-    'DynamicSeparableConv2d', 'DynamicConv2d', 'DynamicGroupConv2d',
+    'DynamicSeparableConv2d', 'DynamicConv2d', 'DynamicConvTranspose2d',
     'DynamicBatchNorm2d', 'DynamicGroupNorm', 'DynamicLinear'
 ]
 
 def get_same_padding(kernel_size):
-  if isinstance(kernel_size, tuple):
+  if isinstance(kernel_size, (tuple, list)):
     assert len(kernel_size) == 2, 'invalid kernel size: %s' % kernel_size
     p1 = get_same_padding(kernel_size[0])
     p2 = get_same_padding(kernel_size[1])
     return p1, p2
-  assert isinstance(kernel_size,
-                    int), 'kernel size should be either `int` or `tuple`'
+  assert isinstance(
+      kernel_size,
+      int), 'kernel size should be either `int` or `tuple` or `list`'
   assert kernel_size % 2 > 0, 'kernel size should be odd number'
   return kernel_size // 2
 
@@ -86,8 +87,12 @@ class DynamicConv2d(nn.Module):
     self.is_depthwsie_conv = True if self.groups == max(
         self.candidate_in_channels_list) else False
 
-    self._ks_set = list(set(self.candidate_kernel_size_list))
-    self._ks_set.sort()  # e.g., [3, 5, 7]
+    self.is_get_same_pad = True if max(
+        self.candidate_kernel_size_list)[0] == max(
+            self.candidate_kernel_size_list
+        )[1] and max(self.candidate_kernel_size_list)[0] % 2 > 0 and max(
+            self.candidate_kernel_size_list
+        )[0] // 2 == self.padding[0] and self.dilation[0] == 1 else False
 
     self.active_in_channel = max(
         self.candidate_in_channels_list)  # for export subet
@@ -97,8 +102,8 @@ class DynamicConv2d(nn.Module):
   def get_active_filter(self, in_channel, out_channel, kernel_size):
     max_kernel_size = max(self.candidate_kernel_size_list)
 
-    if max_kernel_size % 2 > 0:
-      start, end = sub_filter_start_end(max_kernel_size, kernel_size)
+    if max_kernel_size[0] == max_kernel_size[1] and max_kernel_size[0] % 2 > 0:
+      start, end = sub_filter_start_end(max_kernel_size[0], kernel_size[0])
       filters = self.conv.weight[:out_channel, :in_channel, start:end,
                                  start:end]
     else:
@@ -126,7 +131,7 @@ class DynamicConv2d(nn.Module):
                                      kernel_size).contiguous()
     bias = self.get_active_bias(out_channel)
 
-    if kernel_size % 2 > 0:
+    if self.is_get_same_pad:
       self.padding = get_same_padding(kernel_size)
 
     y = F.conv2d(x, filters, bias, self.stride, self.padding, self.dilation,
@@ -172,9 +177,6 @@ class DynamicConvTranspose2d(nn.Module):
 
     self.is_depthwsie_conv = True if self.groups == max(
         self.candidate_in_channels_list) else False
-
-    self._ks_set = list(set(self.candidate_kernel_size_list))
-    self._ks_set.sort()  # e.g., [3, 5, 7]
 
     self.active_in_channel = max(
         self.candidate_in_channels_list)  # for export subet

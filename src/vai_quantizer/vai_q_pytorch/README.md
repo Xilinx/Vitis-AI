@@ -12,11 +12,11 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 ### Supported and Limitation
 
 * Python
-1. Support version 3.6 ~ 3.7. 
+1. Support version 3.6 ~ 3.9. 
     
 * Pytorch
-1. Support version 1.2 ~ 1.10. 
-2. QAT does NOT work with pytorch 1.1~1.3.
+1. Support version 1.1 ~ 1.12. 
+2. QAT does NOT work with pytorch 1.1 ~ 1.3.
 3. Data Parallelism is NOT supported.
     
 * Models
@@ -26,9 +26,9 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 
 ### Quick Start in Docker environment
 
-If you work in Vitis-AI docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
-In this conda environment, python version is 3.7, pytorch version is 1.10.1 and torchvision version is 0.11.2. You can directly start our "resnet18" example without installation steps.
-A new Conda environment with a specified PyTorch version (1.2~1.10) can be created using the /opt/vitis_ai/scripts/replace_pytorch.sh script. This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
+If you work in Vitis-AI 3.0 version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
+In this conda environment, python version is 3.7, pytorch version is 1.12 and torchvision version is 0.13. You can directly start our "resnet18" example without installation steps.
+A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the /opt/vitis_ai/scripts/replace_pytorch.sh script. This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
@@ -43,7 +43,7 @@ packages, and then installs the specified version of PyTorch, Torchvision, and r
   ```
 - [Optional] Inspect float model
   ```shell
-  python resnet18_quant.py --quant_mode float --inspect
+  python resnet18_quant.py --quant_mode float --inspect --target DPUCAHX8L_ISA0_SP
   ```
 - Quantize, using a subset (200 images) of validation data for calibration. Because we are in quantize calibration process, the displayed loss and accuracy are meaningless.
   ```shell
@@ -74,7 +74,7 @@ For CPU version, remove all CUDA_HOME environment variable setting in your .bash
 
     unset CUDA_HOME
 
-##### Pre step 2: install Pytorch(1.2-1.10) and torchvision
+##### Pre step 2: install Pytorch(1.1-1.12.1) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 
     pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
@@ -116,7 +116,7 @@ For a well-defined model, user only need to add 2-3 lines to get a quantize mode
 - The model to be quantized should include forward method only. All other functions should be moved outside or move to a derived class. 
 These functions usually work as pre-processing and post-processing. If they are not moved outside, 
 our API will remove them in our quantized module, which will cause unexpected behavior when forwarding quantized module. <br>
-- The float model should pass "jit trace test". First set the float module to evaluation status, then use “torch.jit.trace” function to test the float model. Make sure the float module can pass the trace test. <br>
+- The float model should pass "jit trace test". First set the float module to evaluation status, then use “torch.jit.trace” function to test the float model. Make sure the float module can pass the trace test.For more details, please refer to example/jupyter_notebook/jit_trace_test/jit_trace_test.ipynb.<br>
 ##### Inspect float model before quantization
 Vai_q_pytorch provides a function called inspector to help users diagnose neural network (NN) models under different device architectures. The inspector can predict target device assignments based on hardware constraints.The generated inspection report can be used to guide  users to modify or optimize the NN model, greatly reducing the difficulty and time of deployment. It is recommended to inspect float models before quantization.
 
@@ -127,18 +127,16 @@ Take resnet18_quant.py to demonstrate how to apply this feature.
    ```
 2. Create a inspector with target name or fingerprint. <br>
    ```py
-    inspector = Inspector("0x603000b16013831") # by target fingerprint
-    or
-    inspector = Inspector("DPUCAHX8L_ISA0_SP") # by target name
+    inspector = Inspector(target) # by target name
    ```
 3. Inspect float model. <br>
    ```py
     input = torch.randn([batch_size, 3, 224, 224])
     inspector.inspect(model, input)
    ```
-Run command with "--quant_mode float&emsp;--inspect" to inspect model.
+Run command with "--quant_mode float&emsp;--inspect&emsp;--target {target_name}" to inspect model.
 ```py
-    python resnet18_quant.py --quant_mode float --inspect
+    python resnet18_quant.py --quant_mode float --inspect --target DPUCAHX8L_ISA0_SP
 ```
 Inspector will display some special messages on screen with special color and special keyword prefix "VAIQ_*" according to the verbose_level setting.Note the messages displayed between "[VAIQ_NOTE]: =>Start to inspect model..." and "[VAIQ_NOTE]: =>Finish inspecting."
 
@@ -149,11 +147,11 @@ If the inspector runs successfully, three important files are usually generated 
     inspect_{target}.gv: If image_format is not None. Dot source code of inspetion result is generated. 
 ```
 Note:
-* The inspector relies on 'vai_utf' package. In conda env vitis-ai-pytorch in Vitis-AI docker, vai_utf is ready. But if vai_q_pytorch is installed by source code, it needs to install vai_utf in advance.<br>
+* The inspector relies on 'xcompiler' package. In conda env vitis-ai-pytorch in Vitis-AI docker, xcompiler is ready. But if vai_q_pytorch is installed by source code, it needs to install xcompiler in advance.<br>
 * Visualization of inspection results relies on the dot engine.If you don't install dot successfully, set 'image_format = None' when inspecting.
-* If you need more detailed guidance, you can refer to example/inspector_tutorial.ipynb. Please install jupyter notebook in advance. Run the following command:
+* If you need more detailed guidance, you can refer to ./example/jupyter_notebook/inspector/inspector_tutorial.ipynb. Please install jupyter notebook in advance. Run the following command:
 ```py
-jupyter notebook example/inspector_tutorial.ipynb
+jupyter notebook example/jupyter_notebook/inspector/inspector_tutorial.ipynb
 ```
 
 
@@ -186,8 +184,9 @@ It is a good idea to check the difference between float and quantized script, li
    if quant_mode == 'calib':
      quantizer.export_quant_config()
    if deploy:
-     quantizer.export_xmodel()
+     quantizer.export_torch_script()
      quantizer.export_onnx_model()
+     quantizer.export_xmodel()
    ```
 
 ##### Run and output results
@@ -199,7 +198,7 @@ Pay attention to vai_q_pytorch log messages to check the flow status.<br>
     python resnet18_quant.py --quant_mode calib --subset_len 200
 ```
 When doing calibration forward, we borrow float evaluation flow to minimize code change from float script. So there are loss and accuracy displayed in the end. 
-They are meaningless, just skip them. Pay more attention to the colorful log messages with special keywords prefix "VAIQ_*".
+They are meaningless, just skip them. Pay more attention to the colorful log messages with special keywords "VAIQ_*".
 
 Another important thing is to control iteration numbers during quantization and evaluation. 
 Generally, 100-1000 images are enough for quantization and the whole validation set are required for evaluation. 
@@ -227,6 +226,7 @@ Xmodel file for Vitis AI compiler will be generated under output directory “./
 ```
     ResNet_int.xmodel: deployed XIR format model
     ResNet_int.onnx:   deployed onnx format model
+    ResNet_int.pt:     deployed torch script format model
 ```
 In conda env vitis-ai-pytorch in Vitis-AI docker, XIR is ready. But if vai_q_pytorch is installed by source code, it needs to install XIR in advance.<br>
 If XIR is not installed, xmodel file can't be generated, this command will raise error in the end.
@@ -277,7 +277,7 @@ def register_custom_op(op_type: str, attrs_list: Optional[List[str]] = None):
   
   """
 ```
-How to use<br>
+How to use: <br>
 -	Aggregate some operations as a function. The first argument name of this function should be ctx. The meaning of ctx is the same as that in torch.autograd.Function.
 -	Decorate this function with the decorator described above. 
 -	Example model code is in example/resnet18_quant_custom_op.py. On how to run it, please refer to example/resnet18_quant.py.
@@ -295,7 +295,8 @@ def __init__(self):
 def forward(self, x, y):
    return custom_op(x, y, 0.5, 0.5)
 ```
-Limitations<br>
+
+Limitations: <br>
 -	Loop operation is not allowed in a custom operation
 -	The number of return values for a custom operation can only be one.
 
@@ -373,7 +374,7 @@ Sometimes direct quantization accuracy is not high enough, then it needs finetun
   qat_processor.export_xmodel(output_dir)
 ```
 
-##### Configuration of Quantization Stategy
+##### Configuration of Quantization Strategy
 For multiple quantization strategy configurations, vai_q_pytorch supports quantization configuration file in JSON format. 
 And we only need to pass the configuration file to torch_quantizer API. Example code in resnet18_quant.py:
 ```py
@@ -384,8 +385,33 @@ quantizer = torch_quantizer(quant_mode=quant_mode,
                             device=device, 
                             quant_config_file=config_file)
 ```
-For detailed information of the json file contents, please refer to [Quant_Config.md](Quant_Config.md)
+For detailed information of the json file contents, please refer to [Quant_Config.md](doc/Quant_Config.md)
 
+##### Hardware-Aware Quantization Strategy
+The Inspector provides device assignments to operators in the neural network based on the target device. vai_q_pytorch can use the power of inspector to perform hardware-aware quantization.
+Example code in resnet18_quant.py:
+```py
+quantizer = torch_quantizer(quant_mode=quant_mode, 
+                            module=model, 
+                            input_args=(input), 
+                            device=device, 
+                            quant_config_file=config_file, target=target)
+```
+- For example/resnet18_quant.py, command line to do hardware-aware calibration,
+  ```shell
+  python resnet18_quant.py --quant_mode calib --target DPUCAHX8L_ISA0_SP
+  
+  ```
+- command line to test hardware-aware quantized model accuracy,
+  ```shell
+  python resnet18_quant.py --quant_mode test --target DPUCAHX8L_ISA0_SP
+
+  ```
+- command line to deploy quantized model,
+  ```shell
+  python resnet18_quant.py --quant_mode test --target DPUCAHX8L_ISA0_SP --subset_len 1 --batch_size 1 --deploy
+
+  ```
 ### vai_q_pytorch main APIs
 
 The APIs for CNN are in module [pytorch_binding/pytorch_nndct/apis.py](pytorch_binding/pytorch_nndct/apis.py):
@@ -400,7 +426,8 @@ class torch_quantizer():
                output_dir: str = "quantize_result",
                bitwidth: int = 8,
                device: torch.device = torch.device("cuda"),
-               qat_proc: bool = False):
+               quant_config_file: Optional[str] = None,
+               target: Optional[str]=None):
 
 ```
     quant_mode: An integer that indicates which quantization mode the process is using. "calib" for calibration of quantization. "test" for evaluation of quantized model.
@@ -410,7 +437,8 @@ class torch_quantizer():
     Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”.
     Bitwidth: Global quantization bit width. Default is 8.
     Device: Run model on GPU or CPU.
-    Qat_proc: Turn on quantization-aware-training (QAT).
+    quant_config_file: Json file path for quantization strategy configuration
+    target: If target device is specified, the hardware-aware quantization is on. Default is None.
     
 ##### Export quantization steps information
 ```py
@@ -427,14 +455,20 @@ class torch_quantizer():
   def export_onnx_model(self, output_dir, verbose):
 ```
     Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”
+    Verbose: Flag to control showing verbose log or no
+##### Export torchscript format quantized model
+```py
+  def export_torch_script(self, output_dir="quantize_result", verbose=False):
+```
+    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”
     Verbose: Flag to control showing verbose log or not
 
 ##### Create a inspector
 ```py
 class Inspector():
-  def __init__(self, name_or_fingerprint: str):
+  def __init__(self, name: str):
 ```
-    name_or_fingerprint: Specify the hardware target name or fingerprint 
+    name: Specify the hardware target name 
 ##### Inspect float model
 ```py
   def inspect(self, 
@@ -450,11 +484,10 @@ class Inspector():
     device: Trace model on GPU or CPU.
     output_dir: Directory for inspection results
     verbose_level: Control the level of detail of the inspection results displayed on the screen. Defaut:1
-    0: turn off printing inspection results.
-    1: print summary report of operations assigned to CPU.
-    2: print summary report of device allocation of all operations.
+        0: turn off printing inspection results.
+        1: print summary report of operations assigned to CPU.
+        2: print summary report of device allocation of all operations.
     image_format: Export visualized inspection result. Support 'svg' / 'png' image format.
-
 
 
 

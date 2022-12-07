@@ -120,7 +120,7 @@ def get(identifier):
   if isinstance(identifier, str):
     globs = globals()
     if identifier not in globs:
-      raise ValueError('Unkoown rouding function: {}'.format(identifier))
+      raise ValueError('Unknown rouding function: {}'.format(identifier))
     return globs[identifier]
   else:
     raise TypeError(

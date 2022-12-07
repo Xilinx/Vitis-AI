@@ -32,6 +32,7 @@ void SigmoidTableLookup(Tensor Tinput,
 
 void SigmoidSimulation(Tensor Tinput, 
                        Tensor Toutput, 
+                       int64_t fragpos,
                        int64_t device_id);
 
 void TanhTableLookup(Tensor Tinput, 
@@ -42,6 +43,7 @@ void TanhTableLookup(Tensor Tinput,
 
 void TanhSimulation(Tensor Tinput, 
                     Tensor Toutput, 
+                    int64_t fragpos,
                     int64_t device_id);
 
 void SoftmaxExpApproximate(Tensor Tinput, 
@@ -59,4 +61,37 @@ void SoftmaxSimulationPart1(Tensor Tinput,
 void SoftmaxSimulationPart2(Tensor sum,
                             Tensor Toutput,
                             int64_t device_id);            
+
+void SigmoidTableLookupAIE2(Tensor Tinput, 
+                        Tensor Toutput, 
+                        int64_t fragpos,
+                        int64_t device_id);
+
+void TanhTableLookupAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int64_t fragpos,
+                     int64_t device_id);
+
+void ExpApprAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int64_t bit_width,
+                     int64_t device_id);
+
+void LogSoftmaxFastLn(Tensor Tinput, 
+                    Tensor Toutput,
+                    int64_t device_id);
+
+void LogSoftmaxSub(Tensor Tinput, 
+                    Tensor Toutput,
+                    Tensor Tsum,
+                    int64_t device_id);
+
+void LayernormInvSqrt(Tensor Tinput, 
+                    Tensor Toutput,
+                    int64_t device_id);
+
+void InverseAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int64_t device_id);
+
 #endif

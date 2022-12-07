@@ -180,6 +180,9 @@ def permute_data(data, order):
 def permute_axes(axes, order):
   if order is None:
     return axes
+  if len(axes) != len(order):
+    raise RuntimeError("The data shape should consistent with length of order")
+  
   new_axes = [None] * len(axes)
   for i, j in enumerate(order):
     new_axes[i] = axes[j]

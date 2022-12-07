@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+# Note: input list (number, names and order) must match with torch: torch/_C/_VariableFunctions.pyi
 
 import math
 import sys
@@ -21,11 +21,11 @@ import numpy as np
 from typing import Callable, Dict
 from nndct_shared.nndct_graph import Node, Tensor, Operation
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
-from nndct_shared.utils import tensor_util
+from nndct_shared.utils import tensor_util, NndctScreenLogger
 from .torch_op_def import *
 from .parse_utils import *
 from pytorch_nndct.utils import SchemaHelper, TorchOpClassType, convert_type_str
-
+from pytorch_nndct.utils.jit_utils import *
 class OpCreator(object):
 
   op_convert_map = {
@@ -41,7 +41,8 @@ class OpCreator(object):
     "ListConstruct": "list_construct",
     "TupleConstruct": "tuple_construct",
     "TupleIndex": "tuple_index",
-    "ScalarImplicit": "item"
+    "ScalarImplicit": "item",
+    "IntImplicit": "Int",
   }
   
   def __init__(self):
@@ -51,18 +52,25 @@ class OpCreator(object):
   # nn.function, nn.Module and torch.Tensor can ignore 'input'
 
   def Param(self, *args):
-    op = TorchUnaryOp(NNDCT_OP.INPUT, "input", force_to_primitive=True)
+    if "tuple" in args[0].dtype:
+      op = TorchUnaryOp(NNDCT_OP.TUPLE_INPUT, "input", force_to_primitive=True)
+    else:
+      op = TorchUnaryOp(NNDCT_OP.INPUT, "input", force_to_primitive=True)
     input_name = f"args[{args[0].node.name.split('_')[-1]}]"
     op.set_config("input", input_name)
     return op
   
   def Return(self, *args):
     op = TorchReturn()
+    op.set_config("input", args)
     return op
   
   def _convolution(self, input, weight, bias, stride, padding, dilation,
                    transposed, output_padding, groups, benchmark, deterministic,
                    cudnn_enabled, *args):
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
+      
     weight_size = weight.shape
     if transposed:
       weight_size[0], weight_size[1] = weight_size[1], weight_size[0]
@@ -99,7 +107,7 @@ class OpCreator(object):
           op = TorchConv3d(NNDCT_OP.CONV3D)
         elif weight.ndim == 3:
           op = TorchConv1d(NNDCT_OP.CONV1D)
-          
+         
       op.set_config('in_channels', weight_size[1] * groups)
       op.set_config('out_channels', weight_size[0])
   
@@ -125,13 +133,15 @@ class OpCreator(object):
   def batch_norm(self, input, weight, bias, running_mean, running_var, training,
                  momentum, eps, cudnn_enabled):
 
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
     op = TorchBatchNorm()
     op.set_param(op.ParamName.GAMMA, weight)
     op.set_param(op.ParamName.BETA, bias)
     op.set_param(op.ParamName.MOVING_MEAN, running_mean)
     op.set_param(op.ParamName.MOVING_VAR, running_var)
     weight_size = weight.shape
-    
+
     op.set_config('num_features', weight_size[0])
     op.set_config('eps', eps)
     op.set_config('momentum', momentum)
@@ -145,6 +155,67 @@ class OpCreator(object):
     #     5: 1  # NCDHW -> 1
     # }
     # op.set_attr(op.AttrName.AXIS, dims2axis_map[len(input.shape)])
+    return op
+
+  def instance_norm(self, input, weight, bias, running_mean, running_var, use_input_stats,
+                 momentum, eps, cudnn_enabled):
+    # num_features: :math:`C` from an expected input of size 
+    #     1d: :math:`(N, C, L)`
+    #     2d: :math:`(N, C, H, W)`
+    #     3d: math:`(N, C, D, H, W)`
+    # eps: a value added to the denominator for numerical stability. Default: 1e-5
+    # momentum: the value used for the running_mean and running_var computation. Default: 0.1
+    # affine: a boolean value that when set to ``True``, this module has learnable affine parameters, 
+    #    initialized the same way as done for batch normalization. Default: ``False``.
+    # track_running_stats: a boolean value that when set to ``True``, this module tracks the running mean and variance, 
+    #    and when set to ``False``, this module does not track such statistics and always uses batch statistics in both 
+    #    training and eval modes. Default: ``False``.
+    # Input: :math:`(N, C, D, H, W)`, math:`(N, C, H, W)`, or :math:`(N, C, L)`
+    # Output: same shape as input
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
+    op = TorchInstanceNorm()
+    if weight is not None:
+      op.set_param(op.ParamName.GAMMA, weight)
+    if bias is not None:
+      op.set_param(op.ParamName.BETA, bias)
+   
+    op.set_config('num_features', input.shape[1]) # `C` from an expected input of size  
+    op.set_config('eps', eps)
+    op.set_config('momentum', momentum)
+    if weight is not None or bias is not None:
+      op.set_config('affine', True)
+    else:
+      op.set_config('affine', False)
+
+    return op
+
+  def group_norm(self, input, num_groups, weight, bias, eps, cudnn_enabled):
+    # num_groups (int): number of groups to separate the channels into
+    # num_channels (int): number of channels expected in input
+    # eps: a value added to the denominator for numerical stability. Default: 1e-5
+    # affine: a boolean value that when set to ``True``, this module has learnable per-channel affine parameters 
+    #     initialized to ones (for weights) and zeros (for biases). Default: ``True``.
+    # Shape:
+    #    - Input: :math:`(N, C, *)` where :math:`C=\text{num\_channels}`
+    #    - Output: :math:`(N, C, *)` (same shape as input)
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
+
+    op = TorchGroupNorm()
+    if weight is not None:
+      op.set_param(op.ParamName.GAMMA, weight)
+    if bias is not None:
+      op.set_param(op.ParamName.BETA, bias)
+
+    op.set_config('num_groups', num_groups) # number of groups to separate the channels into  
+    op.set_config('num_channels', input.shape[1]) # `C` from an expected input of size  
+    op.set_config('eps', eps)
+    if weight is not None or bias is not None:
+      op.set_config('affine', True)
+    else:
+      op.set_config('affine', False)
+
     return op
 
   @staticmethod
@@ -209,7 +280,7 @@ class OpCreator(object):
                  ceil_mode,
                  count_include_pad,
                  divisor_override=None):
-
+    
     op = TorchAvgPool()
 
     op.set_config('kernel_size', list(kernel_size))
@@ -229,35 +300,20 @@ class OpCreator(object):
       op.set_config('count_include_pad', False)
 
     op.set_config('padding', list(padding))
+    if divisor_override is not None: 
+      op.set_config('divisor_override', int(divisor_override))
 
     return op
 
-  def adaptive_avg_pool2d(self, input, output_size):
-    if output_size == 1 or (isinstance(output_size, (tuple, list)) and
-                            tuple(output_size) == (1, 1)):
-      op = TorchAdaptiveAvgPool()
-      op.set_attr(op.AttrName.GLOBAL, True)
-      op.set_attr(op.AttrName.PAD_MODE, 0)
-      op.set_attr(op.AttrName.COUNT_INCLUDE_PAD, True)
-      op.set_attr(op.AttrName.PAD, [0, 0, 0, 0])
-      op.set_config('output_size', 1)
-    else:
-      op = TorchAvgPool()
-      op.set_attr(op.AttrName.GLOBAL, False)
-      input_size = input.shape[2:4]
-      stride_h = math.floor(input_size[0] / output_size[0])
-      stride_w = math.floor(input_size[1] / output_size[1])
-      kernel_h = input_size[0] - (output_size[0] - 1) * stride_h
-      kernel_w = input_size[1] - (output_size[1] - 1) * stride_w
-      op.set_config('kernel_size', [kernel_h, kernel_w])
-      op.set_config('stride', [stride_h, stride_w])
-      op.set_config('ceil_mode', False)
-      op.set_config('count_include_pad', True)
-      op.set_config('padding', [0, 0])
-
+  def adaptive_avg_pool2d(self, *args):
+    op = TorchAdaptiveAvgPool()
+    op.set_config("output_size", args[1])
     return op
 
   def addmm(self, bias, input, weight, beta=None, alpha=None):
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
+    
     if (bias.node is not None) or (weight.node is not None):
       op = TorchBaseOperation(NNDCT_OP.ADDMM, "addmm")
       op.set_config("input", bias)
@@ -278,6 +334,8 @@ class OpCreator(object):
     return op
   
   def linear(self, input, weight, bias):
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
     op = TorchLinear()
     weight_size = weight.shape
     op.set_param(op.ParamName.WEIGHTS, weight)
@@ -292,14 +350,8 @@ class OpCreator(object):
     return op
 
   def flatten(self, input, start_dim=0, end_dim=-1):
-    """TODO(wluo@xilinx.com): need to get the input shape, then
-    we can get the correct end_dim 
-    """
     op = TorchFlatten()
     op.set_config('input', input)
-
-    if end_dim == -1:
-      end_dim = 3
     op.set_config("start_dim", start_dim)
     op.set_config("end_dim", end_dim)
     return op
@@ -326,21 +378,63 @@ class OpCreator(object):
     op.set_config("inplace", False)
     return op
 
-  def add(self, input, other, alpha=None):
-    if (isinstance(input, Tensor) and input.is_real_tensor()) \
-     or (isinstance(other, Tensor) and other.is_real_tensor()):
-      op = TorchAdd()
-    elif isinstance(input, list) or isinstance(other, list):
-      op = TorchBaseOperation(
-          NNDCT_OP.LIST_ADD, NNDCT_OP.LIST_ADD, force_to_primitive=False)
-    else:
-      op = TorchBinaryOp(NNDCT_OP.SCALAR_ADD, "add")
-
-    op.set_config('input', input)
-    op.set_config('other', other)
-    if alpha is not None:
-      op.set_config('alpha', alpha)
+  def gelu(self, input, approximate=None):
+    op = TorchGELU()
+    op.set_config("approximate", f"'{approximate}'")
     return op
+
+  def mish_(self, input):
+    op = TorchMish()
+    op.set_config('inplace', True)
+    return op
+
+  def mish(self, input):
+    op = TorchMish()
+    op.set_config("inplace", False)
+    return op
+
+  def prelu(self, input, weight):
+    op = TorchPReLU()
+    op.set_config("num_parameters", weight.shape[0])
+    op.set_config("init", 0.25)
+    op.set_param(op.ParamName.WEIGHT, weight)
+    return op
+
+  def add(self, *args):
+    supported_schemas = [
+      'aten::add(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::add(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+      'aten::add(Tensor self, Tensor other, Scalar alpha=1, Tensor out) -> Tensor',
+      'aten::add_(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::add_(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+      'aten::add_(Tensor self, Tensor other, Scalar alpha=1, Tensor out) -> Tensor'
+    ]
+  
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchAdd()
+      op.set_config('input', args[0])
+      op.set_config('other', args[1])
+      if args[2] is not None:
+        op.set_config('alpha', args[2])
+      return op
+    else:
+      return self.default(self.cur_node, 'aten::add', *args)
+
+    # if (isinstance(input, Tensor) and input.is_real_tensor()) \
+    #  or (isinstance(other, Tensor) and other.is_real_tensor()):
+    #   op = TorchAdd()
+    # elif (isinstance(input, Tensor) and input.is_list_type()) or (isinstance(other, Tensor) and other.is_list_type()):
+    #   op = TorchBaseOperation(
+    #       NNDCT_OP.LIST_ADD, NNDCT_OP.LIST_ADD, force_to_primitive=False)
+    # else:
+    #   op = TorchBinaryOp(NNDCT_OP.SCALAR_ADD, "add")
+
+    # op.set_config('input', input)
+    # op.set_config('other', other)
+    # if alpha is not None:
+    #   op.set_config('alpha', alpha)
+    # return op
 
   def size(self, input, dim=None):
     op = TorchSize()
@@ -373,18 +467,38 @@ class OpCreator(object):
     op.set_config("tensors", tensors)
     return op
 
-  def mean(self, input, dim=None, keepdim=False, dtype=None):
+  def mean(self, *args):
+    '''
+     unsupport [
+      'aten::mean(Tensor self, int? dtype) -> Tensor', 
+      'aten::mean(Tensor self, str[] dim, bool keepdim=False, int? dtype) -> Tensor', 
+      'aten::mean(Tensor self, str[] dim, bool keepdim=False, int? dtype, Tensor out) -> Tensor', 
+     ]
+    '''
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    support_schemas = [
+      'aten::mean(Tensor self, int[] dim, bool keepdim=False, int? dtype) -> Tensor',
+      'aten::mean(Tensor self, int[] dim, bool keepdim=False, int? dtype, Tensor out) -> Tensor'
+    ]
+
+    if schema_handler.toString() not in support_schemas:
+      return self.default(self.cur_node, 'aten::mean', *args)
+
     op = TorchPermuteInvarOp(NNDCT_OP.MEAN, "mean")
-    op.set_config("input", input)
-    op.set_config("dim", dim)
-    op.set_config("keepdim", keepdim)
+    op.set_config("input", args[0])
+    op.set_config("dim", args[1])
+    op.set_config("keepdim", args[2])
+    
     return op
 
-  def relu6(self, input, inplace):
+  def relu6(self, input, inplace=False):
     op = TorchUnaryOp(NNDCT_OP.RELU6, "ReLU6")
     op.set_config('input', input)
     op.set_config('inplace', inplace)
     return op
+
+  def relu6_(self, input, inplace=True):
+    return self.relu6(input,True)
 
   def hardtanh(self, input, min_val, max_val):
     if min_val == 0.0 and max_val == 6.0:
@@ -509,47 +623,109 @@ class OpCreator(object):
         scale_factor=scale_factor)
     
   def NumToTensor(self, input, *args):
+    "The device of NumToTensor is cpu"
     op = TorchTensor()
     op.set_config("data", input)
     op.set_config("dtype", input.dtype)
-    op.set_config("device", f"'{self._device_type}'")
+    op.set_config("device", f"'cpu'")
     return op
 
   def Constant(self, tensor, *args):
-    op = TorchConst()
+ 
+    # batter method is spliting op into contant and reshape in raw graph optim
+    if isinstance(tensor.data, np.ndarray) and tensor.shape != None  and 0 in tensor.shape[:-1] :
+      op = TorchBaseOperation(NNDCT_OP.CONSTANT_WITH_RESHAPE,'ConstantWithReshape')
+      op.set_config('data_shape', tensor.data.shape)
+    else:
+      op = TorchConst()
     if not tensor.is_complete_tensor():
       if isinstance(tensor.data, np.ndarray):
           tensor.from_ndarray(tensor.data)
       else:
-        np_data = np.array(tensor.data )
+        dtype = convert_dtype_between_np_and_pytorch(tensor.dtype)
+        np_data = np.array(tensor.data, dtype=dtype)
         tensor.from_ndarray(np_data)
-      
+    else:
+      tensor.from_ndarray(tensor.data)
+   
     op.set_config('data', tensor.data.tolist())
-    op.set_config('dtype', convert_np_type_to_pytorch_type(tensor.dtype))
-    op.set_config('device', f"'{self._device_type}'")
+    op.set_config('dtype', convert_dtype_between_np_and_pytorch(tensor.dtype))
+    device = self._device_type if tensor.device.device_type == TorchDeviceType.UNKOWN else tensor.device.device_type
+    op.set_config('device', f"'{device}'")
+
     return op
 
-  def mul(self, input, other):
-    if (isinstance(input, Tensor) and input.is_real_tensor()) \
-     or (isinstance(other, Tensor) and other.is_real_tensor()):
-      op = TorchMul()
+  def mul(self, *args):
+    supported_schemas = [
+      "aten::mul(Tensor self, Tensor other) -> Tensor",
+      "aten::mul(Tensor self, Scalar other) -> Tensor",
+      "aten::mul(Tensor self, Tensor other, Tensor out) -> Tensor"
+    ]
+    
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchBinaryOp(NNDCT_OP.MULTIPLY, "mul")
+      op.set_config("input", args[0])
+      op.set_config("other", args[1])
+      return op
     else:
-      op = TorchBinaryOp(NNDCT_OP.SCALAR_MUL, "mul")
+      return self.default(self.cur_node, 'aten::mul', *args)
 
+  def _to_device(self, input, device, dtype, non_blocking=False, copy=False, memory_format=None):
+    op = TorchUnaryOp(NNDCT_OP.CAST, "to")
+    op.set_config("input", input)
+    if isinstance(device, str):
+      op.set_config("device", f"'{device}'")
+    else:
+      op.set_config("device", device)
+    op.set_config("dtype", scalar_type_to_pytorch_type[dtype])
+    op.set_config("non_blocking", bool(non_blocking))
+    op.set_config("copy", bool(copy))
+    return op
+
+  def _to_dtype(self, input, dtype, non_blocking=False, copy=False, memory_format=None):
+    op = TorchUnaryOp(NNDCT_OP.CAST, "to")
+    op.set_config("input", input)
+    op.set_config("dtype", scalar_type_to_pytorch_type[dtype])
+    op.set_config("non_blocking", bool(non_blocking))
+    op.set_config("copy", bool(copy))
+    return op
+
+  def _to_other(self, input, other, non_blocking=False, copy=False, memory_format=None):
+    op = TorchUnaryOp(NNDCT_OP.CAST, "to")
     op.set_config("input", input)
     op.set_config("other", other)
+    op.set_config("dtype", scalar_type_to_pytorch_type[dtype])
+    op.set_config("non_blocking", bool(non_blocking))
+    op.set_config("copy", bool(copy))
+    return op
+
+  def _to_dtype_layout(self, input, dtype=None, layout=None, device=None, pin_memory=None,  non_blocking=False,  copy=False, memory_format=None):
+    op = TorchUnaryOp(NNDCT_OP.CAST, "to")
+    op.set_config("input", input)
+    if dtype is not None:
+      op.set_config("dtype", scalar_type_to_pytorch_type[dtype])
+    if device is not None:
+      if isinstance(device, str):
+        op.set_config("device", f"'{device}'")
+      else:
+        op.set_config("device", device)
+    op.set_config("non_blocking", bool(non_blocking))
+    op.set_config("copy", bool(copy))
     return op
 
   def to(self, input, *args):
-    # op = TorchCast()
-    op = TorchUnaryOp(NNDCT_OP.CAST, "to")
-    op.set_config("input", input)
-    if isinstance(args[0], str):
-      op.set_config('dtype', scalar_type_to_pytorch_type[args[1]])
+    if len(args) == 7:
+      return self._to_dtype_layout(input, *args)
+    if len(args) == 5:
+      return self._to_device(input, *args)
+    elif len(args) == 4:
+      if isinstance(args[0], Tensor):
+        return self._to_other(input, *args)
+      else:
+        return self._to_dtype(input, *args)
     else:
-      op.set_config('dtype', scalar_type_to_pytorch_type[args[0]])
-
-    return op
+      raise RuntimeError(f"'aten::to' schema of {self.cur_node.name} is unkonwn for parser.")
 
   def floor(self, input):
     # op = TorchFloor()
@@ -574,17 +750,29 @@ class OpCreator(object):
     op.set_config("other", other)
     return op
 
-  def div(self, input, other, rounding_mode=None):
-    if python_dtype(input) == "int" and python_dtype(other) == "int" or rounding_mode == "trunc":
-      op = TorchBinaryOp(NNDCT_OP.FLOOR_DIV, "//", force_to_primitive=False)
-    else:
+  def div(self, *args):
+    supported_schemas = [
+      "aten::div(Tensor self, Tensor other) -> Tensor",
+      "aten::div(Tensor self, Scalar other) -> Tensor",
+      # "aten::div(Tensor self, Tensor other, str? rounding_mode) -> Tensor",
+      # "aten::div(Tensor self, Scalar other, str? rounding_mode) -> Tensor",
+      "aten::div(Tensor self, Tensor other, Tensor out) -> Tensor"
+      # "aten::div(Tensor self, Tensor other, str? rounding_mode, Tensor out) -> Tensor"
+    ]
+    # schemas = torch._C._jit_get_schemas_for_operator("aten::div")
+    # for schema in schemas:
+    #   schema_handler = SchemaHelper(schema)
+    #   print(schema_handler.toString())
+   
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
       op = TorchBinaryOp(NNDCT_OP.DIV, "div")
-
-    op.set_config("input", input)
-    op.set_config("other", other)
-    if rounding_mode is not None:
-      op.set_config("rounding_mode", f"'{rounding_mode}'")
-    return op
+      op.set_config("input", args[0])
+      op.set_config("other", args[1])
+      return op
+    else:
+      return self.default(self.cur_node, 'aten::div', *args)
+ 
 
   def softmax(self, input, dim, dtype=None):
     op = TorchSoftmax()
@@ -624,29 +812,55 @@ class OpCreator(object):
     op = TorchSlice()
     op.set_config("input", input)
     op.set_config("dim", dim)
-    op.set_config("start", start)
-    op.set_config("end", end)
+    new_start = []
+    new_end = []
+    for x in start:
+        if x is None:
+            x = 0
+        new_start.append(x)
+    for x in end:
+        if x is None:
+            x = sys.maxsize
+        new_end.append(x)
+    
+    op.set_config("start", new_start)
+    op.set_config("end", new_end)
     op.set_config("step", step)
     return op
 
-  def sub(self, input, other, alpha):
-    if (isinstance(input, Tensor) and input.is_real_tensor()) \
-     or (isinstance(other, Tensor) and other.is_real_tensor()):
-      op = TorchSub()
+  def sub(self, *args):
+    supported_schemas = [
+      'aten::sub(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::sub(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+      'aten::sub(Tensor self, Tensor other, Scalar alpha=1, Tensor out) -> Tensor'
+    ]
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchBinaryOp(NNDCT_OP.SUB, "sub")
+      op.set_config('input', args[0])
+      op.set_config('other', args[1])
+      if args[2] is not None:
+        op.set_config('alpha', args[2])
+      return op
     else:
-      op = TorchBinaryOp(NNDCT_OP.SCALAR_SUB, "sub")
-    # op = TorchSub()
-    op.set_config("input", input)
-    op.set_config("other", other)
-    op.set_config("alpha", alpha)
-    return op
+      return self.default(self.cur_node, 'aten::sub', *args)
+  
 
-  def rsub(self, input, other, alpha):
-    op = TorchRsub()
-    op.set_config("input", other)
-    op.set_config("other", input)
-    op.set_config("alpha", alpha)
-    return op
+  def rsub(self, *args):
+    supported_schemas = [
+      'aten::rsub(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::rsub(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+    ]
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchBinaryOp(NNDCT_OP.RSUB, "rsub")
+      op.set_config('input', args[0])
+      op.set_config('other', args[1])
+      if args[2] is not None:
+        op.set_config('alpha', args[2])
+      return op
+    else:
+       return self.default(self.cur_node, 'aten::rsub', *args)
 
   def exp(self, input, *args):
     op = TorchExp()
@@ -687,12 +901,6 @@ class OpCreator(object):
   def t(self, input, *args):
     return self.transpose(input, 0, 1)
 
-  def empty(self, *args):
-    op = TorchEmpty()
-    op.set_config('size', args[0])
-    op.set_config('dtype', scalar_type_to_pytorch_type[args[1]])
-    op.set_config('device', f"'{self._device_type}'")
-    return op
 
   
   def unsqueeze(self, input, dim):
@@ -702,6 +910,7 @@ class OpCreator(object):
     return op
 
   def lstm(self, *args):
+    return self.default(self.cur_node, 'aten::lstm', *args)
     if isinstance(args[3], list):
       raise NotImplementedError('Unimplement packed lstm')
     else:
@@ -807,9 +1016,17 @@ class OpCreator(object):
   def zeros(self, sizes, dtype, layout, device, pin_memory=False):
     op = TorchZeros()
     op.set_config('size', sizes)
-    dtype = 6 if dtype is None else dtype
-    op.set_config('dtype', scalar_type_to_pytorch_type[dtype])
-    op.set_config('device', f"'{self._device_type}'")
+    if isinstance(dtype, Tensor):
+      op.set_config('dtype', dtype)
+    else:
+      dtype = 6 if dtype is None else dtype
+      op.set_config('dtype', scalar_type_to_pytorch_type[dtype])
+    if isinstance(device, Tensor):
+      op.set_config('device', device)
+    elif isinstance(device, str):
+      op.set_config('device',  f"'{device}'")
+    else:
+      op.set_config('device', f"'{self._device_type}'")
     return op
 
   def constant_pad_nd(self, input, pad, value):
@@ -841,6 +1058,7 @@ class OpCreator(object):
       op.set_config("bias", False)
       op.set_config("out_features", other.shape[0])
       op.set_config("in_features", other.shape[1])
+      op.set_attr(op.AttrName.TRANSPOSE_B, False)
       return op
     else:
       op = TorchMatmul()
@@ -848,59 +1066,31 @@ class OpCreator(object):
       op.set_config("other", other)
       return op
 
-  def clamp(self, input, min, max):
+  def clamp(self, input, min=None, max=None):
     op = TorchClamp()
     op.set_config("input", input)
-    op.set_config("min", min)
-    op.set_config("max", max)
-    op.set_attr_by_name("min", min)
-    op.set_attr_by_name("max", max)
+    if min is not None:
+      op.set_config("min", min)
+    if max is not None:
+      op.set_config("max", max)
     return op
 
   def clamp_min(self, input, min):
     op = TorchClamp()
     op.set_config("input", input)
     op.set_config("min", min)
-    op.set_attr_by_name("min", min)
+    # op.set_attr_by_name("min", min)
     return op
 
   def tanh(self, input, *args):
     op = TorchTanh()
     return op
 
-  def arange(self, *args):
-    op = TorchArange()
-
-    if len(args) == 5:
-      # aten::arange(Scalar end, ScalarType dtype, Layout, Device, bool pin_memory)
-      op.set_config("end", args[0])
-      #TODO: should inter dtype frome end/start/step type
-      op.set_config("dtype", scalar_type_to_pytorch_type[4])
-      op.set_config("device", f"'{self._device_type}'")
-    elif len(args) == 6:
-      # aten::arange(Scalar start, Scalar end, ScalarType dtype, Layout, Device, bool pin_memory)
-      op.set_config("start", args[0])
-      op.set_config("end", args[2])
-      op.set_config("dtype", scalar_type_to_pytorch_type[4])
-      op.set_config("device", f"'{self._device_type}'")
-    elif len(args) == 7:
-      # aten::arange(Scalar start, Scalar end, Scalar step, ScalarType dtype, Layout, Device, bool pin_memory)
-      op.set_config("start", args[0])
-      op.set_config("end", args[1])
-      op.set_config("step", args[2])
-      dtype = scalar_type_to_pytorch_type[
-          args[3]] if args[3] is not None else scalar_type_to_pytorch_type[4]
-      op.set_config("dtype", dtype)
-      op.set_config("device", f"'{self._device_type}'")
-    else:
-      raise NotImplementedError("Unknown aten::arange signature taking " +
-                                str(len(args)) + " arguments.")
-    return op
 
   def slice_tensor_inplace_copy(self, input, src, non_blocking, dim, index):
     op = TorchBaseOperation(
         NNDCT_OP.SLICE_TENSOR_INPLACE_COPY,
-        NNDCT_OP.SLICE_TENSOR_INPLACE_COPY,
+        'slice_tensor_inplace_copy',
         force_to_primitive=True)
     op.set_config("input", input)
     op.set_config("source", src)
@@ -909,6 +1099,8 @@ class OpCreator(object):
     return op
 
   def norm(self, input, p, dim, keepdim):
+    if str(p) in ['-inf', 'inf']:
+      p = f"float('{p}')"
     op = TorchBaseOperation(NNDCT_OP.NORM, "norm")
     op.set_config("input", input)
     op.set_config("dim", dim)
@@ -954,6 +1146,52 @@ class OpCreator(object):
       op.set_config("dim", dim)
     return op
 
+  def quantile(self, *args):
+    support_schemas =     [
+      "aten::quantile(Tensor self, Tensor q, int? dim, bool keepdim=False, str interpolation='linear') -> Tensor", 
+      "aten::quantile(Tensor self, float q, int? dim, bool keepdim=False, str interpolation='linear') -> Tensor", 
+      "aten::quantile(Tensor self, Tensor q, int? dim, bool keepdim=False, str interpolation='linear', Tensor out) -> Tensor", 
+      "aten::quantile(Tensor self, float q, int? dim, bool keepdim=False, str interpolation='linear', Tensor out) -> Tensor"
+    ]
+
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    op = TorchBaseOperation(NNDCT_OP.QUANTILE, "quantile")
+    op.set_config("input", args[0])
+    q_tensor = args[1]
+    if isinstance(args[1], Tensor):
+      q_tensor = args[1]
+    else:
+      q_tensor = torch.tensor(args[1])
+
+    op.set_config("q", q_tensor)
+    op.set_config("dim", args[2])
+    op.set_config("keepdim", bool(args[3]))
+    op.set_config("interpolation", f"'{args[4]}'")
+    return op
+
+  def nanquantile(self, *args):
+    support_schemas = [
+      "aten::nanquantile(Tensor self, Tensor q, int? dim, bool keepdim=False, str interpolation='linear') -> Tensor",
+      "aten::nanquantile(Tensor self, float q, int? dim, bool keepdim=False, str interpolation='linear') -> Tensor", 
+      "aten::nanquantile(Tensor self, Tensor q, int? dim, bool keepdim=False, str interpolation='linear', Tensor out) -> Tensor", 
+      "aten::nanquantile(Tensor self, float q, int? dim, bool keepdim=False, str interpolation='linear', Tensor out) -> Tensor"
+    ]
+
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    op = TorchBaseOperation(NNDCT_OP.QUANTILE, "quantile")
+    op.set_config("input", args[0])
+    q_tensor = args[1]
+    if isinstance(args[1], Tensor):
+      q_tensor = args[1]
+    else:
+      q_tensor = torch.tensor(args[1])
+
+    op.set_config("q", q_tensor)
+    op.set_config("dim", args[2])
+    op.set_config("keepdim", bool(args[3]))
+    op.set_config("interpolation", f"'{args[4]}'")
+    return op
+
   def eq(self, input, other):
     #op = TorchBaseOperation(NNDCT_OP.EQUAL, "eq")
     if (isinstance(input, Tensor) and input.is_real_tensor()) \
@@ -967,7 +1205,7 @@ class OpCreator(object):
 
   def index(self, input, index):
     op = TorchBaseOperation(
-        NNDCT_OP.INDEX, NNDCT_OP.INDEX, force_to_primitive=True)
+        NNDCT_OP.INDEX, "index", force_to_primitive=True)
     op.set_config("input", input)
     op.set_config("index", index)
     return op
@@ -1004,6 +1242,10 @@ class OpCreator(object):
                     mode,
                     sparse,
                     per_sample_weights=None):
+
+    if weight.node != None:
+      raise("weight or bias is not a constant param!")
+
     mode_map = {0: "sum", 1: "mean", 2: "max"}
 
     op = TorchEmbeddingBag()
@@ -1104,18 +1346,31 @@ class OpCreator(object):
 
   def layer_norm(self, input, normalized_shape, weight, bias, eps,
                  cudnn_enabled):
+    if (weight and weight.node != None) or (bias and bias.node != None):
+      raise("weight or bias is not a constant param!")
     op = TorchLayerNorm()
     op.set_param(op.ParamName.GAMMA, weight)
     op.set_param(op.ParamName.BETA, bias)
     op.set_config("normalized_shape", normalized_shape)
     op.set_config("eps", eps)
+    if weight is not None:
+      op.set_param(op.ParamName.GAMMA, weight)
+    if bias is not None:
+      op.set_param(op.ParamName.BETA, bias)
+    if weight is not None or bias is not None:
+      op.set_config('elementwise_affine', True)
+    else:
+      op.set_config('ielementwise_affine', False)
     return op
 
   def new_zeros(self, input, *args):
     return self.zeros(*args)
 
   def neg(self, input):
-    op = TorchUnaryOp(NNDCT_OP.NEG, "neg")
+    if python_dtype(input) in ["int", "float"]:
+      op = TorchUnaryOp(NNDCT_OP.NEG, "-")
+    else:
+      op = TorchUnaryOp(NNDCT_OP.NEG, "neg")
     op.set_config("input", input)
     return op
 
@@ -1145,7 +1400,8 @@ class OpCreator(object):
   
   
   def tuple_unpack(self, input):
-    op = TorchBaseOperation(NNDCT_OP.TUPLE_UNPACK, NNDCT_OP.TUPLE_UNPACK, force_to_primitive=False)
+    op = TorchBaseOperation(NNDCT_OP.TUPLE_UNPACK, "TupleUnpack", force_to_primitive=True)
+    # op = TorchBaseOperation(NNDCT_OP.TUPLE_UNPACK, NNDCT_OP.TUPLE_UNPACK)
     op.set_config("input", input)
     return op
 
@@ -1159,27 +1415,27 @@ class OpCreator(object):
     
   
   def cast_float(self, input, non_blocking):
-    return self.to(input, 6)
+    return self._to_dtype(input, 6)
 
   def cast_int(self, input, non_blocking):
-    return self.to(input, 3)
+    return self._to_dtype(input, 3)
 
   def Bool(self, input):
-    return self.to(input, 11)
+    return self._to_dtype(input, 11)
 
   def ceil(self, input):
     op = TorchBaseOperation(NNDCT_OP.CEIL, 'ceil')
     op.set_config("input", input)
     return op
  
-  def slice(self, input, dim, start, end, step):
-    op = TorchBaseOperation(NNDCT_OP.SLICE, NNDCT_OP.SLICE, force_to_primitive=False)
-    op.set_config("input", input)
-    op.set_config("dim", dim)
-    op.set_config("start", start)
-    op.set_config("end", end)
-    op.set_config("step", step)
-    return op
+  # def slice(self, input, dim, start, end, step):
+  #   op = TorchBaseOperation(NNDCT_OP.SLICE, NNDCT_OP.SLICE, force_to_primitive=False)
+  #   op.set_config("input", input)
+  #   op.set_config("dim", dim)
+  #   op.set_config("start", start)
+  #   op.set_config("end", end)
+  #   op.set_config("step", step)
+  #   return op
 
   def len(self, input):
     op = TorchBaseOperation(NNDCT_OP.LENGTH, NNDCT_OP.LENGTH, force_to_primitive=False)
@@ -1206,6 +1462,8 @@ class OpCreator(object):
     return op
     
   def embedding(self, weight, indices, padding_idx, scale_grad_freq, sparse):
+    if weight.node != None:
+      raise("weight or bias is not a constant param!")
     op = TorchEmbedding()
     op.set_config("num_embeddings", weight.shape[0])
     op.set_config("embedding_dim", weight.shape[1])
@@ -1235,20 +1493,110 @@ class OpCreator(object):
     
     return op
     
+  def unique_dim(self,input,dim,sorted=True,return_inverse=False,return_counts=False):
+    '''
+    inline ::std::tuple<at::Tensor,at::Tensor,at::Tensor> unique_dim(const at::Tensor & self, int64_t dim, bool sorted=true, bool return_inverse=false, bool return_counts=false)
+    '''
+    op = TorchBaseOperation(NNDCT_OP.UNIQUE_DIM, 'unique')
+    op.set_config("input", input)
+    op.set_config("dim", dim)
+    op.set_config("sorted", bool(sorted))
+    # force set return number as max return
+    op.set_config("return_inverse", True)
+    op.set_config("return_counts", True)
+    return op
+
+  def _unique2(self,input,sorted=True,return_inverse=False,return_counts=False):
+    '''
+    inline ::std::tuple<at::Tensor,at::Tensor,at::Tensor> _unique2(const at::Tensor & self, bool sorted=true, bool return_inverse=false, bool return_counts=false)
+    '''
+    op = TorchBaseOperation(NNDCT_OP._UNIQUE2, 'unique')
+    op.set_config("input", input)
+    op.set_config("sorted", bool(sorted))
+    # force set return number as max return
+    op.set_config("return_inverse", True)
+    op.set_config("return_counts", True)
+    return op
+
+  def _unique(self,input,sorted=True,return_inverse=False):
+    '''
+    inline ::std::tuple<at::Tensor,at::Tensor> _unique(const at::Tensor & self, bool sorted=true, bool return_inverse=false)
+    '''
+    op = TorchBaseOperation(NNDCT_OP._UNIQUE, 'unique')
+    op.set_config("input", input)
+    op.set_config("sorted", bool(sorted))
+    # force set return number as max return
+    op.set_config("return_inverse", True)
+    return op
+
+  def auto_infer_op(self, node, op_type, args):
+    if node.schema is None:
+      op = TorchUnknownOperation(op_type)
+      return op
+  
+    schema_handler = SchemaHelper(node.schema)
+    op_caller = get_operation_caller_by_schema_name(node.schema.name)
+    node2caller = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
+    if node2caller is None:
+        node2caller: Dict[str, Callable] = {}
+        GLOBAL_MAP.set_map(NNDCT_KEYS.NODE_CALLER_MAP, node2caller)
+
+    if op_caller is None:
+      op = TorchUnknownOperation(op_type)
+      return op
+    else:     
+      node2caller[node.name] = op_caller
+    
+    op = TorchAutoInferOperation(node.schema.name, node.schema.name, schema=node.schema,class_type=TorchOpClassType.AUTO_INFER_OP)
+    for inp, arg in zip(args, schema_handler.get_arguments()):
+      arg_name = schema_handler.arg_name(arg)
+      # if arg_name in ["layout", "memory_format", "pin_memory"]:
+      #   continue
+      config_name = arg_name
+      if convert_type_str(schema_handler.arg_type(arg)).replace("?", "") == "bool":
+        inp = bool(inp) if inp is not None else inp
+      if convert_type_str(schema_handler.arg_type(arg)).replace("?", "") in ["str", "Device"]:
+        inp = f"'{inp}'" if inp is not None and isinstance(inp, str) else inp
+      if arg_name == "dtype":
+        inp = scalar_type_to_pytorch_type[inp] if inp is not None else inp
+      if config_name == 'device' and isinstance(inp,str):
+        inp = 'torch.device(' + inp + ')'
+      if str(inp) in ['-inf', 'inf']:
+        inp = f"float('{inp}')"
+      op.set_config(config_name, inp)
+      if config_name == 'weight':
+        if isinstance(inp,Tensor):
+          inp.requires_grad = False
+    return op
+
+
+
   def default(self, node, op_type, *args):
+    if get_torch_version() > 140:
+      return self.auto_infer_op(node, op_type, args)
+
+    if node.schema is None:
+      op = TorchUnknownOperation(op_type)
+      return op
     schema2torchop = GLOBAL_MAP.get_ele(NNDCT_KEYS.TORCH_SCHEMA_OP_TABLE)
     schema_handler = SchemaHelper(node.schema)
     torchop = schema2torchop.get(schema_handler.toString(), None)
+
     if torchop is None:
+      op_n = self.auto_infer_op(node, op_type, args)
+      if op_n is not None:
+        return op_n
       op = TorchUnknownOperation(op_type)
-      return op
+      return 
+
     node2caller = GLOBAL_MAP.get_ele(NNDCT_KEYS.NODE_CALLER_MAP)
     if node2caller is None:
       node2caller: Dict[str, Callable] = {}
       GLOBAL_MAP.set_map(NNDCT_KEYS.NODE_CALLER_MAP, node2caller)
     node2caller[node.name] = torchop.caller
+    
     op = TorchBaseOperation(schema_handler.op_name, torchop.name, schema=node.schema)
-    # op.set_caller(torchop.caller)
+
     assert len(args) == len(schema_handler.get_arguments())
     if len(args) == 1:
         return op
@@ -1262,13 +1610,12 @@ class OpCreator(object):
       config_name = arg_name_convertor.get(arg_name, arg_name)
       if convert_type_str(schema_handler.arg_type(arg)).replace("?", "") == "bool":
         inp = bool(inp) if inp is not None else inp
-      if convert_type_str(schema_handler.arg_type(arg)).replace("?", "") == "str":
+      if convert_type_str(schema_handler.arg_type(arg)).replace("?", "") in ["str", "Device"]:
         inp = f"'{inp}'" if inp is not None else inp
-
-      if arg_name == "device":
-        inp = f"'{self._device_type}'"
       if arg_name == "dtype":
         inp = scalar_type_to_pytorch_type[inp] if inp is not None else inp
+      if str(inp) in ['-inf', 'inf']:
+        inp = f"float('{inp}')"
       op.set_config(config_name, inp)
     return op
     
@@ -1347,25 +1694,41 @@ class OpCreator(object):
     op.set_config("index", index)
     return op
 
-  def device(self, input):
-    op = TorchBaseOperation(NNDCT_OP.DEVICE, ".device")
-    op.set_config("input", input)
-    return op
+  #def device(self, input):
+  #  op = TorchBaseOperation(NNDCT_OP.DEVICE, ".device")
+  #  op.set_config("input", input)
+  #  return op
 
   def dtype(self, input):
     op = TorchBaseOperation(NNDCT_OP.DTYPE, ".dtype")
     op.set_config("input", input)
     return op
 
+  # def remainder(self, input, other):
+  #   if (isinstance(input, Tensor) and input.is_real_tensor()) \
+  #    or (isinstance(other, Tensor) and other.is_real_tensor()):
+  #     op = TorchBinaryOp(NNDCT_OP.REMAINDER, "remainder")
+  #   else:
+  #     op = TorchBinaryOp(NNDCT_OP.SCALAR_REMAINDER, "%")
+
+  #   op.set_config("input", input)
+  #   op.set_config("other", other)
+  #   return op
+
+  def argmax(self, input, dim, keepdim = False):
+    if dim is not None and keepdim == True:
+      op = TorchArgMax_DIM()
+    else:
+      op = TorchBaseOperation(NNDCT_OP.ARGMAX, "argmax")
+    op.set_config("input", input)
+    op.set_config("dim", dim)
+    op.set_config("keepdim", bool(keepdim))
+    return op
+
+  def _shape_as_tensor(self, input):
+    op = TorchBaseOperation(NNDCT_OP.SHAPE_AS_TENSOR, "_shape_as_tensor")
+    op.set_config("input", input)
+    return op
+
   
-  #def remainder(self, input, other):
-  #  if (isinstance(input, Tensor) and input.is_real_tensor()) \
-  #   or (isinstance(other, Tensor) and other.is_real_tensor()):
-  #    op = TorchBinaryOp(NNDCT_OP.REMAINDER, "remainder")
-  #  else:
-  #    op = TorchBinaryOp(NNDCT_OP.SCALAR_REMAINDER, "%")
-
-  #  op.set_config("input", input)
-  #  op.set_config("other", other)
-  #  return op
-
+  

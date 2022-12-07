@@ -36,6 +36,7 @@ import threading
 
 from .option_list import NndctOption
 from nndct_shared.base import SingletonMeta
+from .msg_code import QError, QWarning
 
 GREEN = '\033[0;32m'
 RED = '\033[0;31m'
@@ -254,9 +255,9 @@ class NndctScreenLogger(metaclass=SingletonMeta):
   def __init__(self):
     # self.logger = get_logger(name="nndct_screen", level=INFO)
     self.flush = _sys.stdout.flush
-    self._log_prefix = {WARN: f"\n{YELLOW}[VAIQ_WARN]: ",
-                        INFO: f"\n{GREEN}[VAIQ_NOTE]: ",
-                        ERROR: f"\n{RED}[VAIQ_ERROR]: "
+    self._log_prefix = {WARN: f"\n{YELLOW}[VAIQ_WARN]",
+                        INFO: f"\n{GREEN}[VAIQ_NOTE]",
+                        ERROR: f"\n{RED}[VAIQ_ERROR]"
                         }
     self._cached_msg = []
 
@@ -284,7 +285,38 @@ class NndctScreenLogger(metaclass=SingletonMeta):
     if msg not in self._cached_msg:
       self.info(msg, args, kwargs)
       self._cached_msg.append(msg)
+
+  def error2user(self, code, msg, *args, **kwargs):
+    prefix = (self._log_prefix[ERROR] 
+    	+ '[' + code.name + ']') 
+    msg = self.full_message(msg, prefix=prefix)
+    self._logger().error(msg, *args, **kwargs)
+    self.flush()
   
+  def warning2user(self, code, msg, *args, **kwargs):
+    prefix = (self._log_prefix[WARN] 
+    	+ '[' + code.name + ']') 
+    msg = self.full_message(msg, prefix=prefix)
+    self._logger().warning(msg, *args, **kwargs)
+    self.flush()
+
+  def check2user(self, code, msg, condition):
+    if not condition:
+      self.error2user(code, msg)
+      _sys.exit(1)
+
+  def info2user(self, code, msg, *args, **kwargs):
+    prefix = (self._log_prefix[INFO] 
+    	+ '[' + code.name + ']') 
+    msg = self.full_message(msg, prefix=prefix)
+    self._logger().info(msg, *args, **kwargs)
+    self.flush()
+    
+  def warning2user_once(self, code, msg, *args, **kwargs):
+    if msg not in self._cached_msg:
+      self.warning2user(code, msg)
+      self._cached_msg.append(msg)
+
   @staticmethod
   def _logger():
     logger = get_logger(name="nndct_screen", level=INFO)
@@ -294,7 +326,7 @@ class NndctScreenLogger(metaclass=SingletonMeta):
 
   @staticmethod
   def full_message(msg, prefix, suffix=NOCOLOR):
-    return prefix + msg + suffix
+    return prefix + ': ' + msg + suffix
 
   def check(self, msg, condition):
     if not condition:

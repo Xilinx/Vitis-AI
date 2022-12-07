@@ -45,6 +45,7 @@ class Tensor(object):
     self._dtype_map = {
         np.dtype('float64'): 'float64',
         np.dtype('float32'): 'float32',
+        np.dtype('float16'): 'float16',
         np.dtype('complex64'): 'complex64',
         np.dtype('int64'): 'int64',
         np.dtype('int32'): 'int32',
@@ -62,6 +63,7 @@ class Tensor(object):
     self._offset = 0
     self._uses = []
     self._attr_uses = []
+    self._device = device
 
   def __deepcopy__(self, memo):
     raise NotImplementedError("Deep copy is prohibited, use `clone_from` instead.")  
@@ -79,7 +81,7 @@ class Tensor(object):
       raise TypeError("'data' must be a numpy ndarray")
     self._data = np.copy(data)
     self._dtype = self._dtype_map[self._data.dtype]
-    self._shape = self._data.shape
+    self._shape = list(self._data.shape)
 
   def from_tensor(self, tensor):
     self._dtype = tensor.dtype
@@ -118,6 +120,9 @@ class Tensor(object):
   
   def is_real_tensor(self):
     return self.is_complete_tensor() or self.dtype == "tensor"
+
+  def is_list_type(self):
+    return "list" in self.dtype
   
   def is_complete_tensor(self) -> bool:
     # not necessary to hold real data for completeTensor
@@ -156,9 +161,8 @@ class Tensor(object):
       self.from_ndarray(value)
     elif isinstance(value, Tensor):
       self.from_tensor(value)
-    else:
-      if not isinstance(value, (int, float, bool)):
-        raise ValueError(f"Accept [int, float, bool] type data, but {type(value)} is given")
+    elif isinstance(value, (int, float, bool)):
+        #raise ValueError(f"Accept [int, float, bool] type data, but {type(value)} is given")
       self._data = value
       self._shape = []
 
@@ -230,6 +234,60 @@ class Tensor(object):
    
     self.replace_attr_uses_with(new_tensor)
 
+  def replace_attr_with_new_tensor_v2(self, attr_use, new_tensor):
+    def _replace(attr_name, attr_value):
+      if isinstance(attr_value, list):
+        new_attr_value = []
+        for value in attr_value:
+          if self is value:
+            new_value = _replace(attr_name, value)
+            new_attr_value.append(new_value)
+          elif isinstance(value, (tuple, list)):
+            new_value = _replace(attr_name, value)
+            new_attr_value.append(new_value)
+          else:
+            new_attr_value.append(value)
+        return new_attr_value
+
+      elif isinstance(attr_value, tuple):
+        new_attr_value = []
+        for value in list(attr_value):
+          if self is value:
+            new_value = _replace(attr_name, value)
+            new_attr_value.append(new_value)
+          elif isinstance(value, (tuple, list)):
+            new_value = _replace(attr_name, value)
+            new_attr_value.append(new_value)
+          else:
+            new_attr_value.append(value)
+        new_attr_value = tuple(new_attr_value)
+        return new_attr_value
+      else:
+        if self is not attr_value:
+          if attr_name == attr_use.attr_name:
+            self.attr_uses.remove(attr_use)
+            return attr_value
+        else:
+          if attr_use not in new_tensor.attr_uses:
+            new_tensor.attr_uses.append(attr_use)
+            self.attr_uses.remove(attr_use)
+          return new_tensor
+
+
+    if isinstance(attr_use.attr_name, str):
+      attr_value = attr_use.user.get_config(attr_use.attr_name)
+    else:
+      attr_value = attr_use.user.get_attr(attr_use.attr_name)
+
+    new_attr_value = _replace(attr_use.attr_name, attr_value)
+    
+    if isinstance(attr_use.attr_name, str):
+      attr_use.user.set_config(attr_use.attr_name, new_attr_value)
+    else:
+      attr_use.user.update_attr(attr_use.attr_name, new_attr_value)
+
+
+
   def replace_attr_with_new_tensor(self, attr_use, new_tensor):
     def _replace(attr_name, attr_value):
       if isinstance(attr_value, list):
@@ -259,13 +317,14 @@ class Tensor(object):
       attr_value = attr_use.user.get_config(attr_use.attr_name)
     else:
       attr_value = attr_use.user.get_attr(attr_use.attr_name)
+    
 
-    _replace(attr_use.attr_name, attr_value)
+    _replace(attr_use.attr_name, attr_value)   
   
 
   def replace_first_attr_use_with(self, new_tensor):
     attr_use = self.attr_uses[0]
-    self.replace_attr_with_new_tensor(attr_use, new_tensor)
+    self.replace_attr_with_new_tensor_v2(attr_use, new_tensor)
   
   
   def replace_attr_uses_with(self, new_tensor):

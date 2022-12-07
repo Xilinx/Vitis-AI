@@ -106,20 +106,11 @@ def insert_quantizer(model_topo):
     if not rt_spec:
       continue
 
-    # Check if there are parameterized modules that have not been
-    # transformed to the corresponding quantized version.
-    #if qconfig.weight or qconfig.bias:
-    #  if not hasattr(node.module, 'is_quantized'):
-    #    raise NotImplementedError(
-    #        ('The quantization of {} not implemented '
-    #         'yet. (Node name: {})').format(type(node.module), node.name))
-
     if node.name in quantized_modules:
       continue
 
     logging.vlog(
-        3, 'Inserting quantizer for node {}: {}'.format(node.graph_node.name,
-                                                        rt_spec))
+        3, 'Inserting quantizer for node {}: {}'.format(node.name, rt_spec))
     quantized_modules.add(node.name)
     for index, quantizer in enumerate(rt_spec.input_quantizers):
       quantize_input(node.module, index, quantizer)
@@ -351,6 +342,8 @@ class ModuleTransformer(object):
         replace_map.update(orig_to_transformed)
 
     # Make sure the topo is up to date.
+    # import pdb
+    # pdb.set_trace()
     self._rebuild_topo(model, model_topo)
     insert_quantizer(model_topo)
 

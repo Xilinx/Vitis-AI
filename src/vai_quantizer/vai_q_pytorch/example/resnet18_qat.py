@@ -122,6 +122,7 @@ class BasicBlock(nn.Module):
     self.conv1 = conv3x3(inplanes, planes, stride)
     self.bn1 = norm_layer(planes)
     self.relu1 = nn.ReLU(inplace=True)
+    #self.relu1 = nn.functional.relu
     self.conv2 = conv3x3(planes, planes)
     self.bn2 = norm_layer(planes)
     self.downsample = downsample
@@ -334,16 +335,15 @@ def resnet18(pretrained=False, progress=True, **kwargs):
   return _resnet('resnet18', BasicBlock, [2, 2, 2, 2], pretrained, progress,
                  **kwargs)
 
-def train_one_step(model, inputs, criterion, optimizer, step, gpu=None):
+def train_one_step(model, inputs, criterion, optimizer, step, device):
   # switch to train mode
   model.train()
 
   images, target = inputs
 
-  if gpu is not None:
-    model = model.cuda(gpu)
-    images = images.cuda(gpu, non_blocking=True)
-    target = target.cuda(gpu, non_blocking=True)
+  model = model.to(device)
+  images = images.to(device, non_blocking=True)
+  target = target.to(device, non_blocking=True)
 
   # compute output
   output = model(images)
@@ -365,7 +365,7 @@ def train_one_step(model, inputs, criterion, optimizer, step, gpu=None):
   optimizer.step()
   return loss, acc1, acc5
 
-def validate(val_loader, model, criterion, gpu):
+def validate(val_loader, model, criterion, device):
   batch_time = AverageMeter('Time', ':6.3f')
   losses = AverageMeter('Loss', ':.4e')
   top1 = AverageMeter('Acc@1', ':6.2f')
@@ -379,10 +379,9 @@ def validate(val_loader, model, criterion, gpu):
   with torch.no_grad():
     end = time.time()
     for i, (images, target) in enumerate(val_loader):
-      if gpu is not None:
-        model = model.cuda(gpu)
-        images = images.cuda(gpu, non_blocking=True)
-        target = target.cuda(gpu, non_blocking=True)
+      model = model.to(device)
+      images = images.to(device, non_blocking=True)
+      target = target.to(device, non_blocking=True)
 
       # compute output
       output = model(images)
@@ -424,6 +423,7 @@ def save_checkpoint(state, is_best, directory):
     best_filepath = os.path.join(directory, 'model_best_%5.3f.pth' % best_acc1)
     shutil.copyfile(filepath, best_filepath)
     print('Saving best ckpt to {}, acc1: {}'.format(best_filepath, best_acc1))
+  return best_filepath if is_best else filepath
 
 class AverageMeter(object):
   """Computes and stores the average and current value"""
@@ -503,8 +503,9 @@ def accuracy(output, target, topk=(1,)):
       res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-def train(model, train_loader, val_loader, criterion, gpu):
+def train(model, train_loader, val_loader, criterion, device):
   best_acc1 = 0
+  best_filepath = None
 
   num_train_batches_per_epoch = int(len(train_loader) / args.train_batch_size)
 
@@ -541,7 +542,7 @@ def train(model, train_loader, val_loader, criterion, gpu):
 
       adjust_learning_rate(optimizer, epoch, step)
       loss, acc1, acc5 = train_one_step(model, (images, target), criterion,
-                                        optimizer, step, gpu)
+                                        optimizer, step, device)
 
       # measure elapsed time
       batch_time.update(time.time() - end)
@@ -556,18 +557,22 @@ def train(model, train_loader, val_loader, criterion, gpu):
 
       if step % args.val_freq == 0:
         # evaluate on validation set
-        acc1 = validate(val_loader, model, criterion, gpu)
+        acc1 = validate(val_loader, model, criterion, device)
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
 
-        save_checkpoint(
+        filepath = save_checkpoint(
             {
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'best_acc1': best_acc1
             }, is_best, args.save_dir)
+        if is_best:
+          best_filepath = filepath
+
+  return best_filepath
 
 def main():
   print('Used arguments:', args)
@@ -609,28 +614,30 @@ def main():
       num_workers=args.workers,
       pin_memory=True)
 
-  model = resnet18(pretrained=True)
+  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+  model = resnet18(pretrained=True).to(device)
   # define loss function (criterion) and optimizer
   criterion = nn.CrossEntropyLoss()
 
-  gpu = 0
   inputs = torch.randn([args.train_batch_size, 3, 224, 224],
-                       dtype=torch.float32).cuda(gpu)
-  qat_processor = QatProcessor(
-      model, inputs, bitwidth=8, device=torch.device('cuda:{}'.format(gpu)))
+                       dtype=torch.float32,
+                       device=device)
+  qat_processor = QatProcessor(model, inputs)
 
   if args.mode == 'train':
     # Step 1: Get quantized model and train it.
     quantized_model = qat_processor.trainable_model()
 
-    criterion = criterion.cuda(gpu)
-    train(quantized_model, train_loader, val_loader, criterion, gpu)
+    criterion = criterion.to(device)
+    best_ckpt = train(quantized_model, train_loader, val_loader, criterion, device)
 
     # Step 2: Get deployable model and test it.
     # There may be some slight differences in accuracy with the quantized model.
+    quantized_model.load_state_dict(torch.load(best_ckpt)['state_dict'])
     deployable_model = qat_processor.to_deployable(quantized_model,
                                                    args.output_dir)
-    validate(val_loader, deployable_model, criterion, gpu)
+    validate(val_loader, deployable_model, criterion, device)
   elif args.mode == 'deploy':
     # Step 3: Export xmodel from deployable model.
     deployable_model = qat_processor.deployable_model(

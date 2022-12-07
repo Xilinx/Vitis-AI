@@ -16,15 +16,19 @@
 # limitations under the License.
 #
 
-from collections import OrderedDict, ChainMap
 import json
-import torch
 import weakref
-from pytorch_nndct.utils.jit_utils import *
-from nndct_shared.nndct_graph import GraphBase, NodeBase
+from collections import ChainMap, OrderedDict
+from enum import Enum
 from typing import Union
 
-_NODE_NAME_SEPERATOR = '/'
+import torch
+
+from nndct_shared.nndct_graph import GraphBase, NodeBase
+from pytorch_nndct.utils import TorchGraphSymbol
+from pytorch_nndct.utils.jit_utils import *
+from .parse_utils import ValueDeviceInfo
+
 
 class TorchGraph(object):
   _graph_id = 0
@@ -123,10 +127,11 @@ class TorchGraph(object):
     self._nodes.remove(node)
   
   
-  def connect_nodes(self):
-    for nodeA in self._nodes:
+  def connect_nodes(self, nodes=None):
+    nodes = nodes if nodes is not None else self._nodes
+    for nodeA in nodes:
       for ip in nodeA.flatten_inputs:
-        for nodeB in self._nodes:
+        for nodeB in nodes:
           if nodeB is not nodeA and ip in nodeB.outputs:
             nodeB.add_out_node(nodeA)
             nodeA.add_in_node(ip.node)
@@ -193,7 +198,7 @@ class TorchBlock(GraphBase):
   def reconnect_nodes(self):
     for node in self.nodes:
       node.clean_connection()
-    self._graph.connect_nodes()
+    self._graph.connect_nodes(nodes=self.nodes)
     
   def insert_node_with_idx(self, node, idx):
     node.owning_block = self
@@ -206,9 +211,14 @@ class TorchValue(object):
   
   def __init__(self, value, name=None):
     
+    if hasattr(value,'requires_grad'):
+      self._requires_grad = value.requires_grad()
+    else:
+      self._requires_grad = None
+
     if isinstance(value, torch.Value):
       self._name = unique_name(value) if name is None else name
-      self._scope_name = value.node().scopeName()
+      self._scope_name = get_node_scope_name(value.node())
       self._node = None
       self._shape = list(
           value.type().sizes()) if value.isCompleteTensor() else None
@@ -222,7 +232,9 @@ class TorchValue(object):
         self._data = get_attr_value(value.node(), "value")
         if self._type != "Tensor":
           self._is_plain_value = True
-        
+   
+      self._device_info = ValueDeviceInfo(get_jit_value_device(value))
+      
     elif isinstance(value, (float, int, bool, tuple, list)):
       self._name = name
       self._scope_name = ''
@@ -230,11 +242,11 @@ class TorchValue(object):
       self._shape = None
       self._is_none = False
       self._is_plain_value = True
-      # self._type = {float: 'float', 
-      #               int: 'int',  
-      #               bool: 'bool'}.get(type(value), None)
+     
       self._type = str(type(value))
       self._data = value
+      self._device_info = ValueDeviceInfo()
+
     else:
       raise RuntimeError(f"The type of value ({type(value)}) is unkown.")
 
@@ -242,14 +254,16 @@ class TorchValue(object):
     self._layout = None
     
   def _init_dtype(self, value):
-    known_types = ['int', 'long', 'float', 'double', 'bool']
+    known_types = ['int16', 'short', 'int', 'int32', 'int64', 'long', 'float', 'float32', 'float16', 'half', 'float64', 'double', 'bool']
     if isinstance(value, torch.Value) and self.is_tensor() and value.isCompleteTensor():
       dtype = value.type().scalarType().lower()
     elif self.is_none():
       dtype = None
     else:
-      dtype = self._type.lower()
+      # convert python dtype to torch dtype system
+      dtype = {"int": "int", "float": "float"}.get(self._type.lower(), self._type.lower())
 
+    # build complete pytorch dtype
     if dtype is None:
       self._dtype = None
     else:
@@ -262,13 +276,20 @@ class TorchValue(object):
   def is_plain_value(self):
     return self._is_plain_value
   
-  def convert_plain_value_to_tensor(self):
+  def convert_plain_value_to_tensor(self, dtype=None, device_info=None):
     self._is_plain_value = False
-    # self._dtype = self.dtype 
+    if dtype is not None:
+      self._dtype = dtype
+    if device_info is not None:
+      self._device_info = device_info
     self._type = 'Tensor'
 
   def is_none(self):
     return self._is_none
+
+  @property
+  def requires_grad(self):
+    return self._requires_grad
 
   @property
   def name(self):
@@ -323,7 +344,10 @@ class TorchValue(object):
   @data.setter
   def data(self, data):
     self._data = data
-    
+  
+  @property
+  def device(self):
+    return self._device_info
     
 class TorchNode(NodeBase):
 
@@ -345,7 +369,7 @@ class TorchNode(NodeBase):
         if self._kind not in native_fn:
           self._is_custom_pyop = True
           self._pyobj = node.pyobj()
-      self._scope_name = node.scopeName()
+      self._scope_name = get_node_scope_name(node)
       self._source_range = node.sourceRange()
           
     self._inputs = []
@@ -387,7 +411,7 @@ class TorchNode(NodeBase):
     if self._blocks:
       for i, block in enumerate(self._blocks):
         node_des[f'block_{i}'] = []
-        for n in sorted(block._nodes, key=lambda n: n.idx):
+        for n in sorted(block._nodes, key=lambda n: n.block_idx):
           node_des[f'block_{i}'].append(n.description())
     return node_des
 
@@ -401,10 +425,12 @@ class TorchNode(NodeBase):
   
 
   def add_out_node(self, node):
-    self._out_nodes.append(node)
+    if node not in self._out_nodes:
+      self._out_nodes.append(node)
 
   def add_in_node(self, node):
-    self._in_nodes.append(node)
+    if node not in self._in_nodes:
+      self._in_nodes.append(node)
 
   def clean_connection(self):
     self._out_nodes.clear()
@@ -470,7 +496,7 @@ class TorchNode(NodeBase):
 
   @property
   def dtype(self):
-    if self._dtype == "unkown":
+    if self._dtype == "unknown":
       if self.outputs and self.outputs[0].dtype == "unknown" or not self.outputs:
         dtype = list(self.flatten_inputs)[0].dtype
       else:
@@ -492,7 +518,7 @@ class TorchNode(NodeBase):
     else:
       if self.outputs:
         if self.outputs[0].scope_name:
-          return _NODE_NAME_SEPERATOR.join(
+          return TorchGraphSymbol.NODE_NAME_SEPERATOR.join(
             [self.outputs[0].scope_name, self.outputs[0].name])
         else:
           return self.outputs[0].name
@@ -559,8 +585,3 @@ class TorchNode(NodeBase):
   @source_range.setter
   def source_range(self, source_range):
     self._source_range = source_range
-
-  
-  
-        
-

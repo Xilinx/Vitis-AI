@@ -87,9 +87,13 @@ class TorchOpAttr:
                 self.op_name)))[1:]
 
       elif self.op_name.split(".")[-1] in dir(torch.nn.functional) and self.op_class_type == TorchOpClassType.NN_FUNCTION:
-        self.attrs[:] = list(
-            eval('inspect.signature({}).parameters'.format(self.op_name)))[:]
+        try:
+          self.attrs[:] = list(
+                eval('inspect.signature({}).parameters'.format(self.op_name)))[:]
+        except Exception as e:
+          pass
         self.input_args[:] = self.attrs[:]
+
 
 def gen_attr(torch_op: str, force_to_primitive: bool, schema: "Schema", class_type=None):
   global _TORCH_OP_ATTR_MAP

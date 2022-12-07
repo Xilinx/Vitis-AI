@@ -1,14 +1,14 @@
 import copy as _copy
 import sys as _sys
 
-from nndct_shared.utils import NndctOption, option_util, NndctDebugLogger, NndctScreenLogger
+from nndct_shared.utils import NndctOption, option_util, NndctDebugLogger, NndctScreenLogger, QError, QWarning, QNote
 from .version import __version__
 try:
   from xir import Graph
 except ModuleNotFoundError:
-  NndctScreenLogger().warning(f"Can't find xir package in your environment.")
+  NndctScreenLogger().warning2user(QWarning.NO_XIR, f"Can't find xir package in your environment.")
 except Exception as e:
-  NndctScreenLogger().warning(f"Import module 'xir' error: '{str(e)}'")
+  NndctScreenLogger().warning2user(QWarning.XIR_MISMATCH, f"Import module 'xir' error: '{str(e)}'")
 
 #Importing any module in pytorch_nndct before xir is forbidden!!!
 from .apis import *
@@ -53,7 +53,7 @@ def _init_torch_nndct_module():
     #       print(f"\ndef {key}{inspect.signature(item)}:\n{item.__doc__}")
     _sys.exit()
 
-  if NndctOption.nndct_parse_debug.value:
+  if NndctOption.nndct_parse_debug.value or NndctOption.nndct_inspect_debug.value:
     option_util.set_option_value("nndct_logging_level", 1)
 
   if NndctOption.nndct_logging_level.value > 0:
@@ -64,7 +64,8 @@ def _init_torch_nndct_module():
     option_util.set_option_value("nndct_param_corr", False)
     option_util.set_option_value("nndct_equalization", False)
     # option_util.set_option_value("nndct_wes", False)
-    option_util.set_option_value("nndct_wes_in_cle", False)
+    # option_util.set_option_value("nndct_wes_in_cle", False)
+    option_util.set_option_value("nndct_leaky_relu_approximate", False)
 
   #if NndctOption.nndct_quant_opt.value > 2:
   if (not hasattr(NndctOption.nndct_param_corr, '_value')) and (NndctOption.nndct_quant_opt.value <= 0 ):
@@ -78,5 +79,4 @@ _init_torch_nndct_module()
 import pytorch_nndct.apis
 import pytorch_nndct.nn
 import pytorch_nndct.utils
-
 

@@ -383,10 +383,10 @@ def filter_conv2d(node, target):
   if not ret:
     return ret, msg
 
-  ret, msg = check_nonlinear(conv_engine, node)
+  # ret, msg = check_nonlinear(conv_engine, node)
 
-  if not ret:
-    return ret, msg
+  # if not ret:
+  #   return ret, msg
 
   return True, msg
 
@@ -485,14 +485,14 @@ def filter_depthwise_conv2d(node, target):
     if not ret:
       return ret, msg
 
-  if DPUTargetHelper.has_alu_engine(target):
-    ret, msg = check_nonlinear(DPUTargetHelper.get_alu_engine(target), node)
-    if not ret:
-      return ret, msg
-  else:
-    ret, msg = check_nonlinear(DPUTargetHelper.get_dwconv_engine(target), node)
-    if not ret:
-      return ret, msg
+  # if DPUTargetHelper.has_alu_engine(target):
+  #   ret, msg = check_nonlinear(DPUTargetHelper.get_alu_engine(target), node)
+  #   if not ret:
+  #     return ret, msg
+  # else:
+  #   ret, msg = check_nonlinear(DPUTargetHelper.get_dwconv_engine(target), node)
+  #   if not ret:
+  #     return ret, msg
   return True, msg
 
 def filter_transpose_conv2d(node, target):
@@ -541,9 +541,9 @@ def filter_transpose_conv2d(node, target):
   if not ret:
     return ret, msg
 
-  ret, msg = check_nonlinear(conv_engine, node)
-  if not ret:
-    return ret, msg
+  # ret, msg = check_nonlinear(conv_engine, node)
+  # if not ret:
+  #   return ret, msg
 
   return True, msg
 
@@ -625,14 +625,14 @@ def filter_transpose_depthwise_conv2d(node, target):
     if not ret:
       return ret, msg
 
-  if DPUTargetHelper.has_alu_engine(target):
-    ret, msg = check_nonlinear(DPUTargetHelper.get_alu_engine(target), node)
-    if not ret:
-      return ret, msg
-  else:
-    ret, msg = check_nonlinear(DPUTargetHelper.get_dwconv_engine(target), node)
-    if not ret:
-      return ret, msg 
+  # if DPUTargetHelper.has_alu_engine(target):
+  #   ret, msg = check_nonlinear(DPUTargetHelper.get_alu_engine(target), node)
+  #   if not ret:
+  #     return ret, msg
+  # else:
+  #   ret, msg = check_nonlinear(DPUTargetHelper.get_dwconv_engine(target), node)
+  #   if not ret:
+  #     return ret, msg 
   return True, msg
 
 def filter_conv3d(node, target):
@@ -929,7 +929,18 @@ def filter_hard_sigmoid(node, target):
     msg = "This target does not support single hard-sigmoid."
     return False, msg
   return True, msg
-  
+
+
+def filter_leaky_relu(node, target):
+  msg = ""
+  alpha = node.node_attr(node.op.AttrName.ALPHA)
+  dpu_alpha = 26.0 / 256
+  if alpha != dpu_alpha:
+    msg = f"Its alpa is {alpha}, but DPU only support {dpu_alpha}."
+    return False, msg
+  return True, msg
+
+
 filters = {
   NNDCT_OP.AVG_POOL: filter_pool,
   NNDCT_OP.ADAPTIVEAVGPOOL2D: filter_pool,
@@ -951,6 +962,7 @@ filters = {
   NNDCT_OP.HSWISH: filter_hard_sigmoid,
   NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: filter_transpose_depthwise_conv2d,
   NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: filter_transpose_depthwise_conv3d,
+  NNDCT_OP.LEAKY_RELU: filter_leaky_relu
   # append here
 
 }
@@ -1051,7 +1063,6 @@ def create_dwconv2d_from_mul(node):
   dwconv2d.set_param(dwconv2d.ParamName.WEIGHTS, weight_tensor)
 
   return dwconv2d
-
 
 pattern_filters = [merge_permute_to_matmul, filter_dpu_interface_reshape]
 

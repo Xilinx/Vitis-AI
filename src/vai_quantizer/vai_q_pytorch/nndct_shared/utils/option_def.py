@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+import os
 import sys as _sys
 from typing import TypeVar, Optional
 from .exception import DefineOptionError
@@ -39,13 +39,14 @@ class Option(object):
     DefineOptionError
 
 """
-  def __init__(self, name: str, dtype: type, default: T, action: Optional[str] = None, framework: str = "all", help: Optional[str] = None):
+  def __init__(self, name: str, dtype: type, default: T, action: Optional[str] = None, framework: str = "all", help: Optional[str] = None, env=None):
     self._name = _OPTION_PREFFIX + name
     self._dtype = dtype
     self._default = default
     self._action = action
     self._framework = framework
     self._help = help
+    self._env = env
     try:
       self._check_attribute_validataion_()
     except DefineOptionError as e:
@@ -73,6 +74,21 @@ class Option(object):
     if self._dtype != bool and self._action is not None:
       raise DefineOptionError(self._name, msg=r"The action is only valid for bool type option.")
   
+
+  def get_env_value(self):
+    if self._dtype == str:
+      return os.getenv(self._env, default=self._default)
+    elif self._dtype in [int, float]:
+      data = os.getenv(self._env, default=self._default)
+      return self._dtype(data)
+    elif self._dtype == bool:
+      data = os.getenv(self._env)
+      if data is None:
+        return self._default
+      else:
+        return {"true": True,
+                "false": False,
+                "0": False}.get(data.lower(), True)
   @property
   def dtype(self):
     return self._dtype
@@ -87,7 +103,13 @@ class Option(object):
   
   @property
   def value(self):
-    return self._value if hasattr(self, '_value') else self._default
+    if hasattr(self, '_value'):
+      return self._value
+    elif self._env is not None:
+      return self.get_env_value()
+    else:
+      return self._default
+  
    
     
   @value.setter

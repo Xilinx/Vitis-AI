@@ -17,14 +17,13 @@
 
 import json
 import numpy as np
-import copy
 from collections import OrderedDict
 from enum import Enum, auto
 from functools import partial
 from typing import Dict, List, Callable, Optional, Union, Any, Set
 
 from nndct_shared.nndct_graph.base_tensor import Tensor
-
+from nndct_shared.utils.common import AutoName
 
 class AttrUser(object):
   def __init__(self, user, attr_name):
@@ -62,11 +61,6 @@ def _default_read_and_write_value(value_mem: List[Any],
       return value_mem[0]
     else:
       return value_mem[:]
-
-class AutoName(Enum):
-
-  def _generate_next_value_(name, start, count, last_values):
-    return name.lower()
 
 class OccurenceType(Enum):
   REQUIRED = auto()
@@ -160,7 +154,7 @@ class NndctIrAttr(object):
       value = list(value)
       self._is_container = True
     if value:
-      if self._type is not Any and (not isinstance(value[0], (self._type, type(None)))):
+      if self._type is not Any and (not isinstance(value[0], (self._type, type(None), Tensor))):
         raise TypeError(
           f"The type of attr '{self._name.value}' should be {self._type} instead of {type(value[0])}"
         )
@@ -296,7 +290,7 @@ class Operation(object):
           self.get_param, self.set_param, self.ParamName)
 
   def __repr__(self):
-    return json.dumps(self.description(), indent=4, separators=(',', ': '))
+    return json.dumps(self.description(), indent=2, separators=(',', ': '))
 
   def description(self):
 
@@ -381,10 +375,11 @@ class Operation(object):
   def has_attr(self, attr_name: Union[Enum, str]):
     if isinstance(attr_name, Enum):
       return attr_name in self._attrs
-    elif isinstance(attr_name, str) and hasattr(self, 'AttrName'):
-      for name in getattr(self, "AttrName"):
-        if attr_name == name.value:
-          return True
+    elif isinstance(attr_name, str):
+      if hasattr(self, 'AttrName'):
+        for name in getattr(self, 'AttrName'):
+          if attr_name == name.value:
+            return True
       return False
     else:
       raise ValueError('"attr_name" must be either Enum or string')

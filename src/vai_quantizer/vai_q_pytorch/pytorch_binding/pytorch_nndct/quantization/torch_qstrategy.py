@@ -70,7 +70,7 @@ class NndctCGQstrategy(CPUGPUQstrategy):
     for layer_name, layer_config in self._quant_strategy_info["layer_name_config"].items():
       self._layer_quant_names.append(layer_name)
     
-    for node in quant_info_mgr.Nndctgraph.nodes:
+    for node in quant_info_mgr.Nndctgraph.all_nodes():
       if quant_info_mgr.is_node_quantizable(node, self.lstm):
         # parameters
         for k in quant_info_mgr.quant_node_params(node).keys():
@@ -83,47 +83,55 @@ class NndctCGQstrategy(CPUGPUQstrategy):
               layer_weight_quant = self.get_layer_weights_config(node)
               if layer_weight_quant:
                 bw = layer_weight_quant['bit_width']
-                quant_algo['param'][p.name] = create_quant_algo("weights", layer_weight_quant, node)
+                quant_algo['param'][p.name] = [create_quant_algo("weights", layer_weight_quant, node)]
               else:
                 bw = self.num_bits_w
-                quant_algo['param'][p.name] = create_quant_algo("weights", self._quant_strategy_info["weights"], node)
+                quant_algo['param'][p.name] = [create_quant_algo("weights", self._quant_strategy_info["weights"], node)]
             elif (hasattr(node.op.ParamName, 'BIAS') and k == node.op.ParamName.BIAS or
              hasattr(node.op.ParamName, 'BETA') and k == node.op.ParamName.BETA):
               layer_bias_quant = self.get_layer_bias_config(node)
               if layer_bias_quant:
                 bw = layer_bias_quant['bit_width']
-                quant_algo['param'][p.name] = create_quant_algo("bias", layer_bias_quant, node)
+                quant_algo['param'][p.name] = [create_quant_algo("bias", layer_bias_quant, node)]
               else:
                 bw = self.num_bits_b
-                quant_algo['param'][p.name] = create_quant_algo("bias", self._quant_strategy_info["bias"], node)
+                quant_algo['param'][p.name] = [create_quant_algo("bias", self._quant_strategy_info["bias"], node)]
           # TODO: use set function set config
-          config['param'][p.name] = [bw, None, None, None] # bitwidth, scale, zero_point
+          config['param'][p.name] = [[bw, None, None, None]] # bitwidth, scale, zero_point
          
         # output blobs
         end = quant_info_mgr.quant_output(node.name).name
         if end not in config['output']:
           layer_group_quant = self.get_quant_group_activation_config(quant_info_mgr, node.name)
-          if layer_group_quant:
-            config['output'][end] = [layer_group_quant['bit_width'], None, None, None]
-            quant_algo['output'][end] = create_quant_algo("activation", layer_group_quant, node)
-          else:
-            config['output'][end] = [self.num_bits_a, None, None, None]
-            quant_algo['output'][end] = create_quant_algo("activation", self._quant_strategy_info["activation"], node)
+          config['output'][end] = []
+          quant_algo['output'][end] = []
+          for tensor in quant_info_mgr.quant_output(node.name).out_tensors:
+            if tensor.name not in config['param'].keys():
+              if layer_group_quant:
+                config['output'][end].append([layer_group_quant['bit_width'], None, None, None])
+                quant_algo['output'][end].append(create_quant_algo("activation", layer_group_quant, node))
+              else:
+                config['output'][end].append([self.num_bits_a, None, None, None])
+                quant_algo['output'][end].append(create_quant_algo("activation", self._quant_strategy_info["activation"], node))
 
         # input blobs (for mix precision quantization)
         if self.num_bits_w != self.num_bits_a:
           if node.op.type in [NNDCT_OP.DENSE, NNDCT_OP.CONV2D]:
             layer_weight_quant = self.get_layer_weights_config(node)
-            if layer_weight_quant:
-              config['input'][node.name] = [layer_weight_quant['bit_width'], None, None, None]
-              quant_algo['input'][node.name] = create_quant_algo("weights", layer_weight_quant, node)
-            else:
-              config['input'][node.name] = [self.num_bits_w, None, None, None]
-              quant_algo['input'][node.name] = create_quant_algo("weights", self._quant_strategy_info["weights"], node)
+            config['input'][node.name] = []
+            quant_algo['input'][node.name] = []
+            for tensor in node.in_tensors:
+              if tensor.name not in config['param'].keys():
+                if layer_weight_quant:
+                  config['input'][node.name].append([layer_weight_quant['bit_width'], None, None, None])
+                  quant_algo['input'][node.name].append(create_quant_algo("weights", layer_weight_quant, node))
+                else:
+                  config['input'][node.name].append([self.num_bits_w, None, None, None])
+                  quant_algo['input'][node.name].append(create_quant_algo("weights", self._quant_strategy_info["weights"], node))
     
     # check the input fix of all quantized ops 
     if not self.lstm:
-      for node in quant_info_mgr.Nndctgraph.nodes:
+      for node in quant_info_mgr.Nndctgraph.all_nodes():
         if quant_info_mgr.is_node_quantizable(node, self.lstm):
           if node.op.type not in [NNDCT_OP.INPUT, NNDCT_OP.QUANT_STUB, NNDCT_OP.CONCAT]:
             for p_n in quant_info_mgr.Nndctgraph.parents(node):
@@ -134,14 +142,19 @@ class NndctCGQstrategy(CPUGPUQstrategy):
                 for tensor in end_node.out_tensors:
                   if tensor.shape == None:
                     out_is_tensor = False
+                
                 if end not in config['output'] and out_is_tensor:
                   layer_group_quant = self.get_quant_group_activation_config(quant_info_mgr, p_n.name)
-                  if layer_group_quant:
-                    config['output'][end] = [layer_group_quant['bit_width'], None, None, None]
-                    quant_algo['output'][end] = create_quant_algo("activation", layer_group_quant, node)
-                  else:
-                    config['output'][end] = [self.num_bits_a, None, None, None]
-                    quant_algo['output'][end] = create_quant_algo("activation", self._quant_strategy_info["activation"], node)
+                  config['output'][end] = []
+                  quant_algo['output'][end] = []
+                  for tensor in quant_info_mgr.quant_output(p_n.name).out_tensors:
+                    if tensor.name not in config['param'].keys():
+                      if layer_group_quant:
+                        config['output'][end].append([layer_group_quant['bit_width'], None, None, None])
+                        quant_algo['output'][end].append(create_quant_algo("activation", layer_group_quant, node))
+                      else:
+                        config['output'][end].append([self.num_bits_a, None, None, None])
+                        quant_algo['output'][end].append(create_quant_algo("activation", self._quant_strategy_info["activation"], node))    
                   
           elif node.op.type in [NNDCT_OP.INPUT]:
             cn_nodes = quant_info_mgr.Nndctgraph.children(node)
@@ -201,7 +214,7 @@ class TensorRTCGQStrategy(CPUGPUQstrategy):
       nndct_layer_type = get_nndct_op_type(layer_type)
       self._layer_quant_types.append(nndct_layer_type)
     
-    for node in quant_info_mgr.Nndctgraph.nodes:
+    for node in quant_info_mgr.Nndctgraph.all_nodes():
       if quant_info_mgr.is_node_tensorrt_quantizable(node):
         # parameters
         for k in quant_info_mgr.quant_node_params(node).keys():
@@ -213,21 +226,33 @@ class TensorRTCGQStrategy(CPUGPUQstrategy):
               layer_weight_quant = self.get_layer_weights_config(node)
               if layer_weight_quant:
                 bw = layer_weight_quant['bit_width']
-                quant_algo['param'][p.name] = create_quant_algo("weights", layer_weight_quant, node)
+                quant_algo['param'][p.name] = [create_quant_algo("weights", layer_weight_quant, node)]
               else:
                 bw = self.num_bits_w
-                quant_algo['param'][p.name] = create_quant_algo("weights", self._quant_strategy_info["weights"], node)
+                quant_algo['param'][p.name] = [create_quant_algo("weights", self._quant_strategy_info["weights"], node)]
               # TODO: use set function set config
-              config['param'][p.name] = [bw, None, None, None] # bitwidth, scale, zero_point
+              config['param'][p.name] = [[bw, None, None, None]] # bitwidth, scale, zero_point
          
         # input blobs
         layer_activation_quant = self.get_layer_activation_config(node)
-        if layer_activation_quant:
-          config['input'][node.name] = [layer_activation_quant['bit_width'], None, None, None]
-          quant_algo['input'][node.name] = create_quant_algo("activation", layer_activation_quant, node)
-        else:
-          config['input'][node.name] = [self.num_bits_a, None, None, None]
-          quant_algo['input'][node.name] = create_quant_algo("activation", self._quant_strategy_info["activation"], node)
+        config['input'][node.name] = []
+        quant_algo['input'][node.name] = []
+        for tensor in node.in_tensors:
+          if tensor.name not in config['param'].keys():
+            if layer_weight_quant:
+              config['input'][node.name].append([layer_weight_quant['bit_width'], None, None, None])
+              quant_algo['input'][node.name].append(create_quant_algo("weights", layer_weight_quant, node))
+            else:
+              config['input'][node.name].append([self.num_bits_w, None, None, None])
+              quant_algo['input'][node.name].append(create_quant_algo("weights", self._quant_strategy_info["weights"], node))
+        for tensor in node.in_tensors:
+          if tensor.name not in config['param'].keys():
+            if layer_activation_quant:
+              config['input'][node.name].append([layer_activation_quant['bit_width'], None, None, None])
+              quant_algo['input'][node.name].append(create_quant_algo("activation", layer_activation_quant, node))
+            else:
+              config['input'][node.name].append([self.num_bits_a, None, None, None])
+              quant_algo['input'][node.name].append(create_quant_algo("activation", self._quant_strategy_info["activation"], node))
               
     return config, quant_algo
 

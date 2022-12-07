@@ -23,7 +23,7 @@ import copy
 import math
 import nndct_shared.utils as nndct_utils
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP
-from nndct_shared.utils import NndctOption, NndctScreenLogger, set_option_value
+from nndct_shared.utils import NndctOption, NndctScreenLogger, set_option_value, QError, QWarning, QNote
 from pytorch_nndct.quantization import TORCHQuantizer
 from collections import defaultdict
 import torch.nn.functional as F
@@ -32,12 +32,13 @@ import pytorch_nndct.nn as py_nn
 from nndct_shared.nndct_graph import GraphSearcher
 from nndct_shared.utils import PatternType
 from pytorch_nndct.utils import TorchSymbol
+from pytorch_nndct.utils.module_util import to_device
 from .ModuleHooker import ModuleHooker
 
 from .utils import (connect_module_with_graph,
                     disconnect_modeule_with_graph, prepare_quantizable_module,
                     register_output_hook, set_outputs_recorder_status,
-                    to_device, update_nndct_blob_data, update_nndct_parameters,
+                    update_nndct_blob_data, update_nndct_parameters,
                     get_deploy_graph_list)
 
 from .adaquant_utils import tensor_size, tensor_size_by_num
@@ -125,6 +126,8 @@ class AdaQuant(object):
   def __enter__(self):
     self._param_corr = NndctOption.nndct_param_corr.value
     set_option_value("nndct_param_corr", 0)
+    if NndctOption.nndct_calib_before_finetune.value is True:
+      self._processor.set_keep_fp(True)
     
     
   def __exit__(self, *args):
@@ -142,7 +145,8 @@ class AdaQuant(object):
         
     self._processor.setup_calib()
     # don't change tensors' quantization step in re-calibration after fast finetune
-    self._processor.set_keep_fp(True)
+    if NndctOption.nndct_calib_before_finetune.value is False:
+      self._processor.set_keep_fp(True)
    
    
     
@@ -158,27 +162,33 @@ class AdvancedQuantProcessor(torch.nn.Module):
   "Itay Hubara et al., Improving Post Training Neural Quantization: Layer-wise Calibration and Integer Programming, 
   arXiv:2006.10518, 2020."
   """
-  def __init__(self, quantizer):
+  def __init__(self, module, graph, quantizer, example_inputs):
     super().__init__()
     self._quantizer = quantizer
-    quantizer.load_param()
-    self._graph = quantizer.graph
-    self._quant_model = quantizer.quant_model
-    self._float_model = ModuleHooker.clone_quant_module(quantizer.quant_model)
+    #quantizer.load_param()
+    self._graph = graph
+    self._quant_model = module
+    self._float_model = ModuleHooker.clone_quant_module(module, graph)
+    self._example_inputs = example_inputs
+
     for mod in self._float_model.modules():
       if hasattr(mod, "node"):
         mod.node.in_quant_part = False
       
       if hasattr(mod, "quantizer"):
         mod.quantizer = None
-        
+   
+    possible_last_quantized_nodes = self._get_possible_last_quant_nodes()
+    
     self._batch_size = None
     self._cached_outputs = defaultdict(list)
     self._cached_output = defaultdict(list)
     self._mem_count = defaultdict(float)
-    self._net_input_nodes = [node for node in self._graph.nodes if node.op.type == NNDCT_OP.INPUT]
+    #self._net_input_nodes = [node for node in self._graph.nodes if node.op.type == NNDCT_OP.INPUT]
+    self._net_input_nodes = self._graph.get_input_nodes()
     self._float_weights = defaultdict(list)
-    self._last_quant_nodes = self.collect_last_quant_nodes()
+    
+    self._last_quant_nodes = self.collect_last_quant_nodes(filter=lambda node: node.name in possible_last_quantized_nodes)
     self._torch_version = torch.__version__.split('.')
   
   def _setup_quantizer(self, quant_mode):
@@ -199,16 +209,26 @@ class AdvancedQuantProcessor(torch.nn.Module):
     handlers = []
     if hook_type == "multiple":
       def hook(module, input, output):
-        self._cached_outputs[module].append(output.detach().cpu())
-        if monitor_mem is True:
-          self._mem_count[module] += tensor_size(output)   
+        if module.node.op.type == NNDCT_OP.TUPLE_INPUT:
+          self._cached_outputs[module].append([out.detach().cpu() for out in output])
+          if monitor_mem is True:
+            for out in output:
+              self._mem_count[module] += tensor_size(out)   
+        else:
+          self._cached_outputs[module].append(output.detach().cpu())
+          if monitor_mem is True:
+            self._mem_count[module] += tensor_size(output)   
         if stop_forward is True:
           raise StopForward()
     else:
       def hook(module, input, output):
         self._cached_output[module] = output
         if monitor_mem is True:
-          self._mem_count[module] += tensor_size(output)
+          if module.node.op.type == NNDCT_OP.TUPLE_INPUT:
+            for out in output:
+              self._mem_count[module] += tensor_size(out)
+          else:
+            self._mem_count[module] += tensor_size(output)
         if stop_forward is True:
           raise StopForward()
       
@@ -228,8 +248,12 @@ class AdvancedQuantProcessor(torch.nn.Module):
   
   def hook_batch_size(self, hook_mods):
     def hook(module, input, output):
-      if isinstance(output, torch.Tensor) and output.ndim == 4:
-        self._batch_size = output.size()[0]
+      if module.node.op.type == NNDCT_OP.DENSE:
+        if isinstance(output, torch.Tensor) and output.ndim >= 2:
+          self._batch_size = output.size()[0]
+      else:
+        if isinstance(output, torch.Tensor) and output.ndim >= 4:
+          self._batch_size = output.size()[0]
                                                 
     handlers = []
     for module in hook_mods:
@@ -244,17 +268,18 @@ class AdvancedQuantProcessor(torch.nn.Module):
         handlers.append(module.register_forward_pre_hook(hook))
     return handlers
     
-  def collect_last_quant_nodes(self):
+  def collect_last_quant_nodes(self, filter=None):
     def find_last_quant_node(node, visited=None, quant_nodes=None):
       if node in visited:
         return
       visited.add(node)
-      if self.quantizer.configer.is_node_quantizable(node, False) and node.in_nodes:
-        quant_nodes.append(node)
-        return
+      if self.quantizer.configer.is_node_quantizable(node, self.quantizer.lstm) and node.in_nodes:
+        if filter is None or (filter is not None and filter(node) is True):
+          quant_nodes.append(node)
+          return
       for pn in self._graph.parents(node):
           find_last_quant_node(pn, visited=visited, quant_nodes=quant_nodes)
-        
+  
     end_nodes = [tensor.node for tensor in self._graph.end_tensors]
     last_quant_nodes = []
     visited = set()
@@ -281,6 +306,9 @@ class AdvancedQuantProcessor(torch.nn.Module):
         for ip in input_args:
           if isinstance(ip, torch.Tensor):
             new_input_args.append(ip.to(device))
+          elif isinstance(ip, (list, tuple)):
+            ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+            new_input_args.append(ip)
         _ = self.quant_model(*new_input_args)
         local_loss = 0
         for mod in last_quant_mods:
@@ -332,6 +360,9 @@ class AdvancedQuantProcessor(torch.nn.Module):
         for ip in input_args:
           if isinstance(ip, torch.Tensor):
             new_input_args.append(ip.to(device))
+          elif isinstance(ip, (list, tuple)):
+            ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+            new_input_args.append(ip)
         _ = f_model(*new_input_args)
     torch.cuda.empty_cache()
     self.clean_hooks(handlers)
@@ -445,7 +476,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
 
   def finetune(self, run_fn, run_args):
     if self.quantizer.quant_mode == 2:
-      NndctScreenLogger().warning(f"Finetune function will be ignored in test mode!")
+      NndctScreenLogger().warning2user(QWarning.FINETUNE_IGNORED, f"Finetune function will be ignored in test mode!")
       return
     NndctScreenLogger().info(f"=>Preparing data for fast finetuning module parameters ...")
     
@@ -487,7 +518,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     torch.cuda.empty_cache()
     NndctScreenLogger().info(f"Mem cost by fast finetuning: {total_memory_cost:.2f}G.")
     if total_memory_cost > 0.8 * available_m:
-        NndctScreenLogger().warning(f"There is not enought memory for fast finetuning and this process will be ignored!.Try to use a smaller calibration dataset.")
+        NndctScreenLogger().warning2user(QWarning.MEMORY_SHORTAGE, f"There is not enought memory for fast finetuning and this process will be ignored!.Try to use a smaller calibration dataset.")
         return 
     # calibration to get a set of quantization steps
     #print("****calibration to get float model tensor values")
@@ -580,6 +611,9 @@ class AdvancedQuantProcessor(torch.nn.Module):
           for ip in input_args:
             if isinstance(ip, torch.Tensor):
               new_input_args.append(ip.to(device))
+            elif isinstance(ip, (list, tuple)):
+              ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+              new_input_args.append(ip)
           _ = self.quant_model(*new_input_args)
           
           layer_inputs.append(self.cached_output[pn_node.module].detach().cpu())
@@ -615,15 +649,17 @@ class AdvancedQuantProcessor(torch.nn.Module):
     cache_layers = []
     monitor_layers = []
     batch_layers = []
+    
     for node in self.graph.nodes:
       # if node.op.type == NNDCT_OP.INPUT or node in end_nodes:
-      if node.op.type == NNDCT_OP.INPUT or node in self._last_quant_nodes:
+      if node.op.type == NNDCT_OP.INPUT or node.op.type == NNDCT_OP.TUPLE_INPUT or node in self._last_quant_nodes:
         cache_layers.append(node.module)
-      elif self.quantizer.configer.is_conv_like(node):
+      
+      if self.quantizer.configer.is_conv_like(node):
         monitor_layers.append(node.module)
         if not batch_layers:
           batch_layers.append(node.module)
-               
+   
     monitor_handlers = self.hook_memory_monitor(monitor_layers)
     batch_handlers = self.hook_batch_size(batch_layers)
     cache_handlers = self.hook_cache_output(cache_layers, monitor_mem=True)
@@ -637,7 +673,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
       
     NndctScreenLogger().info(f"Memory cost by fast finetuning is {total_memory_cost:.2f} G.")
     if total_memory_cost > 0.8 * available_m:
-        NndctScreenLogger().warning(f"There is not enought memory for fast finetuning and this process will be ignored!.Try to use a smaller calibration dataset.")
+        NndctScreenLogger().warning2user(QWarning.MEMORY_SHORTAGE, f"There is not enought memory for fast finetuning and this process will be ignored!.Try to use a smaller calibration dataset.")
         return 
     self.clean_hooks(monitor_handlers + cache_handlers + batch_handlers)
     net_inputs = []
@@ -670,9 +706,15 @@ class AdvancedQuantProcessor(torch.nn.Module):
   def collect_layer_act_pair(self):
     graph_searcher = GraphSearcher(self.graph)
     patterns = []
-    tuning_ops = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, 
-                  NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
-    tail_act_ops = [NNDCT_OP.RELU, NNDCT_OP.RELU6, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID]
+    
+    if NndctOption.nndct_ip_asr.value:
+      tuning_ops = [NNDCT_OP.CONV2D, NNDCT_OP.DENSE]
+      #tail_act_ops = [NNDCT_OP.ADD, NNDCT_OP.RESHAPE, NNDCT_OP.LAYER_NORM, NNDCT_OP.RELU]
+      tail_act_ops = [NNDCT_OP.RELU]
+    else:
+      tuning_ops = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.CONVTRANSPOSE2D, 
+                    NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.CONVTRANSPOSE3D]
+      tail_act_ops = [NNDCT_OP.RELU, NNDCT_OP.RELU6, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID]
     for tuning_op in tuning_ops:
       for act_op in tail_act_ops:
         patterns.append(PatternType(pattern=[tuning_op, act_op]))    
@@ -684,19 +726,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
         layer_act_group[conv] = act
     return layer_act_group
   
-  
-  # @staticmethod
-  # def get_output_attr_name(node):
-  #   def _get_module_name(node):
-  #     return TorchSymbol.MODULE_NAME_SEPERATOR.join(
-  #       [TorchSymbol.MODULE_BASE_SYMBOL,
-  #        str(node.idx)])
 
-  #   output_node = node.out_tensors[0].node
-  #   name_list = [TorchSymbol.MODULE_OUTPUT_PREFIX, _get_module_name(output_node)]
-  #   name = TorchSymbol.MODULE_NAME_SEPERATOR.join(name_list) if len(node.out_tensors) == 1 else TorchSymbol.MODULE_NAME_SEPERATOR.join(
-  #           name_list + [0])
-  #   return name
       
       
   def calc_net_loss(self, net_inputs, net_outputs, device):
@@ -705,7 +735,14 @@ class AdvancedQuantProcessor(torch.nn.Module):
     loss = AverageMeter("loss", size=len(last_quant_mods))
     with torch.no_grad():
       for idx, input_args in enumerate(zip(*net_inputs)):
-        new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
+        new_input_args = []
+        for ip in input_args:
+          if isinstance(ip, torch.Tensor):
+            new_input_args.append(ip.to(device))
+          elif isinstance(ip, (list, tuple)):
+            ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+            new_input_args.append(ip)
+        #new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
         # _ = fmodel(*new_input_args)
         _ = self.quant_model(*new_input_args)
         
@@ -721,11 +758,13 @@ class AdvancedQuantProcessor(torch.nn.Module):
   def finetune_v2(self, run_fn, run_args):
     # check status
     if self.quantizer.quant_mode == 2:
-      NndctScreenLogger().warning(f"Finetune function will be ignored in test mode!")
+      NndctScreenLogger().warning2user(QWarning.FINETUNE_IGNORED, f"Finetune function will be ignored in test mode!")
       return    
     
     # parameter finetuning
-   
+
+    #import ipdb
+    #ipdb.set_trace()
     with AdaQuant(processor=self):
       # calibration to get a set of quantization steps
       NndctScreenLogger().info(f"=>Preparing data for fast finetuning module parameters ...")   
@@ -746,8 +785,9 @@ class AdvancedQuantProcessor(torch.nn.Module):
       finetune_group = []
       for qmod, fmod in zip(self._quant_model.modules(), self._float_model.modules()):
         if hasattr(qmod, "node"):
-          if (self.quantizer.configer.is_node_quantizable(qmod.node, False) and 
-            len(qmod.node.op.params) > 0):     
+          #if (self.quantizer.configer.is_node_quantizable(qmod.node, self.quantizer.lstm) and 
+          if (self.quantizer.configer.is_conv_like(qmod.node) and
+            len(qmod.node.op.params) > 0):
             finetune_group.append([qmod.node, fmod])
 
       net_loss = intial_net_loss
@@ -757,20 +797,25 @@ class AdvancedQuantProcessor(torch.nn.Module):
           need_cache = False
         else:
           need_cache = True
-                  
         net_loss = self.optimize_layer_v2(qnode, fmod, layer_act_pair, net_inputs, net_outputs, net_loss, device, need_cache)
       print(f"%%%%%%%%%%%%%%%%% final opt net loss:{net_loss.avg}")
 
         # print(f"{qnode.name}({need_cache}):{net_loss}")
             
-    NndctScreenLogger().info(f"=>Export fast finetuned parameters ...")
+    #NndctScreenLogger().info(f"=>Export fast finetuned parameters ...")
     # export finetuned parameters
-    self.quantizer.export_param()
+    #self.quantizer.export_param()
   
   def is_cached(self, node, iters):
     *_, available_m = list(map(lambda x: x/1024, map(int, os.popen('free -t -m').readlines()[1].split()[1:])))
-    input_numel = np.prod([self._batch_size] + self.graph.node(node.in_nodes[0]).out_tensors[0].shape[1:])
-    output_numel = np.prod([self._batch_size] + node.out_tensors[0].shape[1:])
+    if self.graph.node(node.in_nodes[0]).out_tensors[0].shape is None:
+      input_numel = np.prod([self._batch_size])
+    else:
+      input_numel = np.prod([self._batch_size] + self.graph.node(node.in_nodes[0]).out_tensors[0].shape[1:])
+    if node.out_tensors[0].shape is None:
+      output_numel = np.prod([self._batch_size])
+    else:
+      output_numel = np.prod([self._batch_size] + node.out_tensors[0].shape[1:])
     size = tensor_size_by_num((input_numel + output_numel) * iters)
     if size > 0.8 * available_m:
       return False
@@ -808,7 +853,10 @@ class AdvancedQuantProcessor(torch.nn.Module):
       
     #print(f"learning rate: lr_w={lr_w}, lr_b={lr_b}")
     #print(f"pre quant efficiency:{quantize_efficiency}")
-    iters = 100
+    if NndctOption.nndct_ip_asr.value: 
+      iters = 25
+    else:
+      iters = 100
     total_loss = AverageMeter("layer_loss")
     best_params = self.get_layer_params(layer)
     # torch version >= 1.6
@@ -825,14 +873,19 @@ class AdvancedQuantProcessor(torch.nn.Module):
         NNDCT_OP.RELU6: F.relu6,
       }
     
-    #import pdb
-    #pdb.set_trace()
     prev_loss = AverageMeter("loss", size=len(net_loss))
     if not need_cache:
       for i in range(iters):
         stop_handlers = self.hook_cache_output([float_layer, self.graph.node(qnode.in_nodes[0]).module], hook_type='single', stop_forward=True)
         for input_args in zip(*net_inputs):
-          new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
+          new_input_args = []
+          for ip in input_args:
+            if isinstance(ip, torch.Tensor):
+              new_input_args.append(ip.to(device))
+            elif isinstance(ip, (list, tuple)):
+              ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+              new_input_args.append(ip)
+          #new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
           
           with torch.no_grad():
             try:
@@ -880,18 +933,29 @@ class AdvancedQuantProcessor(torch.nn.Module):
         float_data = layer.weight.clone().detach()
         layer.param_quantized = False
         eval_loss = self.calc_net_loss(net_inputs, net_outputs, device)
-        '''
+        ''' 
         quant_data = layer.weight.detach()
         quantize_efficiency = self.quant_eff(quant_data, float_data)
+        print(f"post quant efficiency:{quantize_efficiency}")
         print('weights/bias lr: {} / {}'.format(
             opt_weight.param_groups[0]['lr'],
             opt_bias.param_groups[0]['lr']), flush=True)
         print(f"eval loss:{eval_loss.avg} best loss:{net_loss.avg}", flush=True)
         '''
-        if eval_loss < net_loss:
+        loss_diff_ratio = ((np.array(net_loss.avg)-np.array(eval_loss.avg))/np.array(net_loss.avg))*10000
+        #print(f"loss_diff_ratio :{loss_diff_ratio}", flush=True)
+       
+        if NndctOption.nndct_ip_asr.value:
+          loss_ratio_threshold = 5.0
+        else:
+          loss_ratio_threshold = 0.0
+        
+        if (eval_loss < net_loss) and (loss_diff_ratio.max() > loss_ratio_threshold):
+          #print(f"update parameters", flush=True)
           best_params = self.get_layer_params(layer)
           net_loss = eval_loss
         else:
+          #print(f"update learning rate", flush=True)
           self.set_layer_params(layer, best_params[0], best_params[1])
           opt_weight.param_groups[0]['lr'] /= 2. 
           if opt_bias:
@@ -905,17 +969,24 @@ class AdvancedQuantProcessor(torch.nn.Module):
     else:
       handlers = self.hook_cache_output([float_layer, self.graph.parents(qnode)[0].module], stop_forward=True)
       with torch.no_grad():
-        for input_args in zip(*net_inputs):     
-            new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
-            try:
-              _ = self._float_model(*new_input_args)
-            except StopForward:
-              pass
-            
-            try:
-              _ = self.quant_model(*new_input_args)
-            except StopForward:
-              pass
+        for input_args in zip(*net_inputs):
+          new_input_args = []
+          for ip in input_args:
+            if isinstance(ip, torch.Tensor):
+              new_input_args.append(ip.to(device))
+            elif isinstance(ip, (list, tuple)):
+              ip = [item.to(device) for item in ip if isinstance(item, torch.Tensor)]
+              new_input_args.append(ip)
+          #new_input_args = [ip.to(device) for ip in input_args if isinstance(ip, torch.Tensor)]
+          try:
+            _ = self._float_model(*new_input_args)
+          except StopForward:
+            pass
+          
+          try:
+            _ = self.quant_model(*new_input_args)
+          except StopForward:
+            pass
             
       torch.cuda.empty_cache()
       self.clean_hooks(handlers)
@@ -954,7 +1025,8 @@ class AdvancedQuantProcessor(torch.nn.Module):
         float_data = np.fabs(layer.weight.cpu().detach().numpy().flatten())
         layer.param_quantized = False
         eval_loss = self.calc_net_loss(net_inputs, net_outputs, device)
-        '''
+        ''' 
+        print('----------------loss after backward-----------------')
         quant_data = np.fabs(layer.weight.cpu().detach().numpy().flatten())
         q_noise = np.square(float_data - quant_data).mean()
         sqnr = 10 * np.log10(np.square(float_data).mean() / q_noise)
@@ -965,10 +1037,20 @@ class AdvancedQuantProcessor(torch.nn.Module):
             opt_bias.param_groups[0]['lr']), flush=True)
         print(f"eval loss:{eval_loss.avg} best loss:{net_loss.avg}", flush=True)
         '''
-        if eval_loss < net_loss:
+        loss_diff_ratio = ((np.array(net_loss.avg)-np.array(eval_loss.avg))/np.array(net_loss.avg))*10000
+        #print(f"loss_diff_ratio :{loss_diff_ratio}", flush=True)
+        
+        if NndctOption.nndct_ip_asr.value:
+          loss_ratio_threshold = 5.0
+        else:
+          loss_ratio_threshold = 0.0
+        
+        if (eval_loss < net_loss) and (loss_diff_ratio.max() > loss_ratio_threshold):
+          #print(f"update parameters", flush=True)
           best_params = self.get_layer_params(layer)
           net_loss = eval_loss
         else:
+          #print(f"update learning rate", flush=True)
           opt_weight.param_groups[0]['lr'] /= 2.
           if opt_bias:
             opt_bias.param_groups[0]['lr'] /= 2.
@@ -989,4 +1071,18 @@ class AdvancedQuantProcessor(torch.nn.Module):
     # print(f"iter:{i}")
     return net_loss 
  
-  
+  def _get_possible_last_quant_nodes(self):
+    device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
+    f_model, input_args = to_device(self._float_model, self._example_inputs, device)
+    handlers = ModuleHooker.register_tensor_dtype_and_shape_hook(f_model)
+    possible_last_quantized_nodes = []
+    for fmod in f_model.modules():
+      if hasattr(fmod, "node"):
+        if (len(fmod.node.out_tensors) > 1 or 
+          fmod.node.out_tensors[0].is_complete_tensor() is False or
+          fmod.node.out_tensors[0].dtype not in self._quantizer.configer.QUANTIZABLE_DTYPES):
+          continue
+        possible_last_quantized_nodes.append(fmod.node.name)
+
+    self.clean_hooks(handlers)
+    return possible_last_quantized_nodes

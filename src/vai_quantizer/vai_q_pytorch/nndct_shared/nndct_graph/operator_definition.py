@@ -19,7 +19,8 @@
 from enum import auto, unique, Enum
 from typing import Any
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.nndct_graph.base_operator import (AutoName, NndctIrAttr,
+from nndct_shared.utils.common import AutoName
+from nndct_shared.nndct_graph.base_operator import (NndctIrAttr,
                                                     OccurenceType, Operation)
 from nndct_shared.nndct_graph.base_tensor import Tensor
 import numpy as np
@@ -268,7 +269,7 @@ class Conv3d(Operation):
     BIAS = auto()
 
   def __init__(self, *args, **kwargs) -> None:
-    super().__init__(*args, **kwargs)
+    super(Conv3d, self).__init__(*args, **kwargs)
     # allocate memory for attr value
     self._attr_value_mem = {
         self.AttrName.KERNEL: [None, None, None],
@@ -436,6 +437,108 @@ class BatchNorm(Operation):
         value_mem=self._attr_value_mem[self.AttrName.AXIS],
         occurence_type=OccurenceType.REQUIRED,
         annotation=r"""the axis of the input to implement batchnorm""")
+
+
+class InstanceNorm(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    EPS = auto()
+    NUM_FEATURES = auto()
+    AFFINE = auto()
+
+  @unique
+  class ParamName(AutoName):
+    GAMMA = auto()
+    BETA = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(InstanceNorm, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.EPS: [None],
+        self.AttrName.NUM_FEATURES: [None],
+        self.AttrName.AFFINE: [None],
+    }
+    self._attrs[self.AttrName.EPS] = NndctIrAttr(
+        name=self.AttrName.EPS,
+        value_type=float,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.EPS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""eps""")
+
+    self._attrs[self.AttrName.NUM_FEATURES] = NndctIrAttr(
+        name=self.AttrName.NUM_FEATURES,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.NUM_FEATURES],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""num_features""")
+
+    self._attrs[self.AttrName.AFFINE] = NndctIrAttr(
+        name=self.AttrName.AFFINE,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.AFFINE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""affine""")
+
+
+class GroupNorm(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    NUM_GROUPS = auto()
+    NUM_CHANNELS = auto()
+    EPS = auto()
+    AFFINE = auto()
+
+  @unique
+  class ParamName(AutoName):
+    GAMMA = auto()
+    BETA = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(GroupNorm, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.NUM_GROUPS: [None],
+        self.AttrName.NUM_CHANNELS: [None],
+        self.AttrName.EPS: [None],
+        self.AttrName.AFFINE: [None]
+    }
+    self._attrs[self.AttrName.EPS] = NndctIrAttr(
+        name=self.AttrName.EPS,
+        value_type=float,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.EPS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""eps""")
+
+    self._attrs[self.AttrName.NUM_GROUPS] = NndctIrAttr(
+        name=self.AttrName.NUM_GROUPS,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.NUM_GROUPS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""num_groups""")
+
+    self._attrs[self.AttrName.AFFINE] = NndctIrAttr(
+        name=self.AttrName.AFFINE,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.AFFINE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""affine""")
+
+    self._attrs[self.AttrName.NUM_CHANNELS] = NndctIrAttr(
+        name=self.AttrName.NUM_CHANNELS,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.NUM_CHANNELS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""num_channels""")
 
 
 class Dense(Operation):
@@ -1044,7 +1147,7 @@ class StridedSlice(Operation):
 
     self._attrs[self.AttrName.DIMS] = NndctIrAttr(
         name=self.AttrName.DIMS,
-        value_type=int,
+        value_type=(int,Tensor),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.DIMS],
         occurence_type=OccurenceType.REQUIRED,
@@ -1054,7 +1157,7 @@ class StridedSlice(Operation):
 
     self._attrs[self.AttrName.BEGIN] = NndctIrAttr(
         name=self.AttrName.BEGIN,
-        value_type=int,
+        value_type=(int,Tensor),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.BEGIN],
         occurence_type=OccurenceType.REQUIRED,
@@ -1062,7 +1165,7 @@ class StridedSlice(Operation):
 
     self._attrs[self.AttrName.END] = NndctIrAttr(
         name=self.AttrName.END,
-        value_type=int,
+        value_type=(int,Tensor),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.END],
         occurence_type=OccurenceType.REQUIRED,
@@ -1070,7 +1173,7 @@ class StridedSlice(Operation):
 
     self._attrs[self.AttrName.STRIDES] = NndctIrAttr(
         name=self.AttrName.STRIDES,
-        value_type=int,
+        value_type=(int,Tensor),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.STRIDES],
         occurence_type=OccurenceType.REQUIRED,
@@ -1260,6 +1363,51 @@ class LeakyReLU(Operation):
         annotation=r"""negative slope""")
 
 
+class GELU(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    APPROXIMATE = auto()
+
+  def __init__(self) -> None:
+    super().__init__(NNDCT_OP.GELU)
+    self._attr_value_mem = {
+         self.AttrName.APPROXIMATE: [None],
+     }
+    self._attrs[self.AttrName.APPROXIMATE] = NndctIrAttr(
+         name=self.AttrName.APPROXIMATE,
+         value_type=str,
+         size=1,
+         value_mem=self._attr_value_mem[self.AttrName.APPROXIMATE],
+         occurence_type=OccurenceType.REQUIRED,
+         annotation=r"""the gelu approximation algorithm to use: 'none' | 'tanh'. Default: 'none'""")
+
+
+class PReLU(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    NUM_PARAMETERS= auto()
+
+  @unique
+  class ParamName(AutoName):
+    WEIGHT = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super().__init__(NNDCT_OP.PRELU, *args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+         self.AttrName.NUM_PARAMETERS: [None],
+     }
+    self._attrs[self.AttrName.NUM_PARAMETERS] = NndctIrAttr(
+         name=self.AttrName.NUM_PARAMETERS,
+         value_type=int,
+         size=1,
+         value_mem=self._attr_value_mem[self.AttrName.NUM_PARAMETERS],
+         occurence_type=OccurenceType.REQUIRED,
+         annotation=r"""number of a to learn""")
+
+
 class Resize(Operation):
 
   @unique
@@ -1419,7 +1567,7 @@ class Constant(Operation):
 
     self._attrs[self.AttrName.DATA] = NndctIrAttr(
         name=self.AttrName.DATA,
-        value_type=(int, float, list, Tensor),
+        value_type=(int, float, list, Tensor, np.ndarray),
         size=None,
         value_mem=self._attr_value_mem[self.AttrName.DATA],
         occurence_type=OccurenceType.REQUIRED,
@@ -1459,9 +1607,47 @@ class EmbeddingBag(Operation):
 class LayerNorm(Operation):
 
   @unique
+  class AttrName(AutoName):
+    EPS = auto()
+    NORMALIZED_SHAPE = auto()
+    ELEMENTWISE_AFFINE = auto()
+
+  @unique
   class ParamName(AutoName):
     GAMMA = auto()
     BETA = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(LayerNorm, self).__init__(*args, **kwargs)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.EPS: [None],
+        self.AttrName.NORMALIZED_SHAPE: [None],
+        self.AttrName.ELEMENTWISE_AFFINE: [None],
+    }
+    self._attrs[self.AttrName.EPS] = NndctIrAttr(
+        name=self.AttrName.EPS,
+        value_type=float,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.EPS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""eps""")
+
+    self._attrs[self.AttrName.NORMALIZED_SHAPE] = NndctIrAttr(
+        name=self.AttrName.NORMALIZED_SHAPE,
+        value_type=(int, Tensor, np.ndarray),
+        size=None,
+        value_mem=self._attr_value_mem[self.AttrName.NORMALIZED_SHAPE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""normalized_shape""")
+
+    self._attrs[self.AttrName.ELEMENTWISE_AFFINE] = NndctIrAttr(
+        name=self.AttrName.ELEMENTWISE_AFFINE,
+        value_type=bool,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.ELEMENTWISE_AFFINE],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""elementwise_affine""")
 
 
 # e.g. ones, zeros
@@ -1693,3 +1879,78 @@ class CostVolume(Operation):
         value_mem=self._attr_value_mem[self.AttrName.MAXDISP],
         occurence_type=OccurenceType.REQUIRED,
         annotation=r"""max disp""")
+
+class LogSoftmax(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    AXIS = auto()
+
+  def __init__(self) -> None:
+    super(LogSoftmax, self).__init__(NNDCT_OP.LOG_SOFTMAX)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.AXIS: [None],
+    }
+    self._attrs[self.AttrName.AXIS] = NndctIrAttr(
+        name=self.AttrName.AXIS,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.AXIS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""the dimension log_softmax would be performed on. default
+      is the last dimension.""")
+
+
+class ArgMax_DIM(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    AXIS = auto()
+
+  def __init__(self) -> None:
+    super(ArgMax_DIM, self).__init__(NNDCT_OP.ARGMAX_DIM)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.AXIS: [None],
+    }
+    self._attrs[self.AttrName.AXIS] = NndctIrAttr(
+        name=self.AttrName.AXIS,
+        value_type=int,
+        size=1,
+        value_mem=self._attr_value_mem[self.AttrName.AXIS],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""the dimension argmax would be performed on. default
+      is the last dimension.""")
+
+
+class Matmul(Operation):
+
+  @unique
+  class AttrName(AutoName):
+    TRANSPOSE_A = auto()
+    TRANSPOSE_B = auto()
+
+  def __init__(self, *args, **kwargs) -> None:
+    super(Matmul, self).__init__(NNDCT_OP.MATMUL)
+    # allocate memory for attr value
+    self._attr_value_mem = {
+        self.AttrName.TRANSPOSE_A: [None],
+        self.AttrName.TRANSPOSE_B: [None]
+    }
+    self._attrs[self.AttrName.TRANSPOSE_A] = NndctIrAttr(
+        name=self.AttrName.TRANSPOSE_A,
+        value_type=bool,
+        size=1,
+        default_value=False,
+        value_mem=self._attr_value_mem[self.AttrName.TRANSPOSE_A],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""transpose_a of matmul.""")
+    self._attrs[self.AttrName.TRANSPOSE_B] = NndctIrAttr(
+        name=self.AttrName.TRANSPOSE_B,
+        value_type=bool,
+        size=1,
+        default_value=False,
+        value_mem=self._attr_value_mem[self.AttrName.TRANSPOSE_B],
+        occurence_type=OccurenceType.REQUIRED,
+        annotation=r"""transpose_b of matmul.""")

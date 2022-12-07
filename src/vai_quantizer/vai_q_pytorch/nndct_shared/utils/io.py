@@ -82,6 +82,9 @@ def to_jsonstr(obj, pre_space=2):
     for idx in range(len(lst)):
       if isinstance(lst[idx], str):
         string += '"{}",'.format(lst[idx])
+      elif isinstance(lst[idx], list):
+        #string += _json_lst_str(lst[idx])
+        string += '[{}],'.format(_json_lst_str(lst[idx]))
       elif lst[idx] is None:
         string += 'null,'
       else:

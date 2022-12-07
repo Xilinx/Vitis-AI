@@ -20,6 +20,7 @@ from .leaky_relu import *
 from .prim_ops import *
 from .module_template import *
 from .relu import *
+from .gelu import *
 from .quant_stubs import *
 from .reluk import *
 from .channel_scale import *
@@ -28,7 +29,19 @@ from .hardsigmoid import *
 from .hardswish import *
 from .quant_noise import *
 from .batch_norm import *
+from .instance_norm import *
+from .group_norm import *
 from .correlation1d import *
 from .correlation2d import *
 from .cost_volume import *
 from .softmax import *
+from .log_softmax import *
+from .layernorm import *
+from .embedding import *
+from .prelu import *
+# from .clamp import *
+from distutils.version import LooseVersion
+if torch.__version__ >= LooseVersion('1.9'):
+  from .mish import *
+
+from .nndct_quant_model import *

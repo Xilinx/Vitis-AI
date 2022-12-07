@@ -110,6 +110,7 @@ void TanhTableLookup(Tensor Tinput,
 template <typename Dtype>
 void _SigmoidSimulation(Tensor Tinput, 
                         Tensor Toutput, 
+                        int fragpos,
                         int device_id)
 {
   printf("Sigmoid simulation is not supported in CPU mode.\n");
@@ -117,20 +118,24 @@ void _SigmoidSimulation(Tensor Tinput,
 
 void SigmoidSimulation(Tensor Tinput, 
                        Tensor Toutput, 
+                       int64_t fragpos, 
                        int64_t device_id){
   if (Tinput.dtype() == at::kFloat)
     _SigmoidSimulation<float>(Tinput, 
                                Toutput, 
+                               fragpos,
                                device_id);
   else if (Tinput.dtype() == at::kDouble)
     _SigmoidSimulation<double>(Tinput, 
                                 Toutput, 
+                                fragpos,
                                 device_id);
 }
 
 template <typename Dtype>
 void _TanhSimulation(Tensor Tinput, 
                      Tensor Toutput, 
+                     int fragpos,
                      int device_id)
 {
   printf("Sigmoid simulation is not supported in CPU mode.\n");
@@ -138,14 +143,17 @@ void _TanhSimulation(Tensor Tinput,
 
 void TanhSimulation(Tensor Tinput, 
                     Tensor Toutput, 
+                    int64_t fragpos,
                     int64_t device_id) {
   if (Tinput.dtype() == at::kFloat)
     _TanhSimulation<float>(Tinput, 
                             Toutput, 
+                            fragpos,
                             device_id);
   else if (Tinput.dtype() == at::kDouble)
     _TanhSimulation<double>(Tinput, 
                              Toutput, 
+                             fragpos,
                              device_id);
 }
 
@@ -231,4 +239,167 @@ void SoftmaxSimulationPart2(Tensor sum,
     _SoftmaxSimulationPart2<double>(sum, 
                             Toutput, 
                             device_id);
+}
+
+template <typename Dtype>
+void _SigmoidTableLookupAIE2(Tensor Tinput, 
+                         Tensor Toutput, 
+                         int fragpos,
+                         int device_id)
+{
+    printf("Sigmoid Table Look up AIE2 is not supported in CPU mode.\n");
+}
+
+void SigmoidTableLookupAIE2(Tensor Tinput, 
+                        Tensor Toutput, 
+                        int64_t fragpos,
+                        int64_t device_id){
+  if (Tinput.dtype() == at::kFloat)
+    _SigmoidTableLookupAIE2<float>(Tinput, 
+                               Toutput, 
+                               fragpos,
+                               device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _SigmoidTableLookupAIE2<double>(Tinput, 
+                                Toutput, 
+                                fragpos,
+                                device_id);
+}
+
+template <typename Dtype>
+void _TanhTableLookupAIE2(Tensor Tinput, 
+                      Tensor Toutput, 
+                      int fragpos,
+                      int device_id)
+{
+    printf("Tanh Table Look up AIE2 is not supported in CPU mode.\n");
+}
+
+void TanhTableLookupAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int64_t fragpos,
+                     int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _TanhTableLookupAIE2<float>(Tinput, 
+                            Toutput, 
+                            fragpos,
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _TanhTableLookupAIE2<double>(Tinput, 
+                             Toutput, 
+                             fragpos,
+                             device_id);
+}
+
+template <typename Dtype>
+void _ExpApprAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int64_t bit_width,
+                     int device_id)
+{
+  printf("Exp Approximation AIE2 is not supported in CPU mode.\n");
+}
+
+void ExpApprAIE2(Tensor Tinput, 
+                    Tensor Toutput, 
+                    int64_t bit_width,
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _ExpApprAIE2<float>(Tinput, 
+                            Toutput, 
+                            bit_width,
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _ExpApprAIE2<double>(Tinput, 
+                             Toutput, 
+                             bit_width,
+                             device_id);
+}
+
+template <typename Dtype>
+void _LogSoftmaxFastLn(Tensor Tuvi_input, 
+                      Tensor Toutput, 
+                      int64_t device_id)
+{
+  printf("LogSoftmax Ln is not supported in CPU mode.\n");
+}
+
+void LogSoftmaxFastLn(Tensor Tinput, 
+                    Tensor Toutput, 
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _LogSoftmaxFastLn<float>(Tinput, 
+                            Toutput, 
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _LogSoftmaxFastLn<double>(Tinput, 
+                            Toutput, 
+                            device_id);
+}
+
+template <typename Dtype>
+void _LogSoftmaxSub(Tensor Tuvi_input, 
+                      Tensor Toutput, 
+                      Tensor Tsum,
+                      int64_t device_id)
+{
+  printf("LogSoftmax Ln is not supported in CPU mode.\n");
+}
+
+void LogSoftmaxSub(Tensor Tinput, 
+                    Tensor Toutput, 
+                    Tensor Tsum,
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _LogSoftmaxSub<float>(Tinput, 
+                            Toutput, 
+                            Tsum,
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _LogSoftmaxSub<double>(Tinput, 
+                            Toutput, 
+                            Tsum,
+                            device_id);
+}
+
+template <typename Dtype>
+void _LayernormInvSqrt(Tensor Tuvi_input, 
+                      Tensor Toutput, 
+                      int64_t device_id)
+{
+  printf("Layernorm InvSqrt is not supported in CPU mode.\n");
+}
+
+void LayernormInvSqrt(Tensor Tinput, 
+                    Tensor Toutput, 
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _LayernormInvSqrt<float>(Tinput, 
+                            Toutput, 
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _LayernormInvSqrt<double>(Tinput, 
+                            Toutput, 
+                            device_id);
+}
+
+template <typename Dtype>
+void _InverseAIE2(Tensor Tinput, 
+                     Tensor Toutput, 
+                     int device_id)
+{
+  printf("Inverse AIE2 is not supported in CPU mode.\n");
+}
+
+void InverseAIE2(Tensor Tinput, 
+                    Tensor Toutput, 
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _InverseAIE2<float>(Tinput, 
+                            Toutput, 
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _InverseAIE2<double>(Tinput, 
+                             Toutput, 
+                             device_id);
 }

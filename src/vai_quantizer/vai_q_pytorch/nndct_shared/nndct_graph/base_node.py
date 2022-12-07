@@ -33,24 +33,24 @@ class Use(object):
   def __init__(self, user, offset):
     self._user = user
     self._offset = offset
-    
+
   @property
   def user(self):
     return self._user
-  
+
   @property
   def offset(self):
     return self._offset
-  
+
   @user.setter
   def user(self, user):
     self._user = user
-  
+
   @offset.setter
   def offset(self, offset):
     self._offset = offset
-  
-  
+
+
 
 
 class NodeBase(ABC):
@@ -77,7 +77,7 @@ class Node(NodeBase):
     self._idx = -1
     self._scope_name = ""
     self._source_range = ""
-    
+
 
     self._in_tensors = []
     self._out_tensors = []
@@ -88,7 +88,7 @@ class Node(NodeBase):
     self._is_merged = False
     self._transpose_in_order = None
     self._transpose_out_order = None
-   
+
     self._topo_position = 0
     self._block = None
     self._graph = None
@@ -99,13 +99,13 @@ class Node(NodeBase):
     return f"Node(name={self.name}, id={self.idx}, op_type={self.op.type}, quant_state={self.in_quant_part})"
 
   def __str__(self):
-    return json.dumps(self.description(), indent=4, separators=(',', ': '))
-        
+    return json.dumps(self.description(), indent=2, separators=(',', ': '))
+
   def __deepcopy__(self, memo):
-    raise NotImplementedError("Deep copy is prohibited, use `clone_from` instead.")  
+    raise NotImplementedError("Deep copy is prohibited, use `clone_from` instead.")
 
   def clone_from(self, src_node, local_map):
-    tmp_attrs = src_node.op._attrs 
+    tmp_attrs = src_node.op._attrs
     tmp_params = src_node.op._params
     tmp_configs = src_node.op._configs
     src_node.op._params = copy.copy(tmp_params)
@@ -117,9 +117,9 @@ class Node(NodeBase):
     src_node.op._params = tmp_params
     src_node.op._configs = tmp_configs
     self.op.clone_from(src_node.op, local_map)
-   
-  
-  
+
+
+
   @property
   def scope_name(self):
     return self._scope_name
@@ -166,7 +166,7 @@ class Node(NodeBase):
   @property
   def out_tensors(self):
     return self._out_tensors
-  
+
 
   @property
   def in_nodes(self):
@@ -174,7 +174,7 @@ class Node(NodeBase):
     for tensor in self.in_tensors:
       if tensor.node is not None:
         nodes.append(tensor.node.name)
-        
+
     return nodes
 
   @property
@@ -184,7 +184,7 @@ class Node(NodeBase):
       for use in out.uses:
         nodes.append(use.user.name)
     return nodes
-  
+
 
   def node_attr(self, key):
     return self._op.get_attr(key)
@@ -250,10 +250,6 @@ class Node(NodeBase):
   def in_quant_part(self, quant_state: bool) -> None:
     self._is_quantizable = quant_state
 
-  # @property
-  # def in_quant_part(self) -> bool:
-  #   return self._is_quantizable
-
   @property
   def module(self):
     return self._module()
@@ -275,7 +271,7 @@ class Node(NodeBase):
   def get_attr_val(self, attr_name):
     attr = self.node_attr(attr_name)
     return attr.data if isinstance(attr, Tensor) else attr
-  
+
   @property
   def merged(self):
     return self._is_merged
@@ -288,7 +284,7 @@ class Node(NodeBase):
   @property
   def transpose_in_order(self):
     return self._transpose_in_order
-  
+
   @transpose_in_order.setter
   def transpose_in_order(self, order):
     self._transpose_in_order = order
@@ -296,12 +292,12 @@ class Node(NodeBase):
   @property
   def transpose_out_order(self):
     return self._transpose_out_order
-  
+
   @transpose_out_order.setter
   def transpose_out_order(self, order):
     self._transpose_out_order = order
-    
-  
+
+
   def set_node_attr_tensor_value(self, old_tensor, new_tensor):
     for attr_name, attr_value in self.op.attrs.items():
       if attr_value.value is old_tensor:
@@ -310,28 +306,28 @@ class Node(NodeBase):
   def destroy(self):
     if len(self.blocks) > 0:
       raise RuntimeError("Can't destroy if or loop node.")
-    
+
     while len(self.out_tensors) > 0:
       self.remove_output(len(self.out_tensors) - 1)
-    
+
     self.remove_all_inputs()
-    
+
     if self.in_node_list():
       self.remove_from_list()
-    
+
     self.owning_graph.free_node(self)
-      
-      
+
+
   def remove_output(self, i):
-    
+
     assert i < len(self.out_tensors)
     assert len(self.out_tensors[i].uses) == 0
-    
+
     output = self.out_tensors.pop(i)
     self.owning_graph.remove_tensor(output)
     for output_offset in range(i, len(self.out_tensors)):
       self.out_tensors[output_offset].offset -= 1
-    
+
   def replace_input_at(self, i, new_tensor):
     old_tensor = self.in_tensors[i]
     if old_tensor is new_tensor:
@@ -343,36 +339,36 @@ class Node(NodeBase):
       if u.user is self:
         new_tensor.uses.append(u)
         old_tensor.uses.remove(u)
-    
+
     for attr_u in attr_uses:
       if attr_u.user is self.op:
-        old_tensor.replace_attr_with_new_tensor(attr_u, new_tensor)
-  
+        old_tensor.replace_attr_with_new_tensor_v2(attr_u, new_tensor)
 
-    
+
+
   def remove_input(self, i):
     self.drop_input(i)
     for j in range(i + 1, len(self._in_tensors)):
       it = self.find_use_for_input(j)
       it.offset -= 1
-    
+
     self._in_tensors.pop(i)
-    
-  
+
+
   def remove_all_inputs(self):
     for i in range(len(self.in_tensors)):
       self.drop_input(i)
-      
-    self.in_tensors.clear()   
-      
+
+    self.in_tensors.clear()
+
   def drop_input(self, i):
     assert i < len(self.in_tensors)
     input_value = self.in_tensors[i]
     use_it = self.find_use_for_input(i)
     input_value.uses.remove(use_it)
-    self.in_tensors[i] = None 
+    self.in_tensors[i] = None
     return input_value
-  
+
   def find_use_for_input(self, i):
     use_it = None
     for use in self.in_tensors[i].uses:
@@ -380,35 +376,35 @@ class Node(NodeBase):
         use_it = use
     assert use_it is not None
     return use_it
-  
-  
+
+
   @property
   def owning_block(self):
-    return self._block 
-  
+    return self._block
+
   @owning_block.setter
   def owning_block(self, block):
     self._block = block
-  
+
   @property
   def owning_graph(self):
     return self._graph
-  
+
   @owning_graph.setter
   def owning_graph(self, graph):
     self._graph = graph
     if self._graph:
       self._graph.add_node(self)
-    
+
   @property
   def topo_position(self):
     return self._topo_position
-  
+
   @topo_position.setter
   def topo_position(self, pos):
     self._topo_position = pos
-    
-    
+
+
   def insert_before(self, node):
     assert node.in_node_list()
     self.insert_after(node.prev_node)
@@ -424,68 +420,68 @@ class Node(NodeBase):
     self.next_node = next_node
     next_node.prev_node = self
     self.update_topo_position()
-    
-    
+
+
   def update_topo_position(self):
     is_first_node = self.prev_node is self.owning_block.input_node
     is_last_node = self.next_node is self.owning_block.return_node
     prev_pos = self.prev_node.topo_position
     next_pos = self.next_node.topo_position
-    
+
     if is_last_node:
       if is_first_node:
         self.topo_position = MID_POSITION
         return
-      
+
       if prev_pos >= (POSITION_UPPER_BOUND - APPEND_INTERVAL):
         self.owning_block.reindex_topo()
         return
-      
+
       self.topo_position = prev_pos + APPEND_INTERVAL
-      
+
     elif is_first_node:
       if next_pos <= (POSITION_LOWER_BOUND + APPEND_INTERVAL):
         self.owning_block.reindex_topo()
         return
-      
+
       self.topo_position = next_pos - APPEND_INTERVAL
-      
+
     else:
       pos_between = prev_pos + (next_pos - prev_pos) / 2
       if pos_between == prev_pos:
         self.owning_block.reindex_topo()
         return
-      
+
       self.topo_position = pos_between
-  
+
   @property
   def next_node(self):
     return self._neighbor_nodes[1]
-  
+
   @next_node.setter
   def next_node(self, node):
     self._neighbor_nodes[1] = node
-    
+
   @property
   def prev_node(self):
     return self._neighbor_nodes[0]
-    
+
   @prev_node.setter
   def prev_node(self, node):
     self._neighbor_nodes[0] = node
-    
+
   def in_node_list(self):
     if self.next_node is None:
       assert self.prev_node is None
-    
+
     return self.next_node is not None
-  
-  
-  
+
+
+
   def remove_from_list(self):
     assert self.in_node_list()
     if self.owning_block.input_node is self:
-        self.owning_block.input_node = self.next_node 
+        self.owning_block.input_node = self.next_node
     self.owning_block = None
     next_node = self.next_node
     prev_node = self.prev_node
@@ -493,19 +489,19 @@ class Node(NodeBase):
     next_node.prev_node = prev_node
     self.next_node = None
     self.prev_node = None
-    
-  
+
+
   def add_in_tensor(self, tensor):
     tensor.uses.append(Use(self, len(self.in_tensors)))
     self._in_tensors.append(tensor)
     self.owning_graph.add_tensor(tensor)
-  
+
   def add_out_tensor(self, tensor):
     tensor.offset = len(self.out_tensors)
     self._out_tensors.append(tensor)
     tensor.node = self
     self.owning_graph.add_tensor(tensor)
-  
+
   @property
   def target_device(self):
     return self._target_device
@@ -518,15 +514,15 @@ class Node(NodeBase):
   @property
   def scope_name(self):
     return self._scope_name
-  
+
   @scope_name.setter
   def scope_name(self, scope_name):
     self._scope_name = scope_name
-  
+
   @property
   def source_range(self):
     return self._source_range
-  
+
   @source_range.setter
   def source_range(self, source_range):
     self._source_range = source_range

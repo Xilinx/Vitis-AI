@@ -28,14 +28,6 @@ class QuantConfigerCommander(BaseCommander):
     # def SoftFuseClamp(graph, quant_groups):
     #   return graph_utils.group_up(graph, quant_groups, NNDCT_OP.CLAMP)
 
-    def SoftFuseBatchSpaceNdToConv(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups,
-                                  NNDCT_OP.BATCH_TO_SPACE_ND, NNDCT_OP.CONV2D)
-
-    def SoftFuseConvToSpaceBatchNd(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.CONV2D,
-                                  NNDCT_OP.SPACE_TO_BATCH_ND)
-
     def SoftFuseHardtanh(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.HARDTANH)
 
@@ -74,8 +66,8 @@ class QuantConfigerCommander(BaseCommander):
         else:
           return True
 
-      for n in graph.nodes:
-        if not n.in_quant_part:
+      for n in graph.all_nodes():
+        if not n.in_quant_part or n.blocks:
           continue
         for p in graph.parents(n.name):
           if is_reshape_parent(p):
@@ -112,12 +104,6 @@ class QuantConfigerCommander(BaseCommander):
 
     def SoftFusePermute(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.PERMUTE)
-
-    def SoftFuseDivide(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.DIV)
-
-    def SoftFuseExp(graph, quant_groups):
-      return graph_utils.group_up(graph, quant_groups, NNDCT_OP.EXP)
 
     def SoftFuseExpand(graph, quant_groups):
       return graph_utils.group_up(graph, quant_groups, NNDCT_OP.EXPAND)

@@ -3,7 +3,7 @@ import os
 import sys
 import torch
 from torch.utils.cpp_extension import load, _import_module_from_library
-from nndct_shared.utils import create_work_dir, NndctScreenLogger
+from nndct_shared.utils import create_work_dir, NndctScreenLogger, QError, QWarning
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _aot = False
@@ -30,12 +30,12 @@ if _aot:
       lib_abspath = os.path.join(_cur_dir, nndct_kernel_lib)
       torch.ops.load_library(lib_abspath)
   except ImportError as e:
-    NndctScreenLogger().error(f"{str(e)}")
+    NndctScreenLogger().error2user(QError.IMPORT_KERNEL, f"{str(e)}")
     sys.exit(1)
   else:
     NndctScreenLogger().info(f"Loading NNDCT kernels...")
-    
-else:    
+
+else:
   if os.path.exists(os.path.join(_cur_dir, "kernel")):
     from .kernel import NN_PATH
   else:
@@ -54,23 +54,29 @@ else:
         os.path.join(cwd, "../../../include/cpu"),
         os.path.join(cwd, "include")
     ]
-    
+
     with_cuda = False
     extra_cflags = ""
     if "CUDA_HOME" in os.environ:
+      NndctScreenLogger().check2user(QError.TORCH_VERSION, f"CUDA_HOME is set in environment, \
+but pytorch installed is CPU version. \
+Please install CUDA version pytorch.", torch.cuda.is_available())
       cuda_src_path = os.path.join(cwd, "../../../csrc/cuda")
       for name in os.listdir(cuda_src_path):
         if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:
           source_files.append(os.path.join(cuda_src_path, name))
-          
+
       cpp_src_path = os.path.join(cwd, "src/cuda")
       for name in os.listdir(cpp_src_path):
         if name.split(".")[-1] in ["cpp", "cc", "c"]:
           source_files.append(os.path.join(cpp_src_path, name))
-      
+
       extra_include_paths.append(os.path.join(cwd, "../../../include/cuda"))
       with_cuda = None
     elif "ROCM_HOME" in os.environ:
+      NndctScreenLogger().check2user(QError.TORCH_VERSION, f"ROCM_HOME is set in environment, \
+but pytorch installed is CPU version. \
+Please install CUDA version pytorch.", torch.cuda.is_available())
       hip_src_path = os.path.join(cwd, "../../../csrc/cuda")
       for name in os.listdir(hip_src_path):
         if name.split(".")[-1] in ["cu", "cpp", "cc", "c"]:
@@ -85,13 +91,13 @@ else:
       extra_cflags = os.environ.get('CPPFLAGS')
       with_cuda = None
     else:
-      print("CUDA (HIP) is not available, or CUDA_HOME (ROCM_HOME) not found in the environment " 
+      print("CUDA (HIP) is not available, or CUDA_HOME (ROCM_HOME) not found in the environment "
           "so building without GPU support.")
       cpp_src_path = os.path.join(cwd, "src/cpu")
       for name in os.listdir(cpp_src_path):
         if name.split(".")[-1] in ["cpp", "cc", "c"]:
           source_files.append(os.path.join(cpp_src_path, name))
-   
+
     is_python_module = False if new_kernel else True
     nndct_kernels = load(
         name="nndct_kernels",
@@ -102,9 +108,9 @@ else:
         extra_include_paths=extra_include_paths,
         with_cuda=with_cuda,
         is_python_module=is_python_module)
-    
+
   except ImportError as e:
-    NndctScreenLogger().error(f"{str(e)}")
+    NndctScreenLogger().error2user(QError.IMPORT_KERNEL, f"{str(e)}")
     sys.exit(1)
   else:
     NndctScreenLogger().info(f"Loading NNDCT kernels...")

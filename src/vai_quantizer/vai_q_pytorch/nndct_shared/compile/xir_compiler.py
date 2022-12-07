@@ -16,93 +16,21 @@
 # limitations under the License.
 #
 
-import copy
-from collections import namedtuple
 from typing import Any, Dict, List, NoReturn, Optional
 
 import numpy as np
 
 from nndct_shared.base import NNDCT_OP
 from nndct_shared.nndct_graph import Graph
-from nndct_shared.nndct_graph import operator_definition as base_op
-from nndct_shared.quantization import BaseQuantizer
 from nndct_shared.utils import (AddXopError, NndctOption, GLOBAL_MAP, NNDCT_KEYS, NndctScreenLogger)
-
-from .deploy_optimizer import DevGraphOptimizer
+from nndct_shared.utils import QError, QWarning
 from .xgraph import XGraph
 from .xop_creator import NNDCTIR2XIR_CONVERTOR, custom_xop, to_xir
 
 NndctQuantInfo = Dict[str, Dict[str, List[int]]]
-
-DeployGraphInfo = namedtuple("DeployGraphInfo", ["dev_graph", "quant_info"])
-        
-        
-class XirCompiler(object):
-  
-  @staticmethod
-  def get_xmodel_and_dump_infos(quantizer: BaseQuantizer, deploy_graphs_list: List[List[Graph]]):
-    if len(deploy_graphs_list) == 1:
-      graph_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[0])
-      return graph_quant_info, graph_quant_info
-    elif len(deploy_graphs_list) == 2:
-      xmodel_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[0])
-      dump_quant_info = XirCompiler.get_deloy_graph_infos(quantizer, deploy_graphs_list[1])
-      return xmodel_quant_info, dump_quant_info
-    else:
-      raise RuntimeError(f"Length of graphs list to deploy should be 1 or 2")
-
-  @staticmethod
-  def get_deloy_graph_infos(quantizer: BaseQuantizer, deploy_graphs: List[Graph]) -> List[DeployGraphInfo]:
-    graph_quant_info_list = []
-    quant_groups = copy.deepcopy(quantizer.configer.quant_groups)
-    quant_config = {"param": {}, "output": {}, "input": {}}
-    if not NndctOption.nndct_quant_off.value:
-      quant_config["param"].update(quantizer.quant_config["param"])
-      quant_config["input"].update(quantizer.quant_config["input"])
-      for blob_name, quant_info in quantizer.quant_config["output"].items():
-        # if any([v is None for v in quant_info]):
-        #   continue
-        
-        if any([blob_name in dev_graph for dev_graph in deploy_graphs]):
-          quant_config["output"][blob_name] = copy.deepcopy(quant_info)
-        else:
-          if len(quant_groups[blob_name]) == 1:
-            node = quantizer.Nndctgraph.node(blob_name)
-            assert len(node.out_tensors) == 1
-            assert len(node.in_tensors) == 1
-            pn_name = node.in_nodes[0]
-            pn = [dev_graph.node(pn_name) for dev_graph in deploy_graphs][0]
-            
-            while pn is None:
-              node = quantizer.Nndctgraph.node(pn_name)
-              assert len(node.out_tensors) == 1
-              assert len(node.in_tensors) == 1
-              pn_name = node.in_nodes[0]
-              pn = [dev_graph.node(pn_name) for dev_graph in deploy_graphs][0]
-              
-            
-            if pn.name in quant_config["output"]:
-              continue
-            else:
-              quant_config['output'][pn.name] = copy.deepcopy(quant_info)
-          else:
-            *prev_blobs, candidate_blob, blob_self = quant_groups[blob_name]
-            if blob_self != blob_name:
-              raise RuntimeError(f"Please check quant group:{blob_name}\n{quant_groups[blob_name]}")
-            
-            while prev_blobs:
-              if all([candidate_blob not in dev_graph for dev_graph in deploy_graphs]):
-                *prev_blobs, candidate_blob = prev_blobs
-              else:
-                break
-              
-            quant_config["output"][candidate_blob] = copy.deepcopy(quant_info)
-        
-    for dev_graph in deploy_graphs:
-      graph_quant_info_list.append(DeployGraphInfo(dev_graph=dev_graph, quant_info=quant_config))
-    
-    return graph_quant_info_list
      
+     
+class XirCompiler(object): 
   @staticmethod
   def do_compile(compile_graph: Graph,
                  output_file_name=None,
@@ -115,7 +43,6 @@ class XirCompiler(object):
     #   print(f"{type}\n")
     #   for name, bnfp_value in bnfp.items():
     #     print(f"{name}:{bnfp_value}\n")
-
     if NndctOption.nndct_quant_off.value:
       quant_config_info = None
     
@@ -143,6 +70,8 @@ class XirCompiler(object):
           data = np.flip(data, (1, 2, 3))
           data = np.ascontiguousarray(data)
         try:
+          if data.dtype == np.float16:
+            data = data.astype(np.float32)
           xgraph.create_fixed_const_op(
               name=param_tensor.name,
               data=data,
@@ -153,8 +82,8 @@ class XirCompiler(object):
     custom2xir = GLOBAL_MAP.get_ele(NNDCT_KEYS.CUSTOM_TO_XIR_LIST)
     if custom2xir:
       for op_type in custom2xir:
-        NNDCTIR2XIR_CONVERTOR[op_type] = to_xir(op_type)
-    
+        NNDCTIR2XIR_CONVERTOR[op_type] = (op_type, to_xir(op_type))
+   
     for node in compile_graph.nodes:
       if node.op.type == NNDCT_OP.RETURN:
           continue
@@ -162,8 +91,7 @@ class XirCompiler(object):
       # import sys
       # sys.stdout.flush()
       try:
-        NNDCTIR2XIR_CONVERTOR.get(node.op.type, custom_xop)(xgraph, node, quant_config_info)
-          
+        NNDCTIR2XIR_CONVERTOR.get(node.op.type, (node.op.type, custom_xop))[1](xgraph, node, quant_config_info)
       except Exception as e:
         raise AddXopError(node.name, node.op.type, str(e))
       
@@ -187,8 +115,26 @@ class XirCompiler(object):
       if node.out_tensors[0].ndim and node.out_tensors[0].ndim > 1:
         xop_shape = xgraph.get_op_output_shape(node.name)
         if tuple(xop_shape) != tuple(node.out_tensors[0].shape):
-          NndctScreenLogger().error(f"output shape of {node.name}({node.out_tensors[0].shape}) is different from the output shape of XIR ({xop_shape})")
+          NndctScreenLogger().error2user(QError.SHAPE_MISMATCH, f"output shape of {node.name}({node.out_tensors[0].shape}) is different from the output shape of XIR ({xop_shape}).")
 
         
                 
     
+  @staticmethod
+  def verify_nndct_graph(compile_graph):
+    msg = ""
+    for node in compile_graph.nodes:
+      if node.op.type == NNDCT_OP.RETURN:
+        continue
+      if node.blocks:
+        msg += f"XIR don't support control flow op.({node.name}, {node.op.type})\n"
+      elif len(node.out_tensors) > 1 and all([len(tensor.uses) > 0 for tensor in node.out_tensors]):
+        msg += f"XIR don't support multi-outputs op.({node.name}, {node.op.type})\n"
+      elif node.op.type not in NNDCTIR2XIR_CONVERTOR.keys() and all([tensor.shape is None for tensor in node.out_tensors]):
+        msg += f"XIR don't support custom op without shape info.({node.name}, {node.op.type})\n"
+      
+    if msg:
+      return False, msg
+  
+    return True, msg
+

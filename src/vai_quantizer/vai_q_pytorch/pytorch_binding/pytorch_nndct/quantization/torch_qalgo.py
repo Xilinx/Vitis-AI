@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+import sys
 import numpy as np
 from abc import ABC, abstractmethod
 from scipy.stats import entropy
@@ -23,7 +24,8 @@ from scipy import stats
 import torch
 from collections import Counter
 import pytorch_nndct as py_nndct
-from nndct_shared.utils import NndctOption, NndctScreenLogger
+from pytorch_nndct.nn.modules.fix_ops import diffs_fix_pos
+from nndct_shared.utils import NndctOption, NndctScreenLogger, QError, QWarning
 from nndct_shared.base import NNDCT_OP
 from pytorch_nndct.nn import fake_quantize_per_tensor, fake_quantize_per_channel
 from pytorch_nndct.nn import fake_quantize_per_tensor_tensorrt, fake_quantize_per_channel_tensorrt
@@ -43,7 +45,7 @@ def create_quant_algo(tensor_type, quant_strategy_info, node):
   
   if granularity == "per_channel":
     if (int(torch.__version__.split('.')[1]) < 5) and (int(torch.__version__.split('.')[0]) <= 1):
-      NndctScreenLogger().error()(f"Torch should uptate to 1.5.0 or higher version if per_channel quantization")
+      NndctScreenLogger().error2user(QError.TORCH_VERSION, f"Torch should uptate to 1.5.0 or higher version if per_channel quantization.")
       exit(2)
   op_type = node.op.type
   if scale_type == "float":
@@ -78,17 +80,6 @@ def create_quant_algo(tensor_type, quant_strategy_info, node):
       quant_algo = PowerofTwoQuantPerChannelAlgo(algo_config, axis, op_type)
   return quant_algo
 
-# def algo_select(**algo_kwargs):
-#   method = algo_kwargs.get("method")
-#   granularity = algo_kwargs.get("granularity")
-  
-#   return {("maxmin", "per_tensor"): MaxMinQuantPerTensorAlgo,
-#           ("percentile", "per_tensor"): PercentileQuantPerTensorAlgo,
-#           ("mse", "per_tensor"): MSEQuantPerTensorAlgo,
-#           ("entropy", "per_tensor"): EntropyQuantPerTensorAlgo
-#    }.get((method, granularity))(algo_kwargs)
-
-
 class UniformQuantAlgo(ABC):
   def __init__(self, config):
     self._config = config
@@ -113,7 +104,7 @@ class UniformQuantAlgo(ABC):
     pass
   
   @abstractmethod
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     pass
   
   @abstractmethod
@@ -231,7 +222,7 @@ class PerChannelQuantAlgo(UniformQuantAlgo):
     pass
     
   @abstractmethod
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     pass
   
   @abstractmethod
@@ -304,18 +295,18 @@ class FloatQuantPerChannelAlgo(PerChannelQuantAlgo):
         self._float_min.copy_(torch.min(self._float_min, local_min).data)
       
       if self._statistic_local:
-        self.calib_scale(device=tensor.device)
+        self.calib_scale()
   
-  def calib_scale(self, device):
+  def calib_scale(self):
     if self._symmetric_mode == "symmetric":
       self._scale = self._float_max/self._quant_max
-      self._zero_point = torch.zeros(self._scale.shape[0], device=device).long()
+      self._zero_point = torch.zeros(self._scale.shape[0], device=self._scale.device).long()
     else:
       self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
       self._zero_point = (-self._float_min/self._scale).round().long()
   
-  def calib_global_statis(self, device):
-    self.calib_scale(device)
+  def calib_global_statis(self):
+    self.calib_scale()
   
   @staticmethod
   def reduce_min_max(input, axis=None, keepdims=True):
@@ -371,6 +362,7 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
     super().__init__(config, axis)
     self._fix_pos = None
     self._node_type = node_type
+    self._statistic_local = True
   
   def calibrate(self, tensor):
     scope = 5
@@ -395,19 +387,27 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
       device = tensor.device
       out_num = tensor.shape[self._axis]
       Tbuffer = torch.empty_like(tensor).to(device)
-      self._fix_pos = torch.ones(out_num, dtype=torch.get_default_dtype()).to(device)
+      self._fix_pos = torch.ones(out_num, dtype=tensor.dtype).to(device)
         
       self._calib_cnt = self._calib_cnt + 1
       
-      py_nndct.nn.NndctDiffsFixPosChannel(
-            Tinput = tensor,
-            Tbuffer = Tbuffer,
-            Tfixpos = self._fix_pos,
-            axis = self._axis,
-            bit_width = self.bitwidth,
-            scope = scope,
-            method = mth)
-      
+      # py_nndct.nn.NndctDiffsFixPosChannel(
+      #       Tinput = tensor,
+      #       Tbuffer = Tbuffer,
+      #       Tfixpos = self._fix_pos,
+      #       axis = self._axis,
+      #       bit_width = self.bitwidth,
+      #       scope = scope,
+      #       method = mth)
+      input_split = torch.split(tensor, 1, dim=self._axis)
+      buffer_split = torch.split(Tbuffer, 1, dim=self._axis)
+      # TODO(@kewang): The split is a tensor view operation. Is it neccessary to clone tensor before calib and test ? 
+      for i in range(len(input_split)):
+        self._fix_pos[i] = diffs_fix_pos(
+                              input=input_split[i], 
+                              bit_width=self.bitwidth, 
+                              scope=scope, 
+                              method=mth)
       if self._bitwidth <= 8:
         max_fp = NndctOption.nndct_max_fix_position.value
         #self._fix_pos = min(max_fp, self._fix_pos)
@@ -415,21 +415,23 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
       else:
         #self._fix_pos = min(15, self._fix_pos)
         self._fix_pos = torch.where(self._fix_pos.long()>15, 15, self._fix_pos.long())
-      
-      if self._statistic_local:
-        self.calib_scale(device=device)
+      self.calib_scale()
+      # if self._statistic_local:
+      #   self.calib_scale()
         
-  def calib_scale(self, device):
+  def calib_scale(self):
     try:
       #self._scale = 1.0/2**self._fix_pos if self._fix_pos > 0 else 2**(-self._fix_pos)
       self._scale = torch.where(self._fix_pos.to(torch.float32)>0, 1.0/2**self._fix_pos.to(torch.float32), 2**(-self._fix_pos.to(torch.float32)))
+      #self._scale = torch.where(self._fix_pos>0, 1.0/2**self._fix_pos, 2**(-self._fix_pos))
     except OverflowError as e:
       print("{}".format(repr(e)))
-    self._zero_point = torch.zeros(self._scale.shape[0], device=device).long()
+    self._zero_point = torch.zeros(self._scale.shape[0], device=self._scale.device).long()
     self._float_max = self._scale*self._quant_max
   
-  def calib_global_statis(self, device):
-    self.calib_scale(device)
+  def calib_global_statis(self):
+    #self.calib_scale()
+    pass
 
 class PerTensorQuantAlgo(UniformQuantAlgo):
   def __init__(self, config):
@@ -497,7 +499,7 @@ class PerTensorQuantAlgo(UniformQuantAlgo):
     return scale, zero_point, float_max
   
   @abstractmethod
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     pass
   
   @abstractmethod
@@ -536,7 +538,7 @@ class MaxMinQuantPerTensorAlgo(PerTensorQuantAlgo):
       self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
       self._zero_point = round(-self._float_min/self._scale)
   
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     #self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
     self.calib_scale()
 
@@ -554,7 +556,7 @@ class HistogramQuantPerTensorAlgo(PerTensorQuantAlgo):
     if self._statistic_local:
       calib_hist = self._calib_hist.long().cpu().numpy()
       calib_bin_edges = self._calib_bin_edges.cpu().numpy()
-      self.calib_scale(calib_hist, calib_bin_edges, device)
+      self.calib_scale(calib_hist, calib_bin_edges)
   
   def _get_histogram(self, tensor, symmetric_mode):
     if torch.min(tensor) < 0:
@@ -579,20 +581,20 @@ class HistogramQuantPerTensorAlgo(PerTensorQuantAlgo):
     
     return self._calib_hist, self._calib_bin_edges
   
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     calib_hist = self._calib_hist.long().cpu().numpy()
     calib_bin_edges = self._calib_bin_edges.cpu().numpy()
-    self.calib_scale(calib_hist, calib_bin_edges, device)
+    self.calib_scale(calib_hist, calib_bin_edges)
 
   @abstractmethod
-  def calib_scale(self, calib_hist, calib_bin_edges, device):
+  def calib_scale(self, calib_hist, calib_bin_edges):
     pass
   
 class PercentileQuantPerTensorAlgo(HistogramQuantPerTensorAlgo):
   def __init__(self, config):
     super().__init__(config)
 
-  def calib_scale(self, calib_hist, calib_bin_edges, device):
+  def calib_scale(self, calib_hist, calib_bin_edges):
     percentage = self._config["percentage"]
     if percentage < 0 or percentage > 100:
       raise ValueError("Invalid percentage, Must be in range 0 <= percentage <= 100")
@@ -621,7 +623,7 @@ class MSEQuantPerTensorAlgo(HistogramQuantPerTensorAlgo):
   def __init__(self, config):
     super().__init__(config)
 
-  def calib_scale(self, calib_hist, calib_bin_edges, device):
+  def calib_scale(self, calib_hist, calib_bin_edges):
     start_bin = NndctOption.nndct_mse_start_bin.value
     stride = NndctOption.nndct_mse_stride.value  
     
@@ -674,7 +676,7 @@ class EntropyQuantPerTensorAlgo(HistogramQuantPerTensorAlgo):
   def __init__(self, config):
     super().__init__(config)
     
-  def calib_scale(self, calib_hist, calib_bin_edges, device):
+  def calib_scale(self, calib_hist, calib_bin_edges):
     start_bin = NndctOption.nndct_entropy_start_bin.value
     stride = NndctOption.nndct_entropy_stride.value    
     
@@ -753,6 +755,7 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
     super().__init__(config)
     self._fix_pos = None
     self._node_type = node_type
+    self._statistic_local = True
 
   def calibrate(self, tensor):
     scope = 5
@@ -775,17 +778,22 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
     
     device = tensor.device
     Tbuffer = torch.empty_like(tensor).to(device)
-    Tfixpos = torch.tensor([1], dtype=torch.get_default_dtype()).to(device)
+    Tfixpos = torch.tensor([1], dtype=tensor.dtype).to(device)
       
     self._calib_cnt = self._calib_cnt + 1
     
-    py_nndct.nn.NndctDiffsFixPos(
-          Tinput = tensor,
-          Tbuffer = Tbuffer,
-          Tfixpos = Tfixpos,
-          bit_width = self.bitwidth,
-          range = scope,
-          method = mth)
+    # py_nndct.nn.NndctDiffsFixPos(
+    #       Tinput = tensor,
+    #       Tbuffer = Tbuffer,
+    #       Tfixpos = Tfixpos,
+    #       bit_width = self.bitwidth,
+    #       range = scope,
+    #       method = mth)
+    Tfixpos = diffs_fix_pos(
+            input=tensor,
+            bit_width=self.bitwidth,
+            scope=scope,
+            method=mth)
     
     self._fix_pos = (int)(Tfixpos.item())
     if self._bitwidth <= 8:
@@ -793,9 +801,9 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
       self._fix_pos = min(max_fp, self._fix_pos)
     else:
       self._fix_pos = min(15, self._fix_pos)
-    
-    if self._statistic_local:
-      self.calib_scale()
+    self.calib_scale()
+    # if self._statistic_local:
+    #   self.calib_scale()
   
   def calib_scale(self):
     try:
@@ -805,6 +813,7 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
     self._zero_point = 0
     self._float_max = self._scale*self._quant_max
     
-  def calib_global_statis(self, device):
+  def calib_global_statis(self):
     #self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
-    self.calib_scale()
+    #self.calib_scale()
+    pass

@@ -23,7 +23,7 @@ from nndct_shared.quantization import quantize_tensors
 from nndct_shared.utils import NndctOption
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
 from .sigmoid_table import *
-from .fix_ops import NndctSigmoidTableLookup, NndctSigmoidSimulation
+from .fix_ops import NndctSigmoidTableLookup, NndctSigmoidSimulation, NndctSigmoidTableLookupAIE2
 import pytorch_nndct.utils as py_utils
 
 __all__ = ['Sigmoid']
@@ -39,30 +39,55 @@ class deephi_Sigmoid(torch.nn.modules.Sigmoid):
     self.node = None
 
   def forward(self, input):
+    if self.quant_mode == 0 or (not self.node.in_quant_part):
+      return super().forward(input)
 
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
 
-    if NndctOption.nndct_quant_off.value or NndctOption.nndct_cv_app.value:
+    if (NndctOption.nndct_quant_off.value or
+        self.quantizer is None or
+        self.quantizer.exporting or
+        NndctOption.nndct_cv_app.value):
+      # Method 0: quant input and output (for CV)
       output = super().forward(qinput)
-      # quantize output
       output = quantize_tensors([output], self.node)[0]
-    elif self.quant_mode > 0:
+
+    else:
       output = torch.empty_like(qinput)
-      if NndctOption.nndct_tanh_sigmoid_sim.value > 0:
-        NndctSigmoidSimulation(qinput, output)
+      input_name = self.node.in_nodes[0]
+      input_node = self.quantizer.configer.get_Nndctnode(input_name)
+      if not self.quantizer.configer.node_output_quantizable(input_node):
+        input_name = input_node.in_nodes[0]
+      elif self.quantizer.configer.will_merge_with_table(input_node,
+          (not NndctOption.nndct_cv_app.value)):
+        output = super().forward(qinput)
+        bnfp = self.quantizer.get_quant_config(input_name, False)
+        bnfp[1] = 15
+        self.quantizer.set_quant_config(self.node.name, bnfp)
+        return output
+      
+      bw = self.quantizer.get_quant_config(self.node.name, False)[0]
+      fragpos = self.quantizer.get_quant_config(input_name, False)[1]
+      # Method 1: Simulation AIE with 16 bw (for RNNT)
+      if NndctOption.nndct_op_tanh_sigmoid_mode.value == "simulation":
+        NndctSigmoidSimulation(qinput, output, fragpos)
         output = quantize_tensors([output], self.node)[0]
+      # Method 2: Table Look up for AIE2 with 16 bw (based on LUT)
+      elif NndctOption.nndct_op_tanh_sigmoid_mode.value == "aie2_lut_16bw" or NndctOption.nndct_ip_asr.value:
+        NndctSigmoidTableLookupAIE2(qinput, output, fragpos)
+        output = quantize_tensors([output], self.node)[0]
+      # Method 3: Table Look up for FPGA with 16 bw 
       else:
-        input_name = self.node.in_nodes[0]
-        fragpos = self.quantizer.get_quant_config(input_name, False)[1]
-        quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
-        Ttable = SIGMOID_TABLE.table.to(quant_device)
+        quant_device = qinput.device
+        Ttable = SIGMOID_TABLE.table.to(qinput.dtype).to(quant_device)
         output = output.to(quant_device)
         NndctSigmoidTableLookup(input,
                                 Ttable,
                                 output,
                                 fragpos)
-    else:
-      output = super().forward(qinput)
+        bnfp = self.quantizer.get_quant_config(input_name, False)
+        bnfp[1] = 15
+        self.quantizer.set_quant_config(self.node.name, bnfp)
 
     return output
 
@@ -70,6 +95,6 @@ class deephi_Sigmoid(torch.nn.modules.Sigmoid):
 @py_utils.register_quant_op
 def Sigmoid(*args, **kwargs):
   quant_mode, _ = maybe_get_quantizer()
-  if quant_mode == None:
+  if quant_mode is None:
     return torch.nn.Sigmoid(*args, **kwargs)
   return deephi_Sigmoid(*args, **kwargs)

@@ -1,7 +1,6 @@
 #
 # Copyright 2019 Xilinx Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
+# # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -22,8 +21,15 @@ import torch.jit
 from torch.jit import _unique_state_dict
 from torch.nn import ModuleList
 from .schema import SchemaHelper, convert_type_str
-from nndct_shared.utils import DeprecatedAPIError, NndctScreenLogger, NndctDebugLogger, NndctOption
-
+from .torch_const import TorchGraphSymbol
+from nndct_shared.utils import DeprecatedAPIError, NndctScreenLogger, NndctDebugLogger, NndctOption, GLOBAL_MAP, NNDCT_KEYS
+_NODE_NAME_SEPERATOR = TorchGraphSymbol.NODE_NAME_SEPERATOR
+_GRAPH_SCOPE_SYM = TorchGraphSymbol.GRAPH_SCOPE_SYM
+_TENSOR = "TensorType"
+_FLOAT_TYPE = "FloatType"
+_INT_TYPE = "IntType"
+_BOOL_TYPE = "BoolType"
+_FLOAT = "Float"
 
 
 @contextlib.contextmanager
@@ -49,19 +55,19 @@ def _optimize_graph_19(graph, is_jit_graph=False, module=None):
     from torch.onnx.utils import _split_tensor_list_constants
     # Inline everything
     torch._C._jit_pass_inline(graph)
-
+    
     # Remove fork/wait nodes
     torch._C._jit_pass_inline_fork_wait(graph)
     torch._C._jit_pass_lint(graph)
-    torch._C._jit_pass_lower_all_tuples(graph)
-
+    if not is_jit_graph:
+      torch._C._jit_pass_lower_all_tuples(graph)
     # we record now record some ops like ones/zeros
     # into a trace where we previously recorded constants
     # use constant prop to maintain our current level of onnx support
     # without implementing symbolics for all of them
    
     torch._C._jit_pass_constant_propagation(graph)
-
+    
     _split_tensor_list_constants(graph, graph)
     # run dce to eliminate dead parts of the graph that might have been
     # left behind by things like symbolic_override
@@ -76,16 +82,14 @@ def _optimize_graph_19(graph, is_jit_graph=False, module=None):
 
     if is_jit_graph:
       torch._C._jit_pass_peephole(graph, True)
-      torch._C._jit_pass_lower_all_tuples(graph)
-      torch._C._jit_pass_onnx_remove_inplace_ops_for_onnx(graph, module)
+      # torch._C._jit_pass_lower_all_tuples(graph)
       torch._C._jit_pass_lint(graph)
       torch._C._jit_pass_onnx_remove_print(graph)
-      torch._C._jit_pass_onnx_preprocess_caffe2(graph)
       torch._C._jit_pass_lint(graph)
+    
     
     graph = torch._C._jit_pass_canonicalize(graph)
     torch._C._jit_pass_lint(graph)
-  
     return graph
   
 def _optimize_graph_17(graph):
@@ -134,16 +138,16 @@ def get_torch_version():
 
 
 def post_process_script_graph(graph):
-  remove_redundant_ops(graph)
+  split_shared_const_tensor(graph)
+  split_shared_bias(graph)
+  split_scalar_const(graph)
+  convert_scalar_to_const(graph)
+  # remove_dce_node(graph)
+  torch._C._jit_pass_dce(graph)
+  torch._C._jit_pass_lint(graph)
+  
 
 
-def remove_redundant_ops(graph):
-  remove_nodes = []
-  remove_nodes = _collect_tuple_index(graph, remove_nodes)
-  remove_nodes = _collect_pack_unpack_pair(graph, remove_nodes)
-  remove_nodes = _collect_unpack_pack_pair(graph, remove_nodes)
-  for node in remove_nodes:
-    node.destroy()
 
 def remove_ops(graph, kind, op_remove_handler, recurse=True):
   remove_nodes = _find_all_nodes(graph, kind)
@@ -441,8 +445,7 @@ def get_attr_value(node: torch.Node, attr_name: str):
   else:
     return getattr(node, sel)(attr_name)
 
-
-
+  
 def get_node_output_name(node: torch.Node):
   assert node.outputsSize() == 1
   return unique_name(node.output())
@@ -450,9 +453,16 @@ def get_node_output_name(node: torch.Node):
 def value_type(tensor: torch.Value):
   return tensor.type().kind()
 
+def scalar_type(tensor: torch.Value):
+  return  tensor.type().scalarType()
+
 def get_node_output_type(node: torch.Node):
   assert node.outputsSize() == 1
   return value_type(node.output())
+
+def get_node_output_scalar_type(node: torch.Node):
+  assert node.outputsSize() == 1 and value_type(node.output()) == _TENSOR
+  return scalar_type(node.output())
 
 def get_node_outputs_name(node: torch.Node):
   return [unique_name(o) for o in node.outputs()]
@@ -518,7 +528,12 @@ def getattr_attr_name(node):
 def getattr_full_name(getattrs):
     return ".".join([getattr_attr_name(node) for node in getattrs])
 
+def get_node_output_at(node, index):
+  return node.outputsAt(index)
 
+def get_in_node_at(node, index):
+  return node.inputsAt(index).node()
+  
 def get_fw_op_nodes(graph):
   ops = []
   for node in graph.nodes():
@@ -562,6 +577,16 @@ def get_fw_graph_inputs(graph):
     else:
       yield inp
 
+
+def find_input_value_by_name(graph, name):
+  for inp in graph.inputs():
+    if unique_name(inp) == name:
+      return inp
+
+
+def get_fw_graph_input_node(graph):
+  return graph.param_node()
+  
 def get_fw_graph_ret_node(graph):
   if isinstance(graph, torch._C.Block):
     return graph.returnNode()
@@ -578,7 +603,7 @@ def get_fw_graph_ret_value(graph):
 
 def should_construct_dynamic_list(list_construct_node):
     # if this list is element-accessed or modified at runtime, generate List ADT
-    return len(list(list_construct_node.inputs())) == 0
+    return node_type(list_construct_node) == "prim::ListConstruct" and len(list(list_construct_node.inputs())) == 0
 
 
 
@@ -734,3 +759,332 @@ def rename_graph_inputs(graph):
   for i, inp in enumerate(list(graph.inputs())[1:]):
     set_unique_name(inp, 'input_' + str(i))
 
+def find_fw_node_by_name(g, name, recursive=False):
+  return _find_fw_node_by_name([g], name, recursive)
+
+def _find_fw_node_by_name(blocks, name, recursive):
+  for block in blocks:
+    for node in block.nodes():
+      if has_block(node) and recursive:
+        found_node = _find_fw_node_by_name(node_blocks(node), name, recursive)
+        if found_node is not None:
+          return found_node
+      if name in get_node_outputs_name(node):
+        return node
+
+def nndct_name_2_jit_name(nndct_name):
+  return nndct_name.split(_GRAPH_SCOPE_SYM)[-1].split(_NODE_NAME_SEPERATOR)[-1]
+
+def create_fix_node(g, input, quant_min, quant_max, scale_inv, zero_point, method, device_id, inplace, name, tensor_type, index=None):
+  if scale_inv is None:
+    return 
+  quant_min = g.insertConstant(int(quant_min))
+  quant_max = g.insertConstant(int(quant_max))
+  scale_inv = g.insertConstant(float(scale_inv))
+  zero_point = g.insertConstant(zero_point)
+  method = g.insertConstant(method)
+  device_id = g.insertConstant(device_id)
+  inplace = g.insertConstant(int(inplace))
+  quant_min.node().moveAfter(input.node())
+  quant_max.node().moveAfter((quant_min.node()))
+  scale_inv.node().moveAfter((quant_max.node()))
+  zero_point.node().moveAfter((scale_inv.node()))
+  method.node().moveAfter((zero_point.node()))
+  device_id.node().moveAfter((method.node()))
+  inplace.node().moveAfter((device_id.node()))
+  fix_node = g.create("vai::fix_neuron", [input, quant_min, quant_max, scale_inv, zero_point, method, device_id, inplace])
+  output = get_node_output_at(fix_node, 0)
+  name = name.replace('/', '_')
+  if tensor_type == 'param':
+    tensor_name = name + NNDCT_KEYS.FIX_OP_SUFFIX
+  elif tensor_type == 'output':
+    if index is None:
+      tensor_name = name + NNDCT_KEYS.FIX_OP_SUFFIX
+    else:
+      tensor_name = name + NNDCT_KEYS.FIX_OP_SUFFIX + f"_i{index}"
+  else:
+    if index is None:
+      tensor_name = name + NNDCT_KEYS.PRE_FIX_OP_SUFFIX
+    else:
+      tensor_name = name + NNDCT_KEYS.PRE_FIX_OP_SUFFIX + f"_i{index}"
+  output.setDebugName(tensor_name)
+  #output.setDebugName("_".join([input.debugName(), "fix"]))
+  fix_node.insertAfter(inplace.node())
+  return fix_node
+                                     
+def insert_after_node(g, fw_node, new_node, fw_value_name, idx=0):
+  # new_node.insertAfter(fw_node)
+  old_output = None
+  for i, out_name in enumerate(get_node_outputs_name(fw_node)):
+    if out_name == fw_value_name:
+      old_output = get_node_output_at(fw_node, i)
+  new_output = get_node_output_at(new_node, idx)
+  old_output.replaceAllUsesAfterNodeWith(new_node, new_output)
+
+def insert_before_node(g, fw_node, new_node, idx):
+  # new_node.insertBefore(fw_node)
+  output = get_node_output_at(fw_node, 0)
+  new_output = get_node_output_at(new_node, 0)
+  fw_node.replaceInput(idx, new_output)
+
+
+def set_attr_value(fw_node, attr_name, attr_value):
+    type_map = {
+      torch.Tensor: "t_",
+      int: "i_"
+    }
+    getattr(fw_node, type_map.get(type(attr_value)))(attr_name, attr_value)
+
+def find_fw_nodes_by_type(g, type, filter=None):
+  ret = []
+  nodes = list(g.findAllNodes(type, recurse=True))
+  if filter:
+    for node in nodes:
+      if filter(node):
+        ret.append(node)
+  else:
+    ret = nodes
+  return ret
+
+def remove_fused_bn(g):
+  bns = []
+  def bn_filter(bn):
+    pn_node = get_in_node_at(bn, 0)
+    if node_type(pn_node) not in ["aten::_convolution"]:
+      return False
+    return True
+  bns = find_fw_nodes_by_type(g, "aten::batch_norm", bn_filter)
+  for node in bns:
+    remove_node(node)
+    
+def remove_fused_ln_sigmoid(g):
+  lns = []
+  sns = []
+  def ln_filter(ln):
+    pn_node = get_in_node_at(ln, 0)
+    if node_type(pn_node) not in ["aten::embedding"]:
+      return False
+    nn_node = get_users(ln)[0]
+    if node_type(nn_node) not in ["aten::sigmoid"]:
+      return False
+    return True
+  def sigmoid_filter(sn):
+    pn_node = get_in_node_at(sn, 0)
+    if node_type(pn_node) not in ["aten::layer_norm"]:
+      return False
+    nn_node = get_in_node_at(pn_node, 0)
+    if node_type(nn_node) not in ["aten::embedding"]:
+      return False
+    return True
+  lns = find_fw_nodes_by_type(g, "aten::layer_norm", ln_filter)
+  sns = find_fw_nodes_by_type(g, "aten::sigmoid", sigmoid_filter)
+  for node in lns:
+    remove_node(node)
+  for node in sns:
+    remove_node(node)
+
+def remove_dropout(g):
+  dropouts = []
+  dropouts += find_fw_nodes_by_type(g, "aten::dropout") 
+  dropouts += find_fw_nodes_by_type(g, "aten::dropout_")
+  dropouts += find_fw_nodes_by_type(g, "aten::feature_dropout")
+  for n in dropouts:
+    remove_node(n)
+
+def remove_node(fw_node):
+  assert len(list(fw_node.inputs())) > 0
+  assert len(list(fw_node.outputs())) == 1
+  out_val = fw_node.output()
+  inp_val = fw_node.inputsAt(0)
+  out_val.replaceAllUsesWith(inp_val)
+  fw_node.destroy()
+
+def remove_dce_node(g):
+  torch._C._jit_pass_dce(g)
+  # redundant_nodes = []
+  # _remove_dce_node([g], redundant_nodes)
+  # for node in redundant_nodes:
+  #   node.destroy()
+
+def _remove_dce_node(blocks, redundant_nodes):
+  for block in blocks:
+    for node in block.nodes():
+      _remove_dce_node(node.blocks(), redundant_nodes)
+      if not get_users(node):
+        redundant_nodes.append(node)
+
+
+def split_scalar_const(g):
+  def _split_scalar_const(blocks):
+    for block in blocks:
+      for node in block.nodes():
+        _split_scalar_const(node.blocks())
+        if node_type(node) in ["aten::add", "aten::mul", "aten::div", "aten::sub"]:
+          if node_type(get_in_node_at(node, 1)) == "prim::Constant" and get_node_output_type(get_in_node_at(node, 1)) in ["FloatType"]:
+            const = get_attr_value(get_in_node_at(node, 1), "value")
+            if all([node is use.user  for use  in node.inputsAt(1).uses()]):
+              continue
+            clone_const_value = g.insertConstant(const)
+            clone_const_value.node().moveBefore(node)
+            # set_attr_value(clone_const_value.node(), "value", const)
+            node.replaceInput(1, clone_const_value)
+
+  _split_scalar_const([g])
+
+
+
+def split_shared_bias(g):
+  def _split_shared_bias(blocks):
+    for block in blocks:
+      for node in block.nodes():     
+        _split_shared_bias(node.blocks())
+        if node_type(node) in ["aten::linear", "aten::_convolution"]:
+          if node_type(get_in_node_at(node, 1)) != "prim::Constant" or node_type(get_in_node_at(node, 2)) != "prim::Constant":
+              continue
+          if unique_name(node.inputsAt(1)).split(".")[-1] != "weight":
+            weight_prefix = ".".join(unique_name(node.inputsAt(1)).split(".")[:-2])
+            bias_suffix = ".".join(["bias", unique_name(node.inputsAt(1)).split(".")[-1]])
+          else:
+            weight_prefix = ".".join(unique_name(node.inputsAt(1)).split(".")[:-1])
+            bias_suffix = "bias"
+          if unique_name(node.inputsAt(2)).split(".")[-1] != "bias":
+            bias_prefix = ".".join(unique_name(node.inputsAt(2)).split(".")[:-2])
+          else:
+            bias_prefix = ".".join(unique_name(node.inputsAt(2)).split(".")[:-1])
+
+          if weight_prefix != bias_prefix:
+            weight_value = get_attr_value(get_in_node_at(node, 1), "value")
+            is_transpose = bool(get_attr_value(get_in_node_at(node, 6), "value"))
+            shape = weight_value.size(0) if is_transpose is False else  weight_value.size(1)
+            bias_value = torch.zeros(shape, device=weight_value.device, requires_grad=weight_value.requires_grad)
+            const_value = g.insertConstant(bias_value)
+            const_value.node().moveBefore(node)
+            set_attr_value(const_value.node(), "value", bias_value)
+            set_unique_name(const_value, ".".join([weight_prefix, bias_suffix]))
+            node.replaceInput(2, const_value)
+    
+  _split_shared_bias([g])  
+
+
+
+def split_shared_const_tensor(g):
+  def _split_shared_const_tensor(blocks):
+    for block in blocks:
+      for node in block.nodes():     
+        _split_shared_const_tensor(node.blocks())
+        if node_type(node) == "prim::Constant" and get_node_output_type(node) == _TENSOR and get_node_output_scalar_type(node) == _FLOAT:
+          if len(get_users(node)) == 1:
+            continue
+          
+          for id, use in enumerate(_get_uses(node)[1:], 1):
+            value = get_attr_value(node, "value")
+            new_value = torch.tensor(value.clone().detach(), device=value.device, requires_grad=value.requires_grad)
+            new_const_value = g.insertConstant(new_value)
+            new_const_value.node().moveBefore(use.user)
+            set_attr_value(new_const_value.node(), "value", new_value)
+            set_unique_name(new_const_value, "nndct_" + ".".join([unique_name(node.output()), str(id)]))
+            use.user.replaceInput(use.offset, new_const_value)
+           
+  _split_shared_const_tensor([g])  
+
+
+
+def create_mul_node(g, input, scale):
+  scale = g.insertConstant(float(scale))
+  scale.node().moveAfter(input.node())
+  mul_node = g.create("aten::mul", [input, scale])
+  mul_node.insertAfter(scale.node())
+  return mul_node
+
+
+const_type_converter = {
+  _FLOAT_TYPE: torch.float32,
+  _INT_TYPE: torch.int64,
+  _BOOL_TYPE: torch.bool
+}
+
+
+def convert_scalar_to_const(g):
+  def _convert_scalar_to_const(blocks):
+    for block in blocks:
+      for node in block.nodes():
+        _convert_scalar_to_const(node.blocks())
+        if node_type(node) in ["aten::add", "aten::mul", "aten::div", "aten::sub"]:
+          if node_type(get_in_node_at(node, 1)) == "prim::Constant" and get_node_output_type(node) == "TensorType":
+            const = get_attr_value(get_in_node_at(node, 1), "value")
+
+            clone_const_tensor = g.insertConstant(torch.tensor(const, dtype=const_type_converter.get(get_node_output_type(get_in_node_at(node, 1)), torch.float32)))
+            clone_const_tensor.node().moveBefore(node)
+            node.replaceInput(1, clone_const_tensor)
+    
+  _convert_scalar_to_const([g])
+
+
+def get_jit_value_device(value):
+  if str(value.type()) == "Tensor" and hasattr(value.type(), "device"):
+    return value.type().device()
+  elif value.type().str():
+    if "cpu" in value.type().str():
+      device = "cpu"
+    elif "cuda" in value.type().str():
+      device = "cuda"
+    else:
+      device = "unknown"
+    return device
+  else:
+    return "unknown"
+
+def freeze_graph_wo_opt(module, preserved_attrs=None):
+  from torch.jit._script import RecursiveScriptModule
+
+  if not isinstance(module, torch.jit.ScriptModule):
+        raise RuntimeError(
+            "Freezing expects a ScriptModule as input. "
+            "Please use torch.jit.script or torch.jit.trace to script your 'nn.Module'."
+        )
+
+  if module.training:
+      raise RuntimeError(
+          "Freezing is currently only implemented for modules in eval mode. "
+          "Please call .eval() on your module before freezing."
+      )
+
+  preserved_attrs = preserved_attrs if preserved_attrs is not None else []
+
+  out = RecursiveScriptModule(torch._C._freeze_module(module._c, preserved_attrs))
+  RecursiveScriptModule._finalize_scriptmodule(out)
+  return out
+
+def get_operation_caller_by_schema_name(schema_name):
+  caller_info = torch._C._jit_get_operation(schema_name)
+  
+  if isinstance(caller_info, list) or isinstance(caller_info, tuple):
+    real_caller = []
+    [real_caller.append(x) for x in  caller_info if 'builtin_function_or_method' in str(x.__class__)]
+    if len(real_caller) == 0:
+      return None
+    if len(real_caller) > 1:
+      NndctScreenLogger().warning(f"schema_name has more than one caller, but our program only use the first caller!!")
+    return real_caller[0] 
+
+  if isinstance(caller_info, object):
+    return caller_info
+
+  raise("unknow caller type")
+
+def get_node_scope_name(fw_node):
+  scope_name = fw_node.scopeName()
+  if scope_name.startswith("__"):
+    return scope_name.split("/")[-1]
+  else:
+    return scope_name
+
+def remove_quant_dequant_stub(g):
+  def pyop_filter(fw_node):
+    if fw_node.pyname() in ["QuantStubF", "DeQuantStubF"]:
+      return True
+    else:
+      return False
+  stubs = find_fw_nodes_by_type(g, "prim::PythonOp", pyop_filter)
+  for node in stubs:
+    remove_node(node)

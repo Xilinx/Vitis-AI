@@ -258,7 +258,8 @@ class TQTQuantizer(FakeQuantizer):
       return np.max(np.abs(x))
 
     def _3sd(x):
-      return np.abs(np.mean(x + 1e-6)) + 3 * np.std(x)
+      y = x.astype(np.float32) if x.dtype == np.float16 else x
+      return np.abs(np.mean(y + 1e-6)) + 3 * np.std(y)
 
     def _kl_j(x):
       """
@@ -273,10 +274,13 @@ class TQTQuantizer(FakeQuantizer):
 
       mn = 0
       mx = np.max(np.abs(x))
-      hist, bin_edges = np.histogram((np.abs(x)),
+      y = x.astype(np.float32) if x.dtype == np.float16 else x
+      hist, bin_edges = np.histogram((np.abs(y)),
                                      'sqrt',
                                      range=(mn, mx),
                                      density=True)
+      hist = hist.astype(x.dtype)
+      bin_edges = bin_edges.astype(x.dtype)
       pdf = hist / np.sum(hist)
       cdf = np.cumsum(pdf)
       n = pow(2, self.bitwidth.item() - 1)
@@ -378,7 +382,7 @@ class TQTQuantizer(FakeQuantizer):
     """
     bitwidth = self.bitwidth.item()
     ceil_log2t = torch.ceil(self.log_threshold).item()
-    return [bitwidth, int(bitwidth - 1 - ceil_log2t)]
+    return [[bitwidth, int(bitwidth - 1 - ceil_log2t)]]
 
   def import_quant_info(self, qinfo):
     bitwidth, fp = qinfo

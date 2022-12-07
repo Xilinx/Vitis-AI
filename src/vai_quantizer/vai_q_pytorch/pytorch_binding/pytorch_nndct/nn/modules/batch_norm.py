@@ -61,7 +61,8 @@ class deephi_BatchNorm(torch.nn.modules.batchnorm._BatchNorm):
             self.node,
             tensor_names=param_names,
             tensor_type='param')
-      self.param_quantized = True
+      if not NndctOption.nndct_quant_off.value:
+        self.param_quantized = True
     else:
       qparams = [p for p in params]
 
