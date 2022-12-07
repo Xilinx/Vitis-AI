@@ -12,16 +12,10 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-<!-- Google Tag Manager -->
-<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
-<!-- End Google Tag Manager -->
-  <title>Vitis AI Developer Machine Requirements &mdash; Vitis AI 2.5 documentation</title>
+  <title>Vitis AI Host (Developer) Machine Requirements &mdash; Vitis AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -32,18 +26,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Host / Development Software Installation" href="../install/README.html" />
-    <link rel="prev" title="Vitis AI Compatibility With Vivado, Vitis and Petalinux" href="release_notes.html" /> 
+    <link rel="next" title="Adaptable &amp; Real-Time AI Inference Acceleration" href="../install/install.html" />
+    <link rel="prev" title="Release Notes 3.0" href="release_notes_3.0.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
-<!-- End Google Tag Manager --> 
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
@@ -52,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                2.5
+                3.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,37 +59,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes_3.0.html">Release Notes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Vitis AI Developer Machine Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#vitis-ai-supported-board-targets">Vitis AI Supported Board Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#alveo-card-system-requirements">Alveo Card System Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../install/README.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">System Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vitis-ai-supported-board-targets">Vitis AI Supported Board Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alveo-card-system-requirements">Alveo Card System Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Inspector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#operator-support">Operator Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-optimization">Model Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-quantization">Model Quantization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-compilation">Model Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Development</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Model Deployment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-library">Vitis AI Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-runtime">Vitis AI Runtime</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#whole-application-acceleration">Whole Application Acceleration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#model-profiling">Model Profiling</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Vitis Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vivado-integration">Vivado Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#linux-dpu-recipes">Linux DPU Recipes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#whole-application-acceleration">Whole Application Acceleration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">System Integration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
 <ul>
@@ -120,6 +103,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
 <ul>
@@ -145,9 +130,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Vitis AI Developer Machine Requirements</li>
+      <li>Vitis AI Host (Developer) Machine Requirements</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/docs/reference/system_requirements.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/docs/reference/system_requirements.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -155,36 +140,81 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="vitis-ai-developer-machine-requirements">
-<h1>Vitis AI Developer Machine Requirements<a class="headerlink" href="#vitis-ai-developer-machine-requirements" title="Permalink to this heading">¶</a></h1>
-<p>The following table lists Vitis AI developer workstation system requirements:</p>
-<table>
-<tr><th colspan="2">Component</th><th>Requirement</th></tr>
-<tr><td colspan="2">GPU (Optional, but strongly recommended for quantization acceleration)</td><td>	NVIDIA GPU supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100) </td></tr>
-<tr><td colspan="2">CUDA Driver </td><td>NVIDIA-450 or higher for CUDA 11.0</td></tr>
-<tr><td colspan="2">Docker Version</td><td>19.03 or higher, nvidia-docker2</td></tr>
-<tr><td rowspan="3">Operating System</td><td>Ubuntu</td><td>18.04, 20.04</td></tr>
-<tr><td>CentOS</td><td>7.8, 7.9, 8.1, 8.2</td></tr>
-<tr><td>RHEL</td><td>8.3, 8.4</td></tr>
-<tr><td rowspan="2" colspan="2">CPU</td><td>Intel i3/i5/i7/i9/Xeon 64-bit CPU</td></tr>
-<tr><td>AMD EPYC 7F52 64-bit CPU</td></tr>
+  <section id="vitis-ai-host-developer-machine-requirements">
+<h1>Vitis AI Host (Developer) Machine Requirements<a class="headerlink" href="#vitis-ai-host-developer-machine-requirements" title="Permalink to this heading">¶</a></h1>
+<p>The following table lists Vitis™ AI developer workstation system requirements:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Requirement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GPU (Optional, but strongly recommended for quantization acceleration)</p></td>
+<td><p>NVIDIA GPU supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CUDA Driver</p></td>
+<td><p>NVIDIA-450 or higher for CUDA 11.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Docker Version</p></td>
+<td><p>19.03 or higher, nvidia-docker2</p></td>
+</tr>
+<tr class="row-odd"><td><p>Operating System</p></td>
+<td><p>Ubuntu 18.04, 20.04</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>CentOS 7.8, 7.9, 8.1, 8.2</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>RHEL 8.3, 8.4</p></td>
+</tr>
+<tr class="row-even"><td><p>CPU</p></td>
+<td><p>Intel i3/i5/i7/i9/Xeon 64-bit CPU</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>AMD EPYC 7F52 64-bit CPU</p></td>
+</tr>
+</tbody>
 </table>
-</br></section>
 <section id="vitis-ai-supported-board-targets">
-<h1>Vitis AI Supported Board Targets<a class="headerlink" href="#vitis-ai-supported-board-targets" title="Permalink to this heading">¶</a></h1>
-<p>The following table lists target boards that are supported natively** by Vitis AI:</p>
-<table>
-<tr><th colspan="2">Component</th><th>Requirement</th></tr>
-<tr><td rowspan="4">Xilinx Target</td><td>Alveo</td><td>U50, U50LV, U200, U250, U280 cards</td></tr>
-  <tr><td nowrap>Zynq UltraScale+ MPSoC</td><td>ZCU102 and ZCU104 Boards</td></tr>
-  <tr><td>Versal</td><td>VCK190 and VCK5000 boards</td></tr>
-  <tr><td>Kria</td><td>KV260</td></tr>
-<table>
-</br><p>**Custom platform support can for Edge/Embedded devices may be enabled by the developer through Vitis and Vivado workflows</p>
+<h2>Vitis AI Supported Board Targets<a class="headerlink" href="#vitis-ai-supported-board-targets" title="Permalink to this heading">¶</a></h2>
+<p>The following table lists target boards that are supported natively by Vitis AI:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Custom platform support can for Edge/Embedded devices may be enabled by the developer through Vitis and Vivado workflows.</p>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Family</p></th>
+<th class="head"><p>Supported Target</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Alveo</p></td>
+<td><p>U50, U50LV, U200, U250, U280 cards</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alveo</p></td>
+<td><p>V70 (early access)</p></td>
+</tr>
+<tr class="row-even"><td><p>Zynq UltraScale+ MPSoC</p></td>
+<td><p>ZCU102 and ZCU104 Boards</p></td>
+</tr>
+<tr class="row-odd"><td><p>Versal</p></td>
+<td><p>VCK190 and VCK5000 boards</p></td>
+</tr>
+<tr class="row-even"><td><p>Versal AI Edge</p></td>
+<td><p>VEK280 (early access)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kria</p></td>
+<td><p>KV260</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="alveo-card-system-requirements">
-<h1>Alveo Card System Requirements<a class="headerlink" href="#alveo-card-system-requirements" title="Permalink to this heading">¶</a></h1>
-<p>Please refer to the “System Requirements” section of the target Alveo card documentation.</p>
+<h2>Alveo Card System Requirements<a class="headerlink" href="#alveo-card-system-requirements" title="Permalink to this heading">¶</a></h2>
+<p>Please refer to the “System Requirements” section of the target Alveo™ card documentation.</p>
+</section>
 </section>
 
 
@@ -201,8 +231,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="release_notes.html" class="btn btn-neutral float-left" title="Vitis AI Compatibility With Vivado, Vitis and Petalinux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../install/README.html" class="btn btn-neutral float-right" title="Host / Development Software Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="release_notes_3.0.html" class="btn btn-neutral float-left" title="Release Notes 3.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../install/install.html" class="btn btn-neutral float-right" title="Adaptable &amp; Real-Time AI Inference Acceleration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -221,7 +251,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

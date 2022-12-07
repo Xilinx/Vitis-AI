@@ -31,9 +31,9 @@ copyright = '2021-2022, Advanced Micro Devices, Inc'
 author = 'Advanced Micro Devices, Inc'
 
 # The short X.Y version
-version = '2.5'
+version = '3.0'
 # The full version, including alpha/beta/rc tags
-release = '2.5'
+release = '3.0'
 html_last_updated_fmt = 'July 20, 2022'
 
 # -- General configuration ---------------------------------------------------
@@ -57,6 +57,7 @@ extensions = [
     'sphinx.ext.githubpages',
 	'recommonmark',
 	'sphinx_markdown_tables',
+    'sphinxcontrib.contentui',
 	#'edit_on_github',
     # Auto-generate section labels.
     'sphinx.ext.autosectionlabel',	

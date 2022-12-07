@@ -12,16 +12,10 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-<!-- Google Tag Manager -->
-<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
-<!-- End Google Tag Manager -->
-  <title>Installing Vitis-AI on Microsoft Azure &mdash; Vitis AI 2.5 documentation</title>
+  <title>Installing Vitis-AI on Microsoft Azure &mdash; Vitis AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -32,16 +26,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
-<!-- End Google Tag Manager --> 
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
@@ -50,7 +41,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                2.5
+                3.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -66,37 +57,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Release Notes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">Vitis AI Developer Machine Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html#vitis-ai-supported-board-targets">Vitis AI Supported Board Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html#alveo-card-system-requirements">Alveo Card System Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="README.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Inspector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#operator-support">Operator Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-optimization">Model Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-quantization">Model Quantization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html#model-compilation">Model Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Development</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Model Deployment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-library">Vitis AI Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#vitis-ai-runtime">Vitis AI Runtime</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#whole-application-acceleration">Whole Application Acceleration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html#model-profiling">Model Profiling</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Vitis Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vivado-integration">Vivado Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#linux-dpu-recipes">Linux DPU Recipes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#whole-application-acceleration">Whole Application Acceleration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">System Integration</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
 <ul>
@@ -118,6 +97,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
 <ul>
@@ -145,7 +126,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Installing Vitis-AI on Microsoft Azure</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/docs/install/install_on_azure.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/docs/install/install_on_azure.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -153,39 +134,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <table class="sphinxhide">
- <tr>
-   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
-   </td>
- </tr>
-</table><section id="installing-vitis-ai-on-microsoft-azure">
+  <section id="installing-vitis-ai-on-microsoft-azure">
 <h1>Installing Vitis-AI on Microsoft Azure<a class="headerlink" href="#installing-vitis-ai-on-microsoft-azure" title="Permalink to this heading">¶</a></h1>
 <p>The following steps will guide you on how to build up a VM capable of running Vitis-AI</p>
 <section id="steps">
 <h2>Steps<a class="headerlink" href="#steps" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/azure/virtual-machines/windows/quick-create-portal">Start an Azure VM</a> of type <a class="reference external" href="https://docs.microsoft.com/en-us/azure/virtual-machines/np-series">NP10</a>  using the Cannonical <a class="reference external" href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/canonical.0001-com-ubuntu-server-bionic?tab=overview">Ubuntu 18.04 LTS</a> app</p></li>
+<li><p><a class="reference external" href="https://docs.microsoft.com/en-us/azure/virtual-machines/windows/quick-create-portal">Start an Azure VM</a> of type <a class="reference external" href="https://docs.microsoft.com/en-us/azure/virtual-machines/np-series">NP10</a> using the Cannonical <a class="reference external" href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/canonical.0001-com-ubuntu-server-bionic?tab=overview">Ubuntu 18.04 LTS</a> app</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">After</span> <span class="n">starting</span> <span class="n">this</span> <span class="n">instance</span> <span class="n">you</span> <span class="n">must</span> <span class="n">ssh</span> <span class="n">to</span> <span class="n">your</span> <span class="n">cloud</span> <span class="n">instance</span> <span class="n">to</span> <span class="n">complete</span> <span class="n">the</span> <span class="n">following</span> <span class="n">steps</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Disable Kernel Auto-Upgrade</p></li>
-</ul>
+<p>After starting this instance you must ssh to your cloud instance to complete the following steps:</p>
+<ol class="arabic">
+<li><p>Disable Kernel Auto-Upgrade</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s/1/0/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">apt</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="mi">20</span><span class="n">auto</span><span class="o">-</span><span class="n">upgrades</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Update Ubuntu Packages List, and Upgrade existing packages</p></li>
-</ul>
+</li>
+<li><p>Update Ubuntu Packages List, and Upgrade existing packages</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Install Xilinx XRT</p></li>
-</ul>
+</li>
+<li><p>Install Xilinx XRT</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Xilinx</span><span class="o">/</span><span class="n">XRT</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">XRT</span> 
+<span class="n">cd</span> <span class="n">XRT</span>
 <span class="n">git</span> <span class="n">checkout</span> <span class="mf">2021.1</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">src</span><span class="o">/</span><span class="n">runtime_src</span><span class="o">/</span><span class="n">tools</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">xrtdeps</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">cd</span> <span class="n">build</span>
@@ -202,25 +173,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="n">ssh</span> <span class="o">...</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Install XRM</p></li>
-</ul>
+</li>
+<li><p>Install XRM</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=xrm_202110.1.2.1539_18.04-x86_64.deb -O xrm.deb
 sudo apt install ./xrm.deb
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Install the DPU Accelerator (FPGA Binary)</p></li>
-</ul>
+</li>
+<li><p>Install the DPU Accelerator (FPGA Binary)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=dpu-azure-1.4.0.xclbin -O dpu-azure.xclbin
 sudo mkdir -p /opt/xilinx/overlaybins/DPUCADF8H
 sudo cp dpu-azure.xclbin /opt/xilinx/overlaybins/DPUCADF8H
 sudo chmod -R a+rx /opt/xilinx/overlaybins/DPUCADF8H
 </pre></div>
 </div>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Install Docker</a></p></li>
-</ul>
+</li>
+<li><p><a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Install Docker</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">fsSL</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span><span class="n">gpg</span> <span class="o">|</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">key</span> <span class="n">add</span> <span class="o">-</span>
 <span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="s2">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot;</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
@@ -231,17 +199,16 @@ sudo chmod -R a+rx /opt/xilinx/overlaybins/DPUCADF8H
 <span class="n">ssh</span> <span class="o">...</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Clone Vitis-AI and Launch Docker Container</p></li>
-</ul>
+</li>
+<li><p>Clone Vitis-AI and Launch Docker Container</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Xilinx</span><span class="o">/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">.</span><span class="n">git</span>
 <span class="n">cd</span> <span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
 <span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p><a class="reference external" href="../../examples/DPUCADF8H/README">Run Examples</a></p></li>
-</ul>
+</li>
+</ol>
+<p><a class="reference external" href="../../examples/DPUCADF8H/README.md">Run Examples</a></p>
 </section>
 </section>
 
@@ -276,7 +243,7 @@ sudo chmod -R a+rx /opt/xilinx/overlaybins/DPUCADF8H
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

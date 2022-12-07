@@ -17,6 +17,7 @@
 ############################################################
 Vitis AI
 ############################################################
+
 Xilinx Vitis AI is an integrated development environment that can be leveraged to accelerate AI inference on Xilinx platforms. This toolchain provides optimized IP, tools, libraries, models, as well as resources, such as example designs and tutorials that aid the user throughout the development process.  It is designed with high efficiency and ease-of-use in mind, unleashing the full potential of AI acceleration on Xilinx SoCs and Alveo Data Center accelerator cards.  
 
 .. figure:: docs/reference/images/VAI_IDE.png
@@ -54,7 +55,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Notes
    :hidden:
 
-   Release Notes <docs/reference/release_notes>
+   Release Notes <docs/reference/release_notes_3.0>
 
 .. toctree::
    :maxdepth: 3
@@ -62,7 +63,8 @@ Vitis AI is composed of the following key components:
    :hidden:
 
    System Requirements <docs/reference/system_requirements>
-   Installation <docs/install/README>
+   Host Install Instructions <docs/install/install>
+   Target Setup Instructions <docs/board_setup/board_setup>
    
 .. toctree::
    :maxdepth: 3
@@ -120,6 +122,8 @@ Vitis AI is composed of the following key components:
    
    Inference Server <https://xilinx.github.io/inference-server/>
    Vitis Video Analytics SDK <https://xilinx.github.io/VVAS/>
+   FINN / Brevitas <https://xilinx.github.io/finn/>
+   DPU-PYNQ <https://github.com/Xilinx/DPU-PYNQ>
 
 .. toctree::
    :maxdepth: 3
@@ -127,11 +131,6 @@ Vitis AI is composed of the following key components:
    :hidden:
    
    Resources and Support <docs/reference/additional_resources>
-  
-.. toctree::
-   :maxdepth: 3
-   :caption: Other Versions
-   :hidden:
     
 .. toctree::
    :maxdepth: 3
