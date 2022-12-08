@@ -1,34 +1,22 @@
-# Setup Conda Environment for WeGO-Tensorflow1.x
+# WeGO Tensorflow1 Examples Overview
 
-Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO TensorFlow1.
+Currently there are two kinds of WeGO Tensorflow1 examples:
 
-```bash
-$ conda activate vitis-ai-wego-tf1
-```
+## Compile quantized model and run it
 
-# Runing the Examples
+These examples use pre-quantized models compiled into WeGO TF1 models that can be executed on the DPU. Follow the instructions in the link below to execute each example.
 
-## Running Mode
+* [01_compiling_offline_quantized_models](./01_compiling_offline_quantized_models) 
 
-For each example, two different running modes can be selected to enable accuracy and performance test purpose with different running options provided.
+## Quantized an float model then compile it
 
-- **normal** : example will accept one single image as input and then perform the normal inference process using single thread. The output result of this mode will be either top-5 accuracy or an image, which is decided by the model type. 
+This example gives two action scripts.
 
-- **perf** : example will accept one single image as input but a large image pool will be created instead(i.e. copying the input image many times). The performance profiling process will accept this large image pool as input and then run using multi-threads. The output result of this mode will be the performance profiling result(i.e. the FPS numbers).
+1. The script `quantize_compile_run.sh` gives quantization flow from the float model and then compiles it into WeGO TF1 models that can be executed on the DPU. Follow the instructions in the link below to do `Preparation` and `Run Resnet_v1_50 quantize and compile flow`.
 
-Please refer to each example link for more details.
+2. The script `compile_serialize_run.sh` gives the serialization and deserialization flow of the WeGO TF1 model. Follow the instructions in the link below to do `Run Resnet_v1_50 serialization and deserialization flow`.
 
-## How to Run
-
-After the wego-tensorflow conda env is activated, please refer to following links to run the examples according to corresponding instructions.
-
-- [resnet_v1_50](./classification) 
-- [inception_v1](./classification)
-- [MLPerf_resnet50_v1.5](./classification)
-- [mobilenet_v1_0.25_128](./classification)
-- [efficientNet-edgetpu-S](./classification)
-- [yolov3_voc](./yolov3_voc)
-- [refinedet_VOC_320_320_81.9G_2.0](./refinedet_VOC_320_320_81.9G_2.0)
+* [02_on_the_fly_quantization](./02_on_the_fly_quantization/resnet_v1_50)
 
 # License
 

@@ -1,32 +1,22 @@
-# Setup Conda Environment for WeGO-Torch
+# Pytorch Examples Overview
 
-Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-Torch.
+Currently there are two kinds of Pytorch examples:
 
-```bash
-$ conda activate vitis-ai-wego-torch
-```
+## Compiling an Offline Quantized Model and Run It
 
-# Runing the Examples
+These examples are from previous release of WeGO and demonstrate how to compile an offline quantized model(quantized with Vitis AI Quantizer) and run it:
 
-## Running Mode
+- [01_compiling_offline_quantized_models](./01_compiling_offline_quantized_models)
 
-For each example, two different running modes can be selected to enable accuracy and performance test purpose with different running options provided.
+## On the Fly Quantization
 
-- **normal** : example will accept one single image as input and then perform the normal inference process using single thread. The output result of this mode will be either top-5 accuracy or an image, which is decided by the model type. 
+A new quantize API is added to WeGO since Vitis-AI 3.0 release version. You can perform Post Training Quantization(PTQ) to get a quantized model from a float model.
 
-- **perf** : example will accept one single image as input but a large image pool will be created instead(i.e. copying the input image many times). The performance profiling process will accept this large image pool as input and then run using multi-threads. The output result of this mode will be the performance profiling result(i.e. the FPS numbers).
+This example demonstrate how to quantize, compile, optionally serialize and run a model.
 
-Please refer to each example link for more details.
+There's also an example to deserialize a previously compiled WeGO module and run it.
 
-## How to Run
-
-After the wego-torch conda environment is activated, please refer to following links to run the examples according to corresponding instructions. 
-
-- [Inception_v3](./classification) 
-- [SqueezeNet](./classification)
-- [ofa_resnet50_0_9B](./ofa_resnet50_0_9B)
-- [drunet](./drunet)
-- [face_quality](./face_quality)
+- [02_on_the_fly_quantization](./02_on_the_fly_quantization)
 
 # License
 
