@@ -63,7 +63,8 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
    
    ::
    
-      cd ~/dpu_sw_optimize/zynqmp/  ./zynqmp_dpu_optimize.sh``
+      cd ~/dpu_sw_optimize/zynqmp/  
+      ./zynqmp_dpu_optimize.sh
 
 3. (Optional) How to install the Vitis AI for PetaLinux 2022.2
    There are two ways to install the dependent libraries of Vitis AI.
@@ -73,12 +74,12 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
    -  Build-Time
 
       For ``VAI3.0 Recipes``, refer to
-      `Vitis-AI-Recipes <../petalinux>`__.
+      `Vitis-AI-Recipes <../petalinux-recipes.html>`__.
    -  Run-Time
       
       Execute ``dnf install packagegroup-petalinux-vitisai`` to complete
-      the installation on the target. For more details, refer to `VAI2.5
-      Online Install <../petalinux#to-install-the-vai25-online>`__
+      the installation on the target. For more details, refer to `VAI3.0
+      Online Install <../petalinux-recipes.html>`__
 
 4. (Optional) How to update Vitis AI Runtime and install them separately.
    If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
@@ -87,17 +88,15 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
 
       ::
 
-         scp -r mpsoc root@IP_OF_BOARD:~/
+         scp -r board_setup/mpsoc root@IP_OF_BOARD:~/
 
    -  Log in to the board using ssh. You can also use the serial port to login.
    -  Install the Vitis AI Runtime. Execute the following command.
 
       ::
 		
-		cd ~
-		tar -xzvf vitis-ai-runtime-3.0.0.tar.gz
-		cd vitis-ai-runtime-3.0.0/2022.2/aarch64/centos
-		bash setup.sh
+		cd ~/mpsoc
+		bash target_vart_setup.sh
 
 5. (Optional) Download the model.
    For each model, there will be a yaml file which is used for describe all the details about the model. In the yaml, you will find the model’s download links for different platforms. Choose the corresponding model and download it. Click `Xilinx AI Model Zoo <../../model_zoo/model-list>`__ to view all the models.
@@ -132,7 +131,10 @@ Step 3: Run the Vitis AI Examples
 
 2. Unzip the ``vitis_ai_runtime_r2.5.x_image_video.tar.gz`` package on the target.
 
-   ``cd ~     tar -xzvf vitis_ai_runtime_r*2.5*_image_video.tar.gz -C Vitis-AI/examples/vai_runtime``
+      ::
+
+         cd ~     
+         tar -xzvf vitis_ai_runtime_r*2.5*_image_video.tar.gz -C Vitis-AI/examples/vai_runtime
 
 3. Enter the directory of samples in the target board. Take ``resnet50`` as an example. 
 

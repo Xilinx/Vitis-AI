@@ -61,21 +61,21 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
    One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via ``dnf``.
 
    -  Build-Time For ``VAI3.0 Recipes``, refer to
-      `Vitis-AI-Recipes <../../../../src/petalinux_recipes>`__.
+      `Vitis-AI-Recipes <../petalinux-recipes.html>`__.
    -  Run-Time Execute ``dnf install packagegroup-petalinux-vitisai`` to
       complete the installation on the target. For more details, refer
       to `VAI3.0 Online
-      Install <../petalinux#to-install-the-vai30-online>`__
+      Install <../petalinux-recipes.html>`__
 
 3. (Optional) How to update Vitis AI Runtime and install them separately.
 
    If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
 
-   -  Download `vitis-ai-runtime-3.0.0.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis-ai-runtime-3.0.0.tar.gz>` and copy it to the board using scp.
+   -  Copy the following folder to the board using scp.
 
       ::
 
-         scp vitis-ai-runtime-3.0.0.tar.gz root@IP_OF_BOARD:~/
+         scp -r board_setup/vck190 root@IP_OF_BOARD:~/
 
    -  Log in to the board using ssh. You can also use the serial port to login.
 
@@ -83,10 +83,8 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
 
       ::
 
-         cd ~
-		 tar -xzvf vitis-ai-runtime-3.0.0.tar.gz
-		 cd vitis-ai-runtime-3.0.0/2022.2/aarch64/centos
-         bash setup.sh
+        cd ~/vck190
+        bash target_vart_setup.sh
 
 4. (Optional) Download the model.
    
@@ -115,7 +113,7 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
 Step 3: Run the Vitis AI Examples
 ----------------------------------
 
-Follow `Running Vitis AI Examples <../mpsoc/README.html#step3-run-the-vitis-ai-examples>`__ to run Vitis AI examples.
+Follow `Running Vitis AI Examples <board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples>`__ to run Vitis AI examples.
 
 References
 ----------
