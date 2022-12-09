@@ -1,0 +1,13 @@
+{
+  "kernel_name": "DPURunner",
+  "description": "Run inference on Xilinx DPUs (Scale I/O)",
+  "kernel_type": "cpp",
+  "device_type": "fpga",
+  "kernel_lib" : "libs/libDPURunner.so",
+  "num_cu": 4,
+
+  "param_list": {
+    "model_file": { "type" : "string" },
+    "num_runners":  {"type" : "int" }
+  }
+}

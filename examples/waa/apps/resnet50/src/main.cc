@@ -250,17 +250,7 @@ void runResnet50(vart::RunnerExt *runner, const xir::Subgraph *subgraph, int sw_
 		return;
 	}
 
-	const char *xclbinPath = std::getenv("XLNX_VART_FIRMWARE");
-	auto xclbin_obj = xrt::xclbin(xclbinPath);
-	string name = xclbin_obj.get_xsa_name();
-	string platform_name = name.substr(7,4);
-
-	if(platform_name == "u200" && no_zcpy == 0)
-	{
-		cout<<"Currently u200 doesnot support zero copy. Hence running without zero copy"<<endl;
-		no_zcpy = 1;
-	}
-
+	
 	float mean[3] = {104, 107, 123};
 
 	auto input_tensor_buffers = runner->get_inputs();
@@ -303,11 +293,7 @@ void runResnet50(vart::RunnerExt *runner, const xir::Subgraph *subgraph, int sw_
 	for (auto batch_idx = 0; batch_idx < batch; ++batch_idx) 
 	{
 		std::tie(data_in_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data({batch_idx, 0, 0, 0});
-
-		if(platform_name != "u200")
-		{
-		   std::tie(dpu_input_phy_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data_phy({batch_idx, 0, 0, 0});
-		}		
+	    std::tie(dpu_input_phy_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data_phy({batch_idx, 0, 0, 0});
 	}
 
 	vector<int8_t *> outptr_v;
@@ -396,24 +382,21 @@ void runResnet50(vart::RunnerExt *runner, const xir::Subgraph *subgraph, int sw_
 
 		total_images += imageList.size();
 		auto exec_t1 = std::chrono::system_clock::now();
-		if(platform_name != "u200")
-		{
-			if (no_zcpy) 
-				for (auto &input : input_tensor_buffers)
-					input->sync_for_write(0, input->get_tensor()->get_data_size() /
-							input->get_tensor()->get_shape()[0]);
 
-		}		
+		if (no_zcpy) 
+			for (auto &input : input_tensor_buffers)
+				input->sync_for_write(0, input->get_tensor()->get_data_size() /
+						input->get_tensor()->get_shape()[0]);
+
+				
 		/*run*/
 		auto job_id = runner->execute_async(input_tensor_buffers, output_tensor_buffers);
 		runner->wait(job_id.first, -1);
 
-		if(platform_name!="u200")
-		{
-			for (auto output : output_tensor_buffers)
-				output->sync_for_read(0, output->get_tensor()->get_data_size() /
-						output->get_tensor()->get_shape()[0]);
-		}
+		for (auto output : output_tensor_buffers)
+			output->sync_for_read(0, output->get_tensor()->get_data_size() /
+					output->get_tensor()->get_shape()[0]);
+		
 
 		auto exec_t2 = std::chrono::system_clock::now();
 		auto execvalue_t1 = std::chrono::duration_cast<std::chrono::microseconds>(exec_t2 - exec_t1);
@@ -504,6 +487,9 @@ int main(int argc, char *argv[])
 		no_zcpy = 1;
 
 	auto subgraph = get_dpu_subgraph(graph.get());
+    
+	if(!no_zcpy)
+		attrs->set_attr<bool>("zero_copy",true);
 	
 	CHECK_EQ(subgraph.size(), 1u)
 		<< "resnet50 should have one and only one dpu subgraph.";

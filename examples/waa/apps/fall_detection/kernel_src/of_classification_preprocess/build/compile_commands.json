@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_preprocess/build",
+  "command": "/usr/bin/c++  -DOFClassificationPreProcess_EXPORTS -I/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_preprocess/xir   -O3 -fPIC   -std=gnu++17 -o CMakeFiles/OFClassificationPreProcess.dir/AksOFClassificationPreProcess.cpp.o -c /workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_preprocess/AksOFClassificationPreProcess.cpp",
+  "file": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_preprocess/AksOFClassificationPreProcess.cpp"
+}
+]

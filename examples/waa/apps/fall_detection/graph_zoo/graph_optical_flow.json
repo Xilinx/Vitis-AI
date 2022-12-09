@@ -1,0 +1,32 @@
+{
+  "graph_name": "optical_flow",
+
+  "node_list": [
+    {
+      "node_name": "TVL1_OF",
+      "exec_kernel": ["DualTVL1OpticalFlow"],
+      "node_params": {
+        "DualTVL1OpticalFlow": {
+          "of_w": 224,
+          "of_h": 224
+        }
+      },
+      "next_node": ["optical_flow_opencv_postproc"]
+    },
+
+    {
+        "node_name": "optical_flow_opencv_postproc",
+        "exec_kernel": ["OpticalFlowOpenCVPostProcess"],
+        "node_params" : {
+          "OpticalFlowOpenCVPostProcess": {
+            "bound": 15,
+            "visualize": ""
+          }
+      },
+      "next_node": []
+    }
+
+  ],
+
+  "version": "0.1"
+}

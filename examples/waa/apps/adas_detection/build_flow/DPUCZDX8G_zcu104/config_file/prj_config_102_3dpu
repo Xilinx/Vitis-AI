@@ -1,0 +1,59 @@
+# /*
+# * Copyright 2019 Xilinx Inc.
+# *
+# * Licensed under the Apache License, Version 2.0 (the "License");
+# * you may not use this file except in compliance with the License.
+# * You may obtain a copy of the License at
+# *
+# *    http://www.apache.org/licenses/LICENSE-2.0
+# *
+# * Unless required by applicable law or agreed to in writing, software
+# * distributed under the License is distributed on an "AS IS" BASIS,
+# * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# * See the License for the specific language governing permissions and
+# * limitations under the License.
+# */
+
+
+[clock]
+
+id=1:DPUCZDX8G_1.aclk
+id=6:DPUCZDX8G_1.ap_clk_2
+id=1:DPUCZDX8G_2.aclk
+id=6:DPUCZDX8G_2.ap_clk_2
+id=1:DPUCZDX8G_3.aclk
+id=6:DPUCZDX8G_3.ap_clk_2
+id=1:sfm_xrt_top_1.aclk
+[connectivity]
+
+sp=DPUCZDX8G_1.M_AXI_GP0:HPC1
+sp=DPUCZDX8G_1.M_AXI_HP0:HP0
+sp=DPUCZDX8G_1.M_AXI_HP2:HP1
+sp=DPUCZDX8G_2.M_AXI_GP0:HPC1
+sp=DPUCZDX8G_2.M_AXI_HP0:HP2
+sp=DPUCZDX8G_2.M_AXI_HP2:HP3
+sp=DPUCZDX8G_3.M_AXI_GP0:HPC1
+sp=DPUCZDX8G_3.M_AXI_HP0:HPC0
+sp=DPUCZDX8G_3.M_AXI_HP2:HPC0
+sp=sfm_xrt_top_1.M_AXI:HPC0
+nk=DPUCZDX8G:3
+
+[advanced]
+misc=:solution_name=link
+
+#param=compiler.addOutputTypes=sd_card
+#param=compiler.skipTimingCheckAndFrequencyScaling=1
+
+[vivado]
+#no lpd port same to base
+prop=run.impl_1.strategy=Performance_Explore
+#enable 32 lpd 
+#prop=run.impl_1.strategy=Performance_NetDelay_low
+####
+#prop=run.impl_1.strategy=Congestion_SpreadLogic_low
+#prop=run.impl_1.strategy=Congestion_SpreadLogic_medium
+#prop=run.impl_1.strategy=Performance_NetDelay_high
+#prop=run.impl_1.strategy=Performance_ExploreWithRemap
+#prop=run.impl_1.strategy=Performance_WLBlockPlacementFanoutOpt
+#param=place.runPartPlacer=0
+

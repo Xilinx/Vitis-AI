@@ -36,7 +36,7 @@ usage() {
 xmodel_file=""
 img_dir=""
 sw_proc=0
-no_zcpy=1
+no_zcpy=0
 label_file=""
 verbose=0
 performance_diff=0
@@ -145,7 +145,7 @@ then
 
  echo -e "   Running Application with Hardware Preprocessing \n"
  sw_proc=0
- no_zcpy=1
+ no_zcpy=0
  verbose=0
  exec_args="$xmodel_file $img_dir $sw_proc $no_zcpy $verbose $label_file"
  ${CPP_EXE} ${exec_args} |& grep -e "E2E Performance" -e "Pre-process Latency" -e "Execution Latency" -e "Post-process Latency" > z1.log

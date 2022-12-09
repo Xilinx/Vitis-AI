@@ -273,20 +273,10 @@ void runYOLO(vart::Runner *runner, string baseImagePath, vector<string>images, i
 	if (platform_name == "vck5")
 	   platform_name = "vck5000";
 
-	if(platform_name == "u200"&& no_zcpy == 0)
-	{
-		cout<<"Currently, u200 doesnot support zero copy. Running without zero copy"<<endl;
-		no_zcpy = 1;
-	}
-
 	for (auto batch_idx = 0; batch_idx < batch; ++batch_idx) 
 	{
 		std::tie(data_in_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data({batch_idx, 0, 0, 0});
-
-		if(platform_name != "u200")
-		{
-		   std::tie(dpu_input_phy_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data_phy({batch_idx, 0, 0, 0});
-		}		
+		std::tie(dpu_input_phy_addr[batch_idx], dpu_input_size) = input_tensor_buffers[0]->data_phy({batch_idx, 0, 0, 0});		
 	}
 
 	vector<vector<int8_t *>>result(batch);
@@ -384,27 +374,23 @@ void runYOLO(vart::Runner *runner, string baseImagePath, vector<string>images, i
 
 		exec_t1 = std::chrono::steady_clock::now();    
 
-		if(platform_name != "u200")
+		if(no_zcpy)
 		{
-			if(no_zcpy)
+			for (auto& input : input_tensor_buffers) 
 			{
-				for (auto& input : input_tensor_buffers) 
-				{
-					input->sync_for_write(0, input->get_tensor()->get_data_size() / input->get_tensor()->get_shape()[0]);
-				}
+				input->sync_for_write(0, input->get_tensor()->get_data_size() / input->get_tensor()->get_shape()[0]);
 			}
 		}
+		
 
 		auto job_id = runner->execute_async(input_tensor_buffers, output_tensor_buffers);
 		runner->wait((int)job_id.first, -1);
 
-		if(platform_name != "u200")
+		for (auto& output : output_tensor_buffers) 
 		{
-			for (auto& output : output_tensor_buffers) 
-			{
-				output->sync_for_read(0, output->get_tensor()->get_data_size() / output->get_tensor()->get_shape()[0]);
-			}
+			output->sync_for_read(0, output->get_tensor()->get_data_size() / output->get_tensor()->get_shape()[0]);
 		}
+		
 
 		exec_t2 = std::chrono::steady_clock::now();
 		auto execvalue_t1 = std::chrono::duration_cast<std::chrono::microseconds>(exec_t2 - exec_t1);
@@ -458,6 +444,7 @@ int main(const int argc, const char **argv)
 
 	vector<string> images;
 	auto graph = xir::Graph::deserialize(argv[1]);
+	auto attrs = xir::Attrs::create();
 	string baseImagePath = argv[2];
 	int sw_pp_flag = atoi(argv[3]);
 	int no_zcpy = atoi(argv[4]);
@@ -496,7 +483,10 @@ int main(const int argc, const char **argv)
 	CHECK_EQ(subgraph.size(), 1u)
 		<< "yolov3 should have one and only one dpu subgraph.";
 
-	auto runner = vart::Runner::create_runner(subgraph[0], "run");
+    if(!no_zcpy)
+		attrs->set_attr<bool>("zero_copy",true);
+
+	std::unique_ptr<vart::RunnerExt> runner = vart::RunnerExt::create_runner(subgraph[0], attrs.get());
 	// get in/out tenosrs
 	auto inputTensors = runner->get_input_tensors();
 	auto outputTensors = runner->get_output_tensors();

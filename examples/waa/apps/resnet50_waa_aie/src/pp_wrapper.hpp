@@ -89,18 +89,23 @@ int preprocess(AcceleratorHandle* preprocessor,cv::Mat image1, int img_ht, int i
 	{
 		auto tiles_sz = preprocessor->tiler->host2aie_nb(preprocessor->src_hndl1, image1.size(), preprocessor->params);
 
-		preprocessor->stitcher->aie2host_nb(preprocessor->dst_hndl, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
-		
+		if(no_zcpy)
+			preprocessor->stitcher->aie2host_nb(preprocessor->dst_hndl, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
+		else	
+			preprocessor->stitcher->aie2host_nb(dpu_input_buf_addr, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
+
 		in_image_data2 = image1.data;
 		memcpy(preprocessor->srcData2, in_image_data2,  in_image_size_in_bytes);
-		
 		ImgOddEvenFlag = 0;
 	}
 	else
 	{
 		auto tiles_sz = preprocessor->tiler->host2aie_nb(preprocessor->src_hndl2, image1.size(), preprocessor->params);
-
-		preprocessor->stitcher->aie2host_nb(preprocessor->dst_hndl, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
+		
+		if(no_zcpy)
+			preprocessor->stitcher->aie2host_nb(preprocessor->dst_hndl, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
+		else	
+			preprocessor->stitcher->aie2host_nb(dpu_input_buf_addr, cv::Size(IMAGE_HEIGHT_OUT,IMAGE_WIDTH_OUT), tiles_sz);
 
 		in_image_data1 = image1.data;
 		memcpy(preprocessor->srcData1, in_image_data1,  in_image_size_in_bytes);
@@ -111,10 +116,12 @@ int preprocess(AcceleratorHandle* preprocessor,cv::Mat image1, int img_ht, int i
 	preprocessor->tiler->wait();
 	
 	preprocessor->stitcher->wait();
-
-	int8_t *out_data =(int8_t *)dpu_input_buf_addr;
 	
-	std::memcpy(out_data, preprocessor->dstData, IMAGE_HEIGHT_OUT*IMAGE_WIDTH_OUT*3);
+	if(no_zcpy)
+	{
+		int8_t *out_data =(int8_t *)dpu_input_buf_addr;
+		std::memcpy(out_data, preprocessor->dstData, IMAGE_HEIGHT_OUT*IMAGE_WIDTH_OUT*3);
+	}
 	
 	return 0;
 }
@@ -146,11 +153,16 @@ AcceleratorHandle * pp_kernel_init(int out_ht, int out_wt, int no_zcpy)
 	xrtBufferHandle src_hndl2 = xrtBOAlloc(xF::gpDhdl, in_image_size_in_bytes, 0, xrtKernelArgGroupId(tiler_accel,2));
 	srcData2 = xrtBOMap(src_hndl2);
 	
-	void* dstData = nullptr;
-	xrtBufferHandle dst_hndl = xrtBOAlloc(xF::gpDhdl, out_image_size_in_bytes, 0, xrtKernelArgGroupId(stitcher_accel,2));
-	dstData = xrtBOMap(dst_hndl);
-	
 	auto accel_handle = new AcceleratorHandle();
+
+    if(no_zcpy)
+	{
+		void* dstData = nullptr;
+		xrtBufferHandle dst_hndl = xrtBOAlloc(xF::gpDhdl, out_image_size_in_bytes, 0, xrtKernelArgGroupId(stitcher_accel,2));
+		dstData = xrtBOMap(dst_hndl);
+		accel_handle->dst_hndl=dst_hndl;
+	    accel_handle->dstData=dstData;
+	}
 
 	float mean[4] = {104, 107, 123, 0};
 	float scale[4] = {0.5, 0.5, 0.5, 0}; 
@@ -194,8 +206,6 @@ AcceleratorHandle * pp_kernel_init(int out_ht, int out_wt, int no_zcpy)
 	accel_handle->src_hndl2=src_hndl2;
 	accel_handle->srcData1=srcData1;
 	accel_handle->srcData2=srcData2;
-	accel_handle->dst_hndl=dst_hndl;
-	accel_handle->dstData=dstData;
 	accel_handle->xrt_resize_norm_ghdl=xrt_resize_norm_ghdl;
 	accel_handle->params=params;
 	

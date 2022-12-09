@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_evaluation/build",
+  "command": "/usr/bin/c++  -DFallDetectionEvaluation_EXPORTS   -O3 -fPIC   -std=gnu++17 -o CMakeFiles/FallDetectionEvaluation.dir/AksFallDetectionEvaluation.cpp.o -c /workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_evaluation/AksFallDetectionEvaluation.cpp",
+  "file": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_evaluation/AksFallDetectionEvaluation.cpp"
+}
+]

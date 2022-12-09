@@ -90,7 +90,7 @@ all:
 	# cp -r ../../xvdpu_ip/aie             ../.
 	cp -rf ../pp_accel_include/*         ../aie/src/
 	mv ../aie/src/compile_ip.csh.221     ../aie/scripts/compile_ip.csh.221
-	mv ../aie/src/graph_comb.cc          ../aie/graph_comb.cc
+	cp ../aie/src/graph_comb.cc          ../aie/graph_comb.cc
 	cp -r ../../xvdpu_ip/rtl/hdl         ../xvdpu/.
 	cp -r ../../xvdpu_ip/rtl/vitis_cfg   ../xvdpu/.
 	cp -r ../../xvdpu_ip/rtl/inc         ../xvdpu/.

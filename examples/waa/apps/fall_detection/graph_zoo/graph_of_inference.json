@@ -1,0 +1,39 @@
+{
+  "graph_name": "of_inference",
+
+  "node_list": [
+    {
+      "node_name": "of_infer_preprocess",
+      "node_params": {
+        "OFClassificationPreProcess": {
+        }
+      },
+      "next_node": [ "of_infer_runner" ]
+    },
+
+    {
+      "node_name": "of_infer_runner",
+      "node_params": {
+        "DPURunner": {
+          "model_file" : "model/fall_detection.xmodel",
+          "num_runners": 2
+        }
+      },
+      "next_node": [ "calc_evaluation" ]
+    },
+
+    {
+      "node_name": "calc_evaluation",
+      "node_params": {
+        "FallDetectionEvaluation": {
+          "ground_truth" : "gt.txt",
+          "threshold": 0.5,
+          "default_label": 1,
+          "visualize": "output_infer_urfd"
+        }
+      },
+      "next_node": []
+    }
+  ],
+  "version": "0.1"
+}

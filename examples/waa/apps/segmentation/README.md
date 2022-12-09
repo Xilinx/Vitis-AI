@@ -12,13 +12,13 @@
 
 
 ## Introduction
-This application demonstrates the acceleration of pre-processing of image segmentation application.
+This application demonstrates the acceleration of pre-process and post-process of image segmentation application.
 
 ## Setting SD Card 
 
-* The xclbin including pre-processing accelerator and DPU is already built and packaged to create a sd_card.img file. Download the VCK190 SD card image file using the below link.
+* The xclbin including pre-process and post-process accelerator and DPU is already built and packaged to create a sd_card.img file. Download the VCK190 SD card image file using the below link.
 
-	[VCK190](https://www.xilinx.com/bin/public/openDownload?filename=segmentation_sd_card_2_5.tar.gz)
+	[VCK190](https://www.xilinx.com/bin/public/openDownload?filename=segmentation_sd_card.tar.gz)
  
   Please note that Xilinx account sign-in is required to download the above file.
 * Unzip the file and flash the .img file to SD card using tools like Etcher.
@@ -84,11 +84,6 @@ This application demonstrates the acceleration of pre-processing of image segmen
   ```
 * Copy the content of the WAA package to the SD card.
 
-## Download images
-
-* Download the images at https://cocodataset.org/#download or any other repositories and copy the images to ${VAI_HOME}/examples/Whole-App-Acceleration/apps/segmentation/images directory. In the following performance test we used COCO dataset.
-
-
 ## Running the Application
 
 * Copy the following contents of  `${VAI_HOME}/examples/Whole-App-Acceleration/apps/segmentation` directory to the BOOT partition of the SD Card.
@@ -102,12 +97,12 @@ This application demonstrates the acceleration of pre-processing of image segmen
 * Please insert SD_CARD on the vck190 board. After the linux boot, run:
 
     ```sh
-  ./segmentation <xmodel_path> <test_image_path> <number of threads (from 1 to 6)> <use_post_proc(1:yes, 0:no)> <preprocess_type(0:hw, 1:cpu)>
+  ./segmentation <xmodel_path> <test_image_path> <number of threads (from 1 to 6)> <post_process_type(0:hw, 1:cpu)> <preprocess_type(0:hw, 1:cpu)>
     ```
 ## Performance
 
-Below table shows the comparison of performance achieved by accelerating the pre-processing pipeline on FPGA.
-The performance numbers are achieved by running the application over 1000 images. Preprocess and dpu execution time has been considered for throughput calculation. 
+Below table shows the comparison of performance achieved by accelerating the pre-process and post-process pipeline on FPGA.
+The performance numbers are achieved by running the application over 500 FHD images.
 
 <table style="undefined;table-layout: fixed; width: 664px">
 <colgroup>
@@ -117,22 +112,35 @@ The performance numbers are achieved by running the application over 1000 images
 <col style="width: 134px">
 </colgroup>
   <tr>
-    <th rowspan="2">Device</th>
+    <th rowspan="2">Threads</th>
     <th colspan="2">Performance (FPS)</th>
     <th rowspan="2"><span style="font-weight:bold">Improvement</span></th>
   </tr>
   <tr>
-    <td>with software Pre-processing</td>
-    <td>with hardware Pre-processing</td>
+    <td>with software pre and post process</td>
+    <td>with hardware pre and post process</td>
   </tr>
 
   <tr>
-    <td>VCK190</td>
-    <td>25.10</td>
-    <td>50.67</td>
-    <td>101.87 %</td>
+    <td>1</td>
+    <td>2.6</td>
+    <td>5.59</td>
+    <td>115 %</td>
   </tr>
+    <td>2</td>
+    <td>4.92</td>
+    <td>6.6</td>
+    <td>34.14 %</td>
+  <tr>
+  <td>3</td>
+    <td>5.0</td>
+    <td>6.7</td>
+    <td>34 %</td>
+  </tr> 
+
+</table>
+
+:pushpin: **Note:** The above performance numbers doesn't consider the image read time and NPC1 is used in pre-process accelerator.
 
 
-
-
+:pushpin: **Note:** The performance numbers are computed using end-to-end latency and it depends on input image resolution. So performance numbers can vary with different images.

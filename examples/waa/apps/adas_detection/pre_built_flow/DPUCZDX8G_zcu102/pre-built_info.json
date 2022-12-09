@@ -1,0 +1,34 @@
+{
+	"PreImplementedComponents": {
+		"KernelAbs": "vitis_design_wrapper_pp_pipeline_abs.dcp",
+		"RouteKernelBB": "vitis_design_wrapper_routed_pp_pipeline_bb.dcp",
+		"Routed": "vitis_design_wrapper_postroute_physopt.dcp"
+	},
+	"Constraints": {
+		"Physical": "vitis_design_wrapper_physical_modified.xdc",
+		"PhysicalGolden": "vitis_design_wrapper_physical_golden.xdc",
+		"Pblock": "vitis_design_wrapper_physical_pblock.xdc",
+		"Timing": "vitis_design_wrapper_timing_golden.xdc",
+		"Build": "vitis_design_wrapper_physical_pblock_build.xdc"
+	},
+	"Design": {
+		"AccelModule": "vitis_design_i/blobfromimage_accel_1",
+		"Top": "vitis_design_wrapper",
+		"BD": "vitis_design.bd"
+	},
+	"Platform": {
+		"Part": "xczu9eg-ffvb1156-2-e",
+		"Board": "ZCU102_base",
+		"XPFM": "xilinx_zcu102_base_202210_1"
+	},
+	"Accel": {
+		"num_modules": "1",
+		"modules": "blobfromimage_accel_1"
+	},
+	"ML": {
+		"DPU": "DPUv2",
+		"NumberOfDPU": "1",
+		"Configuration": "DPUCZDX8G"
+	},
+	"Path": "."
+}

@@ -435,8 +435,7 @@ void runResnet50(vart::RunnerExt *runner, const xir::Subgraph *subgraph, int sw_
 			}
 
 		}
-		
-		
+			
 	}
 
 	if (!sw_pp_flag)
@@ -509,13 +508,6 @@ int main(int argc, char *argv[])
 	if(sw_pp_flag)
 		no_zcpy = 1;
     
-	if(no_zcpy==0 && sw_pp_flag==0)
-	{
-		std::cout<<"Zero copy in hardware preprocessing is not yet supported"<<std::endl;
-		std::cout<<"Running hardware preprocessing without zero copy"<<std::endl;
-	}
-	no_zcpy = 1;
-	
 	auto subgraph = get_dpu_subgraph(graph.get());
 	
 	CHECK_EQ(subgraph.size(), 1u)
@@ -524,7 +516,6 @@ int main(int argc, char *argv[])
 	
 	/*create runner*/
 	std::unique_ptr<vart::RunnerExt> runner = vart::RunnerExt::create_runner(subgraph[0], attrs.get());
-
 	/*run with batch*/
 	runResnet50(runner.get(), subgraph[0], sw_pp_flag, no_zcpy, baseImagePath, label_path, verbose);
 	return 0;

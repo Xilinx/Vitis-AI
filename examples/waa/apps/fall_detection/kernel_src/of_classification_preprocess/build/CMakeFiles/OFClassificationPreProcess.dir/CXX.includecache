@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_preprocess/AksOFClassificationPreProcess.cpp
+iostream
+-
+cmath
+-
+vector
+-
+assert.h
+-
+fstream
+-
+aks/AksKernelBase.h
+-
+aks/AksNodeParams.h
+-
+aks/AksLogger.h
+-
+aks/AksTensorBuffer.h
+-
+
