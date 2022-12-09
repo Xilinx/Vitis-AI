@@ -27,7 +27,7 @@ Users can get recipes of VAI3.0 by the following two ways.
 
 1. Copy `recipes-vitis-ai` folder to `<petalinux project>/project-spec/meta-user/`
 ```bash
-cp Vitis-AI/setup/petalinux/recipes-vitis-ai <petalinux project>/project-spec/meta-user/
+cp src/vai_petalinux_recipes/recipes-vitis-ai <petalinux project>/project-spec/meta-user/
 ```
 
 2. Edit `<petalinux project>/project-spec/meta-user/conf/user-rootfsconfig` file, appending the following lines:
@@ -51,7 +51,7 @@ Note the following:
 * If you want to compile the example on the target, please select the `vitis-ai-library-dev` and `packagegroup-petalinux-self-hosted`. Then, recompile the system.   
 * If you want to use vaitracer tool, please select the `vitis-ai-library-dbg`. And copy `recipes-vai-kernel` folder to `<petalinux project>/project-spec/meta-user/`. Then, recompile the system.   
 ```bash
-cp Vitis-AI/setup/petalinux/recipes-vai-kernel <petalinux project>/project-spec/meta-user/
+cp src/vai_petalinux_recipes/recipes-vai-kernel <petalinux project>/project-spec/meta-user/
 ```
 
 ## How to use `Upgrade PetaLinux esdk`
