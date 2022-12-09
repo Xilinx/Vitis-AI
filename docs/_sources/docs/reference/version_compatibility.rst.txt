@@ -1,3 +1,5 @@
+.. _version-compatibility:
+
 ===================================
 IP and Tool Version Compatibility
 ===================================

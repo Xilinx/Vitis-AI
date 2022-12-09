@@ -22,7 +22,7 @@ documentation for the :ref:`Vivado <vivado-integration>` and :ref:`Vitis <vitis-
 
 .. note:: Not captured in this image is the PetaLinux workflow. In the context of Xilinx |trade| pre-built target board images, the goal is to enable the developer without requiring that they modify Linux. An important exception to this is for developers who are customizing hardware IP and peripherals that reside within the memory space of the target CPU/APU and who wish to customize Linux. Also, in some circumstances, it is possible to directly install Vitis AI on the target without rebuilding the kernel image. Refer to :ref:`linux-dpu-recipes` for additional information.
 
-An example that illustrates how to quantize, compile, and deploy models on the Alveo |trade| U200 and U250 Data Center Accelerator Cards, is available `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/alveo>`__.
+An example that illustrates how to quantize, compile, and deploy models on the Alveo |trade| U200 and U250 Data Center Accelerator Cards, is available `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/alveo>`__.
 
 Embedded versus Data Center Workflows
 -------------------------------------
@@ -60,7 +60,7 @@ Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>`__ will offer an excell
 -  For more information on Vitis AI Libraries, refer to the *Vitis AI Library User Guide*
    (`UG1354 <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1354-xilinx-ai-sdk>`__).
 -  The Vitis AI Library quick start guide as well as open-source can be found
-   `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src>`__.
+   `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src>`__.
 
 Vitis AI Runtime
 ----------------
@@ -76,11 +76,9 @@ For more information on Vitis AI Runtime, refer to the following documentation:
 
 -  For the Vitis AI Runtime API reference, see `VART Programming APIs <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=erl1576053489624.html>`__ and `Deploying and Running the Model <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=zgy1576168058789.html>`__ in the Vitis AI User Guide.
 
--  A quick-start example to assist you in deploying VART on embedded devices is available `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Runtime/VART/quick_start_for_embedded.md>`__.
+-  A quick-start example to assist you in deploying VART on embedded devices is available `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_runtime/quick_start_for_embedded.md>`__.
 
--  A number of useful tools that any developer who is leveraging VART to deploy on a custom hardware target should be aware of is available `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Library/usefultools>`__.
-
--  The Vitis AI Runtime is also provided as `open-source <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src>`__.
+-  The Vitis AI Runtime is also provided as `open-source <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src>`__.
 
 .. _whole-application-acceleration:
 
@@ -95,7 +93,7 @@ In addition, many real-world applications for machine learning do not simply emp
 
 .. image:: reference/images/waa_cascade.PNG
 
-These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/waa>`__.
+These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/waa>`__.
 
 On a similar vein, you may wish to explore the relevance and capabilites of the `Xilinx Vitis Video Analytics (VVAS) SDK <https://xilinx.github.io/VVAS/>`__, which while not part of Vitis AI, offers many important features for the development of end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS is also applicable to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage `GStreamer <https://gstreamer.freedesktop.org/>`__ commands to interact with the video pipeline.
 
@@ -112,7 +110,7 @@ The Vitis AI Profiler is a component of the Vitis AI toolchain installed in the 
    section in the Vitis AI User Guide.
 
 -  Examples and additional detail for the Vitis AI Profiler can be found
-   `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/Vitis-AI-Profiler>`__.
+   `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/vai_profiler>`__.
 
 -  A tutorial that provides additional insights on the capabilites of
    the Vitis AI Profiler is available

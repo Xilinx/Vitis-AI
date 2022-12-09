@@ -25,10 +25,7 @@ Xilinx&reg; Vitis&trade; AI is an Integrated Development Environment that can be
 
 If your visit here is accidental, but you are enthusiastic to learn more about Vitis AI, please visit the Vitis AI [homepage](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html) on Xilinx.com
 
-Otherwise, if your visit is deliberate and you are ready to begin [visit](https://xilinx.github.io/Vitis-AI/) the Vitis AI documentation pages on Github.IO
-
-## Release Notes & Tool Version Compatibility  
-Please see version release notes and tool compatibility information [here](docsrc/source/docs/reference/release_notes.md)
+Otherwise, if your visit is deliberate and you are ready to begin **[VIEW the Vitis AI documentation pages on Github.IO](https://xilinx.github.io/Vitis-AI/)**
 
 ## How to Download the Repository
 

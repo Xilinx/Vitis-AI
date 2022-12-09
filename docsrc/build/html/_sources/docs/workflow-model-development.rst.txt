@@ -14,7 +14,7 @@ In the early phases of development, it is highly recommended that the developer 
 
 For more information on the Model Inspector, see the following resources:
 
--  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_pytorch/example/inspector_tutorial.ipynb>`__ and `TensorFlow <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_tensorflow2.x/#inspecting-vai_q_tensorflow2>`__.
+-  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/inspector_tutorial.ipynb>`__ and `TensorFlow <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2>`__.
 
 -  If you determine that your graph uses operators that are not natively supported by your specific DPU target, there are several paths that you can explore as discussed in the :ref:`Operator Support <operator-support>` section.
 
@@ -25,14 +25,16 @@ Operator Support
 
 If you want to leverage an operator that is not supported for acceleration on the DPU, there are several obvious paths available, including C/C++ code, or even custom HLS or RTL kernels. However, these DIY paths pose specific challenges related to the partitioning of a trained model. For most developers, a workflow that supports automated partitioning is preferred.
 
-.. important:: A high-level list of the supported operators is provided in the :doc:`reference/release_documentation`. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result of this is that the ordering of layers in the graph can be as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -> ReLU -> Batchnorm, the outcome is quite different from* `CONV -> Batchnorm -> ReLU <https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US>`__. In this context, it is always a very good idea to review the structure of similar Xilinx `Model Zoo <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/model_zoo>`__ models to understand how to design your graph for optimum results.
+.. important:: A high-level list of the supported operators is provided in the :doc:`reference/release_documentation`. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result of this is that the ordering of layers in the graph can be as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -> ReLU -> Batchnorm, the outcome is quite different from* `CONV -> Batchnorm -> ReLU <https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US>`__. In this context, it is always a very good idea to review the structure of similar Xilinx :doc:`Model Zoo<workflow-model-zoo>` models to understand how to design your graph for optimum results.
 
 For Zynq |reg| UltraScale+ |trade| MPSoC and Versal ACAP embedded applications, Xilinx supports an official flow which you can use to add support for these custom operators. More details can be found
-`here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/custom_operator>`__.
+`here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/custom_operator>`__.
 
-For Alveo |trade| cards, the `Whole Graph Optimizer <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/wego>`__ (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.
+For Alveo |trade| cards, the `Whole Graph Optimizer <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/wego>`__ (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.
 
-In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only) :doc:`<workflow-third-party>` may also be used to enable support for operations that cannot be accelerated by the DPU. It is important to note that these third party solutions should be considered to be of “beta” quality and offer more limited support than the standard Vitis AI workflow.
+In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only) :doc:`solutions <workflow-third-party>` may also be used to enable support for operations that cannot be accelerated by the DPU. It is important to note that these third party solutions should be considered to be of “beta” quality and offer more limited support than the standard Vitis AI workflow.
+
+.. _model_optimization:
 
 Model Optimization
 ------------------
@@ -64,7 +66,7 @@ Current Vitis AI DPUs can take advantage of channel pruning in order to greatly 
 
 The Vitis AI Optimizer is an optional component of the Vitis AI flow. In general it is possible to reduce the overall computational cost by a factor of more than 2x, and in some cases by a factor of 10x, with minimal losses in prediction accuracy. In many cases, there is actually an improvement in prediction accuracy during the first few iterations of pruning. While the fine-tuning step is in part responsible for this improvement, it is not the only explanation. Such accuracy improvements will not come as a surprise to developers who are familiar with the concept of overfitting, a phenomena that can occur when a large, deep, network is trained on a dataset that has a limited number of classes.
 
-Many of the pre-trained networks available in the Xilinx `Model Zoo <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/model_zoo>`__ were pruned using this technique.
+Many of the pre-trained networks available in the Xilinx :doc:`Model Zoo <workflow-model-zoo>` were pruned using this technique.
 
 Neural Architecture Search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,13 +76,13 @@ In addition to channel pruning, a technique coined “Once-for-All” training i
 NAS and AI Optimizer Related Resources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Sample scripts for channel pruning can be found in `examples <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/Vitis-AI-Optimizer>`__
+- Sample scripts for channel pruning can be found in `examples <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/vai_optimizer>`__
 
 - For additional details on channel pruning leveraging the Vitis AI Optimizer, refer to `Vitis AI Optimizer User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1333-ai-optimizer>`__. 
 
 - For information on Xilinx NAS / Once-for-All, refer to the Once-for-All (OFA) section in the `Vitis AI Optimizer User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1333-ai-optimizer>`__ .
 
-- Once-for-All examples can be found `here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/ofa>`__
+- Once-for-All examples can be found `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/ofa>`__
 
 An excellent overview of the advantages of OFA is available on the `Xilinx Developer website <https://www.xilinx.com/developer/articles/advantages-of-using-ofa.html>`__
 
@@ -104,7 +106,7 @@ With certain network topologies, the developer may experience excessive accuracy
 .. image:: reference/images/quant_workflow.PNG
 
 The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
-`open-source <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src>`__.
+`open-source <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src>`__.
 
 Quantization Related Resources
 ..............................
@@ -112,12 +114,12 @@ Quantization Related Resources
 - For additional details on the Vitis AI Quantizer,refer to Chapter 3 "Quantizing the Model" in the `Vitis AI User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai>`__.
 
 - TensorFlow 2.x examples are available as follows: 
-   - `TF2 Post-Training Quantization <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.rst>`__
-   - `TF2 Quantization Aware Training <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.rst>`__
+   - `TF2 Post-Training Quantization <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md>`__
+   - `TF2 Quantization Aware Training <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md>`__
 
 - PyTorch examples are available as follows:
-   - `PT Post-Training Quantization <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_pytorch/example/resnet18_quant.py>`__
-   - `PT Quantization Aware Training <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Quantizer/vai_q_pytorch/example/resnet18_qat.py>`__
+   - `PT Post-Training Quantization <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py>`__
+   - `PT Quantization Aware Training <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py>`__
 
 Model Compilation
 -----------------
@@ -141,7 +143,7 @@ Compiler Related Resources
 
 - For more information on Vitis AI Compiler and XIR refer to Chapter 4 in the `Vitis AI User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai>`__
 - PyXIR, which supports TVM and ONNXRuntime integration is available as `open source <https://github.com/Xilinx/pyxir>`__
-- XIR source code is released as a `component of VART <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Runtime/VART/xir>`__
+- XIR source code is released as a `component of VART <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_runtime/xir>`__
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

@@ -41,6 +41,8 @@ Installation Steps
 Option 1: Leverage the pre-built Docker
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+For the below, assume that ``<Vitis-AI install path>`` is the path into which you have cloned Vitis-AI.  ie: ``<Vitis-AI install path>`` contains the cloned repository root directory ``/Vitis-AI``.
+
 Note that this option *does not provide GPU acceleration support* which is **strongly recommend** for acceleration of the quantization process. The pre-built Docker should only be used when a GPU is not available on the host machine.
 
 To download the most up-to-date version of the pre-built docker, execute the following command:
@@ -61,7 +63,7 @@ You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   ../../docker_run.sh xilinx/vitis-ai-cpu:latest
+   <Vitis-AI install path>/Vitis-AI/docker_run.sh xilinx/vitis-ai-cpu:latest
 
 
 
@@ -80,11 +82,11 @@ We have also provided the CPU recipe should customization of the CPU-only Docker
 GPU Docker
 ..........
 
-Use the following commands to build the GPU docker. Adjust your path to the ``Vitis-AI/docker`` directory as necessary.
+Use the following commands to build the GPU docker. Adjust your path to ``<Vitis-AI install path>/Vitis-AI/docker`` directory as necessary.
 
 ::
 
-   cd ../../docker
+   cd <Vitis-AI install path>/Vitis-AI/docker
    ./docker_build_gpu.sh
 
 .. warning:: This process may take several hours to complete. It’s time to go off and get a coffee, tea, water or whatever suits your fancy. When you come back, assuming that the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.
@@ -93,6 +95,7 @@ You should now do an initial test of your GPU docker using the following command
 
 ::
 
+   sudo systemctl restart docker
    docker run hello-world
 
 This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.
@@ -107,7 +110,29 @@ This should result in an output similar to the below:
 
 ::
 
-   ----need to fill this in---
+/Thu Dec  8 21:39:42 2022       
+/+-----------------------------------------------------------------------------+
+/| NVIDIA-SMI 470.161.03   Driver Version: 470.161.03   CUDA Version: 11.4     |
+/|-------------------------------+----------------------+----------------------+
+/| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+/| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+/|                               |                      |               MIG M. |
+/|===============================+======================+======================|
+/|   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  N/A |
+/|  0%   40C    P8     1W / 120W |     15MiB /  5944MiB |      0%      Default |
+/|                               |                      |                  N/A |
+/+-------------------------------+----------------------+----------------------+
+/                                                                               
+/+-----------------------------------------------------------------------------+
+/| Processes:                                                                  |
+/|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+/|        ID   ID                                                   Usage      |
+/|=============================================================================|
+/+-----------------------------------------------------------------------------+
+
+
+
+
 
 .. note:: If GPU support was not enabled in your container, check your NVIDIA driver version and CUDA version described in :doc:`Host System Requirements <../reference/system_requirements>` and verify your installation of the NVIDIA Container Toolkit (:doc:`install_docker`). If you missed a step, you can simply rectify the problem and re-run ``docker_build_gpu.sh``.
 
@@ -115,24 +140,25 @@ You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   ../../docker_run.sh xilinx/vitis-ai-gpu:latest
+   ../docker_run.sh xilinx/vitis-ai-gpu:latest
 
-.. important:: Use ``./docker_run.sh`` as a code reference should you have customized requirements for launching your Docker container.
+.. important:: Use ``./docker_run.sh`` as a script reference should you have customized requirements for launching your Docker container.
 
 CPU Docker
 ...........
 
-Use the following commands to build the CPU docker. Adjust your path to the ``Vitis-AI/docker`` directory as necessary.
+Use the following commands to build the CPU docker. Adjust your path to the ``<Vitis-AI install path>/Vitis-AI/docker`` directory as necessary.
 
 ::
 
-   cd ../../docker
+   cd <Vitis-AI install path>/Vitis-AI/docker
    ./docker_build_cpu.sh
 
 A quick and simple test of docker can be accomplished by executing the following command:
 
 ::
 
+   sudo systemctl restart docker
    docker run hello-world
 
 This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.
@@ -141,7 +167,7 @@ You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   ../../docker_run.sh xilinx/vitis-ai-cpu:latest
+   ../docker_run.sh xilinx/vitis-ai-cpu:latest
 
 
 In most cases, you have now completed the installation. Congratulations!

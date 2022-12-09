@@ -1,3 +1,5 @@
+.. _workflow-model-zoo:
+
 ==========
 Model Zoo
 ==========

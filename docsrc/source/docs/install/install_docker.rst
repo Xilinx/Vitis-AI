@@ -30,7 +30,25 @@ The output should appear similar to this:
 
 ::
 
-   -Need to fill this in-
+/Thu Dec  8 21:39:42 2022       
+/+-----------------------------------------------------------------------------+
+/| NVIDIA-SMI 470.161.03   Driver Version: 470.161.03   CUDA Version: 11.4     |
+/|-------------------------------+----------------------+----------------------+
+/| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+/| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+/|                               |                      |               MIG M. |
+/|===============================+======================+======================|
+/|   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  N/A |
+/|  0%   40C    P8     1W / 120W |     15MiB /  5944MiB |      0%      Default |
+/|                               |                      |                  N/A |
+/+-------------------------------+----------------------+----------------------+
+/                                                                               
+/+-----------------------------------------------------------------------------+
+/| Processes:                                                                  |
+/|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+/|        ID   ID                                                   Usage      |
+/|=============================================================================|
+/+-----------------------------------------------------------------------------+
 
 Users should reference `Nvidia driver installation <https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html>`__ for further details of driver installation.
 

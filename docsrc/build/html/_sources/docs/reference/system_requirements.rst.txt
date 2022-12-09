@@ -35,10 +35,10 @@ The following table lists target boards that are supported natively by Vitis AI:
 Family                 Supported Target
 ====================== ==================================
 Alveo                  U50, U50LV, U200, U250, U280 cards
-Alveo 		           V70 (early access)
+Alveo 		           V70 `Early Access <https://www.xilinx.com/member/forms/registration/dpu-v70.html>`__ 
 Zynq UltraScale+ MPSoC ZCU102 and ZCU104 Boards
 Versal                 VCK190 and VCK5000 boards
-Versal AI Edge         VEK280 (early access)
+Versal AI Edge         VEK280 `Early Access <https://www.xilinx.com/member/forms/registration/dpu-vek280.html>`__
 Kria                   KV260
 ====================== ==================================
 

@@ -25,7 +25,7 @@ The `ONNX Runtime Execution Provider <https://onnxruntime.ai/docs/execution-prov
 
 Vitis AI Execution Provider support has been integrated as an `experimental flow <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/onnxruntime>`__ in recent releases.
 
-Additional details of the Vitis AI Execution Provider can be found `here <https://onnxruntime.ai/docs/execution-providers/Vitis-AI-ExecutionProvider.html>`__.
+Additional details of the Vitis AI Execution Provider can be found `here <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>`__.
 
 .. image:: ./reference/images/VAI_3rd_party_ONNXRuntime.PNG
 

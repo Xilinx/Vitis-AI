@@ -59,7 +59,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul class="current">
@@ -82,37 +82,37 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Model Deployment</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">System Integration</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-Party Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Integrating the DPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Release Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
@@ -122,7 +122,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequenty Asked Questions</a></li>
 </ul>
 
         </div>
@@ -187,6 +187,7 @@ function OptanonWrapper() { }
 </ul>
 <section id="option-1-leverage-the-pre-built-docker">
 <h3>Option 1: Leverage the pre-built Docker<a class="headerlink" href="#option-1-leverage-the-pre-built-docker" title="Permalink to this heading">¶</a></h3>
+<p>For the below, assume that <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;</span></code> is the path into which you have cloned Vitis-AI.  ie: <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;</span></code> contains the cloned repository root directory <code class="docutils literal notranslate"><span class="pre">/Vitis-AI</span></code>.</p>
 <p>Note that this option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommend</strong> for acceleration of the quantization process. The pre-built Docker should only be used when a GPU is not available on the host machine.</p>
 <p>To download the most up-to-date version of the pre-built docker, execute the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
@@ -198,7 +199,7 @@ function OptanonWrapper() { }
 </div>
 <p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
 <p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 </section>
@@ -215,8 +216,8 @@ function OptanonWrapper() { }
 </div>
 <section id="gpu-docker">
 <h4>GPU Docker<a class="headerlink" href="#gpu-docker" title="Permalink to this heading">¶</a></h4>
-<p>Use the following commands to build the GPU docker. Adjust your path to the <code class="docutils literal notranslate"><span class="pre">Vitis-AI/docker</span></code> directory as necessary.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">../../</span><span class="n">docker</span>
+<p>Use the following commands to build the GPU docker. Adjust your path to <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
 <span class="o">./</span><span class="n">docker_build_gpu</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
@@ -225,7 +226,8 @@ function OptanonWrapper() { }
 <p>This process may take several hours to complete. It’s time to go off and get a coffee, tea, water or whatever suits your fancy. When you come back, assuming that the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.</p>
 </div>
 <p>You should now do an initial test of your GPU docker using the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">docker</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
 </pre></div>
 </div>
 <p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
@@ -234,7 +236,25 @@ function OptanonWrapper() { }
 </pre></div>
 </div>
 <p>This should result in an output similar to the below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">----</span><span class="n">need</span> <span class="n">to</span> <span class="n">fill</span> <span class="n">this</span> <span class="ow">in</span><span class="o">---</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Thu</span> <span class="n">Dec</span>  <span class="mi">8</span> <span class="mi">21</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2022</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">470.161.03</span>   <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">470.161.03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">11.4</span>     <span class="o">|</span>
+<span class="o">/|-------------------------------+----------------------+----------------------+</span>
+<span class="o">/|</span> <span class="n">GPU</span>  <span class="n">Name</span>        <span class="n">Persistence</span><span class="o">-</span><span class="n">M</span><span class="o">|</span> <span class="n">Bus</span><span class="o">-</span><span class="n">Id</span>        <span class="n">Disp</span><span class="o">.</span><span class="n">A</span> <span class="o">|</span> <span class="n">Volatile</span> <span class="n">Uncorr</span><span class="o">.</span> <span class="n">ECC</span> <span class="o">|</span>
+<span class="o">/|</span> <span class="n">Fan</span>  <span class="n">Temp</span>  <span class="n">Perf</span>  <span class="n">Pwr</span><span class="p">:</span><span class="n">Usage</span><span class="o">/</span><span class="n">Cap</span><span class="o">|</span>         <span class="n">Memory</span><span class="o">-</span><span class="n">Usage</span> <span class="o">|</span> <span class="n">GPU</span><span class="o">-</span><span class="n">Util</span>  <span class="n">Compute</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>               <span class="n">MIG</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|===============================+======================+======================|</span>
+<span class="o">/|</span>   <span class="mi">0</span>  <span class="n">NVIDIA</span> <span class="n">GeForce</span> <span class="o">...</span>  <span class="n">Off</span>  <span class="o">|</span> <span class="mi">00000000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="n">Off</span> <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/|</span>  <span class="mi">0</span><span class="o">%</span>   <span class="mi">40</span><span class="n">C</span>    <span class="n">P8</span>     <span class="mi">1</span><span class="n">W</span> <span class="o">/</span> <span class="mi">120</span><span class="n">W</span> <span class="o">|</span>     <span class="mi">15</span><span class="n">MiB</span> <span class="o">/</span>  <span class="mi">5944</span><span class="n">MiB</span> <span class="o">|</span>      <span class="mi">0</span><span class="o">%</span>      <span class="n">Default</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/+-------------------------------+----------------------+----------------------+</span>
+<span class="o">/</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">Processes</span><span class="p">:</span>                                                                  <span class="o">|</span>
+<span class="o">/|</span>  <span class="n">GPU</span>   <span class="n">GI</span>   <span class="n">CI</span>        <span class="n">PID</span>   <span class="n">Type</span>   <span class="n">Process</span> <span class="n">name</span>                  <span class="n">GPU</span> <span class="n">Memory</span> <span class="o">|</span>
+<span class="o">/|</span>        <span class="n">ID</span>   <span class="n">ID</span>                                                   <span class="n">Usage</span>      <span class="o">|</span>
+<span class="o">/|=============================================================================|</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -242,28 +262,29 @@ function OptanonWrapper() { }
 <p>If GPU support was not enabled in your container, check your NVIDIA driver version and CUDA version described in <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> and verify your installation of the NVIDIA Container Toolkit (<a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a>). If you missed a step, you can simply rectify the problem and re-run <code class="docutils literal notranslate"><span class="pre">docker_build_gpu.sh</span></code>.</p>
 </div>
 <p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">gpu</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">gpu</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">./docker_run.sh</span></code> as a code reference should you have customized requirements for launching your Docker container.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">./docker_run.sh</span></code> as a script reference should you have customized requirements for launching your Docker container.</p>
 </div>
 </section>
 <section id="cpu-docker">
 <h4>CPU Docker<a class="headerlink" href="#cpu-docker" title="Permalink to this heading">¶</a></h4>
-<p>Use the following commands to build the CPU docker. Adjust your path to the <code class="docutils literal notranslate"><span class="pre">Vitis-AI/docker</span></code> directory as necessary.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">../../</span><span class="n">docker</span>
+<p>Use the following commands to build the CPU docker. Adjust your path to the <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
 <span class="o">./</span><span class="n">docker_build_cpu</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>A quick and simple test of docker can be accomplished by executing the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">docker</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
 </pre></div>
 </div>
 <p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
 <p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 <p>In most cases, you have now completed the installation. Congratulations!</p>

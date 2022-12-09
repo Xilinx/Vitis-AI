@@ -79,7 +79,7 @@ These instructions walk you as a user through the process of downloading a pre-b
 
 In addition, developers having access to suitable available hardware platforms can experience pre-built demonstrations that are made are available for download via the `Vitis AI Developer page <https://www.xilinx.com/developer/products/vitis-ai.html#demos>`__. You can also contact your local FAE to arrange a live demonstration of the same.
 
-Last but not least, embedded in the Vitis AI Github repo, there are a few new demonstrations for NLP and Vision Transformer models and RNN DPU implementations. You can access the `transformer demos here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/demos/transformer>`__ and the `RNN demos here <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/demos/rnn>`__
+Last but not least, embedded in the Vitis AI Github repo, there are a few new demonstrations for NLP and Vision Transformer models and RNN DPU implementations. You can access the `transformer demos here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/demos/transformer>`__ and the `RNN demos here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/demos/rnn>`__
 
 Once your “test drive” of the hardware platform is complete, we would recommend that you review the remainder of this documentation in its entirety in order to become more familiar with the components of Vitis AI.
 

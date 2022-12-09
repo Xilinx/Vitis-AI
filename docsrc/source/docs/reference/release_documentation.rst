@@ -13,10 +13,10 @@ Release Documentation
      - Describes the Vitis™ AI Development Kit, a full-stack deep learning SDK for the Deep-learning Processor Unit (DPU).
 
    * - `Vitis AI Optimizer User Guide (UG1333) <https://docs.xilinx.com/r/en-US/ug1333-ai-optimizer>`__
-     - Provides the ability to optimize neural network models.
+     - Describes the process of leveraging the Vitis AI Optimizer to prune neural networks for deployment.
 
    * - `Vitis AI Library User Guide (UG1354) <https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk>`__
-     - Provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks.
+     - Documents libraries that simplify and enhance the deployment of models in Vitis AI.
 
 
 .. list-table:: DPU IP Product Guides

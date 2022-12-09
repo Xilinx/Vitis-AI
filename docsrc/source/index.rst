@@ -55,7 +55,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Notes
    :hidden:
 
-   Release Notes <docs/reference/release_notes_3.0>
+   This release <docs/reference/release_notes_3.0>
 
 .. toctree::
    :maxdepth: 3
@@ -71,58 +71,58 @@ Vitis AI is composed of the following key components:
    :caption: Model Development 
    :hidden:
 
-   Model Development <docs/workflow-model-development>
+   Developing a NN model for Vitis AI <docs/workflow-model-development>
 
 .. toctree::
    :maxdepth: 3
    :caption: Model Deployment 
    :hidden:
 
-   Model Deployment <docs/workflow-model-deployment>
-
-.. toctree::
-   :maxdepth: 3
-   :caption: System Integration
-   :hidden:
-
-   System Integration <docs/workflow-system-integration>
-
-.. toctree::
-   :maxdepth: 3
-   :caption: Third-Party Tools
-   :hidden:
-
-   Third-Party Tools <docs/workflow-third-party>
+   Deploying a NN model with Vitis AI <docs/workflow-model-deployment>
 
 .. toctree::
    :maxdepth: 3
    :caption: Model Zoo
    :hidden:
 
-   Model Zoo <docs/workflow-model-zoo>
+   Pre-trained, Optimized models <docs/workflow-model-zoo>
+
+.. toctree::
+   :maxdepth: 3
+   :caption: System Integration
+   :hidden:
+
+   Integrating the DPU <docs/workflow-system-integration>
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Third-Party Tools
+   :hidden:
+
+   TVM, TensorFlow Lite, ONNX Runtime <docs/workflow-third-party>
 
 .. toctree::
    :maxdepth: 3
    :caption: Release Documentation
    :hidden:
 
-   Release Documentation <docs/reference/release_documentation>
+   Links to formal Vitis AI Documents <docs/reference/release_documentation>
 
 .. toctree::
    :maxdepth: 3
    :caption: Vitis AI Tutorials
    :hidden:
 
-   Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>
+   Vitis AI Developer Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>
 
 .. toctree::
    :maxdepth: 3
-   :caption: Related Tools
+   :caption: Related Solutions
    :hidden:
    
-   Inference Server <https://xilinx.github.io/inference-server/>
+   AMD Inference Server <https://xilinx.github.io/inference-server/>
    Vitis Video Analytics SDK <https://xilinx.github.io/VVAS/>
-   FINN / Brevitas <https://xilinx.github.io/finn/>
+   FINN & Brevitas <https://xilinx.github.io/finn/>
    DPU-PYNQ <https://github.com/Xilinx/DPU-PYNQ>
 
 .. toctree::
@@ -137,5 +137,5 @@ Vitis AI is composed of the following key components:
    :caption: FAQ
    :hidden:
 
-   FAQ <docs/reference/faq>
+   Frequenty Asked Questions <docs/reference/faq>
 

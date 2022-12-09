@@ -30,8 +30,8 @@ function OptanonWrapper() { }
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Release Documentation" href="reference/release_documentation.html" />
-    <link rel="prev" title="Third-party Inference Stack Integration" href="workflow-third-party.html" /> 
+    <link rel="next" title="Toolchain Integration" href="workflow-system-integration.html" />
+    <link rel="prev" title="Deploying a Model" href="workflow-model-deployment.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,7 +59,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -69,37 +69,37 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Model Deployment</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">System Integration</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-Party Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Model Zoo</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pre-trained, Optimized models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Release Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
@@ -109,7 +109,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequenty Asked Questions</a></li>
 </ul>
 
         </div>
@@ -137,11 +137,11 @@ function OptanonWrapper() { }
            <div itemprop="articleBody">
              
   <section id="model-zoo">
-<h1>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h1>
+<span id="workflow-model-zoo"></span><h1>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h1>
 <p>The Vitis™ AI Model Zoo is a diverse set of pre-trained models that can be used for reference for development of your own model, or which can potentially be deployed directly in your application. You can learn more about the Vitis AI Model Zoo
 <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/model_zoo">here</a>.</p>
 <p>To make the job of understanding the Model Zoo a little easier, we have provided a downloadable spreadsheet that incorporates key data about the Model Zoo models. You can download that spreadsheet <code class="xref download docutils literal notranslate"><span class="pre">&lt;/reference/ModelZoo_VAI2.5_Github.xlsx&gt;</span></code>.</p>
-<p>You can also view the table <a class="reference internal" href="workflow_modelzoo_table.html"><span class="doc">Model Zoo Table</span></a>.</p>
+<p>You can also view the table <span class="xref std std-doc">workflow_modelzoo_table</span>.</p>
 </section>
 
 
@@ -158,8 +158,8 @@ function OptanonWrapper() { }
                   </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="workflow-third-party.html" class="btn btn-neutral float-left" title="Third-party Inference Stack Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reference/release_documentation.html" class="btn btn-neutral float-right" title="Release Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="workflow-model-deployment.html" class="btn btn-neutral float-left" title="Deploying a Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-system-integration.html" class="btn btn-neutral float-right" title="Toolchain Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

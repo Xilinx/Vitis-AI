@@ -66,10 +66,11 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
       cd ~/dpu_sw_optimize/zynqmp/  
       ./zynqmp_dpu_optimize.sh
 
-3. (Optional) How to install the Vitis AI for PetaLinux 2022.2
+3. (Optional) How to leverage Vitis AI with PetaLinux 2022.2
+
    There are two ways to install the dependent libraries of Vitis AI.
 
-   One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis AI online via ``dnf``.
+   One is to rebuild the system by configuring PetaLinux and the other is to install Vitis AI online via ``dnf``.
 
    -  Build-Time
 
@@ -91,7 +92,7 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
          scp -r board_setup/mpsoc root@IP_OF_BOARD:~/
 
    -  Log in to the board using ssh. You can also use the serial port to login.
-   -  Install the Vitis AI Runtime. Execute the following command.
+   -  Now, you should install the Vitis AI Runtime. Execute the following commands:
 
       ::
 		
@@ -108,13 +109,13 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
         cd /workspace
         wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 		   
-   -  Copy the downloaded file to the board using scp with the following command.
+   -  Copy the downloadeded file to the board using scp with the following command:
 
       ::
 
          scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 
-   -  Log in to the board (using ssh or serial port) and install the model package.
+   -  Log in to the board (using ssh or serial port) and install the model package:
 
       ::
 

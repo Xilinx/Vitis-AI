@@ -54,8 +54,7 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
    **For the details, please refer to** `Setting Up the Evaluation
    Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__
 
-2. (Optional) How to install Vitis AI for PetaLinux 2022.2.
-
+2. (Optional) How to install the Vitis AI for PetaLinux 2022.2
    There are two ways to install the dependent libraries of Vitis AI.
      
    One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via ``dnf``.
@@ -118,8 +117,7 @@ Follow `Running Vitis AI Examples <board_setup_mpsoc.html#step-3-run-the-vitis-a
 References
 ----------
 
--  `Vitis AI User
-   Guide <https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html>`__
+-  `Vitis AI User Guide <https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html>`__
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

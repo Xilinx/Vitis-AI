@@ -31,7 +31,7 @@ function OptanonWrapper() { }
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Third-party Inference Stack Integration" href="workflow-third-party.html" />
-    <link rel="prev" title="Deploying a Model" href="workflow-model-deployment.html" /> 
+    <link rel="prev" title="Model Zoo" href="workflow-model-zoo.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,7 +59,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -69,15 +69,19 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Model Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">System Integration</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Integrating the DPU</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#vitis-integration">Vitis Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#vivado-integration">Vivado Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#linux-dpu-recipes">Linux DPU Recipes</a></li>
@@ -87,25 +91,21 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-Party Tools</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Release Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
@@ -115,7 +115,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequenty Asked Questions</a></li>
 </ul>
 
         </div>
@@ -148,24 +148,24 @@ function OptanonWrapper() { }
 <span id="id1"></span><h2>Vitis Integration<a class="headerlink" href="#vitis-integration" title="Permalink to this heading">¶</a></h2>
 <p>The Vitis™ workflow specifically targets developers who wish to take a very software-centric approach to Xilinx SoC system development. Vitis AI is differentiated from traditional FPGA flows enabling you to build FPGA acceleration into your applications without the need to develop RTL kernels.</p>
 <p>The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an xclbin
-file. To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/dpu">reference designs</a> for the different DPU architectures and target platforms.</p>
+file. To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/dpu">reference designs</a> for the different DPU architectures and target platforms.</p>
 <p>In addition, within the Vitis Tutorials, a tutorial is available which provides the <a class="reference external" href="https://github.com/Xilinx/Vitis-Tutorials/tree/2022.1/Vitis_Platform_Creation/Design_Tutorials/02-Edge-AI-ZCU104">end-to-end workflow</a> for creating a Vitis Platform for ZCU104 targets.</p>
 </section>
 <section id="vivado-integration">
 <span id="id2"></span><h2>Vivado Integration<a class="headerlink" href="#vivado-integration" title="Permalink to this heading">¶</a></h2>
-<p>The Vivado® workflow targets traditional FPGA developers. It is important to note that the DPU IP is not currently integrated into the Vivado IP catalog. Currently, in order to update support the latest operators and network topologies at the time of Vitis AI release, the IP is released asynchronously as a <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/dpu">reference design and IP repository</a>.</p>
+<p>The Vivado® workflow targets traditional FPGA developers. It is important to note that the DPU IP is not currently integrated into the Vivado IP catalog. Currently, in order to update support the latest operators and network topologies at the time of Vitis AI release, the IP is released asynchronously as a <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/dpu">reference design and IP repository</a>.</p>
 <p>For more information, refer to the following resources:</p>
 <ul class="simple">
-<li><p>To integrate the DPU in a Vivado design, see this <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/Vitis-AI-Tutorials/tree/2.5/Tutorials/DPU_IP_Vivado_Vitis_AI">tutorial</a>.</p></li>
-<li><p>A quick-start example that assists you in deploying VART on Embedded targets is available <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Runtime/VART/quick_start_for_embedded.md">here</a>.</p></li>
+<li><p>To integrate the DPU in a Vivado design, see this <a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials/blob/2.0/Tutorials/Vitis-AI-Vivado-TRD/">tutorial</a>.</p></li>
+<li><p>A quick-start example that assists you in deploying VART on Embedded targets is available <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/blob/vai3.0_update/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
 </ul>
 </section>
 <section id="linux-dpu-recipes">
 <span id="id3"></span><h2>Linux DPU Recipes<a class="headerlink" href="#linux-dpu-recipes" title="Permalink to this heading">¶</a></h2>
-<p>Yocto and PetaLinux users will require bitbake recipes for the Vitis AI components that are compiled for the target. These recipes are provided in the <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/petalinux_recipes">source code folder</a>.</p>
+<p>Yocto and PetaLinux users will require bitbake recipes for the Vitis AI components that are compiled for the target. These recipes are provided in the <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/petalinux_recipes">source code folder</a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>For Vitis AI releases &gt;= v2.0, Vivado users (Zynq® Ultrascale+™ and Kria™ applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo™ and Versal® designs must include XRT. By default, the Vitis AI Docker images* <a class="reference external" href="../docker/docker_build_gpu.sh#L40">include XRT</a>. In addition, the Linux bitbake recipe for VART <a class="reference external" href="../setup/petalinux/recipes-vitis-ai/vart/vart_2.5.bb#L10">assumes</a> by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must comment out the line <code class="docutils literal notranslate"><span class="pre">PACKAGECONFIG:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">vitis&quot;</span></code> in the bitbake recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.</p>
+<p>For Vitis AI releases &gt;= v2.0, Vivado users (Zynq® Ultrascale+™ and Kria™ applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo™ and Versal® designs must include XRT. By default, the Vitis AI Docker images* <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/docker/docker_build_gpu.sh#L40">include XRT</a>. In addition, the Linux bitbake recipe for VART <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/blob/vai3.0_update/src/petalinux_recipes/recipes-vitis-ai/vart/vart_2.5.bb#L10">assumes</a> by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must comment out the line <code class="docutils literal notranslate"><span class="pre">PACKAGECONFIG:append</span> <span class="pre">=</span> <span class="pre">&quot;</span> <span class="pre">vitis&quot;</span></code> in the bitbake recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.</p>
 </div>
 </section>
 <section id="whole-application-acceleration">
@@ -176,7 +176,7 @@ file. To provide developers with a reference platform that can be used as a star
 (Region-of-Interest) predictions are cropped from the the associated frame. Each of these cropped sub-frame images are then scaled such that the X/Y dimensions of the crop match the input layer dimensions of the downstream network. Some pipelines, such as ReID, will localize, crop, and scale ten or more ROIs from every frame. Each of these crops may require a different scaling factor in order to match the input dimensions of the downstream model in the pipeline. Below is an example:</p>
 <img alt="../_images/waa_cascade.PNG" src="../_images/waa_cascade.PNG" />
 <p>These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end
-application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/waa">here</a>.</p>
+application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/waa">here</a>.</p>
 <p>On a similar vein, if you wish to explore the relevance and capabilites of the <a class="reference external" href="https://xilinx.github.io/VVAS/">Xilinx Vitis Video Analytics (VVAS)
 SDK</a>, which while not part of Vitis AI, offers many important features for the development of end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS is also applicable to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage <a class="reference external" href="https://gstreamer.freedesktop.org/">GStreamer</a> commands to interact with the video pipeline.</p>
 </section>
@@ -196,7 +196,7 @@ SDK</a>, which while not part of Vitis AI, offers many important features for th
                   </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="workflow-model-deployment.html" class="btn btn-neutral float-left" title="Deploying a Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-zoo.html" class="btn btn-neutral float-left" title="Model Zoo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="workflow-third-party.html" class="btn btn-neutral float-right" title="Third-party Inference Stack Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

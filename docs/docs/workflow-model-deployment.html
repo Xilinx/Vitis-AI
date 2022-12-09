@@ -30,7 +30,7 @@ function OptanonWrapper() { }
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Toolchain Integration" href="workflow-system-integration.html" />
+    <link rel="next" title="Model Zoo" href="workflow-model-zoo.html" />
     <link rel="prev" title="Developing a Model" href="workflow-model-development.html" /> 
 </head>
 
@@ -59,7 +59,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -69,11 +69,11 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Model Deployment</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deploying a NN model with Vitis AI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#workflow-for-deploying-a-model">Workflow for Deploying a Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#embedded-versus-data-center-workflows">Embedded versus Data Center Workflows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#vitis-ai-library">Vitis AI Library</a></li>
@@ -83,31 +83,31 @@ function OptanonWrapper() { }
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">System Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-Party Tools</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Release Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Related Tools</span></p>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN / Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
@@ -117,7 +117,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequenty Asked Questions</a></li>
 </ul>
 
         </div>
@@ -160,7 +160,7 @@ documentation for the <a class="reference internal" href="workflow-system-integr
 <p class="admonition-title">Note</p>
 <p>Not captured in this image is the PetaLinux workflow. In the context of Xilinx™ pre-built target board images, the goal is to enable the developer without requiring that they modify Linux. An important exception to this is for developers who are customizing hardware IP and peripherals that reside within the memory space of the target CPU/APU and who wish to customize Linux. Also, in some circumstances, it is possible to directly install Vitis AI on the target without rebuilding the kernel image. Refer to <a class="reference internal" href="workflow-system-integration.html#linux-dpu-recipes"><span class="std std-ref">Linux DPU Recipes</span></a> for additional information.</p>
 </div>
-<p>An example that illustrates how to quantize, compile, and deploy models on the Alveo™ U200 and U250 Data Center Accelerator Cards, is available <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/alveo">here</a>.</p>
+<p>An example that illustrates how to quantize, compile, and deploy models on the Alveo™ U200 and U250 Data Center Accelerator Cards, is available <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/alveo">here</a>.</p>
 </section>
 <section id="embedded-versus-data-center-workflows">
 <h2>Embedded versus Data Center Workflows<a class="headerlink" href="#embedded-versus-data-center-workflows" title="Permalink to this heading">¶</a></h2>
@@ -192,7 +192,7 @@ Tutorials</a> will offer an excellent starting point.</p>
 <li><p>For more information on Vitis AI Libraries, refer to the <em>Vitis AI Library User Guide</em>
 (<a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1354-xilinx-ai-sdk">UG1354</a>).</p></li>
 <li><p>The Vitis AI Library quick start guide as well as open-source can be found
-<a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src">here</a>.</p></li>
+<a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">here</a>.</p></li>
 </ul>
 </section>
 <section id="vitis-ai-runtime">
@@ -207,9 +207,8 @@ Tutorials</a> will offer an excellent starting point.</p>
 <p>For more information on Vitis AI Runtime, refer to the following documentation:</p>
 <ul class="simple">
 <li><p>For the Vitis AI Runtime API reference, see <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=erl1576053489624.html">VART Programming APIs</a> and <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=zgy1576168058789.html">Deploying and Running the Model</a> in the Vitis AI User Guide.</p></li>
-<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Runtime/VART/quick_start_for_embedded.md">here</a>.</p></li>
-<li><p>A number of useful tools that any developer who is leveraging VART to deploy on a custom hardware target should be aware of is available <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src/Vitis-AI-Library/usefultools">here</a>.</p></li>
-<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/src">open-source</a>.</p></li>
+<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
+<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">open-source</a>.</p></li>
 </ul>
 </section>
 <section id="whole-application-acceleration">
@@ -218,7 +217,7 @@ Tutorials</a> will offer an excellent starting point.</p>
 <img alt="../_images/waa_preprocess.PNG" src="../_images/waa_preprocess.PNG" />
 <p>In addition, many real-world applications for machine learning do not simply employ a single machine learning model. It is very common to cascade multiple object detection networks as a pre-cursor to a final stage (for example, classification, OCR). Throughout this pipeline the meta data must be time-stamped or otherwise attached to the buffer address of the associated frame. Pixels bounded by ROI (Region-of-Interest) predictions are cropped from the the associated frame. Each of these cropped sub-frame images are then scaled such that the X/Y dimensions of the crop match the input layer dimensions of the downstream network. Some pipelines, such as ReID, will localize, crop and scale ten or more ROIs from every frame. Each of these crops may require a different scaling factor in order to match the input dimensions of the downstream model in the pipeline. The following is an example:</p>
 <img alt="../_images/waa_cascade.PNG" src="../_images/waa_cascade.PNG" />
-<p>These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/waa">here</a>.</p>
+<p>These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/waa">here</a>.</p>
 <p>On a similar vein, you may wish to explore the relevance and capabilites of the <a class="reference external" href="https://xilinx.github.io/VVAS/">Xilinx Vitis Video Analytics (VVAS) SDK</a>, which while not part of Vitis AI, offers many important features for the development of end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS is also applicable to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage <a class="reference external" href="https://gstreamer.freedesktop.org/">GStreamer</a> commands to interact with the video pipeline.</p>
 </section>
 <section id="vitis-ai-profiler">
@@ -231,7 +230,7 @@ Embedded targets with the Vitis AI Runtime. In a typical machine learning pipeli
 Model</a>
 section in the Vitis AI User Guide.</p></li>
 <li><p>Examples and additional detail for the Vitis AI Profiler can be found
-<a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/examples/Vitis-AI-Profiler">here</a>.</p></li>
+<a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/vai_profiler">here</a>.</p></li>
 <li><p>A tutorial that provides additional insights on the capabilites of
 the Vitis AI Profiler is available
 <a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials/blob/1.4/Design_Tutorials/16-profiler_introduction/README.md">here</a>.</p></li>
@@ -254,7 +253,7 @@ the Vitis AI Profiler is available
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="workflow-model-development.html" class="btn btn-neutral float-left" title="Developing a Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="workflow-system-integration.html" class="btn btn-neutral float-right" title="Toolchain Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="workflow-model-zoo.html" class="btn btn-neutral float-right" title="Model Zoo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
