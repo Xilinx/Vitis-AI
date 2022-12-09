@@ -3,11 +3,15 @@ DESCRIPTION = "Xilinx Vitis AI components - a wrapper for glog. Define unified l
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-SRC_URI += "file://0001-fix-python-path-for-petalinux.patch"
+BRANCH = "3.0"
+SRC_URI = "git://gitenterprise.xilinx.com/VitisAI/unilog.git;protocol=https;branch=${BRANCH} \
+	file://0001-fix-python-path-for-petalinux.patch \
+"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-S = "${WORKDIR}/git/src/Vitis-AI-Runtime/VART/unilog"
+SRCREV = "476ce6ad48e3b8669c9131e4996d1fb827b8247a"
+S = "${WORKDIR}/git"
 
 DEPENDS = "glog boost"
 

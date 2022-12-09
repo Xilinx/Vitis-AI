@@ -3,7 +3,12 @@ DESCRIPTION = "A factory to manage DPU target description infos. Register target
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-S = "${WORKDIR}/git/src/Vitis-AI-Runtime/VART/target_factory"
+BRANCH = "3.0"
+SRC_URI = "git://gitenterprise.xilinx.com/VitisAI/target_factory.git;protocol=https;branch=${BRANCH}"
+
+SRCREV = "c787d60164549b08512affc5179ba4e4f173996e"
+
+S = "${WORKDIR}/git"
 
 DEPENDS = "unilog protobuf-native protobuf-c"
 
@@ -12,7 +17,7 @@ PACKAGECONFIG[python] = ",,,"
 
 inherit cmake
 
-EXTRA_OECMAKE += "-DCMAKE_BUILD_TYPE=Release"
+EXTRA_OECMAKE += "-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON"
 
 # target-factory contains only one shared lib and will therefore become subject to renaming
 # by debian.bbclass. Prevent renaming in order to keep the package name consistent 

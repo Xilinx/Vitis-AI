@@ -3,7 +3,13 @@ DESCRIPTION = "Runner is an application level runtime interface for DPU IPs base
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-S = "${WORKDIR}/git/src/Vitis-AI-Runtime/VART/vart"
+BRANCH = "3.0"
+SRC_URI = "git://gitenterprise.xilinx.com/VitisAI/vart.git;protocol=https;branch=${BRANCH} \
+"
+
+SRCREV = "46cce019c4fed37ef73f9c97000cac1bbaf1bd7d"
+
+S = "${WORKDIR}/git"
 
 DEPENDS = "json-c xir target-factory"
 
@@ -16,7 +22,7 @@ PACKAGECONFIG[vitis] = ",,xrt,"
 
 inherit cmake python3-dir
 
-EXTRA_OECMAKE += "-DENABLE_CPU_RUNNER=OFF -DENABLE_SIM_RUNNER=OFF -DENABLE_DPU_RUNNER=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSROOT=${STAGING_DIR_HOST}"
+EXTRA_OECMAKE += " -DBUILD_SHARED_LIBS=ON -DENABLE_CPU_RUNNER=OFF -DENABLE_SIM_RUNNER=OFF -DENABLE_DPU_RUNNER=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSROOT=${STAGING_DIR_HOST}"
 
 do_configure:prepend() {
 
