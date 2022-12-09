@@ -22,7 +22,7 @@ This repository provides access to optimized deep learning models that can be us
 The following tables include comprehensive information about all models, including application, framework, input size, computational cost as well as float and quantized accuracy.
 
 ****************
-🖇️**Tip!**  *If you would like to download a local, sortable version of the master Vitis AI Model Zoo table which provides links to the original papers and datasets, you can do so [here](ModelZoo_VAI2.5_Github.xlsx)*
+🖇️**Tip!**  *If you would like to download a local, sortable version of the master Vitis AI Model Zoo table which provides links to the original papers and datasets, you can do so [here](ModelZoo_VAI3.0_Github.xlsx)*
 ****************
 
 ### Model File Nomenclature Decoder
@@ -364,7 +364,7 @@ For recurrent neural network models for applications such as NLP, please refer t
 Finally, for Transformer demos such as ViT and BERT-base you should refer to the [Transformer](https://github.com/Xilinx/Vitis-AI/tree/master/examples/Transformer) example documentation.
 
 ******************
-📌**Note:** Unless otherwise specified, model performance benchmarks listed in the following tables were verified with v2.5 of Vitis AI and the Vitis AI Libraries. Note that different target platforms leverage different DPU architectures.  In each case, the specific details of the DPU used for benchmarking are provided.
+📌**Note:** Unless otherwise specified, model performance benchmarks listed in the following tables were verified with v3.0 of Vitis AI and the Vitis AI Libraries. Note that different target platforms leverage different DPU architectures.  In each case, the specific details of the DPU used for benchmarking are provided.
 ******************
 
 ### Performance on ZCU102 (0432055-05)
