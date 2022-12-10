@@ -57,7 +57,7 @@ case $1 in
   DPUCVDX8H_8pe_normal | dpuv4e-8pe-normal)
     if [ "${platform}" = "vck5000_" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/8PE
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/8PE/dpu_DPUCVDX8H_8PE_350M_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/8PE/dpu_DPUCVDX8H_8PE_350M_xilinx_vck5000_gen4x8_qdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=
@@ -67,7 +67,7 @@ case $1 in
   DPUCVDX8H_6pe_dwc | dpuv4e-6pe-dwc)
     if [ "${platform}" = "vck5000_" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieDWC
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieDWC/dpu_DPUCVDX8H_6PE_aieDWC_350M_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieDWC/dpu_DPUCVDX8H_6PE_aieDWC_350M_xilinx_vck5000_gen4x8_qdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=
@@ -77,7 +77,7 @@ case $1 in
     DPUCVDX8H_6pe_misc | dpuv4e-6pe-misc)
     if [ "${platform}" = "vck5000_" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieMISC
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieMISC/dpu_DPUCVDX8H_6PE_aieMISC_350M_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/6PE_aieMISC/dpu_DPUCVDX8H_6PE_aieMISC_350M_xilinx_vck5000_gen4x8_qdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=
@@ -87,7 +87,7 @@ case $1 in
     DPUCVDX8H_4pe_miscdwc | dpuv4e-4pe-miscdwc)
     if [ "${platform}" = "vck5000_" ]; then
       export XCLBIN_PATH=/opt/xilinx/overlaybins/DPUCVDX8H/4PE
-      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/4PE/dpu_DPUCVDX8H_4PE_350M_xilinx_vck5000_gen3x16_xdma_base_1.xclbin
+      export XLNX_VART_FIRMWARE=/opt/xilinx/overlaybins/DPUCVDX8H/4PE/dpu_DPUCVDX8H_4PE_350M_xilinx_vck5000_gen4x8_qdma_base_2.xclbin
     else
       export XCLBIN_PATH=
       export XLNX_VART_FIRMWARE=

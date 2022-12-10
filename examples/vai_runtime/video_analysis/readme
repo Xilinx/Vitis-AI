@@ -27,9 +27,9 @@ Take ZCU102/ZCU104 as an example, execute the following commands to download and
 	tar -xzvf ssd_traffic_pruned_0_9-zcu102_zcu104_kv260-r2.5.0.tar.gz
 	cp ssd_traffic_pruned_0_9 /usr/share/vitis_ai_library/models -r
 
-For U50LV, execute the following commands.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-u50lv-DPUCAHX8H-r2.5.0.tar.gz -O ssd_traffic_pruned_0_9-u50lv-DPUCAHX8H-r2.5.0.tar.gz
+For DPUCVDX8H_8pe_normal DPU IP, execute the following commands.
+	wget https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O ssd_traffic_pruned_0_9-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
 	sudo mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf ssd_traffic_pruned_0_9-u50lv-DPUCAHX8H-r2.5.0.tar.gz
+	tar -xzvf ssd_traffic_pruned_0_9-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
 	sudo cp ssd_traffic_pruned_0_9 /usr/share/vitis_ai_library/models -r 
 
