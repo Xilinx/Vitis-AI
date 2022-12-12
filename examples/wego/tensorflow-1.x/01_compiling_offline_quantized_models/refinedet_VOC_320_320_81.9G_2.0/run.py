@@ -137,10 +137,7 @@ def postprocess(output_dict,img,img_shape):
 def run_thread(images, t_id, n_threads):
     begin, step = t_id, n_threads
     for j in range(begin, len(images), step):
-        with detection_graph.as_default():
-            with tf.compat.v1.Session() as sess:  
-                output_dict = sess.run(tensor_dict,
-                                    feed_dict={image_tensor: images[j]}) 
+        output_dict = sess.run(tensor_dict, feed_dict={image_tensor: images[j]}) 
         
 def run(images, n_threads):
     thread_list = []
@@ -189,37 +186,27 @@ def run_perf(args, img):
 
 
 def run_normal(args,input_img,img,img_shape):
-    with detection_graph.as_default():
-        with tf.compat.v1.Session() as sess:
-            output_dict = sess.run(tensor_dict,
-                                feed_dict={image_tensor: input_img}) 
-            postprocess(output_dict,img,img_shape)
+    output_dict = sess.run(tensor_dict, feed_dict={image_tensor: input_img}) 
+    postprocess(output_dict,img,img_shape)
 
 
 
 if __name__=='__main__':
     args = parse_args()
     mode = args.mode
-    detection_graph = tf.Graph()
-    with detection_graph.as_default():
-        od_graph_def = tf.compat.v1.GraphDef()
-        with tf.io.gfile.GFile(args.model_dir, 'rb') as fid:
-            serialized_graph = fid.read()
-            od_graph_def.ParseFromString(serialized_graph)
-            vai_wego_graph = vitis_vai.create_wego_graph(
-                    input_graph_def=od_graph_def)
+    sess = tf.compat.v1.Session()
+    with tf.io.gfile.GFile(args.model_dir, 'rb') as fid:
+        graph_def = tf.compat.v1.GraphDef()
+        graph_def.ParseFromString(fid.read()) 
+        vai_wego_graph = vitis_vai.create_wego_graph(
+                input_graph_def=graph_def)
 
-            tf.import_graph_def(vai_wego_graph, name='')
-            image_tensor = tf.compat.v1.get_default_graph().get_tensor_by_name('image:0')
-            ops = tf.compat.v1.get_default_graph().get_operations()
-            all_tensor_names = {output.name for op in ops for output in op.outputs}
-            tensor_dict = {}
-            output_keys = ['arm_cls', 'arm_loc', 'odm_cls', 'odm_loc']
-            for key in output_keys:
-                tensor_name = key + ':0'
-                if tensor_name in all_tensor_names:
-                    tensor_dict[key] = tf.compat.v1.get_default_graph().get_tensor_by_name(
-                    tensor_name)
+        tf.import_graph_def(vai_wego_graph, name='')
+    image_tensor = sess.graph.get_tensor_by_name('image:0')
+    output_keys = ['arm_cls', 'arm_loc', 'odm_cls', 'odm_loc']
+    tensor_dict = {}
+    for key in output_keys:
+        tensor_dict[key] = sess.graph.get_tensor_by_name(key + ":0") 
 
     # for postprocessing
     pboxes = pboxes_vgg_voc()
