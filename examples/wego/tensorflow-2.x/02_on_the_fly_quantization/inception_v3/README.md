@@ -39,9 +39,9 @@ We'll only be using the validation set here(imagenet/val/).
 Download it from xilinx website:
 
 ```bash
-wget https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_2.5.zip
-unzip https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_2.5.zip
-cp ./tf2_inceptionv3_imagenet_299_299_11.5G_2.5/float/inception_v3_weights_tf.h5 ./
+wget https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
+unzip https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
+cp ./tf2_inceptionv3_imagenet_299_299_11.5G_3.0/float/inception_v3_weights_tf.h5 ./
 ```
 
 # Quantize, compile, serialize and run
