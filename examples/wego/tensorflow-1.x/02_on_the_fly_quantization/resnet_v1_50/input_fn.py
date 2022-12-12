@@ -30,10 +30,10 @@ PREPROCESS_TYPE = "vgg"
 ###########################
 CALIB_BATCH_SIZE = 50
 CALIB_IMAGE_DIR = "/scratch/data/Imagenet/val_dataset"
-CALIB_IMAGE_LIST = "tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5/data/calib_list.txt"
+CALIB_IMAGE_LIST = "tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0/data/calib_list.txt"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(BASE_DIR + '/tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5/code/test')
+sys.path.append(BASE_DIR + '/tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0/code/test')
 print(BASE_DIR)
 from eval_tf_classification_models_alone import DataLoader
 

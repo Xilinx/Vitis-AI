@@ -4,12 +4,12 @@
 
 This example uses the Resnet_v1_50 model. 
 
-Get the download link for the floating point model package tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5.zip from the model_zool's [yaml](https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5/model.yaml) file.
+Get the download link for the floating point model package tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip from the model_zool's [yaml](https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0/model.yaml) file.
 
 ```
 $ cd /workspace/examples/wego/tensorflow-1.x/quantization
-$ wget https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5.zip -O tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5.zip
-$ unzip tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5.zip
+$ wget https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip -O tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip
+$ unzip tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip
 ```
 
 Download the ImageNet dataset and make sure there are valid images in the following path. Otherwise, you can also modify the `CALIB_IMAGE_DIR` variable in the `input_fn.py` file to point to your own path.
