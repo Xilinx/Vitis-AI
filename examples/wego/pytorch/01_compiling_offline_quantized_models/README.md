@@ -26,7 +26,6 @@ After the wego-torch conda environment is activated, please refer to following l
 - [SqueezeNet](./classification)
 - [ofa_resnet50_0_9B](./ofa_resnet50_0_9B)
 - [drunet](./drunet)
-- [face_quality](./face_quality)
 
 # License
 
