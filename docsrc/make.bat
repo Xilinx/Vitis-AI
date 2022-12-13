@@ -14,7 +14,8 @@ if "%1" == "" goto help
 
 if "%1" == "github" (
     %SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
-    robocopy %BUILDDIR%/html ../docs /E > nul
+    copy %SOURCEDIR%\docs\reference\ModelZoo_VAI3.0_Github_web.mht %BUILDDIR%\html\docs\reference\ModelZoo_VAI3.0_Github_web.mht
+	robocopy %BUILDDIR%/html ../docs /E > nul
 	robocopy %SOURCEDIR%/docs/reference/images ../docs/_images /E > nul
     echo.Generated files copied to ../docs
     goto end

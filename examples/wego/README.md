@@ -1,3 +1,10 @@
+<table class="sphinxhide">
+ <tr>
+   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
+   </td>
+ </tr>
+</table>
+
 # Overview
 
 WeGO (<u>W</u>hol<u>e</u> <u>G</u>raph <u>O</u>ptimizer) is a Vitis AI new experimental feature and it aims to offer the smooth solution to deploy TensorFlow models on cloud DPU through integrating Vitis AI Development kit with TensorFlow 1.x, TensorFlow 2.x and PyTorch frameworks.

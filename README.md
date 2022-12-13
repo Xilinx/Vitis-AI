@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr-raw/Xilinx/Vitis-AI)
 [![Documentation](https://img.shields.io/badge/documentation-github.IO-blue.svg)](https://xilinx.github.io/Vitis-AI/)
+[![Repo Size](https://img.shields.io/github/repo-size/Xilinx/Vitis-AI)
 
 
 <br />
@@ -23,9 +24,9 @@ Xilinx&reg; Vitis&trade; AI is an Integrated Development Environment that can be
 
 ## Getting Started
 
-If your visit here is accidental, but you are enthusiastic to learn more about Vitis AI, please visit the Vitis AI [homepage](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html) on Xilinx.com
+If your visit here is accidental, but you are enthusiastic to learn more about Vitis AI, please visit the Vitis AI [homepage](https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html) on Xilinx.com.
 
-Otherwise, if your visit is deliberate and you are ready to begin **[VIEW the Vitis AI documentation pages on Github.IO](https://xilinx.github.io/Vitis-AI/)**
+Otherwise, if your visit is deliberate and you are ready to begin, why not **[VIEW THE VITIS-AI DOCUMENTATION ON GITHUB.IO](https://xilinx.github.io/Vitis-AI/)**?
 
 ## How to Download the Repository
 
@@ -37,7 +38,7 @@ git clone https://github.com/Xilinx/Vitis-AI
 
 This command needs to be executed only once to retrieve the latest version of Vitis AI.
 
-Optionally, configure git-lfs in order to reduce the local storage requirements.
+Optionally, configure git-lfs in order to reduce the local storage requirements. 
 
 
 ## Licenses
