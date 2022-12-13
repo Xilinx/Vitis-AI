@@ -22,10 +22,10 @@ framework: pytorch
 prune: 'no'
 version: 3.0
 files:
-- name: pt_pmg_rp2k_224_224_2.28G_3.0
+- name: pt_pmg_grocerystore_224_224_2.28G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pmg_rp2k_224_224_2.28G_3.0.zip
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pmg_grocerystore_224_224_2.28G_3.0.zip
   checksum: 
 
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
