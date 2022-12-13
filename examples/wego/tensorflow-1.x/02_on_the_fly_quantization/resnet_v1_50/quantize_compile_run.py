@@ -31,7 +31,7 @@ from tensorflow.python.framework import dtypes as dtypes_module
 ##############################
 # Float Model Configurations #
 ##############################
-FLOAT_MODEL = "tf_resnetv1_50_imagenet_224_224_0.38_4.3G_2.5/float/resnet_v1_50_pruned_4.3B_91972.pb"
+FLOAT_MODEL = "tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0/float/resnet_v1_50_pruned_4.3B_91972.pb"
 INPUT_HEIGHT = 224
 INPUT_WIDTH = 224
 

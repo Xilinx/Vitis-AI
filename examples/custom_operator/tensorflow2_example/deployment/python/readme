@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-1. run
+Running on edge DPU:
 
    copy the python file and test image to the development board destination.
 
@@ -33,3 +33,22 @@
            score[7]    =  0.992188
            score[8]    =  0
            score[9]    =  0
+
+Running on cloud DPU:
+
+   run the executable file with parameters like below sample.
+
+   sample:
+           /usr/bin/python3 tf2_custom_op_graph_runner.py ../../model/compiled/<platform>/tf2_custom_op.xmodel ./
+   result:
+           score[0]    =  0
+           score[1]    =  0
+           score[2]    =  0
+           score[3]    =  0
+           score[4]    =  0
+           score[5]    =  0
+           score[6]    =  0
+           score[7]    =  0.9921875
+           score[8]    =  0
+           score[9]    =  0
+

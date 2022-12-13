@@ -2,7 +2,7 @@
 Setting up a Versal Accelerator Card
 =====================================
 
-The Xilinx |reg| DPUs for VCK5000 card is a High Performance CNN processing engine **DPUCVDX8H**. The detailed combination of Alveo card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.
+The Xilinx |reg| DPUs for VCK5000-PROD card is a High Performance CNN processing engine **DPUCVDX8H**. The detailed combination of VCK5000-PROD card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.
 
 === ================ =====================
 No. Accelerator Card DPU IP
@@ -13,7 +13,7 @@ No. Accelerator Card DPU IP
 4   VCK5000-PROD     DPUCVDX8H_8pe_normal
 === ================ =====================
 
-1. VCK5000 Card Setup in Host
+1. VCK5000-PROD Card Setup in Host
 ------------------------------
 
 We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
@@ -41,19 +41,19 @@ Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then start
 
 1. For 4PE 350 Hz, you can select DPU IP via the following command.
 
-   ``source /workspace/setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc``
+   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc``
 
 2. For 6PE 350 Hz with DWC, you can select DPU IP via the following command.
 
-   ``source /workspace/setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc``
+   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc``
 
 3. For 6PE 350 Hz with MISC, you can select DPU IP via the following command.
 
-   ``source /workspace/setup/vck5000/setup.sh DPUCVDX8H_6PE_MISC``
+   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc``
 
 4. For 8PE 350 Hz, you can select DPU IP via the following command.
 
-   ``source /workspace/setup/vck5000/setup.sh DPUCVDX8H_8pe_normal``
+   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal``
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

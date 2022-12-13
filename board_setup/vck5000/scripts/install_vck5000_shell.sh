@@ -31,12 +31,12 @@ fi
 ##############################
 # Download Gen3x4 Platform
 ##############################
-if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  echo "Ubuntu 18.04/20.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-prod-gen3x16-platform-1-3_all.deb.tar.gz"
+if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]] || [[ $distroname == *"Ubuntu 22.04"* ]]; then
+  echo "Ubuntu 18.04/20.04/22.04"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base_2-20221111_all.deb.tar.gz"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-prod-gen3x16-platform-1-3.noarch.rpm.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base-2-20221111.noarch.rpm.tar.gz"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
@@ -49,13 +49,9 @@ mkdir ./temp
 cd ./temp
 wget $DEPLOY_PLFM_URL -O shell.tgz
 tar xfz shell.tgz
-if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]]; then
-  sudo apt install ./*sc-fw* -y
-  sudo apt install ./*validate* -y
+if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]] || [[ $distroname == *"Ubuntu 22.04"* ]]; then
   sudo apt install ./*base* -y
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
-  sudo yum install ./*sc-fw* -y
-  sudo yum install ./*validate* -y
   sudo yum install ./*base* -y
 else
   echo "Failed, couldn't detect os distribution"
@@ -67,4 +63,4 @@ rm -rf ./temp
 ##############################
 # Flash alveo
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt flash --legacy --update --shell xilinx_vck5000_gen3x16_xdma_base_1
+sudo /opt/xilinx/xrt/bin/xbmgmt program --device --base --image /lib/firmware/xilinx/aed3e95a48cf64bb247522fac4f92ddc/partition.xsabin

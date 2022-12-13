@@ -96,13 +96,13 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with VA
 For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../docs/docs/vck5000/README.md) to set up the host.
 
 ### Running Vitis AI Examples
-In the docker system, `/workspace/examples/VART/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample.
+In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample.
 
-1. Download the [vitis_ai_runtime_r2.5.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.5.0_image_video.tar.gz) package and unzip it.
+1. Download the [vitis_ai_runtime_r3.0.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz) package and unzip it.
 	```
 	cd /workspace/examples
-	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.5.0_image_video.tar.gz -O vitis_ai_runtime_r2.5.0_image_video.tar.gz
-	tar -xzvf vitis_ai_runtime_r2.5.0_image_video.tar.gz -C VART
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C VART
 	```
 2. Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
@@ -113,33 +113,46 @@ In the docker system, `/workspace/examples/VART/` is the path for the following 
 	  sudo mkdir /usr/share/vitis_ai_library/models
 	```
 
-	* For DPUCAHX8H DPU IP of U50LV card, install the model package as follows.
+	* For DPUCVDX8H_4pe_miscdwc DPU IP, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz -O resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-	  tar -xzvf resnet50-u50lv-DPUCAHX8H-r2.5.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+	  tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
-	* For DPUCAHX8H-DWC DPU IP of U50LV and U55C card, install the model package as follows.
-	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz -O resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-	  tar -xzvf resnet50-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
-	```
+        * For DPUCVDX8H_6pe_dwc DPU IP, install the model package as follows.
+        ```
+          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+          tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+        ```
 
+        * For DPUCVDX8H_6pe_misc DPU IP, install the model package as follows.
+        ```
+          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+          tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+        ```
+
+        * For DPUCVDX8H_8pe_normal DPU IP, install the model package as follows.
+        ```
+          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+          tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+        ```
 3. Compile the sample, take `resnet50` as an example.
 	```
-	cd /workspace/examples/VART/resnet50
+	cd /workspace/examples/vai_runtime/resnet50
 	bash -x build.sh
 	```
-4. Run the example, take `U50LV` platform as an example.
+4. Run the example.
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
-	**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
+	**Note that different alveo/Versal cards correspond to different model files, which cannot be used alternately.** 
 
 
- <summary><b>Launching Commands for VART Samples on U50lv/U55C/VCK5000-PROD </b></summary>
+ <summary><b>Launching Commands for VART Samples on VCK5000-PROD </b></summary>
  
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |

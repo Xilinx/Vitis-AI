@@ -10,7 +10,9 @@ Using WeGO is a very straightforward transition from training to inference for m
 # Preparation
 
 ## Setup Host Environment for Cloud
-Before running the examples, please follow [setup for VCK5000](https://github.com/Xilinx/Vitis-AI/tree/master/setup/vck5000) to set up the host env for VCK5000 PROD and make sure you have entered the Vitis-AI CPU docker container successfully.
+Before running the examples, please follow [setup for VCK5000](https://github.com/Xilinx/Vitis-AI/tree/master/board_setup/vck5000) to set up the host env for VCK5000 PROD and make sure you have entered the Vitis-AI CPU docker container successfully and the DPU IP has been selected properly.
+
+> Note: currently three different docker image targeting diverse AI frameworks are provided, make sure the right docker image is used for the corresponding examples running purpose(i.e. TensorFlow 1.x docker for TensorFlow 1.x WeGO examples, TensorFlow 2.x docker for TensorFlow 2.x WeGO examples, PyTorch docker for PyTorch WeGO examples).
 
 ## Prepare WeGO Example Recipes
 Download and prepare the WeGO examples recipes(ie. models and images) by executing:

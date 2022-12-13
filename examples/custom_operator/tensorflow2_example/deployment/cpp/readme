@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+Running on edge DPU:
+
 1. compile
 
    execute the following command to compile in the development board:
@@ -39,3 +41,28 @@
            score[7]    =  0.992188
            score[8]    =  0
            score[9]    =  0
+
+Running on cloud DPU:
+
+1. compile
+
+       bash build.sh
+
+2. run
+
+   run the executable file with parameters like below sample.
+
+   sample:
+           ./tf2_custom_op_graph_runner ../../model/compiled/<platform>/tf2_custom_op.xmodel sample.jpg
+   result:
+           score[0]    =  0
+           score[1]    =  0
+           score[2]    =  0
+           score[3]    =  0
+           score[4]    =  0
+           score[5]    =  0
+           score[6]    =  0
+           score[7]    =  0.992188
+           score[8]    =  0
+           score[9]    =  0
+
