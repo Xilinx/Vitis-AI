@@ -52,6 +52,8 @@ The output should appear similar to this:
 
 Users should reference `Nvidia driver installation <https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html>`__ for further details of driver installation.
 
+For ROCm distributions, Users should reference `ROcm docker installation <https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md>`__ for further details of docker installation.
+
 Installing Docker
 -----------------
 

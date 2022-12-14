@@ -1,0 +1,11 @@
+name: vitis-ai-wego-tf2
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.7
+  - vai-wego-tensorflow2
+  - libboost=1.71
+  - vai_utf

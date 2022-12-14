@@ -23,7 +23,7 @@ Pre-requisites
 Installation Steps
 ------------------
 
--  If Docker was not previously installed on your development machine with NVIDIA Container Toolkit support,visit  :doc:`install_docker`
+-  If Docker was not previously installed on your development machine with NVIDIA Container Toolkit or ROCm support,visit  :doc:`install_docker`
 
 -  The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
 
@@ -49,7 +49,10 @@ To download the most up-to-date version of the pre-built docker, execute the fol
 
 ::
 
-   docker pull xilinx/vitis-ai-cpu:latest  
+   docker pull xilinx/vitis-ai-<Framework>-<Arch>:latest
+   For example:
+   Tensorflow2 CPU docker : docker pull xilinx/vitis-ai-tensrflow2-cpu:latest
+   Tensorflow2 ROCm docker: docker pull xilinx/vitis-ai-tensrflow2-rocm:latest
 
 A quick and simple test of docker can be accomplished by executing the following command:
 
@@ -63,7 +66,7 @@ You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   <Vitis-AI install path>/Vitis-AI/docker_run.sh xilinx/vitis-ai-cpu:latest
+   <Vitis-AI install path>/Vitis-AI/docker_run.sh xilinx/vitis-ai-tensorflow-cpu:latest
 
 
 
@@ -87,7 +90,9 @@ Use the following commands to build the GPU docker. Adjust your path to ``<Vitis
 ::
 
    cd <Vitis-AI install path>/Vitis-AI/docker
-   ./docker_build_gpu.sh
+   ./docker_build.sh -t <docker type> -f <Framework>
+
+   please run docker_build.sh --help to get more information
 
 .. warning:: This process may take several hours to complete. It’s time to go off and get a coffee, tea, water or whatever suits your fancy. When you come back, assuming that the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.
 
@@ -134,13 +139,13 @@ This should result in an output similar to the below:
 
 
 
-.. note:: If GPU support was not enabled in your container, check your NVIDIA driver version and CUDA version described in :doc:`Host System Requirements <../reference/system_requirements>` and verify your installation of the NVIDIA Container Toolkit (:doc:`install_docker`). If you missed a step, you can simply rectify the problem and re-run ``docker_build_gpu.sh``.
+.. note:: If GPU support was not enabled in your container, check your NVIDIA driver version and CUDA version described in :doc:`Host System Requirements <../reference/system_requirements>` and verify your installation of the NVIDIA Container Toolkit (:doc:`install_docker`). If you missed a step, you can simply rectify the problem and re-run ``docker_build.sh``.
 
 You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   ../docker_run.sh xilinx/vitis-ai-gpu:latest
+   ../docker_run.sh xilinx/vitis-ai-gpu-tf2:latest
 
 .. important:: Use ``./docker_run.sh`` as a script reference should you have customized requirements for launching your Docker container.
 
@@ -152,7 +157,7 @@ Use the following commands to build the CPU docker. Adjust your path to the ``<V
 ::
 
    cd <Vitis-AI install path>/Vitis-AI/docker
-   ./docker_build_cpu.sh
+   ./docker_build.sh -t cpu -f [tf1|tf2|pytorch]
 
 A quick and simple test of docker can be accomplished by executing the following command:
 
@@ -167,7 +172,7 @@ You can now start the Docker for Vitis AI using the following command:
 
 ::
 
-   ../docker_run.sh xilinx/vitis-ai-cpu:latest
+   ../docker_run.sh xilinx/vitis-ai-cpu-<tf1|tf2|pytorch>:latest
 
 
 In most cases, you have now completed the installation. Congratulations!
