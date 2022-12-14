@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/mman.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <xclbin.h>
@@ -194,6 +195,7 @@ void load_xclbin(const string& filename, xclDeviceHandle handle) {
   // dpu read-only register range [0x10,0x200)
   r = xclIPSetReadRange(handle, 0, 0x10, 0x1F0);
   if (DEBUG_COUT) cout << "xclIPSetReadRange return: " << r << endl;
+  close(fd);
 }
 
 string input_data = "./case_new_resnet50/input_aquant.bin";

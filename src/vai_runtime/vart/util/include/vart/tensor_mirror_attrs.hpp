@@ -16,7 +16,6 @@
 
 #include "xir/tensor/tensor.hpp"
 namespace vart {
-namespace assistant {
 class TensorMirrorAttrs : public xir::Tensor {
  public:
   static std::unique_ptr<TensorMirrorAttrs> create(
@@ -59,5 +58,4 @@ class TensorMirrorAttrs : public xir::Tensor {
   const std::vector<std::int32_t> shape_;
   const xir::DataType data_type_;
 };
-}  // namespace assistant
 }  // namespace vart

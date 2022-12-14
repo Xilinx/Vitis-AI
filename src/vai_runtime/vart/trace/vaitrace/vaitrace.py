@@ -87,7 +87,7 @@ def parseCmdLine():
     cmd_parser.add_argument("-o", dest="traceSaveTo",
                             nargs='?', help="Save report to, only available for txt summary mode")
     cmd_parser.add_argument("-t", dest='timeout', nargs='?',
-                            type=int, help="Tracing time limitation")
+                            type=int, help="Tracing time limit in second, default value is 60")
     cmd_parser.add_argument("-v", dest='showversion',
                             action='store_true', help="Show version")
     cmd_parser.add_argument("-b", dest='bypass', action='store_true',

@@ -16,12 +16,17 @@
 # limitations under the License.
 
 from ctypes import *
-import sys, os, time, threading, logging
+import sys
+import os
+import time
+import threading
+import logging
 import tracer.tracerBase
 import copy
 
 supported_boards = ["zcu102", "zcu104", "vck190", "kv260"]
 sys_hw_mon = "/sys/class/hwmon/"
+
 
 class hwmon_ina226:
     def __init__(self, path, libpath='/usr/lib/libpowermon.so'):
@@ -73,7 +78,8 @@ class hwmon_ina226:
                     self.v.append(os.path.abspath(os.path.join(r, f)))
 
         self.powerLib.get_device_volt.restype = c_int
-        self.volt = max([int(self.powerLib.get_device_volt(v.encode())) for v in self.v]) / 1000.0
+        self.volt = max([int(self.powerLib.get_device_volt(v.encode()))
+                        for v in self.v]) / 1000.0
 
         if self.volt == 0:
             logging.error("Invalid path [%s]" % path)
@@ -85,7 +91,8 @@ class hwmon_ina226:
         if self.valid == False:
             return 0
         self.powerLib.get_device_curr.restype = c_int
-        curr = max([int(self.powerLib.get_device_curr(c.encode())) for c in self.c]) / 1000.0
+        curr = max([int(self.powerLib.get_device_curr(c.encode()))
+                   for c in self.c]) / 1000.0
 
         return self.sample_phases * curr
 
@@ -93,13 +100,15 @@ class hwmon_ina226:
         if self.valid == False:
             return 0
         self.powerLib.get_device_power.restype = c_int
-        power = max([int(self.powerLib.get_device_power(p.encode())) for p in self.p]) / 1000.0 / 1000.0
+        power = max([int(self.powerLib.get_device_power(p.encode()))
+                    for p in self.p]) / 1000.0 / 1000.0
         return self.sample_phases * power
 
 
 class PowerTracer(tracer.tracerBase.Tracer):
     def __init__(self):
-        super().__init__('power', source=[], compatible={'machine': ["aarch64"]})
+        super().__init__('power', source=[],
+                         compatible={'machine': ["aarch64"]})
         self.mons = []
         self.board = None
         self.power_records = []
@@ -126,7 +135,7 @@ class PowerTracer(tracer.tracerBase.Tracer):
 
     def checkBoard(self):
         host_name = os.uname().nodename
-        #'xilinx-zcu102-20221'
+        # 'xilinx-zcu102-20221'
 
         for b in supported_boards:
             if host_name.find(b) >= 0:

@@ -29,15 +29,15 @@ def to_Gi(_num):
 
 
 def to_KB(_num):
-    return _num / 1024.0
+    return _num / 1000.0
 
 
 def to_MB(_num):
-    return _num / 1024.0 / 1024.0
+    return _num / 1000.0 / 1000.0
 
 
 def to_GB(_num):
-    return _num / 1024.0 / 1024.0 / 1024.0
+    return _num / 1000.0 / 1000.0 / 1000.0
 
 
 """

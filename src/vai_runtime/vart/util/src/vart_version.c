@@ -23,16 +23,16 @@ int main(int argc, char** argv) {
   void* handle;
   char* error;
   CAC_FUNC cac_func = NULL;
-  char* so[] = {//"libunilog.so.2",
-                //"libtarget-factory.so.2",
-                "libxir.so.2",
-                "libvart-buffer-object.so.2",
-                "libvart-dpu-controller.so.2",
-                "libvart-dpu-runner.so.2",
-                "libvart-mem-manager.so.2",
-                "libvart-runner.so.2",
-                "libvart-util.so.2",
-                "libvart-xrt-device-handle.so.2"};
+  char* so[] = {//"libunilog.so.3",
+                //"libtarget-factory.so.3",
+                "libxir.so.3",
+                "libvart-buffer-object.so.3",
+                "libvart-dpu-controller.so.3",
+                "libvart-dpu-runner.so.3",
+                "libvart-mem-manager.so.3",
+                "libvart-runner.so.3",
+                "libvart-util.so.3",
+                "libvart-xrt-device-handle.so.3"};
   for (int i = 0; i < sizeof(so) / sizeof(so[0]); i++) {
     handle = dlopen(so[i], RTLD_LAZY);
     if (!handle) {

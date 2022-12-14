@@ -19,6 +19,7 @@
 #include <fstream>
 #include <vitis/ai/env_config.hpp>
 #include <xir/graph/graph.hpp>
+#include <UniLog/UniLog.hpp>
 
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0")
 DEF_ENV_PARAM(XLNX_CHECK_COMMIT_ID_ENABLE, "0");
@@ -33,13 +34,14 @@ void check_commit_id(const xir::Graph* graph) {
   std::map<std::string, std::string> xcompiler_version_map = {
       {"XCOM : xir : 0.0.1", "fde84c06b50c4542eac4264372cfaed69c7fb95d"},
       {"xcompiler:0.0.1", "7e7b99e98a8de082b16ee9cf240b8bf9f4571cf5"}};
-  CHECK(graph->has_attr("tools_commit_id"));
+  UNI_LOG_CHECK(graph->has_attr("tools_commit_id"), VART_GRAPH_ERROR);
   auto tools_commit_id =
       graph->get_attr<std::map<std::string, std::string>>("tools_commit_id");
   for (auto& it : xcompiler_version_map) {
     auto kv = tools_commit_id.find(it.first);
-    CHECK(kv != tools_commit_id.end()) << it.first << " not find !";
-    CHECK_EQ(it.second, kv->second)
+    UNI_LOG_CHECK(kv != tools_commit_id.end(), VART_GRAPH_ERROR)
+      << it.first << " not find !";
+    UNI_LOG_CHECK(it.second == kv->second, VART_VERSION_MISMATCH)
         << it.first << " no match! the right version is " << it.second
         << ", now use version is " << kv->second;
   }
@@ -58,7 +60,7 @@ void GraphHolder::init_subgraph() {
   auto root = graph->get_root_subgraph();
   auto children = root->children_topological_sort();
   for (auto c : children) {
-    CHECK(c->has_attr("device"));
+    UNI_LOG_CHECK(c->has_attr("device"), VART_GRAPH_ERROR);
     auto device = c->get_attr<std::string>("device");
     if (device == "DPU") {
       subgraph.emplace_back(c);
@@ -79,7 +81,8 @@ const xir::Subgraph* GraphHolder::get_subgraph(
       isdigit(kernel_name[kernel_name.size() - 1])) {
     index = ((size_t)kernel_name[kernel_name.size() - 1]) - '0';
   }
-  CHECK_LT(index, subgraph.size()) << "kernel_name " << kernel_name << " "  //
+  UNI_LOG_CHECK(index < subgraph.size(), VART_OUT_OF_RANGE)
+    << "kernel_name " << kernel_name << " "  //
       ;
   return subgraph[index];
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <experimental/xrt-next.h>
 #include <glog/logging.h>
 #include <xrt.h>
 
@@ -23,13 +24,11 @@ using namespace std;
 #include "xir/xrt_device_handle.hpp"
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-int set_reg(xclDeviceHandle xcl_handle, uint64_t cu_addr, uint32_t value) {
-  size_t size = sizeof(value);
-  int ret = xclWrite(xcl_handle, XCL_ADDR_KERNEL_CTRL,
-           cu_addr, &value, size);
-  return ret;
+int set_reg(xclDeviceHandle xcl_handle, uint32_t cu_index, uint32_t offset,
+            uint32_t value) {
+  return xclRegWrite(xcl_handle, cu_index, offset, value);
 }
-void xdpu_set_reg(xclDeviceHandle xcl_handle, uint64_t cu_base_addr) {
+void xdpu_set_reg(xclDeviceHandle xcl_handle) {
   struct reg {
     uint32_t addr;
     uint32_t value;
@@ -43,20 +42,21 @@ void xdpu_set_reg(xclDeviceHandle xcl_handle, uint64_t cu_base_addr) {
   while ((stream >> name >> offset_add >> offset_val).good()) {
     uint64_t offset_add2;
     uint64_t offset_val2;
-    //LOG(INFO) << "name=" << name << " offset_add=" << offset_add << " offset_val=" << offset_val;
+    // LOG(INFO) << "name=" << name << " offset_add=" << offset_add << "
+    // offset_val=" << offset_val;
     vitis::ai::parse_value(offset_add, offset_add2);
     vitis::ai::parse_value(offset_val, offset_val2);
     regs.emplace_back(reg{(uint32_t)offset_add2, (uint32_t)offset_val2, name});
   }
   stream.close();
+  uint32_t cu_index = 0u;
   for (const auto& reg : regs) {
-    int ret = set_reg(xcl_handle, cu_base_addr + reg.addr, reg.value);
-    if(ret < 0){
-      LOG(INFO) << "write error! ret is : "<< ret;
+    int ret = set_reg(xcl_handle, cu_index, reg.addr, reg.value);
+    if (ret < 0) {
+      LOG(INFO) << "write error! ret is : " << ret;
       exit(ret);
-    } 
-    LOG_IF(INFO, true) << "0x" << std::hex << (cu_base_addr + reg.addr)
-                       << "\t"  //
+    }
+    LOG_IF(INFO, true) << "0x" << std::hex << reg.addr << "\t"  //
                        << std::setfill(' ') << std::hex << "0x" << std::setw(16)
                        << std::left << reg.value << " "  //
                        << std::dec << std::setw(16) << std::right << reg.value
@@ -71,7 +71,6 @@ int main(int argc, char* argv[]) {
   auto cu_index = std::stoi(std::string(argv[2]));
   LOG(INFO) << "h->get_handle() " << h->get_handle(cu_name, cu_index) << " "  //
       ;
-  xdpu_set_reg(h->get_handle(cu_name, cu_index),
-                   h->get_cu_addr(cu_name, cu_index));
+  xdpu_set_reg(h->get_handle(cu_name, cu_index));
   return 0;
 }

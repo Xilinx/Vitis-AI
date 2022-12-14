@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(
   vart
-  VERSION 2.5.0
+  VERSION 3.0.0
   LANGUAGES C CXX)
 
 link_directories("$ENV{CONDA_PREFIX}/lib")

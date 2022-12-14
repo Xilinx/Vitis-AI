@@ -29,17 +29,17 @@ using namespace std;
 using Clock = std::chrono::high_resolution_clock;
 #define __TIC__(tag) auto __##tag##_start_time = Clock::now();
 
-#define __TOC__(tag)                                             \
-  auto __##tag##_end_time = Clock::now();                        \
-  cout << #tag << " : "                                          \
-       << std::chrono::duration_cast<std::chrono::microseconds>( \
-              __##tag##_end_time - __##tag##_start_time)         \
-              .count()                                           \
+#define __TOC__(tag)                                                           \
+  auto __##tag##_end_time = Clock::now();                                      \
+  cout << #tag << " : "                                                        \
+       << std::chrono::duration_cast<std::chrono::microseconds>(               \
+              __##tag##_end_time - __##tag##_start_time)                       \
+              .count()                                                         \
        << endl;
 
 extern int GLOBAL_ENABLE_C_SOFTMAX;
 
-float err(const float *a, const float *b, int cls) {
+float err(const float* a, const float* b, int cls) {
   float ret = 0.0f;
   for (int i = 0; i < cls; ++i) {
     auto d = (a[i] - b[i]);
@@ -61,9 +61,9 @@ int group = 16436;
 int total;
 float scale = 0.0625f;
 string filename = "/home/liumingyue/ssd_adas_vehicle_v3_480x360.bin";
-int8_t *d;
+int8_t* d;
 
-static void parse_opt(int argc, char *argv[]) {
+static void parse_opt(int argc, char* argv[]) {
   int opt = 0;
 
   while ((opt = getopt(argc, argv, "m:c:g:s:l:")) != -1) {
@@ -131,7 +131,7 @@ void getdata() {
 
   } else {
     ifstream file_in(filename, ios::in | ios::binary);
-    char *buffer = new char[total];
+    char* buffer = new char[total];
     file_in.read(buffer, total);
     file_in.close();
 
@@ -146,10 +146,11 @@ void getdata() {
     }
     std::cout << "max :" << max << " "
               << "min : " << min << " " << std::endl;
+    delete buffer;
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   parse_opt(argc, argv);
 
   getdata();
@@ -175,9 +176,9 @@ int main(int argc, char *argv[]) {
     d[i] = dis(gen);
   }
   */
-  float *output = new float[total];
-  float *output_neon = new float[total];
-  float *output_neon_table = new float[total];
+  float* output = new float[total];
+  float* output_neon = new float[total];
+  float* output_neon_table = new float[total];
 
   GLOBAL_ENABLE_C_SOFTMAX = 0;
   // dpuOpen();

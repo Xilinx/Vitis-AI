@@ -119,7 +119,7 @@ class vaiTimeline:
             runT += e.duration
 
         util = runT * 100 / totalT
-        #print("### Util of %s-%02d: %.2f" % (self.coreType, self.coreId, util))
+        # print("### Util of %s-%02d: %.2f" % (self.coreType, self.coreId, util))
 
         return util
 
@@ -193,6 +193,6 @@ def createTimelines(coreType, id, options: dict, timeout=0):
             timelines.append(vaiTimeline(coreType, i, options, timeout))
 
     if len(timelines) == 0:
-        assert()
+        assert ()
 
     return timelines

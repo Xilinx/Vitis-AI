@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import time
+import os
 import math
 import logging
 import decimal
@@ -161,6 +162,60 @@ class DPUEventParser():
         self.xmodelInfo = {}
         self.dpu_timelines = []
         self.dpuIpInfo = []
+
+    def getDpuAieClk(self, dpu_arch):
+
+        if dpu_arch == "DPUCVDX8G":
+            MEPLL_CTRL = 0xF70A0100
+            ME_CORE_REF_CTRL = 0xF70A0138
+            PMCPLL_CTRL = 0xF1260040
+            NOCPLL_CTRL = 0xF1260050
+        elif dpu_arch == "DPUCV2DX8G":
+            MEPLL_CTRL = 0xF6D10100
+            ME_CORE_REF_CTRL = 0xF6D10138
+            PMCPLL_CTRL = 0xF1260040
+            NOCPLL_CTRL = 0xF1260050
+        HSM0_REF_CTRL = 0xF1260148
+        ref_clk = 33333000
+
+        hsm0_ref = int(os.popen(f"devmem {HSM0_REF_CTRL} 32").read(), 16)
+
+        if (hsm0_ref & 0x7) == 0:
+            n_p_pll = int(os.popen(f"devmem {PMCPLL_CTRL} 32").read(), 16)
+        elif (hsm0_ref & 0x7) == 3:
+            n_p_pll = int(os.popen(f"devmem {NOCPLL_CTRL} 32").read(), 16)
+        else:
+            print("get a error value from hsm0")
+
+        if ((n_p_pll & 0x30000) >> 16) == 0:
+            clkoutdiv = 1
+        elif ((n_p_pll & 0x30000) >> 16) == 1:
+            clkoutdiv = 2
+        elif ((n_p_pll & 0x30000) >> 16) == 2:
+            clkoutdiv = 4
+        elif ((n_p_pll & 0x30000) >> 16) == 3:
+            clkoutdiv = 8
+
+        n_p_cla = (n_p_pll & 0xFF00) >> 8  # bit 15:8
+        n_p_clk = ref_clk * n_p_cla / clkoutdiv
+        hsm0_cal = (hsm0_ref & 0x3ff00) >> 8  # bit 17:8
+        hsm0_clk = n_p_clk / hsm0_cal
+        mepll = int(os.popen(f"devmem {MEPLL_CTRL} 32").read(), 16)
+        mepll_cal = (mepll & 0xff00) >> 8  # bit 15:8
+
+        if ((mepll & 0x30000) >> 16) == 0:  # bit17:16
+            me_clkoutdiv = 1
+        elif ((mepll & 0x30000) >> 16) == 1:
+            me_clkoutdiv = 2
+        elif ((mepll & 0x30000) >> 16) == 2:
+            me_clkoutdiv = 4
+        elif ((mepll & 0x30000) >> 16) == 3:
+            me_clkoutdiv = 8
+
+        me_core = int(os.popen(f"devmem {ME_CORE_REF_CTRL} 32").read(), 16)
+        me_core_cal = (me_core & 0x3ff00) >> 8  # bit17:8
+        mePLL_freq = hsm0_clk * mepll_cal / me_clkoutdiv / me_core_cal
+        return mePLL_freq
 
     def getDpuRuntimeInfo(self, event, key):
         pid = event.pid
@@ -313,14 +368,18 @@ class DPUEventParser():
 
         ip_info = select_trace(data, "type", "DPU")[0].get("info")
 
-        self.dpu_ip.ip_version = ip_info.get("DPU IP Spec", {}).get("IP version", "")
-        self.dpu_ip.timestamp = ip_info.get("DPU IP Spec", {}).get("generation timestamp", "")
-        self.dpu_ip.commit_id = ip_info.get("DPU IP Spec", {}).get("git commit id", "")
+        self.dpu_ip.ip_version = ip_info.get(
+            "DPU IP Spec", {}).get("IP version", "")
+        self.dpu_ip.timestamp = ip_info.get(
+            "DPU IP Spec", {}).get("generation timestamp", "")
+        self.dpu_ip.commit_id = ip_info.get(
+            "DPU IP Spec", {}).get("git commit id", "")
 
         for cu_query in ip_info.get("kernels", []):
             for cu in self.dpu_ip.cores:
-                if cu_query.get("cu_name", "") != cu.full_name:
-                    continue
+                if cu_query.get("is_vivado_flow", False) != True:
+                    if cu_query.get("cu_name", "") != cu.full_name:
+                        continue
 
                 # matched!
                 cu_arch_txt = cu_query.get("DPU Arch").split("_")
@@ -329,39 +388,62 @@ class DPUEventParser():
                 cu.load_parallel = int(cu_query.get("Load Parallel", 0))
                 cu.save_parallel = int(cu_query.get("Save Parallel", 0))
 
-                cu.axilite_freq = int(cu_query.get("XRT Frequency (MHz)")) * 1000 * 1000
-                cu.pl_freq = int(cu_query.get("DPU Frequency (MHz)")) * 1000 * 1000
+                cu.axilite_freq = int(cu_query.get(
+                    "XRT Frequency (MHz)", 0)) * 1000 * 1000
+                cu.pl_freq = int(cu_query.get(
+                    "DPU Frequency (MHz)", 0)) * 1000 * 1000
 
-                if (cu.arch == "DPUCVDX8G"):
-                    cu.aie_freq = 1250 * 1000 * 1000
+                if (cu.arch == "DPUCVDX8G") or (cu.arch == "DPUCV2DX8G"):
+                    cu.aie_freq = self.getDpuAieClk(cu.arch)
 
-
-                if cu.arch == "DPUCZDX8G": #mpsoc
+                if cu.arch == "DPUCZDX8G":  # mpsoc
+                    if cu_query.get("is_vivado_flow", False) == True:
+                        cu.axilite_freq = 100 * 1000 * 1000
                     macs = int(cu.type[1:])
                     ops = (macs * (cu.pl_freq))
-                elif cu.arch == "DPUCVDX8G": #versal-1
+                elif (cu.arch == "DPUCVDX8G") or (cu.arch == "DPUCV2DX8G"):  # versal-1
                     cpb_n = int(cu.type[1:3])
-                    batch_n = int(cu.type[4])
+                    batch_index = cu.type.index('B')
+                    batch_n = int(cu.type[batch_index + 1])
                     if (len(cu.type) >= 8):
                         cu_n = int(cu.type[7])
                     else:
                         cu_n = 1
-                    ops = 256 * cpb_n * batch_n * cu_n * cu.aie_freq
+
+                    if cu.arch == "DPUCVDX8G":
+                        base = 256
+                    if cu.arch == "DPUCV2DX8G":
+                        base = 512
+
+                    ops = base * cpb_n * batch_n * cu_n * cu.aie_freq
                 else:
                     raise RuntimeError("unkwon version dpu")
 
                 cu.peak_ops = ops
 
-        #print(self.dpu_ip)
-
+        # print(self.dpu_ip)
 
     def parse(self, data, dpu_ip_info, options):
+        fg_mode = (options.get('runmode') == 'debug')
+
         """Two types of event tracing data included: dpuRuntimeEvent & dpuControllerEvent"""
         cuRetData = {}
 
         """get xmodel info from: {'classname': 'subgraph_info', 'info_file': '/tmp/vaitrace_subgraph_info_15230', 'section': 'INFO'}"""
         subgraph_info = select_trace(data, 'classname', "subgraph_info")
         self.xmodelInfo = xmodel_parser.xmodel_get_info(subgraph_info)
+
+        # Check [RELEASE::SPLIT] mode for .xmodel
+        if fg_mode:
+            level2_subg = 0
+            empty_level2_subg = 0
+            for subg in self.xmodelInfo.values():
+                if subg.get('depth', 0) == 2:
+                    level2_subg += 1
+                if subg.get('mc_size', 0) == 0:
+                    empty_level2_subg += 1
+            if (level2_subg == empty_level2_subg):
+                logging.error("This xmodel does not support fine grained profiling")
 
         """Prepare at most 8 DPU timelines"""
         self.dpu_timelines = createTimelines('DPU', 8, options)
@@ -385,7 +467,7 @@ class DPUEventParser():
         DPU Profile Summary Format:
         Kernel Name,Number Of Runs,CU Full Name,Minimum Time (ms),Average Time (ms),Maximum Time (ms),Workload(GOP),DPU Performance(GOP/s),Mem IO(MB),Mem Bandwidth(MB/s),
         """
-       
+
         subgraph_stat_time = {}
         subgraph_stat_hwcnt = {}
         ret = []
@@ -413,7 +495,6 @@ class DPUEventParser():
                 subgraph_stat_hwcnt.setdefault(dpu_id, {}).setdefault(
                     subg_idx, []).append(hwcounter)
 
-
         for core_id in subgraph_stat_time.keys():
             for subg_idx in subgraph_stat_time[core_id]:
                 subg_name = subg_idx.split('|')[0]
@@ -437,8 +518,10 @@ class DPUEventParser():
 
                 workload = self.xmodelInfo.get(subg_idx, {}).get("workload", 0)
                 depth = self.xmodelInfo.get(subg_idx, {}).get("depth", 0)
-                it = str(self.xmodelInfo.get(subg_idx, {}).get("i_tensor_shape", "")).replace(",","_")
-                ot = str(self.xmodelInfo.get(subg_idx, {}).get("o_tensor_shape", "")).replace(",","_")
+                it = str(self.xmodelInfo.get(subg_idx, {}).get(
+                    "i_tensor_shape", "")).replace(",", "_")
+                ot = str(self.xmodelInfo.get(subg_idx, {}).get(
+                    "o_tensor_shape", "")).replace(",", "_")
 
                 effic = (workload * batch / hw_rt) / (dpu_core.peak_ops) * 1000
 
@@ -457,7 +540,7 @@ class DPUEventParser():
                 read_wb_size = load_para_size
 
                 mem_io = read_fm_size + read_wb_size + write_fm_size
-                mem_io_bw = mem_io / hw_rt * 1024  # to MB
+                mem_io_bw = mem_io / hw_rt * 1000  # to MB
                 #print(subg_name, cu_name, min_t, avg_t, max_t, runs, workload, write_fm_size)
 
                 prt_data_set = {
@@ -475,7 +558,7 @@ class DPUEventParser():
                     "write_fm_size": uConv(write_fm_size, "MB"),
                     "mem_io_bw": uConv(mem_io_bw, "MB"),
                     "mem_io": uConv(mem_io, "MB"),
-                    "hw_rt" : uConv(hw_rt),
+                    "hw_rt": uConv(hw_rt),
                     "rank_id": rank_id
                 }
 
@@ -494,4 +577,3 @@ class DPUEventParser():
 
     def get_dpu_ips(self):
         return ips_profile(self.dpu_timelines)
-

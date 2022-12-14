@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "./xrt_bin_stream.hpp"
+#include <UniLog/UniLog.hpp>
 #include <fstream>
 #include <glog/logging.h>
 #include <xclbin.h>
@@ -43,12 +44,12 @@ XrtBinStream::~XrtBinStream() {
 void XrtBinStream::init_fd(const std::string filename) {
   std::ifstream t(filename, std::ifstream::binary);
   if(!t.good()) {
-    LOG(INFO) << "open(" << filename << ") failed.";
     LOG(INFO) << "Please check your /etc/vart.conf\n"
               << "Its format should be :\n    firmware: xx\n"
               << "Example:\n"
               << "    firmware: /run/media/mmcblk0p1/dpu.xclbin";
-    exit(0);
+    UNI_LOG_FATAL(VART_OPEN_DEVICE_FAIL)
+      << "open(" << filename << ") failed.";
   }
   t.seekg(0, t.end);
   size_t length = t.tellg();
@@ -154,8 +155,8 @@ void XrtBinStream::burn(xclDeviceHandle handle) {
       << "burning " << to_string(uuid_);
   const xclBin* blob = (const xclBin*)data_;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  CHECK_EQ(xclLockDevice(handle), 0) << "Cannot lock device";
-  CHECK_EQ(xclLoadXclBin(handle, blob), 0) << "Bitstream download failed !";
+  UNI_LOG_CHECK(xclLockDevice(handle) == 0, VART_LOCK_DEVICE_FAIL);
+  UNI_LOG_CHECK(xclLoadXclBin(handle, blob) ==0 , VART_LOAD_XCLBIN_FAIL);
 }
 std::array<unsigned char, sizeof(xuid_t)> XrtBinStream::get_uuid() const {
   auto ret = std::array<unsigned char, sizeof(xuid_t)>();
@@ -164,7 +165,7 @@ std::array<unsigned char, sizeof(xuid_t)> XrtBinStream::get_uuid() const {
 }
 size_t XrtBinStream::get_num_of_cu() const { return cu_names_.size(); }
 std::string XrtBinStream::get_cu(size_t idx) const {
-  CHECK_LT(idx, indices_.size());
+  UNI_LOG_CHECK(idx < indices_.size(), VART_OUT_OF_RANGE) << " current cu index larger than the total size!";
   return cu_names_[indices_[idx]];
 }
 uint64_t XrtBinStream::get_cu_base_addr(size_t idx) const {

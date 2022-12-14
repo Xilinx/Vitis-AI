@@ -19,6 +19,7 @@ project(target-factory VERSION 3.0.0 LANGUAGES C CXX)
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
+option(ENABLE_IPU "build IPU backend" OFF)
 
 find_package(glog)
 if(BUILD_SHARED_LIBS)

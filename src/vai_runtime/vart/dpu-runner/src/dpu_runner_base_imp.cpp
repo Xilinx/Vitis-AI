@@ -17,6 +17,7 @@
 
 #include <sys/stat.h>
 
+#include <UniLog/UniLog.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <iomanip>
@@ -39,7 +40,6 @@ DEF_ENV_PARAM(XLNX_SHOW_DPU_COUNTER, "0");
 DEF_ENV_PARAM_2(XLNX_GOLDEN_DIR, "", std::string);
 DEF_ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK, "1");
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER_DRY_RUN, "0");
-
 
 static bool xlnx_enable_compare_mode() {
   return !ENV_PARAM(XLNX_GOLDEN_DIR).empty();
@@ -102,12 +102,13 @@ std::vector<const xir::Tensor*> DpuRunnerBaseImp::get_output_tensor(
 }
 
 static int get_reg_index(const std::string& reg_id) {
-  CHECK(reg_id.size() >= 5 &&  //
-        reg_id[0] == 'R' &&    //
-        reg_id[1] == 'E' &&    //
-        reg_id[2] == 'G' &&    //
-        reg_id[3] == '_' &&    //
-        reg_id[4] >= '0' && reg_id[4] <= '9')
+  UNI_LOG_CHECK(reg_id.size() >= 5 &&    //
+                    reg_id[0] == 'R' &&  //
+                    reg_id[1] == 'E' &&  //
+                    reg_id[2] == 'G' &&  //
+                    reg_id[3] == '_' &&  //
+                    reg_id[4] >= '0' && reg_id[4] <= '9',
+                VART_DPU_INFO_ERROR)
       << "reg id is not support! reg_id = " << reg_id;
   return reg_id[4] - '0';
 }
@@ -209,7 +210,7 @@ static std::unique_ptr<vitis::ai::DimCalc> create_dim_calc(
 }
 
 static void mkdir_minus_p(const std::string& dirname) {
-  CHECK(std::filesystem::create_directories(dirname))
+  UNI_LOG_CHECK(std::filesystem::create_directories(dirname), VART_SYSTEM_ERROR)
       << "cannot create directories: " << dirname;
 }
 
@@ -306,7 +307,8 @@ void DpuRunnerBaseImp::dump_tensor(const my_tensor_t& tensor) {
   for (auto engine_id = 0u; engine_id < num_of_engines; ++engine_id) {
     auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
     auto offset = base + tensor_offset;
-    CHECK_NE(base, std::numeric_limits<uint64_t>::max())
+    UNI_LOG_CHECK(base != std::numeric_limits<uint64_t>::max(),
+                  VART_DPU_INFO_ERROR)
         << "NUM_OF_DPU_REGS " << NUM_OF_DPU_REGS << " "  //
         << "engine_id " << engine_id << " "              //
         << "reg_id " << reg_id << " "                    //
@@ -315,7 +317,7 @@ void DpuRunnerBaseImp::dump_tensor(const my_tensor_t& tensor) {
                                       engine_id, tensor_layer_name);
 
     auto buf = std::vector<char>(tensor_size);
-    CHECK_EQ(buf.size(), (unsigned)tensor_size);
+    UNI_LOG_CHECK(buf.size() == (unsigned)tensor_size, VART_SIZE_MISMATCH);
     auto ok =
         download_tensor_data_by_stride(buf, tensor.get_xir_tensor(), offset);
 
@@ -356,10 +358,10 @@ void DpuRunnerBaseImp::upload_tensor(const my_tensor_t& tensor) {
   auto tensor_layer_name = layer_name(tensor.get_name());
   auto tensor_offset = tensor.get_ddr_addr();
   auto tensor_size = tensor.get_feature_map_size();
-//  constexpr auto NUM_OF_DPU_REGS = 8;
-//  auto engine_id = 0u;  // TODO: update for other tensors?
-//  auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
-//  auto offset = base + tensor_offset;
+  //  constexpr auto NUM_OF_DPU_REGS = 8;
+  //  auto engine_id = 0u;  // TODO: update for other tensors?
+  //  auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
+  //  auto offset = base + tensor_offset;
 
   auto golden_dirname = ENV_PARAM(XLNX_GOLDEN_DIR);
   std::string golden_filename =
@@ -384,14 +386,15 @@ void DpuRunnerBaseImp::upload_tensor(const my_tensor_t& tensor) {
   for (auto engine_id = 0u; engine_id < num_of_engines; ++engine_id) {
     auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
     auto offset = base + tensor_offset;
-    CHECK_NE(base, std::numeric_limits<uint64_t>::max())
+    UNI_LOG_CHECK(base != std::numeric_limits<uint64_t>::max(),
+                  VART_DPU_INFO_ERROR)
         << "NUM_OF_DPU_REGS " << NUM_OF_DPU_REGS << " "  //
         << "engine_id " << engine_id << " "              //
         << "reg_id " << reg_id << " "                    //
         ;
     // auto ok = device_memory_->upload(&input_data[0], offset, tensor_size);
-    auto ok =
-        update_tensor_data_by_stride(input_data, tensor.get_xir_tensor(), offset);
+    auto ok = update_tensor_data_by_stride(input_data, tensor.get_xir_tensor(),
+                                           offset);
 
     auto upload_ok = ok ? "success" : "fail";
     LOG(INFO) << "XLNX_GOLDEN_DIR: upload data " << upload_ok << " ! "
@@ -430,7 +433,7 @@ void DpuRunnerBaseImp::clear_tensor(const my_tensor_t& tensor) {
     auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
     auto offset = base + tensor_offset;
     auto buf = std::vector<char>(tensor_size);
-    CHECK_EQ(buf.size(), (unsigned)tensor_size);
+    UNI_LOG_CHECK(buf.size() == (unsigned)tensor_size, VART_SIZE_MISMATCH);
     for (auto i = 0u; i < tensor_size; i++) {
       buf[i] = (char)(i & 0xff);
     }
@@ -479,13 +482,14 @@ void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
   for (auto engine_id = 0u; engine_id < num_of_engines; ++engine_id) {
     auto base = regs_[engine_id * NUM_OF_DPU_REGS + reg_id];
     auto offset = base + tensor_offset;
-    CHECK_NE(base, std::numeric_limits<uint64_t>::max())
+    UNI_LOG_CHECK(base != std::numeric_limits<uint64_t>::max(),
+                  VART_SIZE_MISMATCH)
         << "NUM_OF_DPU_REGS " << NUM_OF_DPU_REGS << " "  //
         << "engine_id " << engine_id << " "              //
         << "reg_id " << reg_id << " "                    //
         ;
     auto buf = std::vector<char>(tensor_size);
-    CHECK_EQ(buf.size(), (unsigned)tensor_size);
+    UNI_LOG_CHECK(buf.size() == (unsigned)tensor_size, VART_SIZE_MISMATCH);
     auto ok =
         download_tensor_data_by_stride(buf, tensor.get_xir_tensor(), offset);
 
@@ -501,7 +505,8 @@ void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
       if (!is_exist_file(golden_filename)) {
         LOG(INFO) << "XLNX_GOLDEN_DIR: compare data failed ! golden file is "
                      "not exist : "
-                  << "layer_name " << tensor_layer_name << " " << dump_md5 << " ";
+                  << "layer_name " << tensor_layer_name << " " << dump_md5
+                  << " ";
         return;
       }
       auto gloden_md5 = xir::get_md5_of_file(golden_filename);
@@ -523,14 +528,15 @@ void DpuRunnerBaseImp::compare_tensor(const my_tensor_t& tensor) {
 
     } else {
       LOG(INFO) << "XLNX_GOLDEN_DIR: download data failed ! "
-                << "layer_name " << tensor_layer_name << " "                  //
-                << "device_core_id " << session_->get_device_core_id() << " " //
-                << "batch_idx " << engine_id << " "                           //
-                << "reg_id " << reg_id << " "                                 //
-                << "base " << base << " "                                     //
-                << "tensor_offset " << tensor_offset << " "                   //
-                << "offset " << offset << " "                                 //
-                << "tensor_size " << tensor_size << " "                       //
+                << "layer_name " << tensor_layer_name << " "  //
+                << "device_core_id " << session_->get_device_core_id()
+                << " "                                       //
+                << "batch_idx " << engine_id << " "          //
+                << "reg_id " << reg_id << " "                //
+                << "base " << base << " "                    //
+                << "tensor_offset " << tensor_offset << " "  //
+                << "offset " << offset << " "                //
+                << "tensor_size " << tensor_size << " "      //
                 << " ";
     }
   }
@@ -540,7 +546,7 @@ const my_tensor_t& DpuRunnerBaseImp::find_tensor(const std::string& name) {
   auto it = std::find_if(
       session_->my_all_tensors_.begin(), session_->my_all_tensors_.end(),
       [&name](const auto& tensor) { return tensor.get_name() == name; });
-  CHECK(it != session_->my_all_tensors_.end())
+  UNI_LOG_CHECK(it != session_->my_all_tensors_.end(), VART_TENSOR_INFO_ERROR)
       << "cannot find tensor: tensor name=" << name;
   return *it;
 }
@@ -725,11 +731,12 @@ bool DpuRunnerBaseImp::check_fingerprint(size_t device_core_id) {
   }
   if (!ret) {
     LOG_IF(WARNING, model_fingerprint != 0u && dpu_fingerprint != 0u)
-        << "CHECK fingerprint fail ! model_fingerprint 0x"   //
-        << std::hex << model_fingerprint << std::dec << " "  //
-        << "dpu_fingerprint 0x"                              //
-        << std::hex << dpu_fingerprint << std::dec << " "    //
-        ;
+        << "CHECK fingerprint fail! model_fingerprint 0x"      //
+        << std::hex << model_fingerprint                       //
+        << " is un-matched with actual dpu_fingerprint 0x"     //
+        << dpu_fingerprint << ". "                             //
+        << "Please re-compile xmodel with dpu_fingerprint 0x"  //
+        << dpu_fingerprint << std::dec << " and try again.";
   }
   return ret;
 }

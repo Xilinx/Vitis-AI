@@ -17,6 +17,7 @@
 
 #include <glog/logging.h>
 
+#include <UniLog/UniLog.hpp>
 #include <chrono>
 #include <limits>
 #include <vitis/ai/env_config.hpp>
@@ -89,16 +90,18 @@ static int find_tensor_index(std::vector<vart::TensorBuffer*> tensor_buffers,
       break;
     }
   }
-  CHECK_NE(ret, -1) << "cannot find tensor! name=" << name;
+  UNI_LOG_CHECK(ret != -1, VART_TENSOR_INFO_ERROR)
+      << "cannot find tensor! name=" << name;
   return ret;
 }
 
 static vart::TensorBuffer::location_t get_location(
     const std::vector<vart::TensorBuffer*>& input) {
-  CHECK(!input.empty());
+  UNI_LOG_CHECK(!input.empty(), VART_SIZE_MISMATCH) << "input tensor is empty!";
   auto ret = input[0]->get_location();
   for (auto i = 1u; i < input.size(); ++i) {
-    CHECK_EQ((int)ret, (int)input[i]->get_location())
+    UNI_LOG_CHECK((int)ret == (int)input[i]->get_location(),
+                  VART_TENSOR_INFO_ERROR)
         << " all tensor buffer must have same location: tensor="
         << input[i]->get_tensor()->to_string();
   }
@@ -144,8 +147,9 @@ void DpuRunnerDdr::prepare_input_for_reg(
           (size_t)location - (size_t)vart::TensorBuffer::location_t::DEVICE_0;
     }
     auto device_core_id = session_->get_device_core_id();
-    CHECK_EQ(device_id,
-             session_->get_dpu_controller()->get_device_id(device_core_id));
+    UNI_LOG_CHECK(device_id == session_->get_dpu_controller()->get_device_id(
+                                   device_core_id),
+                  VART_DEVICE_MISMATCH);
     ret.insert(ret.end(), tensor_buffers.begin(), tensor_buffers.end());
   }
 }
@@ -155,7 +159,8 @@ std::vector<vart::TensorBuffer*> DpuRunnerDdr::prepare_input(
     const std::vector<vart::TensorBuffer*>& output) {
   auto ret = std::vector<vart::TensorBuffer*>{};
   auto session = dynamic_cast<DpuSessionImp*>(session_);
-  CHECK(session != nullptr) << "session = " << (void*)session_;
+  UNI_LOG_CHECK(session != nullptr, VART_NULL_PTR)
+      << "session = " << (void*)session_;
   auto reg_base = session->get_reg_base();
   // first add my bases, and overwrite by `input` or `output` if any,
   // see fillin_reg_reg for detail
@@ -174,7 +179,7 @@ std::pair<uint32_t, int> DpuRunnerDdr::execute_async(
     const std::vector<vart::TensorBuffer*>& input,
     const std::vector<vart::TensorBuffer*>& output) {
   __TIC__(DPU_RUNNER_COPY_INPUT);
-  CHECK(my_input_.empty());
+  UNI_LOG_CHECK(my_input_.empty(), VART_SIZE_MISMATCH);
   my_input_ = prepare_input(input, output);
   __TOC__(DPU_RUNNER_COPY_INPUT);
   __TIC__(DPU_RUNNER)
@@ -214,24 +219,25 @@ int DpuRunnerDdr::wait(int jobid, int timeout) { return 0; }
 
 static size_t get_reg_id(const xir::Tensor* tensor) {
   auto ret = std::numeric_limits<size_t>::max();
-  DCHECK(tensor->has_attr("reg_id")) << "tensor.name" << tensor->get_name();
+  UNI_LOG_CHECK(tensor->has_attr("reg_id"), VART_TENSOR_INFO_ERROR)
+      << "tensor.name" << tensor->get_name();
   ret = (size_t)tensor->get_attr<int>("reg_id");
   return ret;
 }
 
 static int get_ddr_addr(const xir::Tensor* tensor) {
   auto ret = -1;
-  DCHECK(tensor->has_attr("ddr_addr"));
-  DCHECK(tensor->has_attr("location"));
+  UNI_LOG_CHECK(tensor->has_attr("ddr_addr"), VART_TENSOR_INFO_ERROR);
+  UNI_LOG_CHECK(tensor->has_attr("location"), VART_TENSOR_INFO_ERROR);
   // not on-chip, TODO: rename 1 to a const symbol
-  DCHECK_EQ(tensor->get_attr<int>("location"), 1);
+  UNI_LOG_CHECK(tensor->get_attr<int>("location") == 1, VART_TENSOR_INFO_ERROR);
   ret = tensor->get_attr<int>("ddr_addr");
   return ret;
 }
 
 void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
                                 std::vector<uint64_t>& gen_reg) {
-  CHECK_NE(my_input_.size(), 0u);
+  UNI_LOG_CHECK(my_input_.size() != 0u, VART_SIZE_MISMATCH);
   auto num_of_batch = (int)session_->get_num_of_engines();
   auto num_of_regs =
       const_cast<const xir::DpuController*>(session_->get_dpu_controller())
@@ -242,17 +248,20 @@ void DpuRunnerDdr::fill_gen_reg(size_t device_core_id,
     auto dims = reg->get_tensor()->get_shape();
     auto dim_idx = std::vector<int32_t>(dims.size());
     auto reg_id = get_reg_id(reg->get_tensor());
-    CHECK(reg_id >= 0 && reg_id < MAX_REG_ID_SIZE)
-      << "reg_id = " << reg_id
-      << ", tensor_name = " << reg->get_tensor()->get_name();
+    UNI_LOG_CHECK(reg_id >= 0 && reg_id < MAX_REG_ID_SIZE, VART_DPU_INFO_ERROR)
+        << "reg_id = " << reg_id
+        << ", tensor_name = " << reg->get_tensor()->get_name();
     int ddr_addr = get_ddr_addr(reg->get_tensor());
-    for (auto batch_idx = 0; batch_idx < num_of_batch; ++batch_idx) {
+    auto base_reg_flag = reg->get_tensor()->get_name().find("__reg__") == 0;
+    auto reg_batch = base_reg_flag ? num_of_batch : dims[0];
+    for (auto batch_idx = 0; batch_idx < reg_batch; ++batch_idx) {
       auto idx2 = std::min(batch_idx, reg->get_tensor()->get_shape()[0] - 1);
       dim_idx[0] = idx2;
       uint64_t base;
       size_t size;
       std::tie(base, size) = reg->data_phy(dim_idx);
-      CHECK_NE(size, 0u);
+      UNI_LOG_CHECK(size != 0u, VART_DPU_ALLOC_ERROR)
+          << "data_phy size is 0, please check!";
       // move get_ddr_addr() out of this loop to improve perf;
       // int ddr_addr = get_ddr_addr(reg->get_tensor());
       base = base - ddr_addr;

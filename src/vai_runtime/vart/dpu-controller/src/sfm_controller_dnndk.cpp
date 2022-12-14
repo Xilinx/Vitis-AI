@@ -176,8 +176,6 @@ void SfmControllerDnndk::run(const int8_t* input, float scale, unsigned int cls,
       reg.height = this_batch;
       reg.input = input_phy;
       reg.output = output_phy;
-      CHECK_LE(input_phy, 0xffffffff) << "only support 32bit input address";
-      CHECK_LE(output_phy, 0xffffffff) << "only support 32bit output address";
       reg.scale = fix_pos;
       reg.offset = offset;
 #ifdef __QNX__

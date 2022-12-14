@@ -16,6 +16,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <typeinfo>
 #include <utility>
@@ -68,6 +69,19 @@ class TensorBuffer {
    */
   static void copy_tensor_buffer(vart::TensorBuffer* tb_from,
                                  vart::TensorBuffer* tb_to);
+
+  /**
+   * @brief create unowned device tensor buffer for input
+   * tensor by device address which can be managed by XRT
+   * for example: host phy ddr
+   * @param
+   *   tensor: input tensor pointer
+   *   batch_addr : array that contains phy addr for each batch
+   *   addr_arrsize: array size which also means used batch size
+   * @return the unique_ptr of created tensor buffer
+   */
+  static std::unique_ptr<TensorBuffer> create_unowned_device_tensor_buffer(
+      const xir::Tensor* tensor, uint64_t batch_addr[], size_t addr_arrsize);
 
  public:
   /**

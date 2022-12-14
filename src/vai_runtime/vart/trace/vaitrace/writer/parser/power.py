@@ -15,6 +15,7 @@
 
 from writer.parser.tracepointUtil import *
 
+
 def analyse_power(data):
     power_report = {}
 

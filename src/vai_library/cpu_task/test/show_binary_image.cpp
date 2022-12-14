@@ -26,9 +26,9 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
   cxxopts::Options parser_def(argv[0], "show image");
-  std::string file_name;
-  int width;
-  int height;
+  std::string file_name = "";
+  int width = 0;
+  int height = 0;
   int top = 0;
   int left = 0;
   int bottom = 0;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
        << "elt_size " << elt_size << " "                //
        << std::hex << "0x" << mask << " " << std::dec << endl;
   ;
-  vector<char> buf;
+  auto buf = vector<char>();
   buf.resize((size_t)width * height * num_of_channels * elt_size);
   CHECK(std::ifstream(file_name).read((char*)&buf[0], buf.size()).good())
       << "failed to read baseline from " << file_name;

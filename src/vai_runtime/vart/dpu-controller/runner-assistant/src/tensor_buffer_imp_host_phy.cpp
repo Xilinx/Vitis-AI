@@ -16,6 +16,7 @@
 
 #include "./tensor_buffer_imp_host_phy.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <sstream>
 #include <xir/tensor/tensor.hpp>
 
@@ -53,7 +54,7 @@ TensorBufferExtImpHostPhy::TensorBufferExtImpHostPhy(
           std::unique_ptr<xir::Tensor>(const_cast<xir::Tensor*>(get_tensor()))},
       buffer_objects_(
           create_bo((size_t)tensor->get_shape()[0],
-                    tensor->get_data_size() / tensor->get_shape()[0],  //
+                    (int64_t)((uint32_t)tensor->get_data_size()) / tensor->get_shape()[0],  //
                     device_id, cu_name)) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR))
       << "TensorBufferExtImpHostPhy "
@@ -61,7 +62,7 @@ TensorBufferExtImpHostPhy::TensorBufferExtImpHostPhy(
   if (content != nullptr && !content->empty()) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR))
         << " init phy tensor buffer with " << content->size() << " bytes";
-    CHECK_EQ(buffer_objects_.size(), 1u)
+    UNI_LOG_CHECK(buffer_objects_.size() == 1u, VART_TENSOR_INFO_ERROR)
         << " for constant buffer object, we do not support batch ";
     buffer_objects_[0]->copy_from_host(&(*content)[0], content->size(), 0u);
   }
@@ -79,16 +80,17 @@ std::pair<uint64_t, size_t> TensorBufferExtImpHostPhy::data_x(
     const std::vector<std::int32_t> idx_orig, int phy) {
   auto dims = get_tensor()->get_shape();
   auto batch = dims[0];
-  CHECK_EQ((size_t)batch, buffer_objects_.size());
+  UNI_LOG_CHECK((size_t)batch == buffer_objects_.size(), VART_TENSOR_INFO_ERROR);
   dims[0] = 1;
   auto calc = vitis::ai::DimCalc(dims);
   auto idx = std::vector<int32_t>(idx_orig);
   auto batch_idx = idx[0];
   idx[0] = 0;
   auto offset = calc.offset(idx);
-  CHECK_LT(batch_idx, buffer_objects_.size()) << " this=" << this->to_string();
+  UNI_LOG_CHECK((size_t)batch_idx < buffer_objects_.size(), VART_TENSOR_INFO_ERROR)
+    << " this=" << this->to_string();
   // auto size = buffer_objects_[batch_idx]->size() - offset;
-  auto size = get_tensor()->get_data_size() - offset;
+  auto size = (size_t)((uint32_t)get_tensor()->get_data_size()) - offset;
   LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR)) << "size: " << size;
   uint64_t ret = 0u;
   if (phy) {
@@ -129,19 +131,19 @@ void TensorBufferExtImpHostPhy::sync_for_write(uint64_t offset, size_t size) {
 void TensorBufferExtImpHostPhy::copy_from_host(size_t batch_idx,
                                                const void* buf, size_t size,
                                                size_t offset) {
-  CHECK_LT(batch_idx, buffer_objects_.size());
+  UNI_LOG_CHECK(batch_idx < buffer_objects_.size(), VART_TENSOR_INFO_ERROR);
   buffer_objects_[batch_idx]->copy_from_host(buf, size, offset);
 }
 
 void TensorBufferExtImpHostPhy::copy_to_host(size_t batch_idx, void* buf,
                                              size_t size, size_t offset) {
-  CHECK_LT(batch_idx, buffer_objects_.size());
+  UNI_LOG_CHECK(batch_idx < buffer_objects_.size(), VART_TENSOR_INFO_ERROR);
   buffer_objects_[batch_idx]->copy_to_host(buf, size, offset);
 }
 
 XclBo TensorBufferExtImpHostPhy::get_xcl_bo(int batch_index) const {
   auto ret = XclBo{nullptr, 0u};
-  CHECK_LT(batch_index, (int)buffer_objects_.size());
+  UNI_LOG_CHECK(batch_index < (int)buffer_objects_.size(), VART_TENSOR_INFO_ERROR);
   auto bo = buffer_objects_[batch_index]->get_xcl_bo();
   ret.xcl_handle = bo.xcl_handle;
   ret.bo_handle = bo.bo_handle;

@@ -23,6 +23,8 @@
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
 #include <vitis/ai/xxd.hpp>
+#include <UniLog/UniLog.hpp>
+
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0");
 DEF_ENV_PARAM(XLNX_ENABLE_DEBUG_MODE, "0");
 DEF_ENV_PARAM(XLNX_ENABLE_DUMP_PARAMTER, "0");
@@ -100,7 +102,7 @@ void DpuKernel::my_load_parameter() {
             "reg_id_to_parameter_value");
   }
 
-  CHECK(subgraph_->has_attr("reg_id_to_context_type"));
+  UNI_LOG_CHECK(subgraph_->has_attr("reg_id_to_context_type"), VART_XMODEL_ERROR);
   auto reg_id_to_context_type =
       subgraph_->get_attr<std::map<std::string, std::string>>(
           "reg_id_to_context_type");
@@ -113,7 +115,7 @@ void DpuKernel::my_load_parameter() {
       continue;
     }
     auto it_value = reg_id_to_parameter_value.find(reg_id);
-    CHECK(it_value != reg_id_to_parameter_value.end())
+    UNI_LOG_CHECK(it_value != reg_id_to_parameter_value.end(), VART_XMODEL_ERROR)
         << "cannot find CONST REG values:"
         << " subgraph name= " << subgraph_->get_name()
         << " reg_id = " << reg_id;
@@ -140,7 +142,7 @@ void DpuKernel::my_load_parameter() {
 void DpuKernel::my_load_release_code() {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "loading release code for " << subgraph_->get_graph()->get_name();
-  CHECK(subgraph_->has_attr("mc_code"))
+  UNI_LOG_CHECK(subgraph_->has_attr("mc_code"), VART_XMODEL_ERROR)
       << "subgraph_->get_name() " << subgraph_->get_name() << " "  //
       << "attrs: " << subgraph_->get_attrs()->debug_info();
   auto& mc_code = subgraph_->get_attr<std::vector<char>>("mc_code");
@@ -149,10 +151,10 @@ void DpuKernel::my_load_release_code() {
 }
 
 void DpuKernel::my_load_debug_code() {
-  CHECK(subgraph_->has_attr("children_topological_sort"))
+  UNI_LOG_CHECK(subgraph_->has_attr("children_topological_sort"), VART_XMODEL_ERROR)
       << "subgraph_->get_name() " << subgraph_->get_name() << " "  //
       << "attrs: " << subgraph_->get_attrs()->debug_info();
-  CHECK(!subgraph_->is_leaf())
+  UNI_LOG_CHECK(!subgraph_->is_leaf(), VART_XMODEL_ERROR)
       << "subgraph_->get_name() " << subgraph_->get_name() << " "  //
       << "attrs: " << subgraph_->get_attrs()->debug_info();
   auto children = subgraph_->get_children();
@@ -168,7 +170,8 @@ void DpuKernel::my_load_debug_code() {
     auto child_subg = std::find_if(
         children.begin(), children.end(),
         [&child_name](auto subg) { return subg->get_name() == child_name; });
-    CHECK(child_subg != children.end()) << "cannot find subg " << child_name;
+    UNI_LOG_CHECK(child_subg != children.end(), VART_XMODEL_ERROR)
+      << "cannot find subg " << child_name;
     auto has_mc_code = (*child_subg)->has_attr("mc_code");
     if (has_mc_code) {
       auto& mc_code = (*child_subg)->get_attr<std::vector<char>>("mc_code");
@@ -183,8 +186,8 @@ void DpuKernel::my_load_debug_code() {
 static std::vector<DpuReg> create_workspaces(const xir::Subgraph& subgraph) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "get workspace sizes for " << subgraph.get_graph()->get_name();
-  CHECK(subgraph.has_attr("reg_id_to_context_type"));
-  CHECK(subgraph.has_attr("reg_id_to_size"));
+  UNI_LOG_CHECK(subgraph.has_attr("reg_id_to_context_type"), VART_XMODEL_ERROR);
+  UNI_LOG_CHECK(subgraph.has_attr("reg_id_to_size"), VART_XMODEL_ERROR);
   auto reg_id_to_size =
       subgraph.get_attr<std::map<std::string, int>>("reg_id_to_size");
   auto reg_id_to_context_type =
@@ -199,24 +202,26 @@ static std::vector<DpuReg> create_workspaces(const xir::Subgraph& subgraph) {
       continue;
     }
     auto it_size = reg_id_to_size.find(reg_id);
-    CHECK(it_size != reg_id_to_size.end());
+    UNI_LOG_CHECK(it_size != reg_id_to_size.end(), VART_SIZE_MISMATCH);
     auto size = it_size->second;
     ret.emplace_back(reg_id, size);
     total = total + size;
   }
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "total workspace size = " << total;
-  CHECK_GT(total, 0u) << "workspace size must not empty";
+  UNI_LOG_CHECK(total > 0u, VART_SIZE_MISMATCH)
+    << "workspace size must not empty";
   return ret;
 }
 
 const xir::Subgraph* DpuKernel::get_subgraph1(size_t idx) const {
   if (super_layer_subgraph_.empty()) {
     // release mode
-    CHECK_EQ(idx, 0u) << "LOGICIAL ERROR";
+    UNI_LOG_CHECK(idx == 0u, VART_XMODEL_ERROR) << "LOGICIAL ERROR";
     return subgraph_;
   }
-  CHECK_LT(idx, super_layer_subgraph_.size()) << "LOGICAL ERROR";
+  UNI_LOG_CHECK(idx < super_layer_subgraph_.size(), VART_OUT_OF_RANGE)
+    << "LOGICAL ERROR";
   return super_layer_subgraph_[idx];
 }
 

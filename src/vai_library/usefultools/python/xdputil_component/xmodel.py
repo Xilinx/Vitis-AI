@@ -103,11 +103,12 @@ def create_dpu_result(s: "Subgraph"):
         cont_type_2 = s.get_attr("reg_id_to_context_type_v2")
         for k, v in cont_type_2.items():
             if v == "INTERFACE":
-                if int(k[-1]) in input_id_set and int(k[-1]) in output_id_set:
+                reg_id = int(k.replace("REG_",""))
+                if reg_id in input_id_set and reg_id in output_id_set:
                     v = "DATA_LOCAL"
-                elif int(k[-1]) in input_id_set:
+                elif reg_id in input_id_set:
                     v = "DATA_LOCAL_INPUT"
-                elif int(k[-1]) in output_id_set:
+                elif reg_id in output_id_set:
                     v = "DATA_LOCAL_OUTPUT"
                 else:
                     v = "INVALID TYPE: " + v

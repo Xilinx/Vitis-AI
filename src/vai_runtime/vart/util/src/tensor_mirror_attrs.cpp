@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-#include "vart/assistant/tensor_mirror_attrs.hpp"
+#include "vart/tensor_mirror_attrs.hpp"
 
 #include <sstream>
 namespace vart {
-namespace assistant {
 
 std::unique_ptr<TensorMirrorAttrs> TensorMirrorAttrs::create(
     const xir::Tensor* other, const std::vector<std::int32_t> shape,
@@ -126,5 +125,4 @@ const std::string TensorMirrorAttrs::to_string(
   return str.str();
 }
 
-}  // namespace assistant
 }  // namespace vart

@@ -14,10 +14,14 @@
 # limitations under the License.
 
 from ctypes import *
-import sys, os, time, atexit
+import sys
+import os
+import time
+import atexit
 import copy
 
 available_boards = ["zcu102", "zcu104", "vck190", "kv260"]
+
 
 class hwmon_ina226:
     def __init__(self, path, libpath='/usr/lib/libpowermon.so'):
@@ -43,7 +47,7 @@ class hwmon_ina226:
 
         # check_board
         host_name = os.uname().nodename
-        #'xilinx-zcu102-20221'
+        # 'xilinx-zcu102-20221'
 
         for b in available_boards:
             if host_name.find(b) >= 0:
@@ -80,7 +84,8 @@ class hwmon_ina226:
                     self.v.append(os.path.abspath(os.path.join(r, f)))
 
         self.powerLib.get_device_volt.restype = c_int
-        self.volt = max([int(self.powerLib.get_device_volt(v.encode())) for v in self.v]) / 1000.0
+        self.volt = max([int(self.powerLib.get_device_volt(v.encode()))
+                        for v in self.v]) / 1000.0
 
         if self.volt == 0:
             print("Err: Invalid path [%s]" % path)
@@ -92,21 +97,23 @@ class hwmon_ina226:
         if self.valid == False:
             return 0
         self.powerLib.get_device_curr.restype = c_int
-        curr = max([int(self.powerLib.get_device_curr(c.encode())) for c in self.c]) / 1000.0
+        curr = max([int(self.powerLib.get_device_curr(c.encode()))
+                   for c in self.c]) / 1000.0
         return self.sample_phases * curr
 
     def sample_power(self):
         if self.valid == False:
             return 0
         self.powerLib.get_device_power.restype = c_int
-        power = max([int(self.powerLib.get_device_power(p.encode())) for p in self.p]) / 1000.0 / 1000.0
+        power = max([int(self.powerLib.get_device_power(p.encode()))
+                    for p in self.p]) / 1000.0 / 1000.0
         return self.sample_phases * power
-
 
 
 mons = []
 power_records = []
 sys_hw_mon = "/sys/class/hwmon/"
+
 
 def print_statistics():
     idle_power = min(power_records)
@@ -119,6 +126,7 @@ def print_statistics():
 
     print("\n\n{}\n{}\n{}".format(report_separator, report_str, report_separator))
 
+
 for i in range(0, 100):
     mon_path = os.path.join(sys_hw_mon, "hwmon%d" % i)
     if os.path.exists(mon_path):
@@ -130,16 +138,14 @@ if __name__ == "__main__":
     try:
         while True:
             power = 0
-        
+
             for m in mons:
                 #print("%5.4f" % (m.sample_power()), end = " " )
                 power += m.sample_power()
-        
+
             print("%.3f" % power)
             print("-" * 10)
             power_records.append(power)
             time.sleep(0.2)
     except KeyboardInterrupt:
         print_statistics()
-    
-

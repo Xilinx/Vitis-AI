@@ -101,7 +101,8 @@ if __name__ == "__main__":
     n_models = len(xmodels)
 
     logging.info("%s%s%s" % (50 * "=", "[START]", 50 * "="))
-    csv_header = ['xmodel', 'dpu_name', 'subgraph_name', 'subgraph_depth', 'load_img_size', "load_para_size", "save_size", "workload", "mc_len"]
+    csv_header = ['xmodel', 'dpu_name', 'subgraph_name', 'subgraph_depth',
+                  'load_img_size', "load_para_size", "save_size", "workload", "mc_len"]
     csv_f = open(CSV_PATH, 'w', encoding='utf-8')
     csv_writer = csv.writer(csv_f)
     csv_writer.writerow(csv_header)
@@ -147,7 +148,8 @@ if __name__ == "__main__":
                         logging_prefix + "ERROR: Parsing time consuming: {:.3f} s, mc_size: {:,}".format(t_subgraph_dur, len(mc_str)))
                 logging.info(logging_prefix + 80 * "-")
                 #csv_header = ['xmodel', 'dpu_name', 'subgraph_name', 'subgraph_depth', 'load_img_size', "load_para_size", "save_size", "workload", "mc_len"]
-                csv_writer.writerow([xmodel_name, dpu_name, subg.get_name(), 1, load_img_size, load_para_size, save_size, workload, len(mc_str)])
+                csv_writer.writerow([xmodel_name, dpu_name, subg.get_name(
+                ), 1, load_img_size, load_para_size, save_size, workload, len(mc_str)])
 
             # process depth=1 subgraphs
             if xmodel_parse_depth == 1:
@@ -167,7 +169,8 @@ if __name__ == "__main__":
                     logging.info(logging_prefix + "Result: LoadImgSize: {:,}, LoadParaSize: {:,}, SaveSize: {:,}, Workload: {:,}".format
                                  (load_img_size, load_para_size, save_size, workload))
                     logging.info(logging_prefix + 80 * "-")
-                    csv_writer.writerow([xmodel_name, dpu_name, dp2_subg.get_name(), 2, load_img_size, load_para_size, save_size, workload, len(mc_str)])
+                    csv_writer.writerow([xmodel_name, dpu_name, dp2_subg.get_name(
+                    ), 2, load_img_size, load_para_size, save_size, workload, len(mc_str)])
         logging.info(80 * "-")
 
     logging.info("%s%s%s" % (50 * "=", "[END]", 50 * "="))

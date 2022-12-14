@@ -357,6 +357,7 @@ py::dict DPUCZDX8G_VIVADO_FLOW_DEVICE::get_private_data(
   uint32_t flags = 0x1E4;
   GET_DATA(fd, DPUIOC_REG_READ, flags);
   res["DPU Frequency (MHz)"] = data_slice(flags, 0, 12);
+  res["XRT Frequency (MHz)"] = data_slice(flags, 12, 24);
   return res;
 }
 

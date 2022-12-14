@@ -16,3 +16,4 @@
 
 #include "util.hpp"
 #include "time.hpp"
+#define CORE_N_MAX (32)

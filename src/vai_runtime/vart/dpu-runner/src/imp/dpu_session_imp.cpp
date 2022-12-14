@@ -21,6 +21,7 @@
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
 #include <xir/dpu_controller.hpp>
+#include <UniLog/UniLog.hpp>
 
 #include "../../runner/src/runner_helper.hpp"
 #include "./dpu_kernel_ddr.hpp"
@@ -176,7 +177,7 @@ std::vector<vart::TensorBuffer*> DpuSessionImp::get_outputs() {
 }
 
 void DpuSessionImp::set_subgraph_specific_attrs() {
-  CHECK(attrs_ != nullptr);
+  UNI_LOG_CHECK(attrs_ != nullptr, VART_NULL_PTR);
   auto device_id = dpu_controller_->get_device_id(device_core_id_);
   attrs_->set_attr<int>(
       kernel_->get_subgraph()->get_name() + ":__tensor_buffer_location__",
@@ -214,7 +215,8 @@ std::vector<vart::TensorBuffer*> DpuSessionImp::find_tensor_buffer(
         break;
       }
     }
-    CHECK(ret[i]) << "cannot find tensor name. name=" << names[i];
+    UNI_LOG_CHECK(ret[i], VART_TENSOR_INFO_ERROR)
+      << "cannot find tensor name. name=" << names[i];
   }
   return ret;
 }

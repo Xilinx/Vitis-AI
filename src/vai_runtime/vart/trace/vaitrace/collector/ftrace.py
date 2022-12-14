@@ -362,7 +362,7 @@ class ftraceCollector(collector.collectorBase.Collector):
             instOption = ftraceOption[name]
             traceType = instOption.get('type')
             if instOption.get('name', None) != name:
-                assert()
+                assert ()
 
             _saveTo = instOption.get('saveTo', None)
             self.ftraceSymMap = instOption.get("ftraceSymMap", {})
@@ -384,7 +384,7 @@ class ftraceCollector(collector.collectorBase.Collector):
                 for t in instOption.get("traceList", None):
                     traceInst.enableEvent(*t)
             else:
-                assert()
+                assert ()
 
             self.instances.append(traceInst)
 

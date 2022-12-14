@@ -46,7 +46,8 @@ def cpuTaskPaired(start: vaiTimelineEvent, end: vaiTimelineEvent):
 
 def convert_cpu_task(data):
     xmodel_info = select_trace(data, 'section', "XMODEL")
-    cpu_subgraph_info = [subg for subg in xmodel_info if  subg.get("device", "").lower() == 'cpu']
+    cpu_subgraph_info = [subg for subg in xmodel_info if subg.get(
+        "device", "").lower() == 'cpu']
 
     trace_data = select_trace_classes(data, ["cpu-task"])
     threads = {}
@@ -87,11 +88,13 @@ def convert_cpu_task(data):
         for s in cpu_subgraph_info:
             if s.get("subgraph_name", "") == subgraph_name:
                 op_list = s.get("op_list", "").split('|')
-                op_type = [op.split('@')[1] for op in op_list if len(op.split('@')) == 2]
+                op_type = [op.split('@')[1]
+                           for op in op_list if len(op.split('@')) == 2]
 
-                subg_op_desc = reduce(lambda x, y: "%s|%s" % (x,y), op_type)
+                subg_op_desc = reduce(lambda x, y: "%s|%s" % (x, y), op_type)
 
-        subg_op_desc = reduce(lambda x, y: "%s|%s" % (x,y), (set(subg_op_desc.split('|'))));
+        subg_op_desc = reduce(lambda x, y: "%s|%s" %
+                              (x, y), (set(subg_op_desc.split('|'))))
         ret.append("%s,%s,\n" % (i[0:-2], subg_op_desc))
 
     return ret

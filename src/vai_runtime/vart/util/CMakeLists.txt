@@ -22,6 +22,7 @@ add_library(
   ${COMPONENT_NAME}
   ${CMAKE_CURRENT_BINARY_DIR}/version.c
   include/vart/util_export.hpp
+  include/vart/tensor_mirror_attrs.hpp
   include/vitis/ai/simple_config.hpp
   include/vitis/ai/time_measure.hpp
   include/vitis/ai/dim_calc.hpp
@@ -31,6 +32,7 @@ add_library(
   include/vitis/ai/erl_msg_box.hpp
   include/vitis/ai/weak.hpp
   include/vitis/ai/with_injection.hpp
+  src/error_code.cpp
   src/simple_config.cpp
   src/dim_calc.cpp
   src/util_4bit.cpp
@@ -40,6 +42,7 @@ add_library(
   src/lock.cpp
   src/file_lock.hpp
   src/variable_bit.cpp
+  src/tensor_mirror_attrs.cpp
   include/vitis/ai/plugin.hpp
   src/plugin.cpp)
 

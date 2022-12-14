@@ -230,9 +230,10 @@ struct DecodeThread : public MyThread {
         is_camera_ ? new cv::VideoCapture(std::stoi(video_file_))
                    : new cv::VideoCapture(video_file_));
     if (!video_stream_->isOpened()) {
-      LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_VIDEO_OPEN_ERROR][cannot open "
-                    "video!]  video name: "
-                 << video_file_;
+      LOG(FATAL)
+          << "[UNILOG][FATAL][VAILIB_DEMO_VIDEO_OPEN_ERROR][Can not open "
+             "video stream!]  video name: "
+          << video_file_;
       stop();
     }
   }
@@ -386,7 +387,7 @@ static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
       pipeline, cv::CAP_GSTREAMER, 0, 25.0, cv::Size(width, height), true));
   auto& writer = *video_stream.get();
   if (!writer.isOpened()) {
-    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_GST_ERROR][failed to open "
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_GST_ERROR][Failed to open "
                   "gstreamer!] cannot open "
                << pipeline;
     return nullptr;
@@ -485,8 +486,8 @@ struct GuiThread : public MyThread {
           << "screen " << screen_size << "; r = " << rect;
       if ((rect.x + rect.width > width) || (rect.y + rect.height > height) ||
           (rect.x + rect.width < 1) || (rect.y + rect.height < 1)) {
-        LOG(FATAL)
-            << "[UNILOG][FATAL][VAILIB_DEMO_OUT_OF_BOUNDARY][out of boundary!]";
+        LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_OUT_OF_BOUNDARY][Gui rects "
+                      "out of boundary!]";
       }
     }
     int c = 0;
@@ -1115,8 +1116,9 @@ int main_for_classification_demo(
         }
       }
     } else {
-      LOG(FATAL) << "UNILOG][FATAL][VAILIB_DEMO_CANVAS_ERROR][canvas size is "
-                    "too small!]";
+      LOG(FATAL)
+          << "UNILOG][FATAL][VAILIB_DEMO_CANVAS_ERROR][Canvas image size is "
+             "too small!]";
     }
   }
   std::vector<Classification_Channel> channels;
@@ -1203,7 +1205,7 @@ int main_for_jpeg_demo(int argc, char* argv[],
       auto image_file_name = std::string{argv[i]};
       auto image = cv::imread(image_file_name);
       if (image.empty()) {
-        LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_IMAGE_LOAD_ERROR][failed to "
+        LOG(FATAL) << "[UNILOG][FATAL][VAILIB_DEMO_IMAGE_LOAD_ERROR][Failed to "
                       "load image!]cannot load "
                    << image_file_name << std::endl;
         abort();

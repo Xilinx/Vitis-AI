@@ -161,7 +161,7 @@ builtInFunctions = {
 
 trace_va_timeout = 60
 trace_xat_timeout = 60
-trace_max_timeout = 60
+trace_max_timeout = 120
 trace_fg_timeout = 30
 trace_max_fg_timeout = 60
 
@@ -170,6 +170,14 @@ default_runmode = "normal"
 
 traceCfgDefaule = {
     'collector': {},
+    'tracer': {
+        'power': {
+            'disable': True,
+        },
+        'sched': {
+            'disable': True,
+        },
+    },
     'trace': {
         "enable_trace_list": ["vitis-ai-library", "vart", "xnnpp_post_process", "opencv", "custom"]
     },

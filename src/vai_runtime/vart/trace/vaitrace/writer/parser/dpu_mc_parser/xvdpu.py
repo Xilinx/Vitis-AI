@@ -46,6 +46,8 @@ class xvdpu_InstParser(dpuMcParserBase):
         else:
             pass
 
+
 register(xvdpu_InstParser("DPUCVDX8G_ISA1"))
 register(xvdpu_InstParser("DPUCVDX8G_ISA2"))
 register(xvdpu_InstParser("DPUCVDX8G_ISA3"))
+register(xvdpu_InstParser("DPUCV2DX8G_ISA0"))

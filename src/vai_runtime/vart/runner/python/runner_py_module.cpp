@@ -97,7 +97,7 @@ CpuFlatTensorBuffer::CpuFlatTensorBuffer(py::buffer_info&& info,
       info_{std::move(info)},
       data_{info.ptr},
       my_tensor_{std::move(tensor)},
-      the_shared_map_{},
+      the_shared_map_{nullptr},
       runner_{nullptr},
       job_id_{0} {
   LOG_IF(INFO, ENV_PARAM(DEBUG_RUNNER))
@@ -245,7 +245,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
         std::tie(data, size) = tb.data(idx);
         auto dtype = tensor->get_data_type();
         auto format = to_py_buf_format(dtype);
-        CHECK_EQ(size, tensor->get_data_size())
+        CHECK_EQ(size,  (size_t)((uint32_t)tensor->get_data_size()) )
             << "only support continuous tensor buffer yet";
         return py::buffer_info((void*)data,         /* Pointer to buffer */
                                dtype.bit_width / 8, /* Size of one scalar */
@@ -330,10 +330,10 @@ PYBIND11_MODULE(MODULE_NAME, m) {
              const std::string& mode) -> std::unique_ptr<vart::RunnerExt> {
             auto runner = vart::Runner::create_runner(s, mode);
             auto runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
+            runner.release();
             if (runner_ext == nullptr) {
               return nullptr;
             }
-            runner.release();
             return std::unique_ptr<vart::RunnerExt>(runner_ext);
           })
       .def("get_inputs",

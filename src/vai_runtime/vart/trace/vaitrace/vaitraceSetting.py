@@ -15,6 +15,7 @@
 
 import sys
 import os
+import re
 import platform
 import logging
 from vaitraceOptions import merge
@@ -26,7 +27,7 @@ def getx86CpuTscKhz():
         cmd = 'cat /proc/cpuinfo | grep "cpu MHz"'
         khz = int(float(os.popen(cmd).readlines()[0].split()[3])) * 1000
     except:
-        assert()
+        assert ()
     return khz
 
 
@@ -77,14 +78,58 @@ def selectTraceClock(option):
     return traceClock
 
 
+def decodeChipIdcode(idcode: str):
+    fmlyid = hex(int(idcode, 16) >> 21 & 0x7f)
+    sub_fmlyid = hex(int(idcode, 16) >> 18 & 0x7)
+    devid = hex(int(idcode, 16) >> 12 & 0x3f)
+
+    if fmlyid == "0x23":
+        model = "xlnx,zocl"
+    elif fmlyid == "0x26":
+        model = "xlnx,zocl-versal"
+    else:
+        logging.error(f"Unsupported Device, idcode: {idcode}")
+        assert (True)
+    chip_id = {"idcode": idcode, "fmlyid": fmlyid,
+               "sub_fmlyid": sub_fmlyid, "devid": devid, "model": model}
+    return chip_id
+
+
+def getChipId():
+    try:
+        assert (os.access("/sys/kernel/debug/zynqmp-firmware/pm", os.W_OK) == True)
+
+        pm = open("/sys/kernel/debug/zynqmp-firmware/pm", "wt")
+        assert (pm.write("PM_GET_CHIPID") == len("PM_GET_CHIPID"))
+        pm.close()
+
+        pm = open("/sys/kernel/debug/zynqmp-firmware/pm", "rt")
+        chip_id_raw = pm.read().strip()  # 'Idcode: 0x4724093, Version:0x20000513'
+        pm.close()
+
+        idcode = (chip_id_raw.split(',', 1)[0]).split(':', 1)[1].strip()
+
+        return decodeChipIdcode(idcode)
+
+    except:
+        logging.error(
+            "Cannot get chip id, kernel config CONFIG_ZYNQMP_FIRMWARE_DEBUG=y is required.")
+        exit(1)
+
+
 def getPlatform():
     kRelease = platform.uname().release.split('.')
     machine = platform.uname().machine
     os = platform.uname().system
     model = "unknow"
+    plfm = {}
     if machine.startswith("aarch64"):
-        model = open("/sys/firmware/devicetree/base/amba_pl@0/zyxclmm_drm/compatible", "rt").read()
-    return {'os': os, 'release': [kRelease[0], kRelease[1]], 'machine': machine, 'model':  model.strip("\x00")}
+        plfm = getChipId()
+
+    plfm.update(
+        {'os': os, 'release': [kRelease[0], kRelease[1]], 'machine': machine})
+
+    return plfm
 
 
 def checkPlatform(plat, option):
@@ -110,7 +155,8 @@ def checkEnv():
 
     for cmd in cmds:
         if checkCmd(cmd) == False:
-            logging.warning("[%s] not exists, function tracer disabled" % (cmd))
+            logging.warning(
+                "[%s] not exists, function tracer disabled" % (cmd))
             return False
 
     return True
@@ -125,7 +171,6 @@ def setting(option: dict):
         """ Disable function tracer """
         disableFunTracer = {'tracer': {'function': {'disable': True}}}
         merge(option, disableFunTracer)
-
 
     traceClock = selectTraceClock(option)
     x86_tsc_khz = 0

@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys, os
+import sys
+import os
 from ctypes import *
+
 
 class InstDumpHeader(LittleEndianStructure):
     _pack_ = 1
@@ -44,6 +46,7 @@ class InstDumpHeader(LittleEndianStructure):
         ('pad_start', c_uint, 5)
     ]
 
+
 class InstDumpItem(LittleEndianStructure):
     _pack_ = 1
     _fields_ = [
@@ -65,5 +68,6 @@ class InstDumpItem(LittleEndianStructure):
         ('ddr_addr', c_uint, 29),
         ('reg_id', c_uint, 3)
     ]
+
 
 data = open("./profiler__batch_0_instr_all_start_0.bin", "rb").read()

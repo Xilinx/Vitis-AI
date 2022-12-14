@@ -22,6 +22,7 @@
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
 #include <vitis/ai/xxd.hpp>
+#include <UniLog/UniLog.hpp>
 
 #include "dpu_cloud.hpp"
 #include "hbm_config.hpp"
@@ -45,7 +46,7 @@ static std::vector<HbmChunk> init_workspace(size_t core_id,
   for (auto engine_id = 0u; engine_id < num_of_engines; ++engine_id) {
     auto& arg = hbms[engine_id];
     // swap A/B workspace
-    CHECK_EQ(arg.size(), 1u)
+    UNI_LOG_CHECK(arg.size() == 1u, VART_OUT_OF_RANGE)
         << "for workspace, only single hbm channel supported yet.";
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER)) << " arg = " << arg;
     auto hbm_ch = arg[0];
@@ -58,8 +59,9 @@ static std::vector<HbmChunk> init_workspace(size_t core_id,
     ret.emplace_back(workspace_base, workspace_size);
     total = total + workspace_size;
   }
-  CHECK_GT(total, 0u) << "workspace size for engine must not empty. core_id="
-                      << core_id << " workspace id = " << workspace_id;
+  UNI_LOG_CHECK(total > 0u, VART_SIZE_MISMATCH)
+    << "workspace size for engine must not empty. core_id="
+    << core_id << " workspace id = " << workspace_id;
   return ret;
 }
 
@@ -74,7 +76,7 @@ DpuCore::DpuCore(size_t core_id)
               1 /* workspace_id */)},  // workspace_chunks_[workspace_id][engine_id]
       next_workspace_{0u},
       num_of_engines_{workspace_chunks_[0].size()} {
-  CHECK_EQ(num_of_engines_, workspace_chunks_[1].size());
+  UNI_LOG_CHECK(num_of_engines_ == workspace_chunks_[1].size(), VART_SIZE_MISMATCH);
 }
 
 DpuCore::~DpuCore() {
@@ -127,7 +129,7 @@ DpuCoreWorkspace::get_workspaces(const std::vector<DpuReg>& regs) {
           reg_id,
           std::make_unique<HbmChunk>(workspace.get_offset() + reg_offset,  //
                                      reg.size_)));
-      CHECK_LE(reg.size_, workspace.get_capacity())
+      UNI_LOG_CHECK(reg.size_ < workspace.get_capacity(), VART_OUT_OF_RANGE)
           << "out of HBM memory"
           << ";reg.name=" << reg.name_;
       reg_offset = reg_offset + align(reg.size_, _4K);

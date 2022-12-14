@@ -51,7 +51,7 @@ T env_config<T, env_name>::value = env_config<T, env_name>::init();
 
 template <typename T>
 inline T env_config_helper<T>::from_string(const char* s) {
-  T ret;
+  T ret = T();
   parse_value(std::string(s), ret);
   return ret;
 }

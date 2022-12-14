@@ -24,8 +24,8 @@ std::unique_ptr<RunnerExt> RunnerExt::create_runner(
     const xir::Subgraph* subgraph, xir::Attrs* attrs) {
   auto runner = vart::Runner::create_runner_with_attrs(subgraph, attrs);
   auto runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
-  CHECK(runner_ext != nullptr) << "cannot create vart::RunnerExt !";
   runner.release();
+  CHECK(runner_ext != nullptr) << "cannot create vart::RunnerExt !";
   return std::unique_ptr<vart::RunnerExt>(runner_ext);
 }
 

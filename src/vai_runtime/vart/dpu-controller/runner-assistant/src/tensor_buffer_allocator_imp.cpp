@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include <xir/graph/subgraph.hpp>
 #include <xir/tensor/tensor.hpp>
+#include <UniLog/UniLog.hpp>
 
 #include "./tensor_buffer_imp_host.hpp"
 #include "./tensor_buffer_imp_host_phy.hpp"
@@ -105,7 +106,7 @@ static size_t get_batch(const xir::Attrs* tensor) {
 }
 
 static size_t get_size(const xir::Tensor* tensor) {
-  return (size_t)tensor->get_data_size() / tensor->get_shape()[0];
+  return (size_t)((uint32_t)tensor->get_data_size()) / tensor->get_shape()[0];
 }
 
 struct reg_info_t {
@@ -234,21 +235,22 @@ static std::vector<std::unique_ptr<reg_info_t>> collect_reg_info(
       continue;
     }
     auto reg_id = get_reg_id(tensor);
-    CHECK_LT(reg_id, reg_infos.size()) << " tensor:" << tensor->to_string();
+    UNI_LOG_CHECK(reg_id < reg_infos.size(), VART_TENSOR_INFO_ERROR)
+      << " tensor:" << tensor->to_string();
     auto offset = get_offset(tensor);
     auto location = get_location(subgraph, attrs);
     auto batch = get_batch(tensor);
     auto size = get_size(tensor);
     auto new_size = offset + size;
-    CHECK(reg_infos[reg_id] != nullptr)
+    UNI_LOG_CHECK(reg_infos[reg_id] != nullptr, VART_XRT_NULL_PTR)
         << "cannot find reg_info: reg_id=" << reg_id;
-    CHECK_EQ(reg_infos[reg_id]->basic_info_.reg_id, reg_id)
+    UNI_LOG_CHECK(reg_infos[reg_id]->basic_info_.reg_id == reg_id, VART_TENSOR_INFO_ERROR)
         << "reg id conflict: tensor = " << tensor->to_string();
-    CHECK_EQ((int)reg_infos[reg_id]->location, (int)location)
+    UNI_LOG_CHECK((int)reg_infos[reg_id]->location == (int)location, VART_TENSOR_INFO_ERROR)
         << "location conflict: tensor = " << tensor->to_string()
         << " reg=" << to_string(*reg_infos[reg_id]);
     if (reg_infos[reg_id]->basic_info_.type != reg_type_t::CONST) {
-      CHECK_EQ(reg_infos[reg_id]->batch, batch)
+      UNI_LOG_CHECK(reg_infos[reg_id]->batch == batch, VART_TENSOR_INFO_ERROR)
           << "batch conflict: tensor = " << tensor->to_string()
           << " reg=" << to_string(*reg_infos[reg_id]);
     }
@@ -393,7 +395,7 @@ static std::unique_ptr<vart::TensorBuffer> create_tensor_buffer(
       }
       break;
   }
-  CHECK(ret != nullptr) << "not implemented?";
+  UNI_LOG_CHECK(ret != nullptr, VART_XRT_NULL_PTR) << "not implemented?";
   return ret;
 }
 
@@ -454,8 +456,9 @@ TensorBufferAllocatorImp::allocate(
   create_tensor_buffer_for_reg(reg_infos);
   auto all_tensor_buffers =
       create_tensor_buffers(subgraph, attrs_, tensors, reg_infos);
-  CHECK_GE(all_tensor_buffers.size(),
-           (input_tensors.size() + output_tensors.size()))
+  UNI_LOG_CHECK(all_tensor_buffers.size() >=
+           (input_tensors.size() + output_tensors.size()),
+           VART_TENSOR_INFO_ERROR)
       << "allocate error: allocator return tensor_buffers.size must >= "
          "input_tensors.size() + "
          "output_tensors.size()";

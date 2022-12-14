@@ -102,18 +102,19 @@ def get_subg_info(sub_g: dict, rank_id):
     i_tensor_shape = sub_g.get("i_tensors_shape", [])
     o_tensor_shape = sub_g.get("o_tensors_shape", [])
 
-    subg_info = {idx_w:
-                 {"name": name,
-                     "device": device,
-                     "workload": workload,
-                     "op_num": op_num,
-                     "depth": depth,
-                     "load_io_img_size": load_io_img_size,
-                     "load_io_para_size": load_io_para_size,
-                     "save_io_size": save_io_size,
-                     "i_tensor_shape": i_tensor_shape,
-                     "o_tensor_shape": o_tensor_shape,
-                     "rank_id": rank_id}}
+    subg_info = {idx_w: {
+                  "name": name,
+                  "device": device,
+                  "workload": workload,
+                  "op_num": op_num,
+                  "depth": depth,
+                  "mc_size": mc_size,
+                  "load_io_img_size": load_io_img_size,
+                  "load_io_para_size": load_io_para_size,
+                  "save_io_size": save_io_size,
+                  "i_tensor_shape": i_tensor_shape,
+                  "o_tensor_shape": o_tensor_shape,
+                  "rank_id": rank_id}}
 
     if idx_w not in SUBGRAPH_DB.keys():
         SUBGRAPH_DB.update(subg_info)

@@ -111,8 +111,9 @@ def run(globalOptions: dict):
             if p is not None:
                 break
 
-    logging.info("vaitrace time out, stopping process...")
-    proc.send_signal(signal.SIGINT)
+    if (timeout == 0):
+        logging.info("vaitrace time out, stopping process...")
+        proc.send_signal(signal.SIGINT)
     proc.wait()
     collector.stop()
     tracer.stop()

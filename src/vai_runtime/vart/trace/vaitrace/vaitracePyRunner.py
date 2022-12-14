@@ -119,7 +119,8 @@ def run(globalOptions: dict):
             if p == False:
                 break
 
-    logging.info("vaitrace timeout, waiting for Python thread terminated")
+    if timeout == 0:
+        logging.info("vaitrace timeout, waiting for Python thread terminated")
     pyProc.join()
     collector.stop()
     tracer.stop()

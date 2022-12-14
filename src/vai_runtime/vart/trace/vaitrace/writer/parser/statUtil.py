@@ -15,6 +15,7 @@
 
 import statistics
 
+
 class statItem:
     def __init__(self, name, timeunit="ms"):
         self.name = name

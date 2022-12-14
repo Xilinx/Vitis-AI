@@ -33,6 +33,7 @@ std::vector<std::string> xilinx_version(std::vector<std::string> so_names) {
     cac_func = (CAC_FUNC)dlsym(handle, "xilinx_version");
     if (!cac_func) {
       version_list.push_back(dlerror());
+      dlclose(handle);
       continue;
     }
 
@@ -57,6 +58,7 @@ std::vector<std::string> xilinx_version2(std::vector<std::string> so_names) {
     cac_func = (CAC_FUNC)dlsym(handle, "xilinx_version");
     if (!cac_func) {
       version_list.push_back("");
+      dlclose(handle);
       continue;
     }
 

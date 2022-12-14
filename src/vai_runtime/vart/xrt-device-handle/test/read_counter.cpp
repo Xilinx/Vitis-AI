@@ -31,7 +31,7 @@ uint32_t get_reg(xclDeviceHandle xcl_handle, uint32_t ip_index,
   auto read_result =
       xrtXclRead(xcl_handle, ip_index, offset, cu_base_addr, &value);
 
-  CHECK_EQ(read_result, 0) << "xclRead has error!";
+  CHECK_EQ(read_result, 0) << "xrtXclRead has error!";
   return value;
 }
 static std::string reg_conf = "/usr/share/vart/reg.conf";

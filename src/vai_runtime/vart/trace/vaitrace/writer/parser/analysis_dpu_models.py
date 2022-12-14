@@ -14,7 +14,9 @@
 # limitations under the License.
 
 
-import csv, os, sys
+import csv
+import os
+import sys
 from collections import namedtuple
 
 
@@ -35,7 +37,8 @@ for m in csv_reader:
     analysis_list.append(XModelRaw(*m))
 
 result_list = []
-XModelAnaRes = namedtuple("xmodel_ana", ["raw", "total_read", "total_acc", "comp_density"])
+XModelAnaRes = namedtuple(
+    "xmodel_ana", ["raw", "total_read", "total_acc", "comp_density"])
 # analysis
 for m in analysis_list:
     total_read = int(m.load_img_size) + int(m.load_para_size)
@@ -46,8 +49,9 @@ for m in analysis_list:
     result_list.append(XModelAnaRes(m, total_read, total_acc, den))
 
 # print result
-result_list.sort(key=lambda x:x.comp_density)
+result_list.sort(key=lambda x: x.comp_density)
 for m in result_list:
-    print("%-s:%-s:   %.3f" % (m.raw.xmodel, m.raw.subgraph_name, m.comp_density));
-    
+    print("%-s:%-s:   %.3f" %
+          (m.raw.xmodel, m.raw.subgraph_name, m.comp_density))
+
 csv_f.close()

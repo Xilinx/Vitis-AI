@@ -20,7 +20,7 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) { 
+int main(int argc, char* argv[]) {
   auto filename = argv[1];
 
   auto graph = xir::Graph::deserialize(filename);
@@ -28,47 +28,43 @@ int main(int argc, char* argv[]) {
   auto root = graph->get_root_subgraph();
   auto children = root->children_topological_sort();
 
-
-  cout << "[" ;
+  cout << "[";
   for (auto c : children) {
     auto device = c->get_attr<std::string>("device");
     auto name = c->get_name();
 
     cout << "{" << endl;
-    cout << \
-	    "\"kernelName\": " << "\"" << name << "\"," << endl <<\
-	    "\"kernelDev\": " << "\"" << device << "\"," \
-	    << endl;
-
-
+    cout << "\"kernelName\": "
+         << "\"" << name << "\"," << endl
+         << "\"kernelDev\": "
+         << "\"" << device << "\"," << endl;
 
     auto inputs = c->get_input_tensors();
-    cout << "\"inputs\": [" ;
+    cout << "\"inputs\": [";
     for (auto input : inputs) {
-      cout << "\"" << input->get_name() << "\"" << ",";
+      cout << "\"" << input->get_name() << "\""
+           << ",";
     }
     cout << "\"\"], " << endl;
 
-
     auto outputs = c->get_output_tensors();
-    cout << "\"outputs\": [" ;
+    cout << "\"outputs\": [";
     for (auto output : outputs) {
-      cout << "\"" << output->get_name() << "\"" << ",";
+      cout << "\"" << output->get_name() << "\""
+           << ",";
     }
     cout << "\"\"]," << endl;
-
 
     auto cc = c->get_children();
     cout << "\"subgraph\": [" << endl;
     for (auto csub : cc) {
-       cout  << "\t\"" << csub->get_name() << "\"," << endl; 
+      cout << "\t\"" << csub->get_name() << "\"," << endl;
     }
     cout << "\"\"]}," << endl;
     cout << endl;
-
   }
 
-  //End of Kernel
+  // End of Kernel
   cout << "{}]" << endl;
 
   return 0;

@@ -23,7 +23,7 @@
 namespace vart {
 namespace dpu {
 TensorBufferExtImpHost::TensorBufferExtImpHost(const xir::Tensor* tensor)
-    : TensorBuffer(tensor), buffer_((size_t)tensor->get_data_size()) {}
+    : TensorBuffer(tensor), buffer_( (size_t)((uint32_t)tensor->get_data_size())) {}
 
 vart::TensorBuffer::location_t TensorBufferExtImpHost::get_location() const {
   return location_t::HOST_VIRT;

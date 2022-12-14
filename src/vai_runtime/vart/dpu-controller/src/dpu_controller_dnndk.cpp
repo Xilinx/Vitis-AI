@@ -91,13 +91,18 @@ DpuControllerDnndk::DpuControllerDnndk()
   auto cu_core_id = 0;
   auto cu_addr = 0x0;
   auto cu_name = "DPU";
-  auto cu_full_name = "DPU";
   auto cu_fingerprint = fingerprint_;
 #ifndef _WIN32
-  vitis::ai::trace::add_info("dpu-controller", TRACE_VAR(cu_device_id),
-                             TRACE_VAR(cu_core_id), TRACE_VAR(cu_addr),
-                             TRACE_VAR(cu_name), TRACE_VAR(cu_full_name),
-                             TRACE_VAR(cu_fingerprint));
+  for (size_t i = 0; i < get_num_of_dpus(); i++) { 
+    std::ostringstream name;
+    name << "DPU_" << cu_core_id << std::endl;
+    auto cu_full_name = name.str();
+    vitis::ai::trace::add_info("dpu-controller", TRACE_VAR(cu_device_id),
+                               TRACE_VAR(cu_core_id), TRACE_VAR(cu_addr),
+                               TRACE_VAR(cu_name), TRACE_VAR(cu_full_name),
+                               TRACE_VAR(cu_fingerprint));
+    cu_core_id ++;
+  }
 #endif
 }
 
@@ -152,6 +157,14 @@ static std::string xdpu_get_counter(const ioc_kernel_run_t& t) {
   return str.str();
 }
 
+uint64_t get_device_hwcounter(const ioc_kernel_run_t& t) {
+	char* base = ( char*)&t;
+	uint32_t value_l = *(uint32_t*)(base + offsetof(ioc_kernel_run_t, counter));
+	uint32_t value_h = *(uint32_t*)(base + offsetof(ioc_kernel_run_t, counter) + sizeof(uint32_t));
+	uint64_t value = ((uint64_t)value_h << 32) | value_l;
+	return value;
+}
+
 void DpuControllerDnndk::run(size_t core_idx, const uint64_t code,
                              const std::vector<uint64_t>& gen_reg) {
   static std::vector<std::mutex> mtxs(16);
@@ -181,12 +194,13 @@ void DpuControllerDnndk::run(size_t core_idx, const uint64_t code,
   t2.addr7 = size >= 8 ? gen_reg[7] : 0;
 #ifndef _WIN32
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start,
-                              core_idx);
+                              core_idx, 0);
 #endif
   auto retval = ioctl(fd_, DPUIOC_RUN, (void*)(&t2));
+  auto hwcounter = get_device_hwcounter(t2);
 #ifndef _WIN32
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end,
-                              core_idx);
+                              core_idx, hwcounter);
 #endif
   if (ENV_PARAM(XLNX_SHOW_DPU_COUNTER)) {
     auto core_idx = t2.core_id;

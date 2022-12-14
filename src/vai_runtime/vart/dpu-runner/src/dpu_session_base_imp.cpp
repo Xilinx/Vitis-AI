@@ -22,6 +22,7 @@
 #include <numeric>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/weak.hpp>
+#include <UniLog/UniLog.hpp>
 
 #include "vart/runner.hpp"
 #include "xir/util/tool_function.hpp"
@@ -57,7 +58,7 @@ static std::vector<std::string> get_all_tensor_names(
 // my_ to avoid name confliction with the member function.
 size_t DpuSessionBaseImp::my_get_device_core_id(size_t cu_size,
                                                 xir::Attrs* attrs) {
-  CHECK_GT(cu_size, 0u)
+  UNI_LOG_CHECK(cu_size > 0u, VART_DEVICE_BUSY)
       << "cannot create a dpu controller, no device is available";
   auto core_list = ENV_PARAM(XLNX_DPU_DEVICE_CORES);
 
@@ -66,7 +67,7 @@ size_t DpuSessionBaseImp::my_get_device_core_id(size_t cu_size,
     std::iota(core_list.begin(), core_list.end(), 0);
   }
   static auto session_count = 0u;
-  CHECK_GT(core_list.size(), 0u)
+  UNI_LOG_CHECK(core_list.size() > 0u, VART_DEVICE_BUSY)
       << "cannot create a dpu session, no core id is available";
 
   auto device_core_id = core_list[(session_count) % core_list.size()];
@@ -80,7 +81,7 @@ size_t DpuSessionBaseImp::my_get_device_core_id(size_t cu_size,
 
     device_id = dpu_controller_->get_device_id(device_core_id);
     if (attrs->has_attr("__device_id__")) {
-      CHECK_EQ(device_id, attrs->get_attr<size_t>("__device_id__"))
+      UNI_LOG_CHECK(device_id == attrs->get_attr<size_t>("__device_id__"), VART_DEVICE_MISMATCH)
           << "The __device_id__ attr must match with cu get from "
              "device_core_id";
     } else {
@@ -93,7 +94,7 @@ size_t DpuSessionBaseImp::my_get_device_core_id(size_t cu_size,
     }
   } else {
     session_count = session_count + 1u;
-    CHECK_LT(device_core_id, cu_size)
+    UNI_LOG_CHECK(device_core_id < cu_size, VART_DEVICE_MISMATCH)
         << "Invaild device_core_id, device_core_id must < cu_size ( " << cu_size
         << " )";
   }
@@ -182,7 +183,7 @@ static op_output_tensor_ddr get_op_output_tensor_ddr(
   auto tensor = op->get_output_tensor();
   if (op->get_type() == "download" && belong_to_subgraph(op, subgraph)) {
     auto input_ops = op->get_input_ops("input");
-    CHECK_EQ(input_ops.size(), 1u)
+    UNI_LOG_CHECK(input_ops.size() == 1u, VART_OUT_OF_RANGE)
         << "There must be only one pre_op for download op";
     tensor = input_ops[0]->get_output_tensor();
   } else if (!tensor->has_attr("reg_id") ||
@@ -197,10 +198,10 @@ static op_output_tensor_ddr get_op_output_tensor_ddr(
     std::set_intersection(fanout_ops.begin(), fanout_ops.end(),
                           subgraph_ops.begin(), subgraph_ops.end(),
                           std::back_inserter(ops));
-    CHECK_EQ(ops.size(), 1u)
+    UNI_LOG_CHECK(ops.size() == 1u, VART_XMODEL_ERROR)
         << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
     auto upload_op = ops.front();
-    CHECK_EQ(upload_op->get_type(), "upload")
+    UNI_LOG_CHECK(upload_op->get_type() == "upload", VART_XMODEL_ERROR)
         << "illegal xmodel. op:" << op->get_name() << "  has no ddr info";
     /*    auto up_next_op = upload_op->get_fanout_ops();
         CHECK_EQ(up_next_op.size(), 1u)
@@ -209,9 +210,12 @@ static op_output_tensor_ddr get_op_output_tensor_ddr(
     */
     tensor = upload_op->get_output_tensor();
   }
-  CHECK(tensor->has_attr("reg_id")) << "op_name " << op->get_name();
-  CHECK(tensor->has_attr("ddr_addr")) << "op_name " << op->get_name();
-  CHECK(tensor->has_attr("location")) << "op_name " << op->get_name();
+  UNI_LOG_CHECK(tensor->has_attr("reg_id"), VART_TENSOR_INFO_ERROR)
+    << "op_name " << op->get_name();
+  UNI_LOG_CHECK(tensor->has_attr("ddr_addr"), VART_TENSOR_INFO_ERROR)
+    << "op_name " << op->get_name();
+  UNI_LOG_CHECK(tensor->has_attr("location"), VART_TENSOR_INFO_ERROR)
+    << "op_name " << op->get_name();
   auto reg_id = (size_t)tensor->template get_attr<int>("reg_id");
   auto ddr_addr = (size_t)tensor->template get_attr<int>("ddr_addr");
   auto location = (size_t)tensor->template get_attr<int>("location");
@@ -258,19 +262,20 @@ std::vector<my_tensor_t> DpuSessionBaseImp::init_tensors(
       tensor_names.begin(), tensor_names.end(), std::back_inserter(ret),
       [&graph, subgraph, this, check_stride](const auto& tensor_name) {
         auto xir_tensor = graph->get_tensor(tensor_name);
-        CHECK(xir_tensor != nullptr) << "cannot find tensor: " << tensor_name;
+        UNI_LOG_CHECK(xir_tensor != nullptr, VART_NULL_PTR)
+          << "cannot find tensor: " << tensor_name;
         auto op = xir_tensor->get_producer();
-        CHECK(op != nullptr)
+        UNI_LOG_CHECK(op != nullptr, VART_NULL_PTR)
             << "cannot find tensor's producer: " << tensor_name;
         auto tensor_ddr = get_op_output_tensor_ddr(op, subgraph);
         auto dims = xir_tensor->get_shape();
         // dirty HACK, batch size is decided by VART, not the model yet.
         // ugly code here: please be careful.
-        auto size = (size_t)xir_tensor->get_data_size() / dims[0];
+        auto size = (size_t)((uint32_t)xir_tensor->get_data_size()) / dims[0];
         dims[0] = this->get_num_of_engines();
         LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER) >= 2)
             << "tensor " << tensor_name << " ddr_addr " << tensor_ddr.ddr_addr
-            << " size " << xir_tensor->get_data_size() << " , " << size
+            << " size " <<  (size_t)((uint32_t)xir_tensor->get_data_size()) << " , " << size
             << "; dims=" << xir_tensor->get_shape() << " , " << dims;
         auto attrs = xir_tensor->get_attrs();
         auto vitis_tensor = xir::Tensor::create(xir_tensor->get_name(), dims,

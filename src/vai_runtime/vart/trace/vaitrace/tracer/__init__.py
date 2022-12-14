@@ -28,6 +28,5 @@ import tracer.cmd
 import tracer.vart
 import tracer.pyfunc
 import tracer.power
-import tracer.noc_perf
 
 from tracer.tracerBase import *

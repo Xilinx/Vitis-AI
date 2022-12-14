@@ -49,5 +49,6 @@ class dpuv2_InstParser(dpuMcParserBase):
         else:
             pass
 
+
 register(dpuv2_InstParser("DPUCZDX8G_ISA0"))
 register(dpuv2_InstParser("DPUCZDX8G_ISA1"))

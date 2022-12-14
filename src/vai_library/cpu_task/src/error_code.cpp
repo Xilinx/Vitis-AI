@@ -16,16 +16,18 @@
 
 #include "UniLog/ErrorCode.hpp"
 
-REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_OPEN_LIB_ERROR, "can not open lib!", "");
-REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_LOAD_LIB_SYM_ERROR, "load symbol error!",
-                    "");
+REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_OPEN_LIB_ERROR,
+                    "dlopen can not open lib!", "");
+REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_LOAD_LIB_SYM_ERROR,
+                    "dlsym load symbol error!", "");
 REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_FIND,
-                    "can not find tensor buffer!", "");
+                    "Can not find tensor buffer with this name!", "");
 REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_TENSOR_BUFFER_NOT_CONTINOUS,
-                    "tensor buffer not continous!", "");
-REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_READ_FILE_ERROR, "fail to read file!",
+                    "Tensor buffer not continous!", "");
+REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_READ_FILE_ERROR, "Fail to read file!",
                     "");
-REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_WRITE_FILE_ERROR, "fail to write file!",
+REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_WRITE_FILE_ERROR, "Fail to write file!",
                     "");
-REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_CPU_OP_NOT_FIND, "cant not find op!", "");
+REGISTER_ERROR_CODE(VAILIB_CPU_RUNNER_CPU_OP_NOT_FIND,
+                    "Can not find op with this name!", "");
 

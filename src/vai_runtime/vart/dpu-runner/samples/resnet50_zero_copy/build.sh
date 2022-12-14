@@ -31,7 +31,7 @@ else
 fi
 
 name=$(basename $PWD)
-sample=${1:-resnet50}
+sample=${1:-resnet50_device_tensor_buffer}
 if [[ "$CXX"  == *"sysroot"* ]];then
 $CXX -O2 -fno-inline -I. \
      -I=/usr/include/opencv4 \
@@ -67,6 +67,9 @@ $CXX -O2 -fno-inline -I. \
      -I${install_prefix_default}.Release/include \
      -L${install_prefix_default}.Debug/lib \
      -L${install_prefix_default}.Release/lib \
+     -I/usr/include/xrt \
+     -I${install_prefix_default}.Debug/opt/xilinx/xrt/include \
+     -L${install_prefix_default}.Debug/opt/xilinx/xrt/lib \
      -Wl,-rpath=${install_prefix_default}.Debug/lib \
      -Wl,-rpath=${install_prefix_default}.Release/lib \
      -o $name -std=c++17 \
@@ -82,5 +85,7 @@ $CXX -O2 -fno-inline -I. \
      -lglog \
      -lxir \
      -lunilog \
+     -lxrt_core \
+     -lxrt_coreutil \
      -lpthread
 fi

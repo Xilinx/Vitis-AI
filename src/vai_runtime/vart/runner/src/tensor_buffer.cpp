@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 #include "vart/tensor_buffer.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <sstream>
 
 #include "./runner_helper.hpp"
+#include "vart/tensor_buffer_unowned_device.hpp"
 #include "vitis/ai/env_config.hpp"
 #include "xir/tensor/tensor.hpp"
 
@@ -155,7 +157,7 @@ static void copy_tensor_buffer_real_from_host_to_phy(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -171,7 +173,7 @@ static void copy_tensor_buffer_real_from_phy_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -187,7 +189,7 @@ static void copy_tensor_buffer_real_from_host_to_device(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -203,7 +205,7 @@ static void copy_tensor_buffer_real_from_device_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -220,7 +222,7 @@ static void copy_tensor_buffer_real_from_phy_to_phy(vart::TensorBuffer* tb_from,
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
+  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -230,7 +232,7 @@ static void copy_tensor_buffer_real_from_phy_to_phy(vart::TensorBuffer* tb_from,
                           single_batch_size, 0u);
     tb_to->sync_for_write(0, single_batch_size);
   }
-//  tb_to->sync_for_write(0, tb_to->get_tensor()->get_data_size());
+  //  tb_to->sync_for_write(0, tb_to->get_tensor()->get_data_size());
 }
 
 static void copy_tensor_buffer_real(vart::TensorBuffer* tb_from,
@@ -441,6 +443,25 @@ void TensorBuffer::copy_tensor_buffer(vart::TensorBuffer* tb_from,
                << (int)from_data_type << " to " << (int)to_data_type;
   }
   return;
+}
+
+std::unique_ptr<TensorBuffer> TensorBuffer::create_unowned_device_tensor_buffer(
+    const xir::Tensor* tensor, uint64_t batch_addr[], size_t addr_arrsize) {
+  CHECK(batch_addr != nullptr) << "batch_addr is null, "
+                               << "tensor: " << tensor->to_string();
+  CHECK_LE(addr_arrsize, tensor->get_shape()[0])
+      << "addr_arrsize should not exceed batchsize " << tensor->get_shape()[0]
+      << " tensor: " << tensor->to_string();
+  CHECK(tensor->has_attr("ddr_addr"))
+      << "tensor should have ddr_addr attribute, "
+      << "tensor: " << tensor->to_string();
+  CHECK_EQ(tensor->template get_attr<int>("ddr_addr"), 0)
+      << "tensor to create unowned device tensor buffer should have ddr_addr "
+         "attribute 0"
+      << "tensor: " << tensor->to_string();
+
+  return std::make_unique<TensorBufferUnownedDevice>(tensor, batch_addr,
+                                                     addr_arrsize);
 }
 
 }  // namespace vart

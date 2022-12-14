@@ -30,7 +30,6 @@ event_id = 1
 start_id = 1
 vtf_events = []
 apm_events = []
-fps_events = []
 literal_pool = []
 dpu_core_num = 0
 PID = 0
@@ -127,18 +126,19 @@ def do_timeline_sync(xat, sync_base="xrt"):
     TIMESYNC = {"sync": timesync, "timeout": timeout}
 
 
-def convert_dpu(raw_data, hwInfo):
-    global literal_pool, dpu_core_num, vtf_events, dpu_profile_summary, fps_events
+def convert_dpu(raw_data, hwInfo, options):
+    global literal_pool, dpu_core_num, vtf_events, dpu_profile_summary
     global TIMESYNC
     offset = TIMESYNC.get('sync', {}).get('vart')
     timeout = TIMESYNC.get('timeout', 0)
 
+    runmode = options.get('control', {}).get('runmode')
+
     dpu_parser = DPUEventParser()
     timelines = dpu_parser.parse(
-        raw_data, hwInfo, {"time_offset": offset, "time_limit": timeout})
+        raw_data, hwInfo, {"time_offset": offset, "time_limit": timeout, "runmode": runmode})
 
     dpu_profile_summary = dpu_parser.get_dpu_profile_summary()
-    fps_events = dpu_parser.get_dpu_ips()
 
     """extracting all strings"""
     for dpu in timelines:
@@ -165,7 +165,7 @@ def convert_xapm(apm_data, time_offset=0.0):
     global apm_events
 
     def toMB_s(r):
-        return float(r) / 1024 / 1024
+        return float(r) / 1000 / 1000
 
     for rr in apm_data:
         if not rr.startswith("APM "):
@@ -285,19 +285,13 @@ def output_profile_summary(OUTPUT_PATH):
 # DDR bandwidth and throughtput
 def output_vitis_ai_profile(OUTPUT_PATH):
     f_name = "vitis_ai_profile.csv"
-    global fps_events, apm_events, DEBUG_MODE
+    global apm_events, DEBUG_MODE
 
     with open(os.path.join(OUTPUT_PATH, f_name), "w+t") as csv_f:
         title = "DPU Throughput\n"
         column_headers = "timestamp,FPS\n"
         csv_f.write(title)
         csv_f.write(column_headers)
-
-        "No FPS for Debug Mode"
-        if DEBUG_MODE == False:
-            for f in fps_events:
-                item = "%.2f,%.1f,\n" % (f[0], f[1])
-                csv_f.write(item)
 
         csv_f.write('\n')
         title = "DDR Bandwidth\n"
@@ -317,7 +311,8 @@ def output(OUTPUT_PATH):
     output_vitis_ai_profile(OUTPUT_PATH)
 
 
-def xat_to_vtf(xat, saveTo="./"):
+def xat_to_vtf(xat, options):
+    saveTo = "./"
     global PID, GEN_TIME, XRT_INFO, DEBUG_MODE, cppFuncSummary, pyFuncSummary
     PID = xat.get('cmd', {}).get('pid', 0)
     GEN_TIME = xat.get('cmd', {}).get('time', "0000-00-00 00:00:00")
@@ -328,7 +323,7 @@ def xat_to_vtf(xat, saveTo="./"):
 
     xapm_ts_offset = xat.get('timesync', {}).get('vart', 0.0)
     do_timeline_sync(xat)
-    convert_dpu(xat.get('vart'), xat.get('hwInfo'))
+    convert_dpu(xat.get('vart'), xat.get('hwInfo'), options)
     convert_xapm(xat.get('xapm', {}), xapm_ts_offset)
     pyFuncSummary = convert_pyfunc(xat.get('pyfunc', {}))
     cppFuncSummary = convert_cppfunc(xat.get('function', {}))

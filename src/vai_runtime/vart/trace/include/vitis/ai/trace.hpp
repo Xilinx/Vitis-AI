@@ -70,6 +70,14 @@ inline void info(Ts... args) {
 // void stop();
 bool is_enabled();
 
+void lock(void);
+void lock(size_t &core_idx);
+void lock(std::mutex &mutex);
+
+void unlock(void);
+void unlock(size_t &core_idx);
+void unlock(std::mutex &mutex);
+
 // Two helper functions
 template <typename... Ts>
 inline void add_trace(const char* name, Ts... args) {

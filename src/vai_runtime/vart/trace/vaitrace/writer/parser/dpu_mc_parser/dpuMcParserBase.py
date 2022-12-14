@@ -142,7 +142,7 @@ by default, reture [load_img_size, load_para_size, save_size, workload]
 """
 
 
-def process_mc(dpu_name: str, mc_data_str: str, _debug=False, ret_items=["load_img_size", "load_para_size", "save_size", "workload"]) -> list:
+def process_mc(dpu_name: str, mc_data_str: str, _debug=True, ret_items=["load_img_size", "load_para_size", "save_size", "workload"]) -> list:
     # init return data with 0
     ret = []
     for i in range(len(ret_items)):

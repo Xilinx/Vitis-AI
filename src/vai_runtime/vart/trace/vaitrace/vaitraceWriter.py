@@ -68,7 +68,7 @@ def write(globalOptions: dict):
     if txt_enabled:
         """Override outfmt to txt"""
         outFmt = 'txt'
-    
+
     json_enabled = options.get('cmdline_args', {}).get('json', False)
     if json_enabled:
         """Override outfmt to json"""
@@ -91,22 +91,15 @@ def write(globalOptions: dict):
 
     elif outFmt == 'vtf':
         logging.info("Generating VTF")
-        writer.vtf.convert.xat_to_vtf(rawData)
+        writer.vtf.convert.xat_to_vtf(rawData, options)
 
     elif outFmt == 'txt':
         logging.info("Generating ascii-table summary")
-        saveTo = options['cmdline_args']['output']
-        writer.txt.convert.xat_to_txt(rawData, saveTo)
-    
-    elif outFmt == 'json':
-        logging.info("Generating json summary")
-        saveTo = options['cmdline_args']['output']
-        writer.json.convert.xat_to_json(rawData, saveTo)
+        writer.txt.convert.xat_to_txt(rawData, options)
 
     elif outFmt == 'json':
         logging.info("Generating json summary")
-        saveTo = options['cmdline_args']['output']
-        writer.txt.convert.xat_to_json(rawData, saveTo)
+        writer.json.convert.xat_to_json(rawData, options)
 
     else:
         logging.error("Undefined format")

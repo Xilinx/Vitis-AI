@@ -16,9 +16,12 @@
 
 #include "UniLog/ErrorCode.hpp"
 
-REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_FIND, "not find!", "");
-REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_DPU_BATCH_ERROR, "dpu batch error!",
+REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_FIND,
+                    "GraphTask can not find tensor or tensor buffer!", "");
+REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_DPU_BATCH_ERROR,
+                    "GraphTask get dpu batch not equal!", "");
+REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_SUPPORT,
+                    "The function or value are not supported in graph runner!",
                     "");
-REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_SUPPORT, "not support!", "");
-REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_OVERRIDE, "funtion not override! ",
-                    "");
+REGISTER_ERROR_CODE(VAILIB_GRAPH_RUNNER_NOT_OVERRIDE,
+                    "The funtion has not been overridden! ", "");

@@ -32,18 +32,29 @@ class APMRecord(Structure):
 
 
 class APM:
-    def __init__(self, path='/usr/lib/libxapm.so', enable=True):
+    def __init__(self, mem_type, devid, path='/usr/lib/libmemperf.so', enable=True):
         self.apmLib = cdll.LoadLibrary(path)
         self.data = []
+        self.base_addr = []
         self.interval = 0
+        self.act_period = 0
+        self.record_data_len = 0
+        self.type = mem_type
         self.enabled = enable
+        if mem_type == "noc":
+            self.base_addr = self.get_noc_base_addr(self.type, devid)
+            self.noc_base_addr = (c_int * len(self.base_addr))(*self.base_addr)
+            self.apmLib.create_noc_instance(
+                    self.type.encode(), self.noc_base_addr, int(len(self.base_addr)))
+        elif mem_type == "apm":
+            self.apmLib.create_apm_instance(self.type.encode())
 
     def start(self, interval=1.0):
         if self.enabled == False:
             return
         self.interval = interval
-        self.apmLib.apm_start.restype = c_double
-        return self.apmLib.apm_start(c_double(interval))
+        self.apmLib.start.restype = c_double
+        return self.apmLib.start(c_double(interval))
 
     def pushData(self, data):
         if self.enabled == False:
@@ -59,7 +70,7 @@ class APM:
         info = str()
         info += "TimeStamp: %.7f\n" % data.time
 
-        read = [data.data[i]/self.interval/1024 /
+        read = [data.data[i]/self.act_period/1024 /
                 1024 for i in range(0, 10) if i % 2 == 0]
         info += "Read Ports:  "
         for d in read:
@@ -67,7 +78,7 @@ class APM:
 
         info += " MB/s\n"
 
-        write = [data.data[i]/self.interval/1024 /
+        write = [data.data[i]/self.act_period/1024 /
                  1024 for i in range(0, 10) if i % 2 == 1]
         info += "Write Ports: "
         for d in write:
@@ -77,22 +88,54 @@ class APM:
 
         return info
 
+    def get_noc_base_addr(self, mem_type, devid):
+        if mem_type != "noc":
+            return
+        if devid == "0x28":
+            ddrmc_number = 4
+        elif devid == "0x13":
+            ddrmc_number = 3
+        pre_base_addr = []
+        for (dirpath, dirnames, filenames) in os.walk("/proc/device-tree/axi"):
+            for file in dirnames:
+                if file.startswith("memory-controller"):
+                    compatible = open(os.path.join(os.path.abspath(os.path.join(
+                        dirpath, file)), "compatible"), "rt").read().strip().split(',')
+                    driver_name = compatible[1].split('-')
+                    if driver_name[1] != 'ddrmc':
+                        continue
+                    reg = os.path.join(os.path.abspath(
+                        os.path.join(dirpath, file)), "reg")
+                    f = open(reg, "rb")
+                    numl = list(f.read())
+                    addr_off = ((numl[20] << 24) + (numl[21] <<
+                                16) + (numl[22] << 8) + (numl[23] << 0))
+                    pre_base_addr.append(int(addr_off))
+                    pre_base_addr.sort()
+        return pre_base_addr[0:ddrmc_number]
+
     def stop(self):
         if self.enabled == False:
             return
-        self.apmLib.apm_stop()
+        self.apmLib.stop()
 
         data = APMRecord()
         pd = pointer(data)
 
-        while (self.apmLib.apm_pop_data(pd) == 0):
+        while (self.apmLib.pop_data(pd) == 0):
             self.data.append(copy.deepcopy(data))
+
+        self.apmLib.get_act_period.restype = c_double
+        self.act_period = self.apmLib.get_act_period()
+
+        self.apmLib.get_record_data_len.restype = c_int
+        self.record_data_len = self.apmLib.get_record_data_len()
 
     def transTimebase(self):
         for i in range(0, len(self.data)):
-            for j in range(0, len(self.data[i].data)):
+            for j in range(0, self.record_data_len):
                 self.data[i].data[j] = int(
-                    self.data[i].data[j] / self.interval)
+                    self.data[i].data[j] / self.act_period)
 
 
 def checkAPM():
@@ -119,12 +162,14 @@ class xapmTracer(tracer.tracerBase.Tracer):
         super().__init__('xapm', source=[],
                          compatible={'machine': ["aarch64"]})
         self.apm = None
+        self.apm_type = None
+        self.devid = None
 
     def prepare(self, option: dict, debug: bool):
         "Handle Input Options"
         xapmOption = option.get('tracer', {}).get('xapm', {})
         self.interval = xapmOption.get("APM_interval", 0.01)
-        self.apm = APM()
+        self.apm = APM(self.apm_type, self.devid)
 
         "Handle Output Options"
         return option
@@ -145,10 +190,15 @@ class xapmTracer(tracer.tracerBase.Tracer):
         if super().compatible(platform) == False:
             return False
 
-        if not platform.get('model').startswith('xlnx,zocl'):
+        if platform.get('model').startswith('xlnx,zocl-versal'):
+            self.apm_type = "noc"
+            self.devid = platform.get('devid')
+            return True
+        elif platform.get('model').startswith('xlnx,zocl'):
+            self.apm_type = "apm"
+            return checkAPM()
+        else:
             return False
-
-        return checkAPM()
 
     def getData(self):
         return [d.output() for d in self.apm.data]

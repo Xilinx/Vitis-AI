@@ -21,10 +21,13 @@
 #endif
 #include "./xrt_device_handle_imp.hpp"
 
+#include <experimental/xrt-next.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <xrt.h>
 
+#include <UniLog/UniLog.hpp>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -39,6 +42,7 @@
 #include "vitis/ai/lock.hpp"
 #include "vitis/ai/simple_config.hpp"
 #include "vitis/ai/weak.hpp"
+#include "xrt_xcl_read.hpp"
 
 DEF_ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE, "0");
 DEF_ENV_PARAM(XLNX_DISABLE_CHECK_DEVICE_TYPE, "1");
@@ -47,10 +51,6 @@ DEF_ENV_PARAM_2(XLNX_ENABLE_DEVICES, "ALL", std::string);
 DEF_ENV_PARAM_2(XLNX_VART_FIRMWARE, "", std::string);
 DEF_ENV_PARAM_2(XLNX_DDR_OR_HBM, "", std::vector<std::string>);
 
-#include <experimental/xrt-next.h>
-#include <xrt.h>
-
-#include "xrt_xcl_read.hpp"
 namespace {
 
 const std::string get_dpu_xclbin() {
@@ -104,10 +104,12 @@ static uint64_t my_get_fingerprint(const std::string& full_cu_name,
   uint64_t cu_offset = 0x1F0;
   auto read_result =
       xrtXclRead(handle, (uint32_t)ip_index, cu_offset, base, &l_value);
-  CHECK_EQ(read_result, 0) << "xclRead has error!";
+  UNI_LOG_CHECK(read_result == 0, VART_XRT_READ_ERROR)
+      << "xrtXclRead has error!";
   read_result = xrtXclRead(handle, (uint32_t)ip_index,
                            cu_offset + sizeof(l_value), base, &h_value);
-  CHECK_EQ(read_result, 0) << "xclRead has error!";
+  UNI_LOG_CHECK(read_result == 0, VART_XRT_READ_ERROR)
+      << "xrtXclRead has error!";
   ret = h_value;
   ret = (ret << 32) + l_value;
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
@@ -122,7 +124,8 @@ static std::vector<xclDeviceInfo2> get_all_device_info(size_t num_of_devices) {
   for (auto deviceIndex = 0u; deviceIndex < num_of_devices; ++deviceIndex) {
     auto handle = xclOpen(deviceIndex, NULL, XCL_INFO);
     xclDeviceInfo2 deviceInfo;
-    CHECK_EQ(xclGetDeviceInfo2(handle, &deviceInfo), 0)
+    UNI_LOG_CHECK(xclGetDeviceInfo2(handle, &deviceInfo) == 0,
+                  VART_XRT_READ_ERROR)
         << "Unable to obtain device information";
     LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE) >= 2)
         << "DSA = " << deviceInfo.mName << "\n"                         //
@@ -219,7 +222,7 @@ XrtDeviceHandleImp::XrtDeviceHandleImp() {
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
       << "probe num of devices = " << num_of_devices;
   auto devices = get_all_device_info(num_of_devices);
-  CHECK_EQ(devices.size(), num_of_devices);
+  UNI_LOG_CHECK(devices.size() == num_of_devices, VART_SIZE_MISMATCH);
   auto filename = get_dpu_xclbin();
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
       << "open firmware " << filename;
@@ -278,7 +281,8 @@ XrtDeviceHandleImp::XrtDeviceHandleImp() {
     for (auto i = 0u; i < binstream_->get_num_of_cu(); ++i) {
       auto cu_full_name = binstream_->get_cu(i);
       if (cu_full_name.find("DPU") == std::string::npos &&
-          cu_full_name.find("dpu") == std::string::npos) {
+          cu_full_name.find("dpu") == std::string::npos &&
+          cu_full_name.find("sfm") == std::string::npos) {
         continue;
       }
       auto kernel_name = my_get_kernel_name(cu_full_name);
@@ -299,7 +303,9 @@ XrtDeviceHandleImp::XrtDeviceHandleImp() {
       cu_index = xclIPName2Index(x.handle, cu_full_name.c_str());
 #  endif
 #endif
-      CHECK_NE(cu_index, -1) << "cannot get cu_index. cu name=" << cu_full_name;
+
+      UNI_LOG_CHECK(cu_index != -1, VART_XRT_READ_CU_ERROR)
+          << " Cannot get cu_index. cu name=" << cu_full_name;
       x.cu_index = (size_t)cu_index;
       x.ip_index = i;
       x.full_name = cu_full_name;
@@ -388,9 +394,10 @@ DeviceObject& XrtDeviceHandleImp::find_cu(const std::string& cu_name,
       cnt = cnt + 1;
     }
   }
-  CHECK(ret != nullptr) << "cannot found cu handle!"
-                        << "cu_name " << cu_name << " "    //
-                        << "core_idx " << core_idx << " "  //
+  UNI_LOG_CHECK(ret != nullptr, VART_XRT_NULL_PTR)
+      << "cannot found cu handle!"
+      << "cu_name " << cu_name << " "    //
+      << "core_idx " << core_idx << " "  //
       ;
   return *ret;
 }

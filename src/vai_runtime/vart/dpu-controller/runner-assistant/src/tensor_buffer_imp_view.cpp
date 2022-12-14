@@ -16,6 +16,7 @@
 
 #include "./tensor_buffer_imp_view.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <sstream>
 #include <xir/tensor/tensor.hpp>
 
@@ -57,11 +58,11 @@ std::pair<uint64_t, size_t> TensorBufferExtImpView::data_x(
   dims[0] = 1;
   auto calc1 = vitis::ai::DimCalc(dims);
   auto offset_in_single_batch = (int)calc1.offset(idx);
-  auto size_in_single_batch = get_tensor()->get_data_size() / batch;
-  CHECK_LE(offset_in_single_batch, size_in_single_batch);
+  auto size_in_single_batch = (size_t)((uint32_t)get_tensor()->get_data_size()) / batch;
+  UNI_LOG_CHECK((int)offset_in_single_batch <= (int)size_in_single_batch, VART_TENSOR_INFO_ERROR);
   auto size_left_in_single_batch =
       size_in_single_batch - offset_in_single_batch;
-  CHECK_GE(size_in_single_batch, 0);
+  UNI_LOG_CHECK(size_in_single_batch >= 0, VART_TENSOR_INFO_ERROR);
 
   uint64_t data_back;
   size_t size_back;

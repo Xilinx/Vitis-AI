@@ -70,8 +70,7 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
   vector<vector<pair<float, int>>> score_index_vec(num_classes_);
 
   // Get top_k scores (with corresponding indices).
-  GetMultiClassMaxScoreIndex(conf_data, 0, num_classes_ ,
-                               &score_index_vec);
+  GetMultiClassMaxScoreIndex(conf_data, 0, num_classes_, &score_index_vec);
   //  __TOC__(Sort)
   //  __TIC__(NMS)
   for (unsigned int c = 0; c < num_classes_; ++c) {
@@ -83,7 +82,7 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
   }
 
   if (keep_top_k_ > 0 && num_det > keep_top_k_) {
-    vector<tuple<float, int, int>> score_index_tuples;
+    auto score_index_tuples = vector<tuple<float, int, int>>();
     for (size_t label = 0; label < num_classes_; ++label) {
       const vector<int>& label_indices = indices[label];
       for (size_t j = 0; j < label_indices.size(); ++j) {
@@ -117,8 +116,7 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
     for (size_t idx : indices[label]) {
       auto score = conf_data[idx * num_classes_ + label];
       auto& bbox = decoded_bboxes_[idx];
-      if (bbox.size() == 0)
-        continue;
+      if (bbox.size() == 0) continue;
       Vehiclev3Result res;
       res.label = label;
       res.score = score;
@@ -126,7 +124,7 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
       res.y = bbox[1] - 0.5f * bbox[3];
       res.width = bbox[2];
       res.height = bbox[3];
-      //res.angle = atan2(bbox[5], bbox[4]) * 180.0 / 3.1415926;
+      // res.angle = atan2(bbox[5], bbox[4]) * 180.0 / 3.1415926;
       result.emplace_back(res);
     }
   }
@@ -153,9 +151,9 @@ void SSDdetector::ApplyOneClassNMS(
   indices->clear();
   unsigned int i = 0;
   // cout << "score_index_vec.size() " << score_index_vec.size() << endl;
-  //bool succ = false;
+  // bool succ = false;
   while (i < score_index_vec.size()) {
-    //succ = false;
+    // succ = false;
     const uint32_t idx = score_index_vec[i].second;
     if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
       for (auto it = bbox_layer_infos.begin(); it != bbox_layer_infos.end();
@@ -165,13 +163,12 @@ void SSDdetector::ApplyOneClassNMS(
           DecodeBBox(it->second.ptr + (idx - it->second.index_begin) *
                                           it->second.bbox_single_size,
                      idx, it->second.scale, true);
-          //succ = true;
+          // succ = true;
           break;
-        } 
-        
+        }
       }
     }
-    //if (succ == true) {
+    // if (succ == true) {
     boxes.push_back(decoded_bboxes_[idx]);
     scores.push_back(score_index_vec[i].first);
     resultmap[i] = idx;
@@ -206,7 +203,8 @@ void SSDdetector::GetOneClassMaxScoreIndex(
       });
   //__TOC__(SORT2)
 
-  //cout << "max_score " << label << "   " << score_index_vec->size() << " " << nms_confidence_ << endl; 
+  // cout << "max_score " << label << "   " << score_index_vec->size() << " " <<
+  // nms_confidence_ << endl;
   if (nms_top_k_ > 0 && nms_top_k_ < score_index_vec->size()) {
     score_index_vec->resize(nms_top_k_);
   }
@@ -216,7 +214,7 @@ void SSDdetector::GetMultiClassMaxScoreIndex(
     const float* conf_data, int start_label, int num_classes,
     vector<vector<pair<float, int>>>* score_index_vec) {
   for (auto i = start_label; i < start_label + num_classes; ++i) {
-  //for (auto i = start_label; i < 1; ++i) {
+    // for (auto i = start_label; i < 1; ++i) {
     GetOneClassMaxScoreIndex(conf_data, i, &((*score_index_vec)[i]));
   }
 }
@@ -249,9 +247,9 @@ void SSDdetector::DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
   // scale bboxes
   transform(bbox_ptr, bbox_ptr + 4, bbox.begin(),
             std::bind2nd(multiplies<float>(), scale));
-  //for (int i = 0; i < 1; i++) {
-    //LOG(INFO) << "lalalal========" << (int)bbox_ptr[0] << " " << (int)bbox_ptr[1] << " " <<
-    //(int)bbox_ptr[2] << " " << (int)bbox_ptr[3];
+  // for (int i = 0; i < 1; i++) {
+  // LOG(INFO) << "lalalal========" << (int)bbox_ptr[0] << " " <<
+  // (int)bbox_ptr[1] << " " << (int)bbox_ptr[2] << " " << (int)bbox_ptr[3];
   //}
   auto& prior_bbox = priors_[idx];
 
@@ -286,7 +284,7 @@ void SSDdetector::DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
           (*prior_bbox)[5] * bbox[1] * (*prior_bbox)[11] + (*prior_bbox)[9];
       decode_bbox_width = exp((*prior_bbox)[6] * bbox[2]) * (*prior_bbox)[10];
       decode_bbox_height = exp((*prior_bbox)[7] * bbox[3]) * (*prior_bbox)[11];
-    }  
+    }
     bbox[0] = decode_bbox_center_x - decode_bbox_width / 2.;
     bbox[1] = decode_bbox_center_y - decode_bbox_height / 2.;
     bbox[2] = decode_bbox_center_x + decode_bbox_width / 2.;
@@ -331,6 +329,6 @@ void SSDdetector::DecodeBBox(const int8_t* bbox_ptr, int idx, float scale,
   decoded_bboxes_.emplace(idx, std::move(bbox));
 }
 
-}  // namespace multitask
+}  // namespace multitaskv3
 }  // namespace ai
 }  // namespace vitis

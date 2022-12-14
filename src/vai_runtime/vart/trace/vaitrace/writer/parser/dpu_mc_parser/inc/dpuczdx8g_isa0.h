@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-
-struct Load
-{
-  uint32_t bank_addr : 12, bank_id : 6, hp_id : 2, dpby : 4, dpdon : 4, opcode : 4;
+struct Load {
+  uint32_t bank_addr : 12, bank_id : 6, hp_id : 2, dpby : 4, dpdon : 4,
+      opcode : 4;
   uint32_t jump_read : 16, pad_idx : 5, pad_end : 5, pad_start : 5, r0 : 1;
   uint32_t channel : 12, mode_avg : 2, length : 10, jump_write : 8;
   uint32_t ddr_addr : 29, reg_id : 3;
 };
-struct Save
-{
-  uint32_t bank_addr : 12, bank_id : 6, hp_id : 2, dpby : 4, dpdon : 4, opcode : 4;
+struct Save {
+  uint32_t bank_addr : 12, bank_id : 6, hp_id : 2, dpby : 4, dpdon : 4,
+      opcode : 4;
   uint32_t jump_write : 16, r0 : 16;
   uint32_t channel : 12, r1 : 2, length : 10, jump_read : 8;
   uint32_t ddr_addr : 29, reg_id : 3;
 };
 
 std::vector<class inst_desc> inst_table = {
-    create_inst_desc (LOAD, 0b0000, 4),
-    create_inst_desc (SAVE, 0b0100, 4),
-    create_inst_desc (CONV, 0b1000, 5),
-    create_inst_desc (CONVINIT, 0b1001, 4),
-    create_inst_desc (DPTWISE, 0b1010, 5),
-    create_inst_desc (DWINIT, 0b1011, 3),
-    create_inst_desc (POOLINIT, 0b0110, 2),
-    create_inst_desc (POOL, 0b1100, 5),
-    create_inst_desc (ELEWINIT, 0b1101, 2),
-    create_inst_desc (ELEW, 0b1110, 3),
-    create_inst_desc (END, 0b0111, 1)
-};
+    create_inst_desc(LOAD, 0b0000, 4),
+    create_inst_desc(SAVE, 0b0100, 4),
+    create_inst_desc(CONV, 0b1000, 5),
+    create_inst_desc(CONVINIT, 0b1001, 4),
+    create_inst_desc(DPTWISE, 0b1010, 5),
+    create_inst_desc(DWINIT, 0b1011, 3),
+    create_inst_desc(POOLINIT, 0b0110, 2),
+    create_inst_desc(POOL, 0b1100, 5),
+    create_inst_desc(ELEWINIT, 0b1101, 2),
+    create_inst_desc(ELEW, 0b1110, 3),
+    create_inst_desc(END, 0b0111, 1)};

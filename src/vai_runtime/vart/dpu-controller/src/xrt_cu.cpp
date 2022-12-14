@@ -15,6 +15,7 @@
  */
 #include "xrt_cu.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <ert.h>
 #include <glog/logging.h>
 
@@ -52,7 +53,7 @@ XrtCu::XrtCu(const std::string& cu_name)
     auto cu_kernel_name = handle_->get_cu_kernel_name(cu_name_, idx);
     auto cu_full_name = handle_->get_cu_full_name(cu_name_, idx);
     auto cu_uuid = handle_->get_uuid(cu_name_, idx);
-    CHECK(bo_addr != nullptr);
+    UNI_LOG_CHECK(bo_addr != nullptr, VART_XRT_NULL_PTR);
     auto r = xclOpenContext(xcl_handle, &cu_uuid[0], cu_index, true);
     PCHECK(r == 0) << "cannot open context! "
                    << "cu_index " << cu_index << " "      //
@@ -129,7 +130,8 @@ static void print_timestamp(const uint64_t start, const uint64_t end,
 
 void XrtCu::run(size_t device_core_idx, XrtCu::prepare_ecmd_t prepare,
                 callback_t on_success, callback_t on_failure) {
-  CHECK_GT(bo_handles_.size(), 0u) << "no cu availabe. cu_name=" << cu_name_;
+  UNI_LOG_CHECK(bo_handles_.size() > 0u, VART_XRT_DEVICE_BUSY)
+    << "no cu availabe. cu_name=" << cu_name_;
   struct timespec tp;
 #ifdef _WIN32
   uint64_t start = 0;  // TODO; implemented it on windows.
@@ -170,11 +172,13 @@ void XrtCu::run(size_t device_core_idx, XrtCu::prepare_ecmd_t prepare,
     state = 4;
   } else {
     auto exec_buf_result = xclExecBuf(handle, bo_handle);
-    CHECK_EQ(exec_buf_result, 0) << "cannot execute buffer";
+    UNI_LOG_CHECK(exec_buf_result == 0, VART_XRT_FUNC_FAULT)
+      << " cannot execute buffer";
     start_from = std::chrono::steady_clock::now();
     while (!is_done) {
       auto wait_value = xclExecWait(handle, 1000);
-      CHECK_GE(wait_value, 0) << "cannot xclExecWait";
+      UNI_LOG_CHECK(wait_value >= 0, VART_XRT_FUNC_FAULT)
+      << " cannot xclExecWait";
       state = ecmd->state;
       LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_CU) >= 2)
           << "wait_value " << wait_value << " "  //
@@ -315,7 +319,8 @@ uint32_t XrtCu::read_register(size_t device_core_idx, uint32_t offset) const {
   auto cu_addr = bo_handles_[device_core_idx].cu_addr;
   uint32_t value = 0;
   auto read_result = xrtXclRead(xcl_handle, cu_index, offset, cu_addr, &value);
-  CHECK_EQ(read_result, 0) << "xclRegRead has error!"                       //
+  UNI_LOG_CHECK(read_result == 0, VART_XRT_READ_ERROR)
+                           << "xclRegRead has error!"                       //
                            << "read_result " << read_result << " "          //
                            << "device_core_idx " << device_core_idx << " "  //
                            << "cu_addr " << std::hex << "0x" << cu_index

@@ -23,17 +23,20 @@ from ascii_table import *
 
 """   MEMORY TOPOLOGY SECTION   """
 
+
 class mem_u1 (ctypes.Union):
     _fields_ = [
         ("m_size", ctypes.c_int64),
         ("route_id", ctypes.c_int64)
     ]
 
+
 class mem_u2 (ctypes.Union):
     _fields_ = [
         ("m_base_address", ctypes.c_int64),
         ("flow_id", ctypes.c_int64)
     ]
+
 
 class mem_data (ctypes.Structure):
     _anonymous_ = ("mem_u1", "mem_u2")
@@ -45,14 +48,16 @@ class mem_data (ctypes.Structure):
         ("m_tag", ctypes.c_char * 16)
     ]
 
+
 class mem_topology (ctypes.Structure):
     _fields_ = [
         ("m_count", ctypes.c_int32),
-        ("m_mem_data", mem_data*1024)
+        ("m_mem_data", mem_data*1000)
     ]
 
 
 """   IP_LAYOUT SECTION   """
+
 
 class IP_CONTROL:
     AP_CTRL_HS = 0
@@ -106,7 +111,7 @@ class connection(ctypes.Structure):
 class connectivity(ctypes.Structure):
     _fields_ = [
         ("m_count", ctypes.c_int32),
-        ("m_connection", connection*1024)
+        ("m_connection", connection*1000)
     ]
 
 
@@ -180,18 +185,19 @@ def getMemTopo(path):
 
     print(mem_topo.m_count)
     for i in range(mem_topo.m_count):
-        print(f"{i}: {mem_topo.m_mem_data[i].m_tag}, {mem_topo.m_mem_data[i].m_type}, {mem_topo.m_mem_data[i].mem_u2.flow_id}")
+        print(
+            f"{i}: {mem_topo.m_mem_data[i].m_tag}, {mem_topo.m_mem_data[i].m_type}, {mem_topo.m_mem_data[i].mem_u2.flow_id}")
     #xbutil_cmd = "xbutil"
-    #for alt in xbutil_path_alt:
+    # for alt in xbutil_path_alt:
     #    if os.path.exists(alt):
     #        xbutil_cmd = alt
 
     #d = os.popen('%s --legacy dump' % xbutil_cmd).read()
-    #if len(d) == 0:
+    # if len(d) == 0:
     #    return {}
 
     #ret = json.loads(d)['board']["memory"]
-    #return ret
+    # return ret
 
 
 def checkPath():

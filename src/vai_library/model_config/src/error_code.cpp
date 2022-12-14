@@ -16,8 +16,10 @@
 
 #include "UniLog/ErrorCode.hpp"
 
-REGISTER_ERROR_CODE(VAILIB_MODEL_CONFIG_NOT_FIND, "not find!", "");
-REGISTER_ERROR_CODE(VAILIB_MODEL_CONFIG_OPEN_ERROR, "open file failed!", "");
+REGISTER_ERROR_CODE(VAILIB_MODEL_CONFIG_NOT_FIND, "Model config info not find!",
+                    "");
+REGISTER_ERROR_CODE(VAILIB_MODEL_CONFIG_OPEN_ERROR,
+                    "Model config file or directory open error!", "");
 REGISTER_ERROR_CODE(VAILIB_MODEL_CONFIG_CONFIG_PARSE_ERROR,
-                    "parse file failed!", "");
+                    "Model config file parse error!", "");
 

@@ -15,7 +15,7 @@
 name: "AMD_AIE2_1x4_Overlay"
 type: "IPUCVDX8G"
 isa_version: 0x00
-feature_code: 0x20c241
+feature_code: 0x020500270d12
 
 overlay_info {
   aienum_row_num: 4

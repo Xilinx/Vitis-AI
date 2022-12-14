@@ -32,12 +32,12 @@ using namespace std;
 using Clock = std::chrono::high_resolution_clock;
 #define __TIC__(tag) auto __##tag##_start_time = Clock::now();
 
-#define __TOC__(tag)                                             \
-  auto __##tag##_end_time = Clock::now();                        \
-  cout << #tag << " : "                                          \
-       << std::chrono::duration_cast<std::chrono::microseconds>( \
-              __##tag##_end_time - __##tag##_start_time)         \
-              .count()                                           \
+#define __TOC__(tag)                                                           \
+  auto __##tag##_end_time = Clock::now();                                      \
+  cout << #tag << " : "                                                        \
+       << std::chrono::duration_cast<std::chrono::microseconds>(               \
+              __##tag##_end_time - __##tag##_start_time)                       \
+              .count()                                                         \
        << endl;
 
 extern int GLOBAL_ENABLE_C_SOFTMAX;
@@ -197,8 +197,8 @@ float char2float(unsigned char x， float miny, float step) {
       return y;
       }*/
 
-static void softmax_c(const int8_t *input, float scale, unsigned int cls,
-                      float *output) {
+static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+                      float* output) {
   float sum = 0.f;
   for (unsigned int i = 0; i < cls; ++i) {
     auto x = input[i] * scale;
@@ -211,8 +211,8 @@ static void softmax_c(const int8_t *input, float scale, unsigned int cls,
   // cout << endl;
 }
 
-static void softmax_c(const int8_t *input, float scale, unsigned int cls,
-                      unsigned int group, float *output) {
+static void softmax_c(const int8_t* input, float scale, unsigned int cls,
+                      unsigned int group, float* output) {
   /*
 cout << "group "  << group << " " //
        << "scale "  << scale << " " //
@@ -239,8 +239,8 @@ static inline float32x4_t char2float(const uint16x4_t d0_l, const float step,
 }
 
 static void __attribute__((noinline))
-softmax4_internal(const int8_t *input, float scale, unsigned int group,
-                  float *output) {
+softmax4_internal(const int8_t* input, float scale, unsigned int group,
+                  float* output) {
   unsigned int batch = group / 8;
   // __TIC__(expTable)
   // ExpTable expTable(scale);
@@ -325,8 +325,8 @@ softmax4_internal(const int8_t *input, float scale, unsigned int group,
   }
 }
 
-static void softmax4_neon(const int8_t *input, float scale, unsigned int group,
-                          float *output) {
+static void softmax4_neon(const int8_t* input, float scale, unsigned int group,
+                          float* output) {
   unsigned int aligned = group & (-8);
   softmax4_internal(input, scale, aligned, output);
   unsigned int remain = group - aligned;
@@ -335,8 +335,8 @@ static void softmax4_neon(const int8_t *input, float scale, unsigned int group,
   softmax_c(input, scale, 4, remain, output);
 }
 
-static void softmax8_internal(const int8_t *input, float scale,
-                              unsigned int group, float *output) {
+static void softmax8_internal(const int8_t* input, float scale,
+                              unsigned int group, float* output) {
   unsigned int batch = group / 4;
 
   Table table = getTable(std::abs((int)log2(scale)));
@@ -428,8 +428,8 @@ static void softmax8_internal(const int8_t *input, float scale,
   }
 }
 
-static void softmax8_neon(const int8_t *input, float scale, unsigned int group,
-                          float *output) {
+static void softmax8_neon(const int8_t* input, float scale, unsigned int group,
+                          float* output) {
   unsigned int aligned = group & (-4);
   softmax8_internal(input, scale, aligned, output);
   unsigned int remain = group - aligned;
@@ -438,8 +438,8 @@ static void softmax8_neon(const int8_t *input, float scale, unsigned int group,
   softmax_c(input, scale, 8, remain, output);
 }
 
-static void softmax2_internal(const int8_t *input, float scale,
-                              unsigned int group, float *output) {
+static void softmax2_internal(const int8_t* input, float scale,
+                              unsigned int group, float* output) {
   unsigned int batch = group / 16;
 
   Table table = getTable(std::abs((int)log2(scale)));
@@ -527,8 +527,8 @@ static void softmax2_internal(const int8_t *input, float scale,
   }
 }
 
-static void softmax2_neon(const int8_t *input, float scale, unsigned int group,
-                          float *output) {
+static void softmax2_neon(const int8_t* input, float scale, unsigned int group,
+                          float* output) {
   unsigned int aligned = group & (-16);
   softmax2_internal(input, scale, aligned, output);
   unsigned int remain = group - aligned;
@@ -537,7 +537,7 @@ static void softmax2_neon(const int8_t *input, float scale, unsigned int group,
   softmax_c(input, scale, 2, remain, output);
 }
 
-float err(const float *a, const float *b, int cls) {
+float err(const float* a, const float* b, int cls) {
   float ret = 0.0f;
   for (int i = 0; i < cls; ++i) {
     auto d = (a[i] - b[i]);
@@ -551,7 +551,7 @@ int cls_ = 4;
 int group_ = 8000;
 float scale_ = 0.0078125f;
 
-static void parse_opt(int argc, char *argv[]) {
+static void parse_opt(int argc, char* argv[]) {
   int opt = 0;
   while ((opt = getopt(argc, argv, "c:g:s:")) != -1) {
     switch (opt) {
@@ -571,9 +571,9 @@ static void parse_opt(int argc, char *argv[]) {
   return;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   parse_opt(argc, argv);
-  std::random_device rd;
+  auto rd = std::random_device();
   std::mt19937 gen(rd());
   gen.seed(101);
   std::uniform_int_distribution<> dis(-128, 127);
@@ -588,13 +588,13 @@ int main(int argc, char *argv[]) {
        << std::endl;
 
   int total = cls * group;
-  int8_t *d = new int8_t[total];
+  int8_t* d = new int8_t[total];
   for (int i = 0; i < total; ++i) {
     d[i] = dis(gen);
   }
 
-  float *output = new float[total];
-  float *output_neon = new float[total];
+  float* output = new float[total];
+  float* output_neon = new float[total];
   __TIC__(softmax_c)
   softmax_c(d, scale, cls, group, output);
   __TOC__(softmax_c)

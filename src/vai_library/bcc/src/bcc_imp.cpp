@@ -34,7 +34,8 @@ BCCImp::BCCImp(const std::string &model_name, bool need_preprocess)
     : vitis::ai::TConfigurableDpuTask<BCC>(model_name, need_preprocess),
       input_tensors_ (configurable_dpu_task_->getInputTensor()[0]),
       output_tensors_(configurable_dpu_task_->getOutputTensor()[0]),
-      cfg_(configurable_dpu_task_->getConfig())
+      cfg_(configurable_dpu_task_->getConfig()),
+      need_preprocess_(need_preprocess)
 {
   batch_size = get_input_batch();
   new_height.resize(batch_size);
@@ -119,7 +120,7 @@ void BCCImp::preprocess(const cv::Mat& input_img, int idx) {
   int rows1 = img.rows;
   int cols1 = img.cols;
   int cols =  input_tensors_[0].width;
-  int cols1_channels = cols1*channels ;
+  int cols1_channels = img.step; //cols1*channels ;
   int cols_channels  = cols*channels ;
   std::vector<float> mean_scale = {mean[0]*scale[0], mean[1]*scale[1], mean[2]*scale[2] };
   __TIC__(imgtodpu)
@@ -139,9 +140,13 @@ BCCResult BCCImp::run( const cv::Mat &input_img) {
   __TIC__(BCC_total)
   __TIC__(BCC_setimg)
 
-  cleanmem(0);
   real_batch_size = 1;
-  preprocess(input_img, 0);
+  if (need_preprocess_) {
+    cleanmem(0);
+    preprocess(input_img, 0);
+  } else {
+    configurable_dpu_task_->setInputImageRGB(input_img);
+  }
 
   __TOC__(BCC_setimg)
   __TIC__(BCC_dpu)
@@ -161,12 +166,15 @@ std::vector<BCCResult> BCCImp::run( const std::vector<cv::Mat> &input_img) {
   __TIC__(BCC_total)
   __TIC__(BCC_setimg)
 
-  cleanmem();
   real_batch_size = std::min(int(input_img.size()), int(batch_size));
-  for (auto i = 0; i < real_batch_size; i++) {
-    preprocess(input_img[i], i);
+  if (need_preprocess_) {
+    cleanmem();
+    for (auto i = 0; i < real_batch_size; i++) {
+      preprocess(input_img[i], i);
+    }
+  } else {
+    configurable_dpu_task_->setInputImageRGB(input_img);
   }
-
   __TOC__(BCC_setimg)
   __TIC__(BCC_dpu)
   configurable_dpu_task_->run(0);

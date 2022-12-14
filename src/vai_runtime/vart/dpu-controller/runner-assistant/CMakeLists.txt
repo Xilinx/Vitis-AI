@@ -18,7 +18,6 @@ add_library(
   ${COMPONENT_NAME}
   include/vart/assistant/batch_tensor_buffer.hpp
   src/batch_tensor_buffer.cpp
-  src/tensor_mirror_attrs.cpp
   include/vart/assistant/tensor_buffer_allocator.hpp
   src/tensor_buffer_allocator.cpp
   src/tensor_buffer_imp_host.cpp
@@ -46,7 +45,7 @@ add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 target_link_libraries(
   ${COMPONENT_NAME}
   PUBLIC ${PROJECT_NAME}::runner
-  PRIVATE ${PROJECT_NAME}::buffer-object)
+  PRIVATE ${PROJECT_NAME}::buffer-object ${PROJECT_NAME}::util)
 
 target_include_directories(
   ${COMPONENT_NAME}
@@ -66,7 +65,6 @@ install(
   LIBRARY DESTINATION lib)
 install(
   FILES include/vart/assistant/batch_tensor_buffer.hpp
-        include/vart/assistant/tensor_mirror_attrs.hpp
         include/vart/assistant/tensor_buffer_allocator.hpp
         include/vart/assistant/xrt_bo_tensor_buffer.hpp
   DESTINATION include/vart/assistant/)

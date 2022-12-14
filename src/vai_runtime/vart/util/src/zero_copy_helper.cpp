@@ -47,16 +47,18 @@ static int get_reg_index(const std::string& reg_id) {
   CHECK(index == 0) << "reg id is not support! reg_id = " << reg_id;
 
   auto str = reg_id.substr(4);
-  for (size_t i = 0; i < str.size(); i++){
+  for (size_t i = 0; i < str.size(); i++) {
     CHECK(str[i] >= '0' && str[i] <= '9')
-      << "reg id is not support! reg_id = " << reg_id;
+        << "reg id is not support! reg_id = " << reg_id;
   }
 
   auto ret = std::stoi(str);
-  CHECK_LT(ret, MAX_REG_ID_SIZE) << "reg id exceeds max supported " << MAX_REG_ID_SIZE;
+  CHECK_LT(ret, MAX_REG_ID_SIZE)
+      << "reg id exceeds max supported " << MAX_REG_ID_SIZE;
 
   return ret;
 }
+
 static int get_max_reg_index(const std::map<std::string, std::string> reg_ids) {
   int max = 0;
   for (auto& reg : reg_ids) {
@@ -204,7 +206,7 @@ std::vector<vart::reg_basic_info_t> extract_reg_info_from_subgraph(
   auto output_ddr_info =
       get_tensor_ddr_info(subgraph_, subgraph_->get_sorted_output_tensors());
 
-  ret.resize(get_max_reg_index(reg_id_to_context_type)+1);
+  ret.resize(get_max_reg_index(reg_id_to_context_type) + 1);
   for (auto& reg : reg_id_to_context_type) {
     auto reg_id = reg.first;
     auto reg_type = reg.second;

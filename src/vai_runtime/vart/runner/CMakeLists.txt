@@ -22,6 +22,7 @@ add_library(
   src/dpu_runner.cpp
   src/error_code.cpp
   src/tensor_buffer.cpp
+  src/tensor_buffer_unowned_device.cpp
   src/runner_helper.hpp
   src/runner_helper.cpp
   src/runner_ext.cpp
@@ -38,6 +39,7 @@ add_library(
   include/vart/runner.hpp
   include/vart/runner_ext.hpp
   include/vart/tensor_buffer.hpp
+  include/vart/tensor_buffer_unowned_device.hpp
   include/vitis/ai/dpu_runner.hpp
   include/vitis/ai/runner.hpp
   include/vitis/ai/tensor.hpp
@@ -97,6 +99,7 @@ foreach(
   # v1.2 interface
   vart/runner.hpp
   vart/tensor_buffer.hpp
+  vart/tensor_buffer_unowned_device.hpp
   # v1.1 interface
   vitis/ai/tensor_buffer.hpp
   vitis/ai/dpu_runner.hpp

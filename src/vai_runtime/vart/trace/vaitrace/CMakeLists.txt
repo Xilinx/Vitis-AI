@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.5)
-project(vaitrace VERSION 2.5.20221)
+project(vaitrace VERSION 3.0.20222)
 set(VAITRACE_DEST_PATH bin/xlnx/${PROJECT_NAME})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
@@ -34,45 +34,31 @@ configure_file(vaitrace_version.in
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/vaitrace_version.py
         DESTINATION ${VAITRACE_DEST_PATH})
 
-# Build xapm Library
+
+#Build noc Library
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-  # g++ -shared apm.cpp apm_shell.cpp -fPIC -o libxapm.so -I./include
-  set(XAPM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/xapm)
-  include_directories(${XAPM_DIR}/include)
+	set(NOC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/mem_perf)
+  include_directories(${NOC_DIR}/include)
+  include_directories(${NOC_DIR}/noc/include)
+  include_directories(${NOC_DIR}/xapm/include)
 
-  add_library(xapm SHARED ${XAPM_DIR}/apm.cpp ${XAPM_DIR}/apm_shell.cpp)
+  add_library(memperf SHARED ${NOC_DIR}/noc/noc.cpp ${NOC_DIR}/xapm/apm.cpp  ${NOC_DIR}/mem_perf_interface.cpp)
 
-  target_link_libraries(xapm pthread)
-  set_target_properties(xapm PROPERTIES VERSION "${PROJECT_VERSION}"
+  set_target_properties(memperf PROPERTIES VERSION "${PROJECT_VERSION}"
                                         SOVERSION "${PROJECT_VERSION_MAJOR}")
 
-  install(TARGETS xapm DESTINATION lib)
+  install(TARGETS memperf DESTINATION lib)
 endif()
 
-# Build noc Library
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-  set(NOC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/noc)
-  include_directories(${NOC_DIR}/include)
-
-  add_library(noc SHARED ${NOC_DIR}/noc.cpp ${NOC_DIR}/noc_shell.cpp)
-
-  target_link_libraries(noc pthread)
-  set_target_properties(noc PROPERTIES VERSION "${PROJECT_VERSION}"
-                                       SOVERSION "${PROJECT_VERSION_MAJOR}")
-
-  install(TARGETS noc DESTINATION lib)
-endif()
-
-# Build powermon Library
+#Build powermon Library
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
   set(POWERMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/powermon)
   include_directories(${POWERMON_DIR}/include)
 
   add_library(powermon SHARED ${POWERMON_DIR}/power_mon.cpp)
 
-  set_target_properties(
-    powermon PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION
-                                                     "${PROJECT_VERSION_MAJOR}")
+  set_target_properties(powermon PROPERTIES VERSION "${PROJECT_VERSION}"
+                                        SOVERSION "${PROJECT_VERSION_MAJOR}")
 
   install(TARGETS powermon DESTINATION lib)
 endif()
@@ -84,15 +70,16 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
   include_directories(${DPU_MC_SRC})
   include_directories(${DPU_MC_SRC}/inc)
   aux_source_directory(${DPU_MC_SRC} DPU_MC_SRC_FILES)
-  foreach(SRC IN ITEMS ${DPU_MC_SRC_FILES})
+  foreach(SRC IN ITEMS  ${DPU_MC_SRC_FILES})
     get_filename_component(_N ${SRC} NAME_WE)
     add_library(${_N} SHARED ${SRC})
-    # set_target_properties(${_N} PROPERTIES VERSION "${PROJECT_VERSION}"
-    # SOVERSION "${PROJECT_VERSION_MAJOR}")
+    #set_target_properties(${_N} PROPERTIES VERSION "${PROJECT_VERSION}"
+    #                       SOVERSION "${PROJECT_VERSION_MAJOR}")
     install(
       FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${_N}.so
       DESTINATION ${DPU_MC_DEST}
-      RENAME ${_N}.so)
+      RENAME ${_N}.so
+    )
   endforeach()
 endif()
 
@@ -108,8 +95,7 @@ install(
   PATTERN time_sync EXCLUDE
   PATTERN build EXCLUDE
   PATTERN vaitrace_py EXCLUDE
-  PATTERN vaitraceTools/xapm EXCLUDE
-  PATTERN vaitraceTools/noc EXCLUDE
+  PATTERN vaitraceTools/mem_perf EXCLUDE
   PATTERN vaitraceTools/powermon EXCLUDE
   PATTERN vaitrace.py PERMISSIONS WORLD_EXECUTE WORLD_READ GROUP_EXECUTE
                                   GROUP_READ OWNER_EXECUTE OWNER_READ)

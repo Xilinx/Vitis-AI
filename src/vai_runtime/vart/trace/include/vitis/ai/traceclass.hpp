@@ -88,7 +88,7 @@ class traceClass {
   inline void add_info(Ts... args) {
     if (!is_enabled()) return;
 
-    // Should error out compiling here is sizeof...(args) % 2 != 0
+    // Should stop compiling here if sizeof...(args) % 2 != 0
     static_assert(sizeof...(args) % 2 == 0);
 
     auto info = vitis::ai::trace::trace_payload<Ts...>(args...);

@@ -1,7 +1,32 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
+# Copyright 2022 Xilinx Inc.
 
-import os,re,csv,sys,string,time,argparse,json,signal,platform, random, gzip
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+import os
+import re
+import csv
+import sys
+import string
+import time
+import argparse
+import json
+import signal
+import platform
+import random
+import gzip
 from functools import reduce
 
 AISDK_TRACE_VER = "v0.1-190708"
@@ -11,7 +36,7 @@ fpsCountEvent = "xilinx::ai::DpuTaskImp::run".replace("::", TRACE_NAME_MASK)
 cuThreadList = ['zocl-scheduler']
 
 pattFtrace = re.compile(
-        r"""
+    r"""
         (?P<taskComm>.+)\-
         (?P<taskPid>\d{1,})\s+\[
         (?P<cpuID>\d{3})\].{4,}\s
@@ -19,21 +44,22 @@ pattFtrace = re.compile(
         (?P<func>\w+)\:
         (?P<info>.*)
         """,
-        re.X | re.M
-        )
+    re.X | re.M
+)
 
-pattAPM = re.compile(r'#APM\s(\d+\.\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)')
+pattAPM = re.compile(
+    r'#APM\s(\d+\.\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)\s(\d+)')
 
 hwCUPatt = re.compile(
-        r"""
+    r"""
         .+
         cu_idx=(?P<cu_idx>\d+)
         """,
-        re.X | re.M
-        )
+    re.X | re.M
+)
 
 pattSchedSwitch = re.compile(
-        r"""
+    r"""
         prev_comm\=(?P<prev_comm>.+)
         prev_pid\=(?P<prev_pid>.+)
         prev_prio\=(?P<prev_prio>.+)
@@ -42,10 +68,11 @@ pattSchedSwitch = re.compile(
         next_pid\=(?P<next_pid>.+)
         next_prio\=(?P<next_prio>.+)
         """,
-        re.X | re.M
-        )
+    re.X | re.M
+)
 
-#global T 
+#global T
+
 
 class traceEvent:
     def __init__(self, _eventName, _timeStamp, _info=None):
@@ -133,7 +160,8 @@ class traceRawItem:
 
     def __str__(self):
         return "%.6f:%17s-%4d@[%02d]:%18s: %s" %\
-               (self.timeStamp, self.taskComm, self.taskPid, self.cpuId, self.func, self.info)
+               (self.timeStamp, self.taskComm, self.taskPid,
+                self.cpuId, self.func, self.info)
 
     def isSched(self):
         return self.func.startswith('sched_switch')
@@ -148,10 +176,10 @@ class traceRawItem:
         global T
         type = None
         if self.isSched():
-            #if self.infoDetail['ss_next_comm'] == 'test_performanc':
+            # if self.infoDetail['ss_next_comm'] == 'test_performanc':
             if self.infoDetail['ss_next_comm'] == T.targetComm:
                 type = 'sched_switch_in'
-            #elif self.infoDetail['ss_prev_comm'] == 'test_performanc':
+            # elif self.infoDetail['ss_prev_comm'] == 'test_performanc':
             elif self.infoDetail['ss_prev_comm'] == T.targetComm:
                 type = 'sched_switch_out'
             else:
@@ -159,11 +187,11 @@ class traceRawItem:
                 return None
         else:
             type = self.func
-        
+
         if type is None:
             return None
         return traceEvent(type, self.timeStamp, self.infoDetail)
-        
+
 
 class traceProcess:
     def __init__(self, startEvent, endEvent):
@@ -172,29 +200,31 @@ class traceProcess:
         self.name = startEvent.name
         self.startTime = startEvent.timeStamp
         self.endTime = endEvent.timeStamp
-        self.duration = int((self.endTime - self.startTime) * 1000 *1000)
+        self.duration = int((self.endTime - self.startTime) * 1000 * 1000)
         self.durationSchedOut = 0
         self.subProc = []
         self.isHw = startEvent.isHw()
 
     def __str__(self):
-        outTime = "" if self.durationSchedOut == 0 else "scheduled out [%sus]" % format(self.durationSchedOut, ',')
+        outTime = "" if self.durationSchedOut == 0 else "scheduled out [%sus]" % format(
+            self.durationSchedOut, ',')
         hwflag = "[*DPUHW]" if self.isHw else ""
 
-        s = "%s[%s]@[%f-%f]: takes [%sus] %s" % (hwflag, self.name, self.startTime, self.endTime, format(self.duration, ','), outTime)
+        s = "%s[%s]@[%f-%f]: takes [%sus] %s" % (
+            hwflag, self.name, self.startTime, self.endTime, format(self.duration, ','), outTime)
         s = s.replace(TRACE_NAME_MASK, "::")
 
         return s
 
     def __lt__(self, other):
-        if self.startTime  == other.startTime:
+        if self.startTime == other.startTime:
             return self.duration > other.duration
         return self.startTime < other.startTime
 
     def __iter__(self):
         i = iter(self.getAllSubProcs())
         return i
-    
+
     def getKey(self, _taskPid):
         key = str(_taskPid) + "%s" % str(round(self.startTime * 1000 * 1000))
         return key
@@ -225,7 +255,8 @@ class traceProcess:
             obj['percentage'] = "%.1f" % ((self.duration / taskDuration) * 100)
             pass
 
-        obj['children'] = [s.toJsonObj(taskPid, enableStat, taskDuration) for s in self.subProc]
+        obj['children'] = [s.toJsonObj(
+            taskPid, enableStat, taskDuration) for s in self.subProc]
         if len(obj['children']) > 0:
             obj['folder'] = True
 
@@ -258,7 +289,7 @@ class traceProcess:
 
         for sub in self.subProc:
             fp += sub.getFingerPrint()
-        
+
         return fp
 
     # print to console
@@ -272,11 +303,13 @@ class traceProcess:
     def dumpTree(self):
         pass
 
+
 class eventParser:
     def __init__(self, parseSched=False, parseDpuHw=True):
         self.parseSched = parseSched
 
     """Thread paired rule: the same in [name] and opposite in [dir]"""
+
     def threadPaired(self, startEve, endEve):
         """Error Checking"""
         if startEve.type() != endEve.type():
@@ -292,7 +325,7 @@ class eventParser:
             return startEve.name == endEve.name
 
         if startEve.isDpuHw():
-            return (startEve.name == endEve.name and \
+            return (startEve.name == endEve.name and
                     startEve.info['cu_idx'] == endEve.info['cu_idx'])
 
         return False
@@ -303,7 +336,8 @@ class eventParser:
 
         """Filter out all sched events if there is no [parseSched]"""
         if not self.parseSched:
-            events = [tmp for tmp in _events if tmp.isFtrace() or tmp.isDpuHw()]
+            events = [tmp for tmp in _events if tmp.isFtrace()
+                      or tmp.isDpuHw()]
         else:
             events = _events
 
@@ -351,7 +385,7 @@ class eventParser:
             self.handleSched(root)
 
         return root
-    
+
     def parseCUEvents(self, _events):
         stacks = []
         parseEventResults = []
@@ -368,22 +402,21 @@ class eventParser:
                     except:
                         #print("parse event error", flush=True)
                         pass
-                    
+
                     parseEventResults.append(traceProcess(s, e))
 
         return sorted(parseEventResults)
-
 
     def cpuEventFilter(self, event):
         if event.isDpuHw():
             return False
         if event.isSched():
-            if (event.infoDetail['ss_next_comm'] != T.targetComm or \
-                event.infoDetail['ss_prev_comm'] != T.targetComm):
+            if (event.infoDetail['ss_next_comm'] != T.targetComm or
+                    event.infoDetail['ss_prev_comm'] != T.targetComm):
                 return False
 
         return True
-    
+
     def parseCPUEvents(self, _CPUEvents):
         """Filter out all hardware events"""
         events = _CPUEvents
@@ -409,13 +442,14 @@ class eventParser:
 
             "Get a ramdom base color"
             #color = hash(str(s.taskPid)) % (256 * 256 * 256)
-            color = (hash(str(s.infoDetail['ss_next_pid'])) >> 2) % (256 * 256 * 256)
-            
-            #if (s.infoDetail['ss_next_comm'] == T.targetComm):
-            #    activeTime += (e.timeStamp - s.timeStamp) 
-            #else:
+            color = (hash(str(s.infoDetail['ss_next_pid'])) >> 2) % (
+                256 * 256 * 256)
+
+            # if (s.infoDetail['ss_next_comm'] == T.targetComm):
+            #    activeTime += (e.timeStamp - s.timeStamp)
+            # else:
             #    color = color | 0xe0e0e0
-            
+
             if s.isSched():
                 if (s.infoDetail['ss_next_comm'] == T.targetComm):
                     state = "ready"
@@ -428,18 +462,20 @@ class eventParser:
                     state = "out"
 
             if state == "ready" or state == "run":
-                activeTime += (e.timeStamp - s.timeStamp) 
+                activeTime += (e.timeStamp - s.timeStamp)
             else:
-            #if state != "run":
+                # if state != "run":
                 color = color | 0xe0e0e0
 
-            cpuEventsList.append([s.infoDetail['ss_next_comm'], s.infoDetail['ss_next_pid'], s.timeStamp, e.timeStamp, "#%06x" % color])
+            cpuEventsList.append(
+                [s.infoDetail['ss_next_comm'], s.infoDetail['ss_next_pid'], s.timeStamp, e.timeStamp, "#%06x" % color])
 
             idx = idx+1
 
         cpuUtil = (activeTime / (T.endTime - T.startTime))
 
         return cpuEventsList, cpuUtil
+
 
 class traceThread:
     events = []
@@ -463,11 +499,14 @@ class traceThread:
             self.isCuThread = True
 
     """Add a force end event to the end of records of this thread"""
+
     def addThreadFlags(self):
         last = self.traces[-1]
         first = self.traces[0]
-        forceFirst = traceRawItem("aisdk", "99999", 99, first.timeStamp - 0.00001, "Thread-%d_entry" % self.taskPid, " ")
-        forceLast = traceRawItem("aisdk", "99999", 99, last.timeStamp + 0.00001, "Thread-%d_exit" % self.taskPid, " ")
+        forceFirst = traceRawItem(
+            "aisdk", "99999", 99, first.timeStamp - 0.00001, "Thread-%d_entry" % self.taskPid, " ")
+        forceLast = traceRawItem(
+            "aisdk", "99999", 99, last.timeStamp + 0.00001, "Thread-%d_exit" % self.taskPid, " ")
         self.traces.insert(0, forceFirst)
         self.traces.append(forceLast)
 
@@ -475,23 +514,27 @@ class traceThread:
         return self.taskPid
 
     def parse(self):
-        print('Analyzing thread: %s-%d' % (self.taskComm, self.taskPid), flush=True)
+        print('Analyzing thread: %s-%d' %
+              (self.taskComm, self.taskPid), flush=True)
 
         """Step.1 parse every raw event for this thread """
         for item in self.traces:
             if item.isSched():
                 if item.infoDetail['ss_prev_comm'] == self.taskComm and \
                    item.infoDetail['ss_prev_pid'] == self.taskPid:
-                    self.events.append(traceEvent('sched_switch_out', item.timeStamp, item.infoDetail))
+                    self.events.append(traceEvent(
+                        'sched_switch_out', item.timeStamp, item.infoDetail))
                 elif item.infoDetail['ss_next_comm'] == self.taskComm and \
-                     item.infoDetail['ss_next_pid'] == self.taskPid:
-                    self.events.append(traceEvent('sched_switch_in', item.timeStamp, item.infoDetail))
+                        item.infoDetail['ss_next_pid'] == self.taskPid:
+                    self.events.append(traceEvent(
+                        'sched_switch_in', item.timeStamp, item.infoDetail))
                 continue
             else:
-                self.events.append(traceEvent(item.func, item.timeStamp, item.infoDetail))
+                self.events.append(traceEvent(
+                    item.func, item.timeStamp, item.infoDetail))
 
         """Step.2 divided events into each images"""
-        #print(*self.events)
+        # print(*self.events)
         print("---------------------------------", flush=True)
         p = eventParser(False)
         if self.isCuThread:
@@ -520,6 +563,7 @@ class traceThread:
 
         return [title, time, ev]
 
+
 class APMRecord:
     def __init__(self, rec):
         self.time = float(rec[0])
@@ -527,11 +571,12 @@ class APMRecord:
 
         for d in rec[1:]:
             self.data.append(int(d)*1000/1024/1024.0)
-        
+
         self.total = sum(self.data)
 
     def __str__(self):
         return "Time: %.7f  %.2f" % (self.time, self.total)
+
 
 class traceTable:
     def __init__(self, _targetComm, _tracePatt, _opt, _title=""):
@@ -541,7 +586,7 @@ class traceTable:
         self.alivePidTable = []
         self.tracePatt = _tracePatt
         self.threads = []
-        self.cpus = [[],[],[],[],[],[],[],[],[],[]]
+        self.cpus = [[], [], [], [], [], [], [], [], [], []]
         self.options = _opt
         self.startTime = 1000000000.0
         self.endTime = 0.0
@@ -564,7 +609,7 @@ class traceTable:
 
             tmp = re.match(self.tracePatt, l.strip()).groups()
             item = traceRawItem(*tmp)
-            
+
             self.findTarget(item)
             # print(f"Alive Threads' PID: {self.alivePidTable}")
 
@@ -575,16 +620,16 @@ class traceTable:
                 self.endTime = item.timeStamp
 
             #"""Get first and last event time"""
-            #if items.index(l) == 0:
+            # if items.index(l) == 0:
             #    self.startTimeStamp = item.timeStamp
-            #if items.index(l) == len(items) - 1:
+            # if items.index(l) == len(items) - 1:
             #    self.endTimeStamp = item.timeStamp
 
             """Add item to threads"""
             for thread in self.getThread(item):
                 if thread is not None:
                     thread.addItemToThread(item)
-            
+
             """Add item to CPUs"""
             if not item.isCu():
                 self.cpus[item.cpuId].append(item)
@@ -634,12 +679,12 @@ class traceTable:
             if (spInfo is not None):
                 c_pid = int(spInfo['child_pid'])
                 if (c_pid in self.alivePidTable):
-                    raise("PID ERROR")
+                    raise ("PID ERROR")
                 comm = spInfo['comm']
                 print(f"sched_fork: {comm}:{self.targetComm}")
                 if self.targetComm == comm:
                     self.alivePidTable.append(c_pid)
-                #print(self.alivePidTable)
+                # print(self.alivePidTable)
                 #print("[%f]sched_process_%s,pid %s -> [forked] -> %s" % (spTs, spType, spInfo['pid'], spInfo['child_pid']))
 
         elif spType == 'exit':
@@ -669,10 +714,11 @@ class traceTable:
             # BUG: should use self.elongsToTarget here
             if t.taskComm.startswith(self.targetComm) or t.isCuThread:
                 t.parse()
-        
+
         self.threads = [t for t in self.threads if t.rootNode is not None]
-    
+
     """addThread() rerurns the thread(s) this item belongs to, if not matched return none"""
+
     def getThread(self, item):
         switchOut = None
         switchIn = None
@@ -685,17 +731,20 @@ class traceTable:
                 if t.taskPid == item.infoDetail['ss_next_pid']:
                     switchIn = t
             if not switchIn:
-                switchIn = traceThread(item.infoDetail['ss_next_comm'], item.infoDetail['ss_next_pid'], self.options)
+                switchIn = traceThread(
+                    item.infoDetail['ss_next_comm'], item.infoDetail['ss_next_pid'], self.options)
                 self.threads.append(switchIn)
             if not switchOut:
-                switchOut = traceThread(item.infoDetail['ss_prev_comm'], item.infoDetail['ss_prev_pid'], self.options)
+                switchOut = traceThread(
+                    item.infoDetail['ss_prev_comm'], item.infoDetail['ss_prev_pid'], self.options)
                 self.threads.append(switchOut)
         else:
             for t in self.threads:
                 if t.taskPid == item.taskPid and t.taskComm == item.taskComm:
                     switchIn = t
             if not switchIn:
-                self.threads.append(traceThread(item.taskComm, item.taskPid, self.options))
+                self.threads.append(traceThread(
+                    item.taskComm, item.taskPid, self.options))
                 switchIn = self.threads[-1]
 
         return switchIn, switchOut
@@ -709,7 +758,6 @@ class traceTable:
             t.rootNode.printTree(prefix='|--', file=file)
             t.rootNode.dumpTree()
             print("", file=file, flush=True)
-
 
     def saveImgViewTXT(self, file='image.txt'):
         with open(file, 'w') as f:
@@ -729,7 +777,7 @@ class traceTable:
 
             if (len(cpuData) > 0):
                 retData['CPU-%d' % i] = cpuData
-        
+
         return retData
 
     def getStatisticJson(self):
@@ -737,7 +785,7 @@ class traceTable:
 
         for t in self.threads:
             if t.isCuThread:
-                continue 
+                continue
             if (len(t.rootNode.subProc) <= 1):
                 continue
 
@@ -747,11 +795,10 @@ class traceTable:
                     stat[sub.name] = []
                 stat[sub.name].append(sub)
 
-        mf = lambda x,y:dict(x, **y)
+        def mf(x, y): return dict(x, **y)
         utils = reduce(mf, self.cpuUtil + self.cuUtil)
         #utils["CPU"] = self.cpuUtil
-        return {'cpu': 'utilization', 'data':utils}
-
+        return {'cpu': 'utilization', 'data': utils}
 
     def getCUJson(self):
         cuProcs = []
@@ -764,7 +811,7 @@ class traceTable:
             for proc in th.rootNode:
                 if proc.name == 'cu':
                     cuProcs.append(proc)
-                
+
         for proc in cuProcs:
             idx = int(proc.start.info['cu_idx'])
             cuSet.add(idx)
@@ -772,13 +819,13 @@ class traceTable:
             coreID = "CU-%s" % T.cuMap[hex(idx)]
             startTs = proc.startTime
             endTs = proc.endTime
-            
+
             if coreID not in retData.keys():
                 retData[coreID] = []
             retData[coreID].append((startTs, endTs))
-        
+
         for id in retData.keys():
-            retData[id].sort(key = lambda x:x[0])
+            retData[id].sort(key=lambda x: x[0])
             totalDelta = retData[id][-1][1] - retData[id][0][0]
             runTime = 0
             for i in retData[id]:
@@ -794,8 +841,8 @@ class traceTable:
                 #idx = int(id.split('-')[1]) & 0xf
                 idx = T.cuMap[addr]
                 id = "CU-%s@%s" % (idx, addr)
-            
-            self.cuUtil.append({id:util})
+
+            self.cuUtil.append({id: util})
 
         return retData
 
@@ -808,16 +855,18 @@ class traceTable:
             retData['Thread-%d' % t.taskPid] = []
             for s in t.rootNode.subProc:
                 #print (s.startTime, s.endTime)
-                retData['Thread-%d' % t.taskPid].append((s.startTime, s.endTime, s.name.replace(TRACE_NAME_MASK, "::")))
-            
+                retData['Thread-%d' % t.taskPid].append(
+                    (s.startTime, s.endTime, s.name.replace(TRACE_NAME_MASK, "::")))
+
         return retData
+
 
 def sched_parser_main(src):
 
     if len(src) == 0:
         return {}
 
-    options = {'thread_view': True, 'trace_sched_switch':False}
+    options = {'thread_view': True, 'trace_sched_switch': False}
     data = {}
 
     global T
@@ -827,7 +876,7 @@ def sched_parser_main(src):
 
     #targetFile = sys.argv[2]
 
-    #with open(targetFile, "w+") as f:
+    # with open(targetFile, "w+") as f:
     # data.update(T.getCUJson())
 
     """Get CPU data"""
@@ -842,8 +891,8 @@ def sched_parser_main(src):
     #f.write(json.dumps(stat, indent=1, sort_keys=True))
     ret = {"cpu": {"utilization": stat['data']}}
 
-
     return ret
+
 
 if __name__ == '__main__':
     f = open(sys.argv[1], 'rt')

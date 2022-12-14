@@ -35,7 +35,7 @@ class cmdTracer(tracer.tracerBase.Tracer):
         self.cmd = option.get('control', {})
 
         if len(self.cmd) == 0:
-            assert()
+            assert ()
 
         "Handle Output Options"
         return {}

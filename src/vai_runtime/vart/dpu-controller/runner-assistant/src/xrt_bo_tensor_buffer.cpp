@@ -19,6 +19,7 @@
 #include <xrt.h>
 #endif
 
+#include <UniLog/UniLog.hpp>
 #include "vart/runner.hpp"
 
 namespace vart {
@@ -38,8 +39,15 @@ static uint64_t get_physical_address(const xclDeviceHandle& handle,
 }
 #else
 typedef void* xclDeviceHandle;
+
+#ifdef _WIN32
+typedef void* xclBufferHandle;
+#else
+typedef unsigned int xclBufferHandle;
+#endif
+
 static uint64_t get_physical_address(const xclDeviceHandle& handle,
-                                     const unsigned int bo) {
+                                     const xclBufferHandle bo) {
   LOG(FATAL) << "not implemented, no XRT found";
   return 0ull;
 }
@@ -53,17 +61,20 @@ std::unique_ptr<vart::TensorBuffer> XrtBoTensorBuffer::create(
 XrtBoTensorBuffer::XrtBoTensorBuffer(vart::xrt_bo_t bo,
                                      const xir::Tensor* tensor)
     : TensorBuffer(tensor), bo_{bo} {
-  CHECK(tensor->has_attr("reg_id")) << "tensor: " << tensor->to_string();
-  CHECK(tensor->has_attr("ddr_addr")) << "tensor: " << tensor->to_string();
-  CHECK(tensor->has_attr("location")) << "tensor: " << tensor->to_string();
+  UNI_LOG_CHECK(tensor->has_attr("reg_id"), VART_TENSOR_INFO_ERROR)
+    << "tensor: " << tensor->to_string();
+  UNI_LOG_CHECK(tensor->has_attr("ddr_addr"), VART_TENSOR_INFO_ERROR)
+    << "tensor: " << tensor->to_string();
+  UNI_LOG_CHECK(tensor->has_attr("location"), VART_TENSOR_INFO_ERROR)
+    << "tensor: " << tensor->to_string();
   // auto reg_id = (size_t)tensor->template get_attr<int>("reg_id");
   ddr_addr_ = (size_t)tensor->template get_attr<int>("ddr_addr");
   auto location = (size_t)tensor->template get_attr<int>("location");
-  CHECK_EQ(location, 1);
+  UNI_LOG_CHECK(location == 1, VART_TENSOR_INFO_ERROR);
   phy_addr_ = get_physical_address(bo.xrt_handle, bo.xrt_bo_handle);
   // TODO: assumue one bo one tensor, and the tensor should be on the
   // TODO: this is the bug for image bundling.
-  size_ = tensor->get_data_size() / tensor->get_shape()[0];
+  size_ = (size_t)((uint32_t)tensor->get_data_size()) / tensor->get_shape()[0];
 }
 
 std::pair<std::uint64_t, std::size_t> XrtBoTensorBuffer::data(

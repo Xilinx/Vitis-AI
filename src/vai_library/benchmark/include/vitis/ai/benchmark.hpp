@@ -161,9 +161,9 @@ inline int main_for_performance(int argc, char* argv[], T factory_method) {
   auto image_list =
       std::unique_ptr<ImageList>(new ImageList(g_list_name, lazy_load_image));
   if (image_list->empty()) {
-    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_BENCHMARK_LIST_EMPTY][not found "
-                  "image!]list of images are empty ["
-               << image_list->to_string() << "]";
+    LOG(FATAL) << "[UNILOG][FATAL][VAILIB_BENCHMARK_LIST_EMPTY][Can not found "
+                  "images. List of images are empty. "
+               << image_list->to_string();
   }
   auto model = factory_method();
   using model_t = typename decltype(model)::element_type;

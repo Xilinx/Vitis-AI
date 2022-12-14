@@ -32,6 +32,7 @@
 #include "vart/runner_ext.hpp"
 #include "vitis/ai/collection_helper.hpp"
 #include "xir/sfm_controller.hpp"
+using namespace std;
 
 static cv::Mat read_image(const std::string& image_file_name);
 static cv::Mat preprocess_image(cv::Mat input_image, cv::Size size);
@@ -42,6 +43,14 @@ static void print_topk(const std::vector<std::pair<int, float>>& topk);
 
 static const char* lookup(int index);
 static int get_fix_pos(const xir::Tensor* tensor);
+
+static void dump_out(const std::string filename, void* data, size_t size) {
+  std::cout << "dump_out from data: 0x" << std::hex << data << std::dec
+            << ", size=" << size << "to file " << filename << std::endl;
+  auto mode = std::ios_base::out | std::ios_base::binary | std::ios_base::trunc;
+  CHECK(std::ofstream(filename, mode).write((char*)data, size).good())
+      << " faild to write to " << filename;
+}
 static void setImageBGR(const cv::Mat& image, void* data1, float scale) {
   // mean value and scale are model specific, we need to check the
   // model to get concrete value. For resnet50, they are 104, 107,
@@ -101,6 +110,7 @@ static void run_user_specific_ip(uint64_t dpu_output_phy_addr, unsigned int cls,
                              phy_addr_for_softmax, offset);
   xclSyncBO(handle, bo_handle, XCL_BO_SYNC_BO_FROM_DEVICE,
             fmap_size * sizeof(float), 0u);
+  dump_out("softmax_out_resnet50.bin", (void*)bo_addr, cls * sizeof(float));
   {
     // sorting
     auto topk_value = topk((float*)bo_addr, cls, 5u);
@@ -185,6 +195,12 @@ int main(int argc, char* argv[]) {
         output_tensor_buffers[0]->get_tensor()->get_shape()[1];
     const unsigned int group = 1u;
     const int fixpos = get_fix_pos(output_tensor_buffers[0]->get_tensor());
+    uint64_t dpu_output_virt_addr = 0u;
+    uint64_t dpu_output_virt_size = 0u;
+    std::tie(dpu_output_virt_addr, dpu_output_virt_size) =
+        output_tensor_buffers[0]->data({0, 0});
+    auto dump_size = output_tensor_buffers[0]->get_tensor()->get_data_size();
+    dump_out("softmax_in_resnet50.bin", (void*)dpu_output_virt_addr, dump_size);
     // softmax & topk
     run_user_specific_ip(dpu_output_phy_addr, cls, group, fixpos);
   }

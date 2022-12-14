@@ -41,15 +41,16 @@ BEVdetImp::BEVdetImp(const std::string& model_name0,
                      const std::string& model_name1,
                      const std::string& model_name2) {
   std::string aielib = "libbevdet_aie_runner.so";
+  use_aie_ = false;
+  aie_runner = nullptr;
+  output0_80_ptr = output0_80;
+  output0_64_ptr = output0_64;
   if (ENV_PARAM(USE_AIE)) {
     if (filesize("/usr/lib/" + aielib))
       use_aie_ = true;
-    else {
+    else
       LOG(INFO) << "didn't find /usr/lib/" << aielib << ", don't use aie";
-      use_aie_ = false;
-    }
-  } else
-    use_aie_ = false;
+  }
   if (use_aie_) {
     __TIC__(creat_aie_runner)
     auto attrs = xir::Attrs::create();
@@ -78,10 +79,6 @@ BEVdetImp::BEVdetImp(const std::string& model_name0,
       LOG(INFO) << "Failed to initialize aie, do not use aie";
     }
     __TOC__(creat_aie_runner)
-  }
-  if (!use_aie_) {
-    output0_80_ptr = output0_80;
-    output0_64_ptr = output0_64;
   }
 
   dpu_attrs_ = xir::Attrs::create();

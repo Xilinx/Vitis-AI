@@ -15,6 +15,7 @@
  */
 #include "./xrt_device_handle_butler.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <glog/logging.h>
 
 #include <algorithm>
@@ -100,11 +101,11 @@ static uint64_t my_get_fingerprint(const std::string& full_cu_name,
   size_t size = sizeof(h_value);
   auto cu_offset = 0x1F0;
   auto read_result = xrtXclRead(handle, ip_index, cu_offset, base, &l_value);
-  CHECK_EQ(read_result, 0) << "xclRead has error!";
+  UNI_LOG_CHECK(read_result == 0, VART_XRT_READ_ERROR) << "xrtXclRead has error!";
   cu_offset = cu_offset + sizeof(uint32_t);
   read_result = xrtXclRead(handle, ip_index, cu_offset + sizeof(uint32_t), base,
                            &h_value);
-  CHECK_EQ(read_result, 0) << "xclRead has error!";
+  UNI_LOG_CHECK(read_result == 0, VART_XRT_READ_ERROR) << "xrtXclRead has error!";
   ret = h_value;
   ret = (ret << 32) + l_value;
   LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_DEVICE_HANDLE))
@@ -354,7 +355,8 @@ DeviceObject& XrtDeviceHandleImp::find_cu(const std::string& cu_name,
       cnt = cnt + 1;
     }
   }
-  CHECK(ret != nullptr) << "cannot found cu handle!"
+  UNI_LOG_CHECK(ret != nullptr, VART_XRT_NULL_PTR)
+                        << "cannot found cu handle!"
                         << "cu_name " << cu_name << " "    //
                         << "core_idx " << core_idx << " "  //
       ;

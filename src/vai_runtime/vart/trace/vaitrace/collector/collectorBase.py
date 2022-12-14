@@ -97,7 +97,7 @@ def getData(source=None) -> dict:
     """Make sure all avtive has been stopped"""
     for c in __activeCollectors:
         if c.running == True:
-            assert()
+            assert ()
 
     for c in __activeCollectors:
         data.update({c.name: c.getData()})

@@ -16,9 +16,11 @@
 
 #include "UniLog/ErrorCode.hpp"
 
-REGISTER_ERROR_CODE(VAILIB_DPU_TASK_NOT_FIND, "not find!", "");
-REGISTER_ERROR_CODE(VAILIB_DPU_TASK_OPEN_ERROR, "open file failed!", "");
-REGISTER_ERROR_CODE(VAILIB_DPU_TASK_CONFIG_PARSE_ERROR, "parse file failed!",
+REGISTER_ERROR_CODE(VAILIB_DPU_TASK_NOT_FIND, "Model files not find!", "");
+REGISTER_ERROR_CODE(VAILIB_DPU_TASK_OPEN_ERROR, "Open file failed!", "");
+REGISTER_ERROR_CODE(VAILIB_DPU_TASK_CONFIG_PARSE_ERROR,
+                    "Parse model config file failed!", "");
+REGISTER_ERROR_CODE(VAILIB_DPU_TASK_TENSORS_EMPTY,
+                    "Runner has no input tensors!", "");
+REGISTER_ERROR_CODE(VAILIB_DPU_TASK_SUBGRAPHS_EMPTY, "Runner has no subgraphs!",
                     "");
-REGISTER_ERROR_CODE(VAILIB_DPU_TASK_TENSORS_EMPTY, "tensors empty!", "");
-REGISTER_ERROR_CODE(VAILIB_DPU_TASK_SUBGRAPHS_EMPTY, "subgraphs empty!", "");

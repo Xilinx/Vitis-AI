@@ -69,8 +69,9 @@ class ip_layout (ctypes.Structure):
         ("m_ip_data", ip_data*16)
     ]
 
+
 def getDpuInfo():
-    dpuInfo = {'type': 'DPU', 'info':{}}
+    dpuInfo = {'type': 'DPU', 'info': {}}
 
     try:
         import tools_extra_ops as vart_tools
@@ -79,6 +80,7 @@ def getDpuInfo():
         pass
 
     return dpuInfo
+
 
 def parseText(_type, text, platform):
     cur = dict()
@@ -101,7 +103,7 @@ def parseText(_type, text, platform):
     if _type == 'Memory':
         totalMem = int([t for t in text if t.startswith('MemTotal')]
                        [0].split(':')[1].strip().split(' ')[0])
-        cur['Total Memory'] = "%d MB" % (totalMem / 1024)
+        cur['Total Memory'] = "%d MB" % (totalMem / 1000)
 
     if _type == 'DPU':
         core_id = None

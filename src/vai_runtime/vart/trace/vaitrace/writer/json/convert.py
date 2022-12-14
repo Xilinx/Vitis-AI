@@ -33,6 +33,7 @@ from writer.parser.sched_parser.sched_parser import sched_parser_main
 vtf_events = []
 dpu_ip_summary = {}
 
+
 def convert_dpu(raw_data, dpu_ip_data):
     global dpu_ip_summary
 
@@ -41,11 +42,11 @@ def convert_dpu(raw_data, dpu_ip_data):
 
     dpu_ip_summary = {"dpu": {"ip": dpu_parser.get_dpu_ip_summary()}}
     report = {
-            "dpu": {
-                "profiling": {},
-                "scheduling": {}
-                }
-            }
+        "dpu": {
+            "profiling": {},
+            "scheduling": {}
+        }
+    }
 
     for timeline in timelines:
         if timeline.coreType == "DPU":
@@ -58,30 +59,29 @@ def convert_dpu(raw_data, dpu_ip_data):
             report["dpu"]["scheduling"].setdefault(cu_name, 0)
             report["dpu"]["scheduling"][cu_name] = scheduling_rate
 
-
-    #"{subg_name},{runs},{cu_name},{batch},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{depth},\n"
+    # "{subg_name},{runs},{cu_name},{batch},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{depth},\n"
     dpu_summary = dpu_parser.get_dpu_profile_summary("json")
 
     for row in dpu_summary:
         row = row.strip().split(',')
         dpu_model_profiling_item = {
-                "subg_name":        str(row[0]),
-                "runs":             int(row[1]),
-                "cu_name":          str(row[2]),
-                "batch":            int(row[3]),
-                "min_time":         float(row[4]),
-                "avg_time":         float(row[5]),
-                "max_time":         float(row[6]),
-                "workload":         int(row[7]),
-                "efficiency":       float(row[8]),
-                "read_weight_bias_size":    int(row[9]),
-                "read_feature_map_size":    int(row[10]),
-                "write_featyre_map_size":   int(row[11]),
-                "mem_io_bw":        float(row[12]),
-                "hardware_time":    float(row[13]),
-                "depth":     int(row[14]),
-                "input_tensor_shape": str(row[15].replace("_", ",")),
-                "output_tensor_shape": str(row[16].replace("_", ","))
+            "subg_name":        str(row[0]),
+            "runs":             int(row[1]),
+            "cu_name":          str(row[2]),
+            "batch":            int(row[3]),
+            "min_time":         float(row[4]),
+            "avg_time":         float(row[5]),
+            "max_time":         float(row[6]),
+            "workload":         int(row[7]),
+            "efficiency":       float(row[8]),
+            "read_weight_bias_size":    int(row[9]),
+            "read_feature_map_size":    int(row[10]),
+            "write_featyre_map_size":   int(row[11]),
+            "mem_io_bw":        float(row[12]),
+            "hardware_time":    float(row[13]),
+            "depth":     int(row[14]),
+            "input_tensor_shape": str(row[15].replace("_", ",")),
+            "output_tensor_shape": str(row[16].replace("_", ","))
         }
 
         # sort by cu
@@ -95,6 +95,7 @@ def convert_dpu(raw_data, dpu_ip_data):
 def convert_power_info(raw_data):
     return analyse_power(raw_data)
 
+
 def get_power_info(power_info_data):
     peak = power_info_data.get("peak_power", 0)
     idle = power_info_data.get("idle_power", 0)
@@ -102,20 +103,21 @@ def get_power_info(power_info_data):
     limit = power_info_data.get("limit_power", -1)
 
     return {"board": {
-                "power.peak": peak,
-                "power.idle": idle,
-                "power.average": average,
-                "power.limit": limit
-                }
-            }
+        "power.peak": peak,
+        "power.idle": idle,
+        "power.average": average,
+        "power.limit": limit
+    }
+    }
+
 
 def get_cpu_task_info(cpu_task_summary):
     report = {
-            "cpu": {
-                "graph_runner.cpu_tasks": [],
-                "onnx_runner.cpu_tasks": []
-                }
-            }
+        "cpu": {
+            "graph_runner.cpu_tasks": [],
+            "onnx_runner.cpu_tasks": []
+        }
+    }
 
     for row in cpu_task_summary:
         items = row.strip().split(',')
@@ -129,25 +131,25 @@ def get_cpu_task_info(cpu_task_summary):
         ops = items[6]
 
         report_item = {
-                "subgraph": subgraph_name,
-                "ops": ops,
-                "average_time": ave_t,
-                "min_time": min_t,
-                "max_time": max_t,
-                "runs": runs
-            }
+            "subgraph": subgraph_name,
+            "ops": ops,
+            "average_time": ave_t,
+            "min_time": min_t,
+            "max_time": max_t,
+            "runs": runs
+        }
 
         report["cpu"]["graph_runner.cpu_tasks"].append(report_item)
 
     return report
-    
+
 
 def get_cpu_func_info(cpp_summary, py_summary):
     report = {
-            "cpu": {
-                "vitis_ai_libaray.cpu_functions": []
-                }
-            }
+        "cpu": {
+            "vitis_ai_libaray.cpu_functions": []
+        }
+    }
 
     for row in cpp_summary + py_summary:
         items = row.strip().split(',')
@@ -174,10 +176,11 @@ def get_cpu_func_info(cpp_summary, py_summary):
 
     return report
 
+
 def get_cmd_info(cmd_data):
     report = {
-            "vaitrace_environment": {}
-        }
+        "vaitrace_environment": {}
+    }
 
     report["vaitrace_environment"]["cmd"] = cmd_data.get("cmd", [])
     report["vaitrace_environment"]["platform"] = cmd_data.get("platform", [])
@@ -186,18 +189,20 @@ def get_cmd_info(cmd_data):
     return report
 
 
-def xat_to_json(xat, saveTo=None):
+def xat_to_json(xat, options):
     global dpu_ip_summary
+
+    saveTo = options.get('cmdline_args', {}).get('output', None)
 
     dpuProfilingSummary = convert_dpu(xat.get('vart'), xat.get('hwInfo'))
 
-    powerInfoSummary = convert_power_info(xat.get('power',{}))
+    powerInfoSummary = convert_power_info(xat.get('power', {}))
     cpuTaskSummary = convert_cpu_task(xat.get('vart', {}))
     pyFuncSummary = convert_pyfunc(xat.get('pyfunc', {}))
     cppFuncSummary = convert_cppfunc(xat.get('function', {}))
 
     cpuUtilSummary = sched_parser_main(xat.get('sched', {}))
-    
+
     output_f = sys.stdout
     report = {"uuid": uuid.uuid1().hex}
 

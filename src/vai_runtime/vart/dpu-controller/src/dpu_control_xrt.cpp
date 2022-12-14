@@ -16,6 +16,7 @@
 #include <glog/logging.h>
 #include <xrt.h>
 
+#include <UniLog/UniLog.hpp>
 #include <vitis/ai/env_config.hpp>
 
 #include "./dpu_control_xrt_cloud.hpp"
@@ -36,7 +37,7 @@ static std::string get_cu_kernel_name(xir::XrtCu* cu) {
     return type;
   }
   auto n_of_cu = cu->get_num_of_cu();
-  CHECK_NE(n_of_cu, 0u)
+  UNI_LOG_CHECK(n_of_cu != 0u, VART_XRT_READ_CU_ERROR)
       << "no dpu cu detected. please check /usr/lib/dpu.xclbin";
   auto ret = cu->get_kernel_name(0);
   for (auto i = 1u; i < n_of_cu && false
@@ -46,7 +47,7 @@ static std::string get_cu_kernel_name(xir::XrtCu* cu) {
         */
        ;
        ++i) {
-    CHECK_EQ(cu->get_kernel_name(i), ret)
+    UNI_LOG_CHECK(cu->get_kernel_name(i) == ret, VART_XRT_READ_CU_ERROR)
         << "all cu must have same kernel name. i = " << i;
   }
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
@@ -72,7 +73,7 @@ static struct Registar {
             if (xrt_cu->get_num_of_cu() == 0) {
               xrt_cu = std::make_unique<xir::XrtCu>(std::string{"dpu"});
             }
-            CHECK_NE(xrt_cu->get_num_of_cu(), 0u)
+            UNI_LOG_CHECK(xrt_cu->get_num_of_cu() != 0u, VART_XRT_READ_CU_ERROR)
                 << "no dpu cu detected. please check /usr/lib/dpu.xclbin";
             auto cu_kernel_name = get_cu_kernel_name(xrt_cu.get());
             if (cu_kernel_name.find("DPUCZDX8G") == 0 ||

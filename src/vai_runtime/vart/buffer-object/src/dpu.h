@@ -63,8 +63,8 @@ struct ioc_kernel_run_t {
 struct ioc_softmax_t {
   u32 width;  /* width dimention of Tensor */
   u32 height; /* height dimention of Tensor */
-  u32 input;  /* physical address of input Tensor */
-  u32 output; /* physical address of output Tensor */
+  u64 input;  /* physical address of input Tensor */
+  u64 output; /* physical address of output Tensor */
   u32 scale;  /* quantization info of input Tensor */
   u32 offset; /* offset value for input Tensor */
 };

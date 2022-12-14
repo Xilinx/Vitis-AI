@@ -42,15 +42,17 @@ OPS_DPSP_LEN = 60
 output_f = sys.stdout
 
 
-def convert_dpu(raw_data, hwInfo):
+def convert_dpu(raw_data, hwInfo, options):
     global literal_pool, dpu_core_num, vtf_events, dpu_profile_summary
     global TIMESYNC
     offset = TIMESYNC.get('sync', {}).get('vart')
     timeout = TIMESYNC.get('timeout', 0)
 
+    runmode = options.get('control', {}).get('runmode')
+
     dpu_parser = DPUEventParser()
     timelines = dpu_parser.parse(
-        raw_data, hwInfo,{"time_offset": offset, "time_limit": timeout})
+            raw_data, hwInfo, {"time_offset": offset, "time_limit": timeout, "runmode": runmode})
 
     dpu_profile_summary = dpu_parser.get_dpu_profile_summary("txt")
 
@@ -78,7 +80,9 @@ DPU_TABLE_NOTES = \
 "~0": Value is close to 0, Within range of (0, 0.001)
 Bat: Batch size of the DPU instance
 WL(Work Load): Computation workload (MAC indicates two operations), unit is GOP
-RT(Run time): The execution time in milliseconds, unit is ms
+SW_RT(Software Run time): The execution time calculate by software in milliseconds, unit is ms
+HW_RT(Hareware Run time): The execution time from hareware operation in milliseconds, unit is ms
+Effic(Efficiency): The DPU actual performance divided by peak theoretical performance,unit is %
 Perf(Performance): The DPU performance in unit of GOP per second, unit is GOP/s
 LdFM(Load Size of Feature Map): External memory load size of feature map, unit is MB
 LdWB(Load Size of Weight and Bias): External memory load size of bias and weight, unit is MB
@@ -96,7 +100,7 @@ def print_dpu_table(dpu_summary_data):
     #gops = hwin_summary_data[1]
     #freq = hwin_summary_data[0]
     header = ['DPU Id', 'Bat', 'DPU SubGraph',
-              'WL', 'SW_RT', 'Effic', 'LdWB', 'LdFM', 'StFM', 'AvgBw', 'HW_RT']
+              'WL', 'SW_RT', 'HW_RT', 'Effic', 'LdWB', 'LdFM', 'StFM', 'AvgBw']
     pr_data = []
     # pr_data.append(header)
 
@@ -117,18 +121,18 @@ def print_dpu_table(dpu_summary_data):
         max_t = items[5]
 
         workload = items[6]
-        effic= items[7]
+        effic = items[7]
         mem_ld_fm = items[8]
         mem_ld_w = items[9]
         mem_st_fm = items[10]
         mem_io_bw = items[11]
-    
+
         hw_rt = items[12]
         rank_id = int(items[13])
         #bandwidth = "{:,}".format(round(float(items[11])))
 
         pr_data.append([ip_name, ip_batch, subgraph_name,
-                        workload, ave_t, effic, mem_ld_fm, mem_ld_w, mem_st_fm, mem_io_bw, hw_rt, rank_id])
+                        workload, ave_t, hw_rt, effic, mem_ld_fm, mem_ld_w, mem_st_fm, mem_io_bw, rank_id])
 
     pr_data.sort(key=lambda a: (a.pop() + (hash(a[0]) % 128) * 4096))
 
@@ -171,20 +175,22 @@ def print_cpu_task_table(cpu_task_summary):
     print("\nCPU OPs in Graph(called by GraphRunner):", file=output_f)
     print_ascii_table(pr_data, output_f)
 
+
 def print_power_info_table(power_info_data):
-    
+
     header = ['idle power', 'max power', 'ave power']
     pr_data = []
     pr_data.append(header)
-    
+
     idle_power = power_info_data[0]
     max_power = power_info_data[1]
     ave_power = power_info_data[2]
-    
-    pr_data.append([idle_power, max_power,ave_power])
-    
+
+    pr_data.append([idle_power, max_power, ave_power])
+
     print("power summary:", file=output_f)
     print_ascii_table(pr_data, output_f)
+
 
 def print_cpu_func_table(cpp_summary, py_summary):
     """
@@ -253,10 +259,13 @@ def output(saveTo=None):
 
     output_profile_summary()
 
-def xat_to_txt(xat, saveTo=None):
+
+def xat_to_txt(xat, options):
     global XRT_INFO, DEBUG_MODE, cpuTaskSummary, cppFuncSummary, pyFuncSummary
 
-    convert_dpu(xat.get('vart'), xat.get('hwInfo'))
+    saveTo = options.get('cmdline_args', {}).get('output', None)
+
+    convert_dpu(xat.get('vart'), xat.get('hwInfo'), options)
     cpuTaskSummary = convert_cpu_task(xat.get('vart', {}))
     pyFuncSummary = convert_pyfunc(xat.get('pyfunc', {}))
     cppFuncSummary = convert_cppfunc(xat.get('function', {}))

@@ -42,7 +42,9 @@ struct MyOpImp : public vart::experimental::OpImpBase {
       : vart::experimental::OpImpBase{op, attrs} {
     auto output_tensor = op->get_output_tensor();
     num_of_elements_ = output_tensor->get_element_num();
-
+    dpu_ripv_ = nullptr;
+    data_ptr_ = nullptr;
+    data_vec_ = vector<char>();
     if (op->has_attr("data") &&
         !op->get_attr<std::vector<char>>("data").empty()) {
       data_vec_ = op->get_attr<vector<char>>("data");

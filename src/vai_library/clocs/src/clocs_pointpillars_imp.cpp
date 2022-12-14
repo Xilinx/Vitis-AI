@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "./clocs_pointpillars_imp.hpp"
+
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -22,7 +24,6 @@
 #include <vitis/ai/profiling.hpp>
 
 #include "./anchor.hpp"
-#include "./clocs_pointpillars_imp.hpp"
 #include "./scatter.hpp"
 #include "./utils.hpp"
 
@@ -84,7 +85,7 @@ static clocs::VoxelConfig build_voxel_config(
     const vitis::ai::proto::DpuModelParam& model_config,
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors) {
-  clocs::VoxelConfig voxel_config;
+  clocs::VoxelConfig voxel_config = clocs::VoxelConfig();
 
   // set points dim
   voxel_config.feature_dim = input_tensors[0].channel;
@@ -593,4 +594,3 @@ std::vector<ClocsPointPillarsResult> ClocsPointPillarsImp::run(
 
 }  // namespace ai
 }  // namespace vitis
-

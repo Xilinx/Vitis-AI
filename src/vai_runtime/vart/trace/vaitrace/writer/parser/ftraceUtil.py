@@ -82,4 +82,4 @@ def ftraceParse(l, options):
         return None
 
     tmp = tmp.groups()
-    return(ftraceEvent(*tmp))
+    return (ftraceEvent(*tmp))

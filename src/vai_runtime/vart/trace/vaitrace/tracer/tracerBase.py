@@ -29,7 +29,7 @@ class Tracer:
         elif type(source) is list:
             self.source = source
         else:
-            assert()
+            assert ()
 
     def compatible(self, platform: {}):
         machine = platform['machine']
@@ -85,7 +85,7 @@ def getSourceRequirement() -> list:
         elif type(t.source) is list:
             req = req + t.source
         else:
-            assert(True)
+            assert (True)
 
     return req
 

@@ -31,6 +31,7 @@ enum inst_type {
   SAVE,
   CONV,
   CONVINIT,
+  CONVADDR,
   DPTWISE,
   DWINIT,
   POOLINIT,
@@ -38,6 +39,7 @@ enum inst_type {
   ELEWINIT,
   ELEW,
   ALUINIT,
+  ALUADDR,
   ALU,
   END,
   DUMPBANK,
@@ -56,8 +58,8 @@ struct process_inst_result {
 
 #define create_inst_desc(inst, op, lw) inst_desc(#inst, inst, op, lw)
 class inst_desc {
-public:
-  inst_desc(const char *_name, enum inst_type _it, uint8_t _opcode,
+ public:
+  inst_desc(const char* _name, enum inst_type _it, uint8_t _opcode,
             uint32_t _length_w) {
     name = _name;
     type = _it;
@@ -66,20 +68,20 @@ public:
     length_byte = _length_w * 4;
   };
 
-  const char *name;
+  const char* name;
   uint8_t opcode;
   enum inst_type type;
   uint32_t length_w;
   uint32_t length_byte;
 };
 
-using inst_proc_f = void(enum inst_type, const uint8_t *, bool, uint32_t *,
-                         uint32_t *, uint32_t *);
+using inst_proc_f = void(enum inst_type, const uint8_t*, bool, uint32_t*,
+                         uint32_t*, uint32_t*);
 
-inline void process_common(const uint8_t *mc, uint32_t mc_len, bool debug,
-                           uint32_t *load_img_size, uint32_t *load_para_size,
-                           uint32_t *save_size,
-                           std::vector<class inst_desc> &inst_table,
+inline void process_common(const uint8_t* mc, uint32_t mc_len, bool debug,
+                           uint32_t* load_img_size, uint32_t* load_para_size,
+                           uint32_t* save_size,
+                           std::vector<class inst_desc>& inst_table,
                            std::function<inst_proc_f> process_inst) {
   //	printf("debug: %d\n", debug);
   //	printf("mc@%p\n", mc);
@@ -93,17 +95,18 @@ inline void process_common(const uint8_t *mc, uint32_t mc_len, bool debug,
   *load_para_size = 0;
   *save_size = 0;
 
-  struct inst_head *h;
+  struct inst_head* h;
   bool inst_matched;
   process_inst_result res = {0};
 
   for (uint32_t pos = 0; pos < mc_len;) {
-    h = (struct inst_head *)(mc + pos);
+    h = (struct inst_head*)(mc + pos);
     inst_matched = false;
 
-    for (const auto &inst : inst_table) {
+    for (const auto& inst : inst_table) {
       if (h->opcode == inst.opcode) {
-        process_inst(inst.type, mc + pos, debug, load_img_size, load_para_size, save_size);
+        process_inst(inst.type, mc + pos, debug, load_img_size, load_para_size,
+                     save_size);
         res.inst_counter[inst.type] += 1;
         pos += inst.length_byte;
         inst_matched = true;

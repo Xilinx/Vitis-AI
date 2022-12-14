@@ -45,12 +45,12 @@ if (n % hash_size) {
 }
 
 int main(int argc, char* argv[]) {
-  int n;
-  int h;
-  int w;
-  int c;
-  uint64_t reg_2_offset;
-  uint64_t reg_3_offset;
+  int n = 1;
+  int h = 1;
+  int w = 1;
+  int c = 1;
+  uint64_t reg_2_offset = 1;
+  uint64_t reg_3_offset = 1;
   parse_value(std::string(argv[1]), n);
   parse_value(std::string(argv[2]), h);
   parse_value(std::string(argv[3]), w);

@@ -86,8 +86,8 @@ void trace_controller::push_info(trace_entry_t i) {
   infobase.push_back(i);
 }
 
-// vector<trace_entry_t> infobase;
-// mutex infobase_lock;
+mutex global_lock;
+mutex core_lock[CORE_N_MAX];
 
 void trace_time_sync(const char* tag) {
   auto tp = steady_clock::now().time_since_epoch();
@@ -136,6 +136,36 @@ vai_trace_options_t initialize() {
 };
 
 bool is_enabled() { return get_trace_controller_inst().is_enabled(); };
+
+void lock(void) {
+    if (!is_enabled()) return;
+    global_lock.lock();
+};
+
+void lock(size_t &core_idx) {
+    if (!is_enabled()) return;
+    core_lock[core_idx].lock();
+};
+
+void lock(std::mutex &mutex) {
+    if (!is_enabled()) return;
+    mutex.lock();
+};
+
+void unlock(void) {
+    if (!is_enabled()) return;
+    global_lock.unlock();
+};
+
+void unlock(size_t &core_idx) {
+    if (!is_enabled()) return;
+    core_lock[core_idx].unlock();
+};
+
+void unlock(std::mutex &mutex) {
+    if (!is_enabled()) return;
+    mutex.unlock();
+};
 
 void disable_trace() {
   VAITRACE_DBG << "Disabling...";

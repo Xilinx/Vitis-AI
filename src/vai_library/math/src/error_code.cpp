@@ -16,5 +16,7 @@
 
 #include "UniLog/ErrorCode.hpp"
 
-REGISTER_ERROR_CODE(VAILIB_MATH_NOT_SUPPORT, "not support!", "");
-REGISTER_ERROR_CODE(VAILIB_MATH_FIX_POS_ERROR, "fix pos error! ", "");
+REGISTER_ERROR_CODE(VAILIB_MATH_NOT_SUPPORT,
+                    "The function or value are not supported in vai-math!", "");
+REGISTER_ERROR_CODE(VAILIB_MATH_FIX_POS_ERROR,
+                    "Softmax table not support the fix position value!", "");

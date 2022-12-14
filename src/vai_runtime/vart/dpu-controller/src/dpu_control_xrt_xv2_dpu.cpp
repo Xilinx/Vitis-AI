@@ -211,9 +211,11 @@ void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
       ecmd->count = p + 1;
     }
   };
+
 #ifndef _WIN32
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start,
                               core_idx, 0);
+  vitis::ai::trace::lock(core_idx);
 #endif
   xrt_cu_->run(
       core_idx, func,
@@ -232,6 +234,7 @@ void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
       });
   auto hwconuter = get_device_hwconuter(core_idx);
 #ifndef _WIN32
+  vitis::ai::trace::unlock(core_idx);
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end,
                               core_idx, hwconuter);
 #endif

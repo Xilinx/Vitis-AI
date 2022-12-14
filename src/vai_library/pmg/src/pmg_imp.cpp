@@ -65,7 +65,7 @@ PMGResult PMGImp::run( const cv::Mat &input_img) {
   cv::Mat img;
   auto size = cv::Size(getInputWidth(), getInputHeight());
   if (size != input_img.size()) {
-    cv::resize(input_img, img, size, 0, 0, cv::INTER_LINEAR);
+    cv::resize(input_img, img, size, 0, 0, cv::INTER_AREA);
   } else {
     img = input_img;
   }
@@ -94,7 +94,7 @@ std::vector<PMGResult> PMGImp::run( const std::vector<cv::Mat> &input_img) {
   std::vector<cv::Mat> vimg(real_batch_size);
   for (auto i = 0; i < real_batch_size; i++) {
     if (size != input_img[i].size()) {
-      cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_LINEAR);
+      cv::resize(input_img[i], vimg[i], size, 0, 0, cv::INTER_AREA);
     } else {
       vimg[i] = input_img[i];
     }

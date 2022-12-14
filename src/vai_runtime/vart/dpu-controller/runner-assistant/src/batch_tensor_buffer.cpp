@@ -16,11 +16,12 @@
 
 #include "vart/assistant/batch_tensor_buffer.hpp"
 
+#include <UniLog/UniLog.hpp>
 #include <memory>
 
-#include "vart/assistant/tensor_mirror_attrs.hpp"
 #include "vart/runner.hpp"
 #include "vart/tensor_buffer.hpp"
+#include "vart/tensor_mirror_attrs.hpp"
 
 namespace vart {
 namespace assistant {
@@ -42,41 +43,43 @@ static std::unique_ptr<xir::Tensor> create_tensor(
     if (tensor == nullptr) {
       tensor = t;
     }
-    CHECK(t != nullptr) << "cannot get tensor from the tensor buffer";
+    UNI_LOG_CHECK(t != nullptr, VART_XRT_NULL_PTR)
+      << "cannot get tensor from the tensor buffer";
     auto dims = t->get_shape();
-    CHECK(!dims.empty()) << "dims.size() " << dims.size();
+    UNI_LOG_CHECK(!dims.empty(), VART_TENSOR_INFO_ERROR)
+      << "dims.size() " << dims.size();
     batch = batch + dims[0];
     if (batch_dims.empty()) {
       batch_dims = dims;
       name = t->get_name();
       data_type = t->get_data_type();
     } else {
-      CHECK_EQ(batch_dims.size(), dims.size());
+      UNI_LOG_CHECK(batch_dims.size() == dims.size(), VART_TENSOR_INFO_ERROR);
       for (auto i = 1u; i < batch_dims.size(); ++i) {
-        CHECK_EQ(batch_dims[i], dims[i])
+        UNI_LOG_CHECK(batch_dims[i] == dims[i], VART_TENSOR_INFO_ERROR)
             << " all tensor buffer should have same shepe except the batch, "
                "i.e. the first dimension. i = "
             << i;
       }
-      CHECK_EQ(name, t->get_name()) << "all tensor should have same name";
-      CHECK_EQ((int)data_type.type, (int)t->get_data_type().type)
+      UNI_LOG_CHECK(name == t->get_name(), VART_TENSOR_INFO_ERROR)
+          << "all tensor should have same name";
+      UNI_LOG_CHECK((int)data_type.type == (int)t->get_data_type().type, VART_TENSOR_INFO_ERROR)
           << "all tensor should have data_type";
-      CHECK_EQ(data_type.bit_width, t->get_data_type().bit_width)
+      UNI_LOG_CHECK(data_type.bit_width == t->get_data_type().bit_width, VART_TENSOR_INFO_ERROR)
           << "all tensor should have bit_width";
     }
   }
   batch_dims[0] = batch;
-  ret =
-      vart::assistant::TensorMirrorAttrs::create(tensor, batch_dims, data_type);
+  ret = vart::TensorMirrorAttrs::create(tensor, batch_dims, data_type);
   return ret;
 }
 
 static vart::TensorBuffer::location_t my_get_location(
     const std::vector<vart::TensorBuffer*>& tensor_buffers) {
-  CHECK(!tensor_buffers.empty());
+  UNI_LOG_CHECK(!tensor_buffers.empty(), VART_TENSOR_INFO_ERROR);
   auto ret = tensor_buffers[0]->get_location();
   for (auto i = 1u; i < tensor_buffers.size(); ++i) {
-    CHECK(ret == tensor_buffers[i]->get_location())
+    UNI_LOG_CHECK(ret == tensor_buffers[i]->get_location(), VART_TENSOR_INFO_ERROR)
         << "all tensor buffers must have the same location: tensor_buffers[i]="
         << tensor_buffers[i]->to_string()
         << "; the first tensor buffer=" << tensor_buffers.front()->to_string();
@@ -91,7 +94,7 @@ BatchTensorBuffer::BatchTensorBuffer(
       // capture the tensor again,
       tensor_(const_cast<xir::Tensor*>(get_tensor())),
       location_{my_get_location(tensor_buffers_)} {
-  CHECK(!tensor_buffers_.empty());
+  UNI_LOG_CHECK(!tensor_buffers_.empty(), VART_TENSOR_INFO_ERROR);
 }
 
 BatchTensorBuffer ::~BatchTensorBuffer() {}
@@ -168,7 +171,7 @@ std::pair<int, int> BatchTensorBuffer::get_tb_idx(size_t batch_idx) {
   auto batch_idx_tb = batch_idx;
   for (auto tb_idx = 0; tb_idx < (int)tensor_buffers_.size(); tb_idx++) {
     auto dims = tensor_buffers_[tb_idx]->get_tensor()->get_shape();
-    CHECK(!dims.empty());
+    UNI_LOG_CHECK(!dims.empty(), VART_TENSOR_INFO_ERROR);
     batch = batch + dims[0];
     if ((int)batch_idx < batch) {
       return std::make_pair(tb_idx, batch_idx_tb);

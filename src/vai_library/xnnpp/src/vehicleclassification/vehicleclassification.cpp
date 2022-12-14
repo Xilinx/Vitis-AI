@@ -50,6 +50,17 @@ const char* VehicleClassificationResult::lookup(int index) {
   return vehicle_make[index];
 }  // namespace ai
 
+static void softmax_m(int8_t* input, float scale, unsigned int cls,
+                      unsigned int group, float* output) {
+  float sum = 0.f;
+  int8_t maxv = *max_element(input, input+cls);
+  for (unsigned int i = 0; i < cls; ++i) {
+    output[i] = exp((input[i]-maxv) * scale);
+    sum += output[i];
+  }
+  for (unsigned int i = 0; i < cls; ++i) output[i] /= sum;
+}
+
 static VehicleClassificationResult topk(const float* softres, int channel,
                                         int k, int width, int height) {
   auto topkres = VehicleClassificationResult{width, height};
@@ -75,7 +86,8 @@ VehicleClassificationResult vehicleclassification_post_process(
     const vitis::ai::proto::DpuModelParam& config, size_t batch_idx) {
   // softmax use NEON in postprocess reduce accuracy about 7%
   // in vehicle_type xmodel, so disable NEON and use softmax_c here.
-  GLOBAL_ENABLE_C_SOFTMAX = 2;
+
+  //GLOBAL_ENABLE_C_SOFTMAX = 2;
   auto top_k = config.vehicleclassification_param().top_k();
   std::vector<vitis::ai::library::OutputTensor> virtual_output;
   if (!config.vehicleclassification_param().layer_name().empty()) {
@@ -90,9 +102,12 @@ VehicleClassificationResult vehicleclassification_post_process(
   }
   auto ret = VehicleClassificationResult{};
   std::vector<float> softres(virtual_output[0].channel);
-  vitis::ai::softmax((int8_t*)virtual_output[0].get_data(batch_idx),
+  softmax_m((int8_t*)virtual_output[0].get_data(batch_idx),
                      vitis::ai::library::tensor_scale(virtual_output[0]),
                      virtual_output[0].channel, 1, &softres[0]);
+  //vitis::ai::softmax((int8_t*)virtual_output[0].get_data(batch_idx),
+  //                   vitis::ai::library::tensor_scale(virtual_output[0]),
+  //                   virtual_output[0].channel, 1, &softres[0]);
   ret = topk(&softres[0], virtual_output[0].channel, top_k,
              input_tensors[0].width, input_tensors[0].height);
   return ret;

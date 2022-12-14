@@ -77,7 +77,7 @@ struct MyOpImp : public vart::experimental::OpImpBase {
   }
 
   int8_t depthwise_fix(int8_t input0, int8_t input1) {
-    float tmp;
+    float tmp = 0.0f;
     if (mode_ == "ADD") {
       tmp = (input0 * std::pow(2, shift_read_[0]) +
              input1 * std::pow(2, shift_read_[1])) *
