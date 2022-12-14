@@ -10,7 +10,10 @@ The Vitis AI quantizer and compiler are designed to parse and compile operators 
 
 In the early phases of development, it is highly recommended that the developer leverage the Vitis AI Model Inspector as an initial sanity check to confirm that the operators, and sequence of operators in the graph is compatible with Vitis AI.
 
-.. image:: reference/images/Model_Inspector_Flow.PNG
+.. figure:: reference/images/Model_Inspector_Flow.PNG
+   :width: 1300
+   
+   Model Inspector Decision Tree
 
 For more information on the Model Inspector, see the following resources:
 
@@ -57,7 +60,10 @@ The final phase of pruning, the transform step, removes the channels that were s
 
 The following diagram illustrates the high-level pruning workflow:
 
-.. image:: reference/images/optimizer_workflow.PNG
+.. figure:: reference/images/optimizer_workflow.PNG
+   :width: 1300
+
+   Vitis AI Optimizer Pruning Workflow
 
 Channel Pruning
 ~~~~~~~~~~~~~~~
@@ -103,8 +109,11 @@ original training data (typically 100-1000 samples, no labels required) are forw
 With certain network topologies, the developer may experience excessive accuracy loss. In these cases a technique referred to as QAT
 (Quantization Aware Training) can be used with the source training data to execute several back propagation passes with the objective of optimizing (fine-tuning) the quantized weights.
 
-.. image:: reference/images/quant_workflow.PNG
+.. figure:: reference/images/quant_workflow.PNG
+   :width: 1300
 
+   Vitis AI Quantizer Workflow
+   
 The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
 `open-source <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src>`__.
 
@@ -134,7 +143,10 @@ Once you have compiled the .xmodel file, you can leverage `Netron <https://githu
 
 The following diagram illustrates a high-level overview of the Vitis AI Compiler workflow:
 
-.. image:: reference/images/compiler_workflow.PNG
+.. figure:: reference/images/compiler_workflow.PNG
+   :width: 1300
+
+   Vitis AI Compiler Workflow
 
 The Vitis AI Compiler is a component of the Vitis AI toolchain, installed in the VAI Docker. The source code for the compiler is not provided.
 

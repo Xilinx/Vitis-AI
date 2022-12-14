@@ -13,8 +13,8 @@ S = "${WORKDIR}/git"
 
 DEPENDS = "json-c xir target-factory"
 
-# By default, Vart enables the Vitis workflow which depends on xrt. Please remove this line when using the Vivado workflow
-PACKAGECONFIG:append = " vitis"
+
+
 
 PACKAGECONFIG[test] = "-DBUILD_TEST=ON,-DBUILD_TEST=OFF,opencv,"
 PACKAGECONFIG[python] = "-DBUILD_PYTHON=ON -DPYTHON_INSTALL_DIR=${PYTHON_DIR},-DBUILD_PYTHON=OFF,,python3-core"

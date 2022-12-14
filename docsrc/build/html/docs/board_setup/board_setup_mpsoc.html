@@ -65,6 +65,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup.html">Target Setup Instructions</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
@@ -72,10 +76,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -236,7 +236,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu
 </pre></div>
 </div>
 </li>
-<li><p>Copy the downloadeded file to the board using scp with the following command:</p>
+<li><p>Copy the downloaded file to the board using scp with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">zcu102_zcu104_kv260</span><span class="o">-</span><span class="n">r3</span><span class="mf">.0.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
 </pre></div>
 </div>

@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 ![GitHub Pull Requests](https://img.shields.io/github/issues-pr-raw/Xilinx/Vitis-AI)
 [![Documentation](https://img.shields.io/badge/documentation-github.IO-blue.svg)](https://xilinx.github.io/Vitis-AI/)
-[![Repo Size](https://img.shields.io/github/repo-size/Xilinx/Vitis-AI)
+![Repo Size](https://img.shields.io/github/repo-size/Xilinx/Vitis-AI)
 
 
 <br />

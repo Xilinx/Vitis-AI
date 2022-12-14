@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Zynq UltraScale＋ MPSoC DPU TRD V4.1 Vivado 2022.2
+# Zynq UltraScale＋ MPSoC DPU v4.1 Reference Design for Vivado 2022.2
 
 ## Table of Contents
 

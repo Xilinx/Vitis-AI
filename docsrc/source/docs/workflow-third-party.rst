@@ -13,7 +13,10 @@ For the published Vitis AI - TVM workflow, the VTA is not used, instead opting t
 
 Additional details of Vitis AI - TVM integration can be found `here <https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html>`__.
 
-.. image:: ./reference/images/VAI_3rd_party_TVM.PNG
+.. figure:: reference/images/VAI_3rd_party_TVM.PNG
+   :width: 1300
+   
+   Vitis-AI Integration With TVM.ai
 
 ONNX Runtime
 ------------
@@ -27,7 +30,10 @@ Vitis AI Execution Provider support has been integrated as an `experimental flow
 
 Additional details of the Vitis AI Execution Provider can be found `here <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>`__.
 
-.. image:: ./reference/images/VAI_3rd_party_ONNXRuntime.PNG
+.. figure:: reference/images/VAI_3rd_party_ONNXRuntime.PNG
+   :width: 1300
+   
+   Vitis-AI Integration With ONNX Runtime (Data Center)
 
 TensorFlow Lite
 ----------------
@@ -38,7 +44,10 @@ With the addition of `TensorFlow Delegates <https://www.tensorflow.org/lite/perf
 
 Vitis AI Delegate support has been integrated as an `experimental flow <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/tflite>`__ in recent releases.
 
-.. image:: ./reference/images/VAI_3rd_party_TFLite.PNG
+.. figure:: reference/images/VAI_3rd_party_TFLite.PNG
+   :width: 1300
+   
+   Vitis-AI Integration With TensorFlow Lite
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

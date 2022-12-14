@@ -31,7 +31,7 @@ function OptanonWrapper() { }
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Deploying a Model" href="workflow-model-deployment.html" />
-    <link rel="prev" title="Board Setup" href="board_setup/board_setup.html" /> 
+    <link rel="prev" title="Introduction" href="workflow-model-zoo.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -67,6 +67,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developing a NN model for Vitis AI</a><ul>
@@ -97,10 +101,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -169,7 +169,12 @@ function OptanonWrapper() { }
 </div>
 <p>The Vitis AI quantizer and compiler are designed to parse and compile operators within a frozen FP32 graph for acceleration in hardware. However, novel neural networks architectures, operators, and activation types are constantly being developed and optimized for prediction accuracy and performance. In this context, it is important to understand that while Xilinx strives to provide support for a wide variety of neural network architectures and provide these graphs for user reference, not every operator is supported for acceleration on the DPU. Furthermore, there are specific layer ordering requirements that enable Vitis AI model deployment.</p>
 <p>In the early phases of development, it is highly recommended that the developer leverage the Vitis AI Model Inspector as an initial sanity check to confirm that the operators, and sequence of operators in the graph is compatible with Vitis AI.</p>
-<img alt="../_images/Model_Inspector_Flow.PNG" src="../_images/Model_Inspector_Flow.PNG" />
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/Model_Inspector_Flow.PNG"><img alt="../_images/Model_Inspector_Flow.PNG" src="../_images/Model_Inspector_Flow.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Model Inspector Decision Tree</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>For more information on the Model Inspector, see the following resources:</p>
 <ul class="simple">
 <li><p>When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/inspector_tutorial.ipynb">PyTorch</a> and <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2">TensorFlow</a>.</p></li>
@@ -204,7 +209,12 @@ function OptanonWrapper() { }
 <p>The Vitis AI Optimizer leverages the native framework in which the model was trained, and both the input and output of the pruning process are a frozen FP32 graph. At a high-level, the workflow of the AI Optimizer consists of several steps. The optimizer first performs a sensitivity analysis designed to determine the degree to which each of the convolution kernels (channels) at each layer have an impact on the predictions of the network. Following this, the kernel weights for channels that are to be pruned are zeroed, permitting accuracy evaluation of the “proposed” pruned model. The remaining weights are then optimized (fine-tuned) for several training epochs in order to recover accuracy. Multiple iterations of pruning are typically employed, and after each iteration the state can be captured, permitting the developer to backtrack by one or more pruning iterations. This ability enables the developer to prune for multiple iterations and then select the iteration with the preferred result. As necessary, pruning can be restarted from a previous iteration with different hyperparameters in order to address accuracy “cliffs” that may present at a specific iteration.</p>
 <p>The final phase of pruning, the transform step, removes the channels that were selected for pruning (previously zeroed weights), resulting in a reduction of the number of channels at each pruned layer in the final computational graph. For instance, a layer that previously required the computation of 128 channels (128 convolution kernels) may now only require the computation of output activations for 87 channels, (i.e., 41 channels were pruned). Following the transform step, the model is now in a form that can be ingested by the Vitis AI Quantizer and deployed on the target.</p>
 <p>The following diagram illustrates the high-level pruning workflow:</p>
-<img alt="../_images/optimizer_workflow.PNG" src="../_images/optimizer_workflow.PNG" />
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/optimizer_workflow.PNG"><img alt="../_images/optimizer_workflow.PNG" src="../_images/optimizer_workflow.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI Optimizer Pruning Workflow</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <section id="channel-pruning">
 <h3>Channel Pruning<a class="headerlink" href="#channel-pruning" title="Permalink to this heading">¶</a></h3>
 <p>Current Vitis AI DPUs can take advantage of channel pruning in order to greatly reduce the computational cost for inference, often with very little or no loss in prediction accuracy. In constrast to sparse pruning which requires that the the computation of specific activations within a channel or layer be “skipped” at inference time, channel pruning requires no special hardware to address the problem of these “skipped” computations.</p>
@@ -237,7 +247,12 @@ memory footprint, and data path bandwidth required for inference.</p>
 original training data (typically 100-1000 samples, no labels required) are forward propagated through the network in order to analyze the distribution of the activations at each layer. The weights and activations are then quantized as 8-bit integer values. This process is referred to as Post-Training Quantization. Following quantization, the prediction accuracy of the network is re-tested using data from the validation set. If the accuracy is found to be acceptable, the quantization process is complete.</p>
 <p>With certain network topologies, the developer may experience excessive accuracy loss. In these cases a technique referred to as QAT
 (Quantization Aware Training) can be used with the source training data to execute several back propagation passes with the objective of optimizing (fine-tuning) the quantized weights.</p>
-<img alt="../_images/quant_workflow.PNG" src="../_images/quant_workflow.PNG" />
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="../_images/quant_workflow.PNG"><img alt="../_images/quant_workflow.PNG" src="../_images/quant_workflow.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI Quantizer Workflow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
 <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">open-source</a>.</p>
 <section id="quantization-related-resources">
@@ -271,7 +286,12 @@ original training data (typically 100-1000 samples, no labels required) are forw
 <p>The compilation process leverages an additional input in the form of a DPU arch.json file. The purpose of this file is to communicate to the compiler the target architecture and hence, capabilities, of the specific DPU for which the graph will be compiled. If the correct <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file is not used, the compiled model will not run on the target. The implication of this is also that models that were compiled for a specific target DPU must be recompiled if they are to be deployed on a different DPU architecture. Runtime errors will occur if the model was not compiled for the correct DPU architecture.</p>
 <p>Once you have compiled the .xmodel file, you can leverage <a class="reference external" href="https://github.com/lutzroeder/netron">Netron</a> to review the final graph structure. Note that as part of the compilation process the weights are formatted as INT8, concatenated and shuffled in for efficient execution. Thus, it is not possible to review the weights post-compilation.</p>
 <p>The following diagram illustrates a high-level overview of the Vitis AI Compiler workflow:</p>
-<img alt="../_images/compiler_workflow.PNG" src="../_images/compiler_workflow.PNG" />
+<figure class="align-default" id="id6">
+<a class="reference internal image-reference" href="../_images/compiler_workflow.PNG"><img alt="../_images/compiler_workflow.PNG" src="../_images/compiler_workflow.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI Compiler Workflow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>The Vitis AI Compiler is a component of the Vitis AI toolchain, installed in the VAI Docker. The source code for the compiler is not provided.</p>
 <section id="compiler-related-resources">
 <h3>Compiler Related Resources<a class="headerlink" href="#compiler-related-resources" title="Permalink to this heading">¶</a></h3>
@@ -298,7 +318,7 @@ original training data (typically 100-1000 samples, no labels required) are forw
                   </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="board_setup/board_setup.html" class="btn btn-neutral float-left" title="Board Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-zoo.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="workflow-model-deployment.html" class="btn btn-neutral float-right" title="Deploying a Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

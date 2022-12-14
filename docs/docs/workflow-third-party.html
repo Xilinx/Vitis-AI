@@ -67,6 +67,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
@@ -74,10 +78,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -149,7 +149,12 @@ function OptanonWrapper() { }
 <p><a class="reference external" href="https://tvm.apache.org/">TVM.ai</a> is an Apache Software Foundation project and inference stack that can parse machine learning models from almost any training framework. The model is converted to an intermediate representation (TVM relay), and the stack can then compile the model for a variety of targets, including embedded SoCs, CPUs, GPUs as well as x86 and x64 platforms. TVM incorporates an open-source programmable-logic accelerator known as the VTA, which was created using the Xilinx HLS compiler. TVM supports the capability of partitioning a graph into a number of sub-graphs, and these sub-graphs may be targeted to specific accelerators within the target platform (CPU, GPU, VTA….) with the goal of enabling heterogeneous acceleration.</p>
 <p>For the published Vitis AI - TVM workflow, the VTA is not used, instead opting to integrate the DPU for offloading of compiled subgraphs. Subgraphs that can be partitioned for execution on the DPU are quantized and compiled by the Vitis AI compiler for a specific DPU target, while the remaining subgraphs and operations are compiled by the TVM compiler for execution on LLVM.</p>
 <p>Additional details of Vitis AI - TVM integration can be found <a class="reference external" href="https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html">here</a>.</p>
-<img alt="../_images/VAI_3rd_party_TVM.PNG" src="../_images/VAI_3rd_party_TVM.PNG" />
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_TVM.PNG"><img alt="../_images/VAI_3rd_party_TVM.PNG" src="../_images/VAI_3rd_party_TVM.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With TVM.ai</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="onnx-runtime">
 <h2>ONNX Runtime<a class="headerlink" href="#onnx-runtime" title="Permalink to this heading">¶</a></h2>
@@ -158,14 +163,24 @@ provides the benefit of runtime-interpretation of models represented as an ONNX 
 <p>The <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/">ONNX Runtime Execution Provider</a> framework enables the integration of proprietary or customized tensor accelerator cores from any “execution provider”. Such “execution providers” are typically tensor acceleration IP blocks, integrated into an SoC by the semiconductor vendor. The ability of a given accelerator to offload operations is presented as a listing of capabilities to the ONNX Runtime. Specific subgraphs or operations within the ONNX graph may then be offloaded to that core based on the advertised capabilities of that execution provider.</p>
 <p>Vitis AI Execution Provider support has been integrated as an <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/onnxruntime">experimental flow</a> in recent releases.</p>
 <p>Additional details of the Vitis AI Execution Provider can be found <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.</p>
-<img alt="../_images/VAI_3rd_party_ONNXRuntime.PNG" src="../_images/VAI_3rd_party_ONNXRuntime.PNG" />
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime.PNG" src="../_images/VAI_3rd_party_ONNXRuntime.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Data Center)</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="tensorflow-lite">
 <h2>TensorFlow Lite<a class="headerlink" href="#tensorflow-lite" title="Permalink to this heading">¶</a></h2>
 <p>TensorFlow Lite has been used as the preferred inference solution for TensorFlow users in the embedded space for many years. TensorFlow Lite provides the benefit of runtime-interpretation of models trained in TensorFlow Lite, with the implication that no compilation is required in order to execute the model on-target. TensorFlow Lite provides support for embedded Arm® processors, as well as NEON tensor acceleration. This has made TensorFlow Lite a convenient solution for embedded and mobile MCU targets which did not incorporate purpose-built tensor acceleration cores.</p>
 <p>With the addition of <a class="reference external" href="https://www.tensorflow.org/lite/performance/delegates">TensorFlow Delegates</a>, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.</p>
 <p>Vitis AI Delegate support has been integrated as an <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/tflite">experimental flow</a> in recent releases.</p>
-<img alt="../_images/VAI_3rd_party_TFLite.PNG" src="../_images/VAI_3rd_party_TFLite.PNG" />
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_TFLite.PNG"><img alt="../_images/VAI_3rd_party_TFLite.PNG" src="../_images/VAI_3rd_party_TFLite.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With TensorFlow Lite</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 </section>
 

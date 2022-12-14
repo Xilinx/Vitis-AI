@@ -30,8 +30,8 @@ function OptanonWrapper() { }
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Toolchain Integration" href="workflow-system-integration.html" />
-    <link rel="prev" title="Deploying a Model" href="workflow-model-deployment.html" /> 
+    <link rel="next" title="Developing a Model" href="workflow-model-development.html" />
+    <link rel="prev" title="Board Setup" href="board_setup/board_setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -67,20 +67,15 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pre-trained, Optimized models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-zoo-details-performance">Model Zoo Details &amp; Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#model-filename-rules">Model Filename Rules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#model-index">Model Index</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#model-file-nomenclature-decoder">Model File Nomenclature Decoder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Model File Nomenclature Decoder</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-download">Model Download</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#automated-download-script">Automated Download Script</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#model-directory-structure">Model Directory Structure</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tensorflow-model-directory-structure">Tensorflow Model Directory Structure</a></li>
@@ -89,9 +84,16 @@ function OptanonWrapper() { }
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -157,52 +159,65 @@ function OptanonWrapper() { }
 <p>The Vitis™ AI Model Zoo which is incorporated into the Vitis AI repository includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx™ platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.</p>
 <section id="model-zoo-details-performance">
 <h2>Model Zoo Details &amp; Performance<a class="headerlink" href="#model-zoo-details-performance" title="Permalink to this heading">¶</a></h2>
-<p>All the models in the Model Zoo have been deployed on Xilinx hardware with <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library">Vitis AI Library</a>. The performance number including end-to-end throughput and latency for
-each model on various boards with different DPU configurations.</p>
-<p>To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including application, framework, input size, computation Flops as well as float and quantized accuracy.  You can download that spreadsheet <a class="reference download internal" download="" href="../_downloads/08f25862a0dd85eb493ab84edb004a0e/ModelZoo_VAI3.0_Github.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
-<a href="reference/ModelZoo_VAI3.0_Github_web.mht">Also, you can view the Model Zoo Details & Performance table online.</a><br><br><div class="admonition note">
+<p>All the models in the Model Zoo have been deployed on Xilinx hardware with <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI</a> and the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library">Vitis AI Library</a>. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.</p>
+<p>To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet and an online table that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including links to the original papers and datasets, source framework, input size, computational cost (GOPs) as well as float and quantized accuracy. <strong>You can download the spreadsheet</strong> <a class="reference download internal" download="" href="../_downloads/08f25862a0dd85eb493ab84edb004a0e/ModelZoo_VAI3.0_Github.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<a href="reference/ModelZoo_VAI3.0_Github_web.mht"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The model performance number listed in these tables was verified using Vitis AI v3.0 and the Vitis AI Lirary v3.0. For each platform, specific DPU configurations are used and are highlighted in the header of the table. Vitis AI and Vitis AI Library can be downloaded for free from <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library">Vitis AI Library Github</a>. We will continue to improve the performance with Vitis AI. The performance number reported here is subject to change in the near future.</p>
+<p>The model performance benchmarks listed in these tables were verified using Vitis AI v3.0 and the Vitis AI Lirary v3.0. For each platform, specific DPU configurations are used and are highlighted in the header of the table. Vitis AI and Vitis AI Library can be downloaded for free from <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/examples/Vitis-AI-Library">Vitis AI Library Github</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unless otherwise specified, the benchmarks for all models can be assumed to employ the maximum number of channels (ie, for benchmarking, the images used at test leverage three channels if the is specified input dimensions of 299*299*3 (HWC).</p>
 </div>
 </section>
-<section id="model-filename-rules">
-<h2>Model Filename Rules<a class="headerlink" href="#model-filename-rules" title="Permalink to this heading">¶</a></h2>
-<p>When downloading the models from the Model Zoo, it may be important to you to understand the nomenclature used for each file.  Here is an explaination:</p>
-<p>Model name: <code class="docutils literal notranslate"><span class="pre">F_M_(D)_H_W_(P)_C_V</span></code> * <code class="docutils literal notranslate"><span class="pre">F</span></code> specifies training framework: <code class="docutils literal notranslate"><span class="pre">tf</span></code> is Tensorflow 1.x, <code class="docutils literal notranslate"><span class="pre">tf2</span></code> is Tensorflow 2.x, <code class="docutils literal notranslate"><span class="pre">pt</span></code> is PyTorch * <code class="docutils literal notranslate"><span class="pre">M</span></code> specifies the model * <code class="docutils literal notranslate"><span class="pre">D</span></code> specifies the dataset. It is optional depending on whether the dataset is public or private * <code class="docutils literal notranslate"><span class="pre">H</span></code> specifies the height of input data * <code class="docutils literal notranslate"><span class="pre">W</span></code> specifies the width of input data * <code class="docutils literal notranslate"><span class="pre">P</span></code> specifies the pruning ratio, it means how much computation is reduced. It is optional depending on whether the model is pruned or not * <code class="docutils literal notranslate"><span class="pre">C</span></code> specifies the computation of the model: how many Gops per image * <code class="docutils literal notranslate"><span class="pre">V</span></code> specifies the version of Vitis-AI</p>
-<p>For example, <code class="docutils literal notranslate"><span class="pre">pt_fadnet_sceneflow_576_960_0.65_154G_2.5</span></code> is <code class="docutils literal notranslate"><span class="pre">FADNet</span></code> model trained with <code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> using <code class="docutils literal notranslate"><span class="pre">SceneFlow</span></code> dataset, input size is <code class="docutils literal notranslate"><span class="pre">576*960</span></code>, <code class="docutils literal notranslate"><span class="pre">65%</span></code> pruned, the computation per image is <code class="docutils literal notranslate"><span class="pre">154</span> <span class="pre">Gops</span></code> and Vitis-AI version is <code class="docutils literal notranslate"><span class="pre">2.5</span></code>.</p>
-</section>
-<section id="model-index">
-<h2>Model Index<a class="headerlink" href="#model-index" title="Permalink to this heading">¶</a></h2>
+<section id="model-file-nomenclature-decoder">
+<h2>Model File Nomenclature Decoder<a class="headerlink" href="#model-file-nomenclature-decoder" title="Permalink to this heading">¶</a></h2>
+<p>When downloading and using models from the Model Zoo, it will be important to you to understand the nomenclature used for each file.</p>
+<section id="id1">
+<h3>Model File Nomenclature Decoder<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>Xilinx Model Zoo file names assume the format: <cite>F_M_(D)_H_W_(P)_C_V</cite>, where:</p>
 <ul class="simple">
-<li><p>Computation OPS in the table are counted as FLOPs</p></li>
-<li><p>Float &amp; Quantized Accuracy unless otherwise specified, the default
-refers to top1 or top1/top5</p></li>
-<li><p>The models found in the Vitis AI repository are for Xilinx SoC and Alveo targets.  For details and to download AMD Epyc CPU models, please refer to
-<a class="reference external" href="https://github.com/amd/UIF">UIF</a></p></li>
+<li><p><cite>F</cite> specifies training framework: <cite>tf</cite> is TensorFlow 1.x, <cite>tf2</cite> is TensorFlow 2.x, <cite>pt</cite> is PyTorch</p></li>
+<li><p><cite>M</cite> specifies the industry/base name of the model</p></li>
+<li><p><cite>D</cite> specifies the public dataset used to train the model.  This field is not present if the model was trained using private datasets&lt;br /&gt;</p></li>
+<li><p><cite>H</cite> specifies the height of the input tensor to the first input layer</p></li>
+<li><p><cite>W</cite> specifies the width of the input tensor to the first input layer</p></li>
+<li><p><cite>P</cite> specifies the pruning ratio (percentage computational complexity reduction from the base model). This field is present only if the model has been pruned</p></li>
+<li><p><cite>C</cite> specifies the computational cost of the model for deployment in GOPs (billion quantized operations) per image</p></li>
+<li><p><cite>V</cite> specifies the version of Vitis-AI in which the model was deployed</p></li>
 </ul>
-</details><section id="automated-download-script">
+<p>For example, <cite>pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0</cite> is the <cite>inception v3</cite> model trained with <cite>PyTorch</cite> using the <cite>ImageNet</cite> dataset, the input size for the network is <cite>299*299</cite>, <cite>60%</cite> pruned, the computational cost per image is <cite>4.5 G FLOPs</cite> and the Vitis-AI version for that model is <cite>3.0</cite>.</p>
+</section>
+</section>
+<section id="model-download">
+<h2>Model Download<a class="headerlink" href="#model-download" title="Permalink to this heading">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each model is associated with a .yaml file that encapsulates both the download link and MD5 checksum for a tar.gz file.  There is a separate tar.gz file for each specific target platform.  These yaml files are found in the Vitis AI repository directory structure in <code class="docutils literal notranslate"><span class="pre">/model_zoo/model-list</span></code>.  A simple way to download an individual model is to use the URLs provided in this .yaml file.  This can be useful if you simply want to download and inspect the model outside of a Python environment.</p>
+</div>
+<p>The download package includes the pre-compiled, pre-trained model which you can leverage as a base reference (layer types, activation types, layer ordering) for your own implementation, or which you can directly deploy that model on a Xilinx target.</p>
+<section id="automated-download-script">
 <h3>Automated Download Script<a class="headerlink" href="#automated-download-script" title="Permalink to this heading">¶</a></h3>
-<p>With downloader.py, you could quickly find the model you are interested in and specify a version to download it immediately. Please make sure that downloader.py and ‘/model_zoo/model-list’ folder are at the same level directory.</p>
+<p>The Vitis AI Model Zoo repository provides a Python <code class="docutils literal notranslate"><span class="pre">/model_zoo/downloader.py</span></code> that can be used to quickly download specific models.  Please make sure that the downloader.py script and the <code class="docutils literal notranslate"><span class="pre">/model_zoo/model-list</span></code> folder are at the same level in the directory hierarchy when executing this script.</p>
+<p><strong>Step 1:</strong> Execute the script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span>  <span class="n">downloader</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>Step1: You need input framework and model name keyword. Use space divide. If input <code class="docutils literal notranslate"><span class="pre">all</span></code> you will get list of all models.</p>
-<p>tf: tensorflow1.x, tf2: tensorflow2.x, pt: pytorch, cf: caffe, dk:
-darknet, all: list all model</p>
-<p>Step2: Select the specified model based on standard name.</p>
-<p>Step3: Select the specified hardware platform for your slected model.</p>
-<p>For example, after running downloader.py and input <code class="docutils literal notranslate"><span class="pre">tf</span> <span class="pre">resnet</span></code> then
-you will see the alternatives such as:</p>
+<p><strong>Step 2:</strong> Input the framework keyword followed by a short form version of the model name (if known), (example: <strong>resnet</strong>).  Use a space as a separator (example <strong>tf2 vgg16</strong>).  If you input <strong>all</strong> you will get a list of all models.</p>
+<p>The available framework keywords are listed here:</p>
+<p><strong>tf</strong>: tensorflow1.x,  <strong>tf2</strong>: tensorflow2.x,  <strong>pt</strong>: pytorch,  <strong>cf</strong>: caffe,  <strong>dk</strong>: darknet, <strong>all</strong>: list all models</p>
+<p><strong>Step 3:</strong> Select the desired target hardware platform for the version of the model that you need.</p>
+<p>For example, after running downloader.py, input <code class="docutils literal notranslate"><span class="pre">tf</span> <span class="pre">resnet</span></code> and you will see a list of models that include the text <cite>resnet</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="p">:</span>  <span class="nb">all</span>
-<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_2</span><span class="mf">.5</span>
-<span class="mi">2</span><span class="p">:</span>  <span class="n">tf_resnetv1_101_imagenet_224_224_14</span><span class="mf">.4</span><span class="n">G_2</span><span class="mf">.5</span>
-<span class="mi">3</span><span class="p">:</span>  <span class="n">tf_resnetv1_152_imagenet_224_224_21</span><span class="mf">.83</span><span class="n">G_2</span><span class="mf">.5</span>
+<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="mi">2</span><span class="p">:</span>  <span class="n">tf_resnetv1_101_imagenet_224_224_14</span><span class="mf">.4</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="mi">3</span><span class="p">:</span>  <span class="n">tf_resnetv1_152_imagenet_224_224_21</span><span class="mf">.83</span><span class="n">G_3</span><span class="mf">.0</span>
 <span class="o">......</span>
 </pre></div>
 </div>
-<p>After you input the num: 1, you will see the alternatives such as:</p>
+<p>Proceed by entering one of the numbers from the list.  As an example, if you input ‘1’ the script will list all options that match your selection:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="p">:</span>  <span class="nb">all</span>
-<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_2</span><span class="mf">.5</span>    <span class="n">GPU</span>
+<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>    <span class="n">GPU</span>
 <span class="mi">2</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">ZCU102</span> <span class="o">&amp;</span> <span class="n">ZCU104</span> <span class="o">&amp;</span> <span class="n">KV260</span>
 <span class="mi">3</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">VCK190</span>
 <span class="mi">4</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">vck50006pe</span><span class="o">-</span><span class="n">DPUCVDX8H</span>
@@ -211,48 +226,47 @@ you will see the alternatives such as:</p>
 <span class="o">......</span>
 </pre></div>
 </div>
-<p>Then you could choose it and input the number, the specified version of model will be automatically downloaded to the current directory.</p>
-<p>In addition, if you need download all models on all platforms at once, you just need enter number in the order indicated by the tips of Step 1/2/3 (select: all -&gt; 0 -&gt; 0).</p>
+<p>Once again you can now proceed by entering one of the numbers from list.  The specified version of model will then be automatically downloaded to the current directory.  Entering ‘0’ will download all models matching your search criteria.</p>
 </section>
 <section id="model-directory-structure">
 <h3>Model Directory Structure<a class="headerlink" href="#model-directory-structure" title="Permalink to this heading">¶</a></h3>
-<p>Download and extract the model archive to your working area on the local hard disk. For details on the various models, download link and MD5 checksum for the zip file of each model, refer to the subdirectory ‘/model_zoo/model-list’ within the Github repository.</p>
+<p>Once you have downloaded one or more models, you can extract the model archive into your selected workspace.</p>
 <section id="tensorflow-model-directory-structure">
 <h4>Tensorflow Model Directory Structure<a class="headerlink" href="#tensorflow-model-directory-structure" title="Permalink to this heading">¶</a></h4>
-<p>For a Tensorflow model, you should see the following directory structure:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── code                            # Contains test code which can run demo and evaluate model performance.
+<p>TensorFlow models have the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── code                            # Contains test code which can execute the model on the target and showcase model performance.
 │
 │
-├── readme.md                       # Contains the environment requirements, data preprocess and model information.
-│                                     Refer this to know that how to test the model with scripts.
+├── readme.md                       # Documents the environment requirements, data pre-processing requirements and model information.
+│                                     Developers should refer to this to understand how to test the model with scripts.
 │
-├── data                            # Contains the dataset that used for model test and training.
-│                                     When test or training scripts run successfully, dataset will be automatically placed in it.
+├── data                            # The dataset target directory that can be used for model verification and training.
+│                                     When test or training scripts run successfully, the dataset will be placed in this directory.
 │
 ├── quantized
 │   └── quantize_eval_model.pb      # Quantized model for evaluation.
 │
 └── float
-    └── frozen.pb                   # Float-point frozen model, the input to the `vai_q_tensorflow`.
-                                      The pb name of different models may be different.
+    └── frozen.pb                   # Floating-point frozen model used as the input to the quantizer.
+                                      The naming of the protobuf file may differ than the model naming used in the model-list.
 </pre></div>
 </div>
 </section>
 <section id="pytorch-model-directory-structure">
 <h4>Pytorch Model Directory Structure<a class="headerlink" href="#pytorch-model-directory-structure" title="Permalink to this heading">¶</a></h4>
-<p>For a Pytorch model, you should see the following directory structure:</p>
+<p>PyTorch models have the following directory structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── code                            # Contains test and training code.
 │
 │
-├── readme.md                       # Contains the environment requirements, data preprocess and model information.
-│                                     Refer this to know that how to test and train the model with scripts.
+├── readme.md                       # Contains the environment requirements, data pre-processing requirements and model information.
+│                                     Developers should refer to this to understand how to test and train the model with scripts.
 │
-├── data                            # Contains the dataset that used for model test and training.
-│                                     When test or training scripts run successfully, dataset will be automatically placed in it.
+├── data                            # The dataset target directory that can be used for model verification and training.
+│                                     When test or training scripts run successfully, the dataset will be placed in this directory.
 │
-├── qat                             # Contains the QAT(Quantization Aware Training) results.
-│                                     The accuracy of QAT result is better than direct quantization called PTQ.
-│                                     Some models but not all provided QAT reference results, and only these models have qat folder.
+├── qat                             # Contains the QAT (Quantization Aware Training) results.
+│                                     For some models, the accuracy of QAT is higher than with Post Training Quantization (PTQ) methods.
+│                                     Some models, but not all, provide QAT reference results, and only these models have a QAT folder.
 │
 ├── quantized
 │   ├── _int.pth                    # Quantized model.
@@ -269,32 +283,23 @@ you will see the alternatives such as:</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For more information on Vitis-AI Quantizer such as <code class="docutils literal notranslate"><span class="pre">vai_q_tensorflow</span></code> and <code class="docutils literal notranslate"><span class="pre">vai_q_pytorch</span></code>, please see the <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide</a>.</p>
+<p>For more information on Vitis-AI Quantizer executables <code class="docutils literal notranslate"><span class="pre">vai_q_tensorflow</span></code> and <code class="docutils literal notranslate"><span class="pre">vai_q_pytorch</span></code>, please see the <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide</a>.</p>
 </div>
-<p>For more information about DPU, see <a class="reference external" href="https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=latest;d=pg338-dpu.pdf">DPU IP Product
-Guide</a>.</p>
-<p>For RNN models such as NLP, please refer to
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/demo/DPU-for-RNN">DPU-for-RNN</a>
-for dpu specification information.</p>
-<p>Besides, for Transformer demos such as ViT, Bert-base you could refer to
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/examples/Transformer">Transformer</a>.</p>
-</section>
-</section>
-</section>
-<section id="contributing">
-<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">¶</a></h2>
-<p>We welcome community contributions. When contributing to this
-repository, first discuss the change you wish to make via:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/issues">GitHub Issues</a></p></li>
-<li><p><a class="reference external" href="https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI">Forum</a></p></li>
-<li><p>Email</p></li>
-</ul>
-<p>You can also submit a pull request with details on how to improve the
-product. Prior to submitting your pull request, ensure that you can
-build the product and run all the demos with your patch. In case of a
-larger feature, provide a relevant demo.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to licensing restrictions, some model archives include instructions as to how the user can leverage that model architecture with Vitis AI, but do not include the pretrained model.  In these cases, the user must leverage the documentation provided to build and train their own version of the model.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For more information about the various Xilinx DPUs, see the <a class="reference internal" href="reference/release_documentation.html"><span class="doc">DPU IP Product Guides</span></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that Vitis AI support for Recurrent Neural Networks (NLP) and Transformer models (ViT and BERT-base) is currently released in the <code class="docutils literal notranslate"><span class="pre">/demos/rnn</span></code> and <code class="docutils literal notranslate"><span class="pre">/demos/transformer</span></code> subdirectories within the Vitis AI repository.</p>
+</div>
 <hr/></section>
+</section>
+</section>
 </section>
 
 
@@ -311,8 +316,8 @@ larger feature, provide a relevant demo.</p>
                   </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="workflow-model-deployment.html" class="btn btn-neutral float-left" title="Deploying a Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="workflow-system-integration.html" class="btn btn-neutral float-right" title="Toolchain Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="board_setup/board_setup.html" class="btn btn-neutral float-left" title="Board Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-development.html" class="btn btn-neutral float-right" title="Developing a Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,5 +1,5 @@
 ..
-    Copyright 2021 Xilinx Inc.
+    Copyright 2022 Xilinx Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -68,6 +68,13 @@ Vitis AI is composed of the following key components:
    
 .. toctree::
    :maxdepth: 3
+   :caption: Model Zoo
+   :hidden:
+
+   Pre-trained, Optimized models <docs/workflow-model-zoo>
+
+.. toctree::
+   :maxdepth: 3
    :caption: Model Development 
    :hidden:
 
@@ -79,13 +86,6 @@ Vitis AI is composed of the following key components:
    :hidden:
 
    Deploying a NN model with Vitis AI <docs/workflow-model-deployment>
-
-.. toctree::
-   :maxdepth: 3
-   :caption: Model Zoo
-   :hidden:
-
-   Pre-trained, Optimized models <docs/workflow-model-zoo>
 
 .. toctree::
    :maxdepth: 3

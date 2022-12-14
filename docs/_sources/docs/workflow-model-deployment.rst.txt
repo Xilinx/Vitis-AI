@@ -18,7 +18,10 @@ The motivation for this multi-step process is to minimize the number of variable
 In general, the workflow illustrated on the right-hand side of the following diagram is all that is required for the first two steps of deployment. Generally, the platform development component on the left-hand side of the diagram is only required for the third and final step. Part of the convenience of this is that the work can be partitioned between hardware developers and data science teams, enabling the hardware and data science teams to work in parallel, converging at the final step for the deployment on a custom hardware platform. The following image is representative for Vitis designs, but the ability to partition the effort is similar for Vivado designs. refer to the user
 documentation for the :ref:`Vivado <vivado-integration>` and :ref:`Vitis <vitis-integration>` workflows for additional details of the hardware platform development workflow.
 
-.. image:: reference/images/deployment_workflow.PNG
+.. figure:: reference/images/deployment_workflow.PNG
+   :width: 1300
+
+   Simplified Vitis Workflow
 
 .. note:: Not captured in this image is the PetaLinux workflow. In the context of Xilinx |trade| pre-built target board images, the goal is to enable the developer without requiring that they modify Linux. An important exception to this is for developers who are customizing hardware IP and peripherals that reside within the memory space of the target CPU/APU and who wish to customize Linux. Also, in some circumstances, it is possible to directly install Vitis AI on the target without rebuilding the kernel image. Refer to :ref:`linux-dpu-recipes` for additional information.
 
@@ -80,41 +83,6 @@ For more information on Vitis AI Runtime, refer to the following documentation:
 
 -  The Vitis AI Runtime is also provided as `open-source <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src>`__.
 
-.. _whole-application-acceleration:
-
-Whole Application Acceleration
-------------------------------
-
-It is typical in machine learning applications to require some degree of pre-processing as illustrated in the following example:
-
-.. image:: reference/images/waa_preprocess.PNG
-
-In addition, many real-world applications for machine learning do not simply employ a single machine learning model. It is very common to cascade multiple object detection networks as a pre-cursor to a final stage (for example, classification, OCR). Throughout this pipeline the meta data must be time-stamped or otherwise attached to the buffer address of the associated frame. Pixels bounded by ROI (Region-of-Interest) predictions are cropped from the the associated frame. Each of these cropped sub-frame images are then scaled such that the X/Y dimensions of the crop match the input layer dimensions of the downstream network. Some pipelines, such as ReID, will localize, crop and scale ten or more ROIs from every frame. Each of these crops may require a different scaling factor in order to match the input dimensions of the downstream model in the pipeline. The following is an example:
-
-.. image:: reference/images/waa_cascade.PNG
-
-These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end application. This makes “Whole Application Acceleration” or WAA a very important aspect of Xilinx machine learning solutions. All developers leveraging Xilinx devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/waa>`__.
-
-On a similar vein, you may wish to explore the relevance and capabilites of the `Xilinx Vitis Video Analytics (VVAS) SDK <https://xilinx.github.io/VVAS/>`__, which while not part of Vitis AI, offers many important features for the development of end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS is also applicable to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage `GStreamer <https://gstreamer.freedesktop.org/>`__ commands to interact with the video pipeline.
-
-Vitis AI Profiler
------------------
-
-The Vitis AI Profiler is a set of tools that enables you to profile and visualize AI applications based on VART. Because the profiler can be enabled post deployment, there are no code changes required, making it relatively easy to use. Specifically, the Vitis AI Profiler supports profiling and visualization of machine learning pipelines deployed on
-Embedded targets with the Vitis AI Runtime. In a typical machine learning pipeline, there are portions of the pipeline that are accelerated on the DPU (DPU subgraph partitions), as well as functions such as pre-processing, and/or custom operators not supported by the DPU. These additional functions may be implemented as a C/C++ kernel, or accelerated using Whole-Application Acceleration or using customized RTL. The Vitis AI Profiler enables the developer to visualize and analyze both system and graph-level performance bottlenecks. Use of the Vitis AI Profiler is a important step for developers who wish to iteratively optimize the entire inference pipeline.
-
-The Vitis AI Profiler is a component of the Vitis AI toolchain installed in the VAI Docker. Source code is not provided.
-
--  For more information on Vitis AI Profiler see the `Profiling the
-   Model <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=kdu1570699882179.html>`__
-   section in the Vitis AI User Guide.
-
--  Examples and additional detail for the Vitis AI Profiler can be found
-   `here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/vai_profiler>`__.
-
--  A tutorial that provides additional insights on the capabilites of
-   the Vitis AI Profiler is available
-   `here <https://github.com/Xilinx/Vitis-AI-Tutorials/blob/1.4/Design_Tutorials/16-profiler_introduction/README.md>`__.
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

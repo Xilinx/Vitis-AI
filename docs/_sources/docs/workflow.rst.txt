@@ -11,17 +11,17 @@ Documentation
 
 Vitis AI documentation consists of both formal product and user guides as well as a selection of task-specific resources and examples. The formal documentation is listed in :doc:`../docs/reference/release_documentation`. Additional task-specific resources and examples are encapsulated in the various sections of this documentation repository.
 
-Getting Started Resources
--------------------------
-
-Use the sidebar ToC to jump directly to the specific tasks and elements of the Vitis AI workflow.
+To access specific content, use the sidebar table of contents to jump directly to specific tasks and elements of the Vitis AI workflow.
 
 The Journey for New Users
 -------------------------
 
 So, you are a new user and are wondering where to get started? In general, there are two primary starting points. Most users will want to start either by installing the toolchain, or doing a “test-drive”. Xilinx recommends that all users should start with a “test-drive” and then move on to installation of the tools. These two workflows are shown below.
 
-.. image:: reference/images/New_User_Flow.PNG
+.. figure:: reference/images/New_User_Flow.PNG
+   :width: 1300
+
+   Vitis AI High-Level New User Workflow
 
 What is a DPU?
 --------------
@@ -36,11 +36,17 @@ Each DPU architecture has its own instruction set, and the Vitis AI Compiler tar
 
 An example of the DPUCZ, targeting Zynq |reg| Ultrascale+ |trade| devices is shown in the following image:
 
-.. image:: reference/images/DPUCZ.PNG
+.. figure:: reference/images/DPUCZ.PNG
+   :width: 1300
+
+   Features and Architecture of the Zynq Ultrascale+ DPUCZ
 
 Vitis AI provides both the DPU IP as well as the required tools to deploy both standard and custom neural networks on Xilinx targets:
 
-.. image:: reference/images/VAI-1000ft.PNG
+.. figure:: reference/images/VAI-1000ft.PNG
+   :width: 1300
+
+   Vitis AI 1000 Foot View
 
 Test-Drive Vitis AI on a Supported Platform
 --------------------------------------------

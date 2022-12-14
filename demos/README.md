@@ -7,4 +7,4 @@
 
 # Demos folder
 
-Here we need to add other appropriate demonstrations for which we should release source code.  
+The purpose of this folder is to distribute design efforts that are provided as technology demonstrators.  These demos may be of alpha quality and not ready for prime-time production.  Enjoy!

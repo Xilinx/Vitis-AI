@@ -59,13 +59,35 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">This release</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">This release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-and-github-repository">Documentation and Github Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-zoo">Model Zoo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cnn-quantizer">CNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rnn-quantizer">RNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiler">Compiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizer">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-library-profiler">Runtime, Library, Profiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-zynq-ultrascale">DPU IP - Zynq Ultrascale+</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-targets">DPU IP - Versal AIE Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-ml-targets-versal-ai-edge">DPU IP - Versal AIE-ML Targets (Versal AI Edge)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-alveo-data-center">DPU IP - CNN - Alveo Data Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-v70-data-center">DPU IP - CNN - V70 Data Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-non-cnn-data-center">DPU IP - Non-CNN - Data Center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#whole-application-acceleration">Whole-Application Acceleration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ai-kernel-scheduler">AI Kernel Scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-workflows">Third-party Workflows</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../board_setup/board_setup.html">Target Setup Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
@@ -74,10 +96,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -138,8 +156,126 @@ function OptanonWrapper() { }
              
   <section id="release-notes-3-0">
 <h1>Release Notes 3.0<a class="headerlink" href="#release-notes-3-0" title="Permalink to this heading">¶</a></h1>
-<p>Refer to the compatibility documentation: <a class="reference internal" href="version_compatibility.html"><span class="doc">IP and Tool Version Compatibility</span></a>.</p>
-<p>Text to be updated ASAP</p>
+<section id="documentation-and-github-repository">
+<h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Migrated core documentation to <a class="reference external" href="https://xilinx.github.io/Vitis-AI/">Github.IO</a></p></li>
+<li><p>Incorporated offline HTML documentation for air-gapped users</p></li>
+<li><p>Restructured user documentation</p></li>
+<li><p>Restructured repository directory structure for clarity and ease-of-use</p></li>
+</ul>
+</section>
+<section id="model-zoo">
+<h2>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added 24 new models and deprecated 28 models for a total of 130 models</p></li>
+<li><p>Added super resolution 4x, as well as 2D and 3D semantic segmentation for Medical applications</p></li>
+<li><p>Added BERT models for Data Center NLP applications</p></li>
+<li><p>Added MLPerf models: 3D-Unet, FAMBench: MaskRCNN, superbenchmark: BERT (tiny, base, large)</p></li>
+<li><p>Added new YOLO variants: YoloX, v5, v6</p></li>
+<li><p>Added EfficientNet-lite</p></li>
+<li><p>Ease-of-use enhancements, including replacing markdown-format performance tables with a downloadable Model Zoo spreadsheet</p></li>
+<li><p>Added 60 PyTorch and TensorFlow models for AMD EPYC CPUs, targeting deployment with ZenDNN</p></li>
+<li><p>Added models to support AMD GPU architectures, supporting ROCm and MLGraphX</p></li>
+</ul>
+</section>
+<section id="cnn-quantizer">
+<h2>CNN Quantizer<a class="headerlink" href="#cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
+<section id="rnn-quantizer">
+<h2>RNN Quantizer<a class="headerlink" href="#rnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
+<section id="compiler">
+<h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added support for new operators, including: strided_slice, cost volume, correlation 1D &amp; 2D, argmax, group conv2d, reduction_max, reduction_mean</p></li>
+<li><p>Added support for Versal AI Edge DPUCV2DX8G</p></li>
+<li><p>Focused effort to improve the intelligibility of error and partitioning messages</p></li>
+</ul>
+</section>
+<section id="optimizer">
+<h2>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
+<section id="runtime-library-profiler">
+<h2>Runtime, Library, Profiler<a class="headerlink" href="#runtime-library-profiler" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Added support for VEK280 and V70 targets (Early Access)</p></li>
+<li><p>Added support for ONNX runtime, with eleven examples</p></li>
+<li><p>Added four new model libraries to the Vitis AI Library and support for thirteen additional models</p></li>
+<li><p>Focused effort to improve the intelligibility of error messages</p></li>
+<li><p>Added Profiler support for DPUCV2DX8G (VEK280 Early Access)</p></li>
+<li><p>Added Profiler support for Versal DDR bandwidth profiling</p></li>
+</ul>
+</section>
+<section id="dpu-ip-zynq-ultrascale">
+<h2>DPU IP - Zynq Ultrascale+<a class="headerlink" href="#dpu-ip-zynq-ultrascale" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Upgraded to enable Vivado and Vitis 2022.2 release</p></li>
+<li><p>Added support for 1D and 2D Correlation, Argmax and Max</p></li>
+<li><p>Reduced resource utilization</p></li>
+<li><p>Timing closure improvements</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-targets">
+<h2>DPU IP - Versal AIE Targets<a class="headerlink" href="#dpu-ip-versal-aie-targets" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Upgraded to enable Vivado and Vitis 2022.2 release</p></li>
+<li><p>Added support for 1D and 2D Correlation</p></li>
+<li><p>Added support for Argmax and Max along the channel dimension</p></li>
+<li><p>Added support for Cost-Volume</p></li>
+<li><p>Reduced  resource utilization</p></li>
+<li><p>Timing closure improvements</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-ml-targets-versal-ai-edge">
+<h2>DPU IP - Versal AIE-ML Targets (Versal AI Edge)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-versal-ai-edge" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Early access release supporting early adopters with an early, unoptimized AIE-ML DPU</p></li>
+<li><p>Supports most 2D operators (currently does not support 3D operators)</p></li>
+<li><p>Batch size support from 1~13</p></li>
+<li><p>Supports more than 70 Model Zoo models</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-alveo-data-center">
+<h2>DPU IP - CNN - Alveo Data Center<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Upgraded to enable Vitis 2022.2 release</p></li>
+<li><p>Timing closure improvements via scripts supplied for .xo workflows</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-v70-data-center">
+<h2>DPU IP - CNN - V70 Data Center<a class="headerlink" href="#dpu-ip-cnn-v70-data-center" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Early access release supporting early adopters with an unoptimized DPU</p></li>
+<li><p>Supports most 2D operators (currently does not support 3D operators)</p></li>
+<li><p>Batch size 13 support</p></li>
+<li><p>Supports more than 70 Model Zoo models</p></li>
+</ul>
+</section>
+<section id="dpu-ip-non-cnn-data-center">
+<h2>DPU IP - Non-CNN - Data Center<a class="headerlink" href="#dpu-ip-non-cnn-data-center" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Integrate WeGO with the Vitis-AI Quantizer to enable on-the-fly quantization and improve easy-of-use</p></li>
+<li><p>Introduced serialization and deserialization with the WeGO flow to offer the capability of building once and running anytime</p></li>
+<li><p>Incorporated AMD ZenDNN into WeGO, enabling additional optimization for AMD EPYC CPU targets</p></li>
+<li><p>Improve WeGO robustness to offer a better developer experience and support a wider range of models</p></li>
+</ul>
+</section>
+<section id="whole-application-acceleration">
+<h2>Whole-Application Acceleration<a class="headerlink" href="#whole-application-acceleration" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
+<section id="ai-kernel-scheduler">
+<h2>AI Kernel Scheduler<a class="headerlink" href="#ai-kernel-scheduler" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
+<section id="third-party-workflows">
+<h2>Third-party Workflows<a class="headerlink" href="#third-party-workflows" title="Permalink to this heading">¶</a></h2>
+<p>TBA</p>
+</section>
 </section>
 
 

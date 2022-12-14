@@ -1,4 +1,4 @@
-﻿<table class="sphinxhide">
+<table class="sphinxhide">
  <tr>
    <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
    </td>
@@ -9,15 +9,20 @@
 
 The purpose of this page is to distribute DPU IP and reference designs.
 
-Today, Xilinx DPU IPs are not incorporated into the Vivado IP catalog.  The only source for theses IPs is via a set of reference designs that encapsulate both the IP as well as a complete platform reference design.  These reference designs are fully functional and should be used as a template for IP integration and connectivity as well as Linux integration.
+Today, Xilinx DPU IPs are not incorporated into the standard Vivado IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
+
+- The DPU IP is released as a reference design that is available to download from the links provided in the table below.  Users can start with the reference design and modify it to suit their requirements.
+- The DPU is released as a separate IP download that can be incorporated into a new or existing design by the developer.  
+
+The reference designs are fully functional and can be used as a template for IP integration and connectivity as well as Linux integration.
 
 ## Version and Compatibility
 
-The designs and IP on this page are specific to Vitis AI v2.5.  The IP and designs were verified with Vivado and Vitis 2022.1.  If you are using a different version of Vitis or Vivado, please refer to the [version compatibility document](version_compatibility.md) for additional information.
+As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP on this page are specific to Vitis AI v3.0 and were verified with Vivado and Vitis 2022.2.  If you are using a different version of Vitis or Vivado, please refer to the [version compatibility document](version_compatibility.md) for additional information.
 
 ## Introduction
 
-The table below associates currently available DPU IP with the supported target, and provides links to download the reference design and documentation.  For convenience, a separate IP repo is provided for users who do not wish to download the reference design (which includes the IP repo).  
+The table below associates currently available DPU IP with the supported target, and provides links to download the reference design and documentation.  For convenience, a separate IP repo is provided for users who do not wish to download the reference design.  The IP is thus included both in the reference design, but also is available as a separate download.  
 
 Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for detailed information on the capabilities and device targets for Xilinx DPUs.
 
@@ -42,19 +47,28 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <td align="center">DPUCZDX8G</td>
     <td align="center">MPSoC / Kria K26</td>
     <td align="center">Programmable logic based DPU, targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Support either the Vitis or Vivado flows on 16nm ZU+ targets.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg338-dpu">PG338</a></td>
    <td align="center"><a href="ref_design_docs/README_DPUCZDX8G.md">Link</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_ip_repo.tar.gz">Get IP</a></td>
+   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8G</td>
     <td align="center">VCK190</td>
-    <td align="center"> AIE-centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal targets.</td> 
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G.tar.gz">Download</a></td>
+    <td align="center"> AIE centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal targets.</td> 
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g">PG389</a></td>
    <td align="center"><a href="ref_design_docs/README_DPUCVDX8G.md">Link</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_ip_repo.tar.gz">Get IP</a></td>
+   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
+  </tr>
+  <tr>
+    <td align="center">DPUCV2DX8G</td>
+    <td align="center">VEK280</td>
+    <td align="center"> AIE-ML centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal AI Edge targets leveraging the AIE-ML architecture.</td> 
+    <td align="center"><a href="">Early Access</a></td>
+    <td align="center"><b>---</b></td>
+   <td align="center"><b>---</b></td>
+   <td align="center"><b>---</b></td>
   </tr>
 </tbody>
 </table>
@@ -77,45 +91,53 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <td align="center">DPUCAHX8H</td>
     <td align="center">U50/U50lv/U280/U55c</td>
     <td align="center">High throughput CNN inference 16nm DPU. Optimized with high bandwidth memory. DPU core is fully built with FPGA programming logic. Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg367-dpucahx8h">PG367</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_ip_repo.tar.gz">Get IP</a></td>
+   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCADF8H</td>
     <td align="center">U200/U250</td>
     <td align="center">High throughput CNN inference 16nm DPU. Optimized with DDR. DPU core is fully built with FPGA programming logic. Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg400-dpucadf8h">PG400</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_ip_repo.tar.gz">Get IP</a></td>
+   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
+  </tr>
+  <tr>
+    <td align="center">DPUxxx</td>
+    <td align="center">V70</td>
+    <td align="center"><b>---</b></td> 
+    <td align="center"><a href="https://www.xilinx.com/member/dpu-v70.html">Early Access</a></td>
+    <td align="center"><b>---</b></td>
+    <td align="center"><b>---</b></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_2pe_miscdwc</td>
     <td rowspan="5" align="center">VCK5000</td>
     <td rowspan="5" align="center">High throughput CNN inference 7nm DPU for ACAP platforms. All computing engines are implemented with FPGA AIE cores.  Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_VAI_v3.0.tar.gz">Download</a></td>
     <td rowspan="5" align="center"><a href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h">PG403</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_ip_repo.tar.gz">Get IP</a></td>
+   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_4pe_miscdwc</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc_ip_repo.tar.gz">Get IP</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc_VAI_v3.0.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_6pe_misc</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc_ip_repo.tar.gz">Get IP</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc_VAI_v3.0.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_6pe_dwc</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc_ip_repo.tar.gz">Get IP</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc_VAI_v3.0.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_8pe_normal</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal_ip_repo.tar.gz">Get IP</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal_VAI_v3.0.tar.gz">Download</a></td>
+    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
 </tbody>
 </table>

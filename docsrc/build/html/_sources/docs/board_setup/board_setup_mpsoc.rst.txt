@@ -109,7 +109,7 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
         cd /workspace
         wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 		   
-   -  Copy the downloadeded file to the board using scp with the following command:
+   -  Copy the downloaded file to the board using scp with the following command:
 
       ::
 

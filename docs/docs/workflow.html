@@ -57,7 +57,6 @@ function OptanonWrapper() { }
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started-resources">Getting Started Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-journey-for-new-users">The Journey for New Users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-a-dpu">What is a DPU?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-drive-vitis-ai-on-a-supported-platform">Test-Drive Vitis AI on a Supported Platform</a></li>
@@ -76,6 +75,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
@@ -83,10 +86,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -155,15 +154,17 @@ function OptanonWrapper() { }
 <section id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">¶</a></h2>
 <p>Vitis AI documentation consists of both formal product and user guides as well as a selection of task-specific resources and examples. The formal documentation is listed in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Release Documentation</span></a>. Additional task-specific resources and examples are encapsulated in the various sections of this documentation repository.</p>
-</section>
-<section id="getting-started-resources">
-<h2>Getting Started Resources<a class="headerlink" href="#getting-started-resources" title="Permalink to this heading">¶</a></h2>
-<p>Use the sidebar ToC to jump directly to the specific tasks and elements of the Vitis AI workflow.</p>
+<p>To access specific content, use the sidebar table of contents to jump directly to specific tasks and elements of the Vitis AI workflow.</p>
 </section>
 <section id="the-journey-for-new-users">
 <h2>The Journey for New Users<a class="headerlink" href="#the-journey-for-new-users" title="Permalink to this heading">¶</a></h2>
 <p>So, you are a new user and are wondering where to get started? In general, there are two primary starting points. Most users will want to start either by installing the toolchain, or doing a “test-drive”. Xilinx recommends that all users should start with a “test-drive” and then move on to installation of the tools. These two workflows are shown below.</p>
-<img alt="../_images/New_User_Flow.PNG" src="../_images/New_User_Flow.PNG" />
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/New_User_Flow.PNG"><img alt="../_images/New_User_Flow.PNG" src="../_images/New_User_Flow.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI High-Level New User Workflow</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="what-is-a-dpu">
 <h2>What is a DPU?<a class="headerlink" href="#what-is-a-dpu" title="Permalink to this heading">¶</a></h2>
@@ -172,9 +173,19 @@ function OptanonWrapper() { }
 <p>A DPU can be comprised purely of elements that are available in the Xilinx® programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the Xilinx AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of both programmable logic and AI Engine array resources.</p>
 <p>Each DPU architecture has its own instruction set, and the Vitis AI Compiler targets that instruction set with the neural network operators to be deployed in the source network.</p>
 <p>An example of the DPUCZ, targeting Zynq® Ultrascale+™ devices is shown in the following image:</p>
-<img alt="../_images/DPUCZ.PNG" src="../_images/DPUCZ.PNG" />
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/DPUCZ.PNG"><img alt="../_images/DPUCZ.PNG" src="../_images/DPUCZ.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Features and Architecture of the Zynq Ultrascale+ DPUCZ</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Vitis AI provides both the DPU IP as well as the required tools to deploy both standard and custom neural networks on Xilinx targets:</p>
-<img alt="../_images/VAI-1000ft.PNG" src="../_images/VAI-1000ft.PNG" />
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/VAI-1000ft.PNG"><img alt="../_images/VAI-1000ft.PNG" src="../_images/VAI-1000ft.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI 1000 Foot View</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="test-drive-vitis-ai-on-a-supported-platform">
 <h2>Test-Drive Vitis AI on a Supported Platform<a class="headerlink" href="#test-drive-vitis-ai-on-a-supported-platform" title="Permalink to this heading">¶</a></h2>

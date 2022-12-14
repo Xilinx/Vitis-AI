@@ -65,6 +65,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup.html">Target Setup Instructions</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
@@ -72,10 +76,6 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -136,7 +136,7 @@ function OptanonWrapper() { }
              
   <section id="setting-up-a-versal-accelerator-card">
 <h1>Setting up a Versal Accelerator Card<a class="headerlink" href="#setting-up-a-versal-accelerator-card" title="Permalink to this heading">¶</a></h1>
-<p>The Xilinx® DPUs for VCK5000 card is a High Performance CNN processing engine <strong>DPUCVDX8H</strong>. The detailed combination of Alveo card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.</p>
+<p>The Xilinx® DPUs for VCK5000-PROD card is a High Performance CNN processing engine <strong>DPUCVDX8H</strong>. The detailed combination of VCK5000-PROD card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>No.</p></th>
@@ -163,8 +163,8 @@ function OptanonWrapper() { }
 </tr>
 </tbody>
 </table>
-<section id="vck5000-card-setup-in-host">
-<h2>1. VCK5000 Card Setup in Host<a class="headerlink" href="#vck5000-card-setup-in-host" title="Permalink to this heading">¶</a></h2>
+<section id="vck5000-prod-card-setup-in-host">
+<h2>1. VCK5000-PROD Card Setup in Host<a class="headerlink" href="#vck5000-prod-card-setup-in-host" title="Permalink to this heading">¶</a></h2>
 <p>We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -191,16 +191,16 @@ function OptanonWrapper() { }
 <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory. There are four xclbins to choose from depending on the parameters you use.</p>
 <ol class="arabic">
 <li><p>For 4PE 350 Hz, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_4pe_miscdwc</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_4pe_miscdwc</span></code></p>
 </li>
 <li><p>For 6PE 350 Hz with DWC, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6pe_dwc</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6pe_dwc</span></code></p>
 </li>
 <li><p>For 6PE 350 Hz with MISC, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6PE_MISC</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6PE_misc</span></code></p>
 </li>
 <li><p>For 8PE 350 Hz, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_8pe_normal</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_8pe_normal</span></code></p>
 </li>
 </ol>
 </section>
