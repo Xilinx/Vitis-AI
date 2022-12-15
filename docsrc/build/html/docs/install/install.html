@@ -67,11 +67,10 @@ function OptanonWrapper() { }
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Host Install Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#host-development-software-installation">Host / Development Software Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation Steps</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#option-1-leverage-the-pre-built-docker">Option 1: Leverage the pre-built Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-guidance">Installation Guidance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#option-1-leverage-the-pre-built-docker">Option 1: Leverage the Pre-Built Docker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#option-2-build-the-docker-container-from-xilinx-recipes">Option 2: Build the Docker container from Xilinx Recipes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#gpu-docker">GPU Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cpu-docker">CPU Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-build-the-container">How to Build the Container</a></li>
 </ul>
 </li>
 </ul>
@@ -158,7 +157,7 @@ function OptanonWrapper() { }
 <ul class="simple">
 <li><p>[Option1] Directly leverage pre-built Docker containers available from Docker Hub:
 <a class="reference external" href="https://hub.docker.com/r/xilinx/vitis-ai/tags">xilinx/vitis-ai</a></p></li>
-<li><p>[Option2] Build a custom container locally using the Vitis AI <a class="reference internal" href="../board_setup/board_setup.html"><span class="doc">Board Setup Documentation</span></a></p></li>
+<li><p>[Option2] Build a custom container to target your local host machine</p></li>
 <li><p>[Option3] Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on <a class="reference internal" href="install_on_aws.html"><span class="doc">AWS</span></a>, or <a class="reference internal" href="install_on_azure.html"><span class="doc">Azure</span></a></p></li>
 </ul>
 </section>
@@ -169,12 +168,12 @@ function OptanonWrapper() { }
 <li><p>Confirm that you have at least <strong>100GB</strong> of free space in the target partition</p></li>
 </ul>
 </section>
-<section id="installation-steps">
-<h2>Installation Steps<a class="headerlink" href="#installation-steps" title="Permalink to this heading">¶</a></h2>
+<section id="installation-guidance">
+<h2>Installation Guidance<a class="headerlink" href="#installation-guidance" title="Permalink to this heading">¶</a></h2>
 <ul>
-<li><p>If Docker was not previously installed on your development machine with NVIDIA Container Toolkit support,visit  <a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a></p></li>
+<li><p>If Docker was not previously installed on your development machine with NVIDIA Container Toolkit or ROCm support, visit  <a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a></p></li>
 <li><p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p></li>
-<li><p>Clone the Vitis-AI repository to obtain the examples, reference code, and scripts</p>
+<li><p>To get started, the developer should clone the Vitis-AI repository as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Xilinx/Vitis-AI
 <span class="nb">cd</span> Vitis-AI
 </pre></div>
@@ -186,27 +185,83 @@ function OptanonWrapper() { }
 </li>
 </ul>
 <section id="option-1-leverage-the-pre-built-docker">
-<h3>Option 1: Leverage the pre-built Docker<a class="headerlink" href="#option-1-leverage-the-pre-built-docker" title="Permalink to this heading">¶</a></h3>
-<p>For the below, assume that <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;</span></code> is the path into which you have cloned Vitis-AI.  ie: <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;</span></code> contains the cloned repository root directory <code class="docutils literal notranslate"><span class="pre">/Vitis-AI</span></code>.</p>
-<p>Note that this option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommend</strong> for acceleration of the quantization process. The pre-built Docker should only be used when a GPU is not available on the host machine.</p>
-<p>To download the most up-to-date version of the pre-built docker, execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+<h3>Option 1: Leverage the Pre-Built Docker<a class="headerlink" href="#option-1-leverage-the-pre-built-docker" title="Permalink to this heading">¶</a></h3>
+<p>As of the Vitis AI 3.0 release, pre-built Docker containers are framework specific.  Furthermore, we have extended support to include AMD ROCm enabled GPUs.  Users thus now have three options for a host: CPU-only, CUDA-capable GPUs, and ROCm-capable GPUs.  CUDA-capable GPUs are not supported by pre-built containers, and thus the developer must <a class="reference internal" href="#build-docker-from-scripts"><span class="std std-ref">build the container from scripts</span></a></p>
+<p>To download the most up-to-date version of the pre-built docker, you will need execute the appropriate command, using the below general format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">Framework</span><span class="o">&gt;-&lt;</span><span class="n">Arch</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
-<p>A quick and simple test of docker can be accomplished by executing the following command:</p>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;Framework&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;Arch&gt;</span></code> can be selected as in the table below:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Vitis AI Pre-built Container Options</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Desired Framework</p></th>
+<th class="head"><p>&lt;Arch&gt;</p></th>
+<th class="head"><p>&lt;Framework&gt;</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TensorFlow 1.15 cpu-only</p></td>
+<td><p>cpu</p></td>
+<td><p>tf1</p></td>
+</tr>
+<tr class="row-odd"><td><p>TensorFlow 2 cpu-only</p></td>
+<td><p>cpu</p></td>
+<td><p>tf2</p></td>
+</tr>
+<tr class="row-even"><td><p>PyTorch cpu-only</p></td>
+<td><p>cpu</p></td>
+<td><p>pytorch</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>TensorFlow 2 ROCm</p></td>
+<td><p>rocm</p></td>
+<td><p>tf2</p></td>
+</tr>
+<tr class="row-odd"><td><p>TF2 with AI Optimizer ROCm</p></td>
+<td><p>rocm</p></td>
+<td><p>opt_tf2</p></td>
+</tr>
+<tr class="row-even"><td><p>PyTorch with AI Optimizer ROCm</p></td>
+<td><p>rocm</p></td>
+<td><p>opt_pytorch</p></td>
+</tr>
+</tbody>
+</table>
+<p><em>Specific Examples:</em></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Tensorflow 2 CPU docker : <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-tensorflow2-cpu:latest</span></code></p></li>
+<li><p>Tensorflow 2 ROCm docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-tensorflow2-rocm:latest</span></code></p></li>
+<li><p>PyTorch ROCm docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-pytorch-rocm:latest</span></code></p></li>
+</ul>
+</div></blockquote>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the quantization process. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.</p>
+</div>
+<p>Next, a quick and simple test of the docker container can be accomplished by executing the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
 </pre></div>
 </div>
 <p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
-<p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+<p>Next, you can now start the Vitis AI Docker using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">cpu</span><span class="o">|</span><span class="n">rockm</span><span class="o">&gt;-&lt;</span><span class="n">tf1</span><span class="o">|</span><span class="n">tf2</span><span class="o">|</span><span class="n">opt_tf1</span><span class="o">|</span><span class="n">opt_tf2</span><span class="o">|</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt_pytorch</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 </section>
 <section id="option-2-build-the-docker-container-from-xilinx-recipes">
-<h3>Option 2: Build the Docker container from Xilinx Recipes<a class="headerlink" href="#option-2-build-the-docker-container-from-xilinx-recipes" title="Permalink to this heading">¶</a></h3>
-<p>In most cases, Developers will want to leverage the GPU-enabled Docker as it provides support for accelerated quantization. If you have a compatible NVIDIA graphics card that meets Vitis AI CUDA requirements (<a class="reference internal" href="../reference/system_requirements.html"><span class="doc">listed here</span></a>), you should leverage the GPU-capable Docker.</p>
-<p>We have also provided the CPU recipe should customization of the CPU-only Docker be required.</p>
+<span id="build-docker-from-scripts"></span><h3>Option 2: Build the Docker container from Xilinx Recipes<a class="headerlink" href="#option-2-build-the-docker-container-from-xilinx-recipes" title="Permalink to this heading">¶</a></h3>
+<p>As of this release, a single unified docker build script has been provided.  This script enables developers to build a container for a specific framework.  This single unified script supports CPU-only hosts, GPU-capable hosts as well as the AMD ROCm-capable hosts.</p>
+<p>In most cases, developers will want to leverage the GPU or ROCm enabled Dockers as they provide support for accelerated quantization and pruning. For NVIDIA graphics cards that meet Vitis AI CUDA requirements (<a class="reference internal" href="../reference/system_requirements.html"><span class="doc">listed here</span></a>) you can leverage the <code class="docutils literal notranslate"><span class="pre">gpu</span></code> Docker.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <ul class="simple">
@@ -214,24 +269,107 @@ function OptanonWrapper() { }
 <li><p>If you are building the Docker from within China, <a class="reference internal" href="China_Ubuntu_servers.html"><span class="doc">script modifications</span></a> are strongly recommended.</p></li>
 </ul>
 </div>
-<section id="gpu-docker">
-<h4>GPU Docker<a class="headerlink" href="#gpu-docker" title="Permalink to this heading">¶</a></h4>
-<p>Use the following commands to build the GPU docker. Adjust your path to <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
+<section id="how-to-build-the-container">
+<h4>How to Build the Container<a class="headerlink" href="#how-to-build-the-container" title="Permalink to this heading">¶</a></h4>
+<p>The command that you will use to build the container is of the following format: <code class="docutils literal notranslate"><span class="pre">./docker_build.sh</span> <span class="pre">-t</span> <span class="pre">&lt;DOCKER_TYPE&gt;</span> <span class="pre">-f</span> <span class="pre">&lt;FRAMEWORK&gt;</span></code></p>
+<p>Where the supported build options are:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Vitis AI Docker Container Build Options</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>DOCKER_TYPE (-t)</p></th>
+<th class="head"><p>TARGET_FRAMEWORK (-f)</p></th>
+<th class="head"><p>Desired Environment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cpu</p></td>
+<td><p>tf1</p></td>
+<td><p>TensorFlow 1.15 cpu-only</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>tf2</p></td>
+<td><p>TensorFlow 2 cpu-only</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>pytorch</p></td>
+<td><p>PyTorch cpu-only</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gpu</p></td>
+<td><p>tf1</p></td>
+<td><p>TensorFlow 1.15 CUDA-gpu</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>opt_tf1</p></td>
+<td><p>TF1 with AI Optimizer CUDA-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>tf2</p></td>
+<td><p>TensorFlow 2</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>opt_tf2</p></td>
+<td><p>TF2 with AI Optimizer CUDA-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>pytorch</p></td>
+<td><p>PyTorch</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>opt_pytorch</p></td>
+<td><p>PyTorch with AI Optimizer CUDA-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>rocm</p></td>
+<td><p>tf2</p></td>
+<td><p>TensorFlow 2 ROCm-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>opt_tf2</p></td>
+<td><p>TF2 with AI Optimizer ROCm-gpu</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>pytorch</p></td>
+<td><p>PyTorch ROCm-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>opt_pytorch</p></td>
+<td><p>PyTorch with AI Optimizer ROCm-gpu</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the quantization process. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.</p>
+</div>
+<p>As an example, the developer should use the following commands to build a Pytorch CUDA GPU docker with support for the Vitis AI Optimizer. Adjust your path to <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
-<span class="o">./</span><span class="n">docker_build_gpu</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">docker_build</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">t</span> <span class="n">gpu</span> <span class="o">-</span><span class="n">f</span> <span class="n">opt_pytorch</span>
 </pre></div>
 </div>
+<p>You may also <code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">docker_build.sh</span> <span class="pre">--help</span></code> for additional information.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This process may take several hours to complete. It’s time to go off and get a coffee, tea, water or whatever suits your fancy. When you come back, assuming that the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.</p>
 </div>
-<p>You should now do an initial test of your GPU docker using the following commands:</p>
+<p>Once the build script has completed, do an initial test of your docker using the following commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">docker</span>
 <span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
 </pre></div>
 </div>
 <p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
-<p>Now, test that the Docker has been enabled with GPU support by executing the following command from within the container:</p>
+<p>If the Docker has been enabled with CUDA-capable GPU support, confirm that the GPU is visible by executing the following command from within the container:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">--</span><span class="n">gpus</span> <span class="nb">all</span> <span class="n">nvidia</span><span class="o">/</span><span class="n">cuda</span><span class="p">:</span><span class="mf">11.0</span><span class="o">-</span><span class="n">base</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
 </pre></div>
 </div>
@@ -259,33 +397,15 @@ function OptanonWrapper() { }
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If GPU support was not enabled in your container, check your NVIDIA driver version and CUDA version described in <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> and verify your installation of the NVIDIA Container Toolkit (<a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a>). If you missed a step, you can simply rectify the problem and re-run <code class="docutils literal notranslate"><span class="pre">docker_build_gpu.sh</span></code>.</p>
+<p>If CUDA GPU support was expected, but was not enabled in your container, check your NVIDIA driver version and CUDA version versus the <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> and verify your installation of the NVIDIA Container Toolkit (<a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a>). If you missed a step, you can simply rectify the problem and re-run <code class="docutils literal notranslate"><span class="pre">docker_build.sh</span></code>.</p>
 </div>
 <p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">gpu</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">gpu</span><span class="o">|</span><span class="n">cpu</span><span class="o">|</span><span class="n">rockm</span><span class="o">&gt;-&lt;</span><span class="n">tf1</span><span class="o">|</span><span class="n">tf2</span><span class="o">|</span><span class="n">opt_tf1</span><span class="o">|</span><span class="n">opt_tf2</span><span class="o">|</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt_pytorch</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">./docker_run.sh</span></code> as a script reference should you have customized requirements for launching your Docker container.</p>
-</div>
-</section>
-<section id="cpu-docker">
-<h4>CPU Docker<a class="headerlink" href="#cpu-docker" title="Permalink to this heading">¶</a></h4>
-<p>Use the following commands to build the CPU docker. Adjust your path to the <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
-<span class="o">./</span><span class="n">docker_build_cpu</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-<p>A quick and simple test of docker can be accomplished by executing the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">docker</span>
-<span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
-</pre></div>
-</div>
-<p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
-<p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">../</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
-</pre></div>
 </div>
 <p>In most cases, you have now completed the installation. Congratulations!</p>
 <p>If you have previously been instructed by your ML Specialist or FAE to leverage a specific patch for support of certain features, you should now follow the instructions <a class="reference internal" href="patch_instructions.html"><span class="doc">patch instructions</span></a> to complete your installation.</p>

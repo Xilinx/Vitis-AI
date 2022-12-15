@@ -35,23 +35,23 @@ function usage
     echo "   This script builds Vitis AI dockers"
     echo "   ";
     echo "  -t | --DOCKER_TYPE         : [Required] Valid values:cpu,gpu,rocm";
-    echo "  -f | --TARGET_FRAMEWORK    : [Required] The Framework to build. Valida values:" 
+    echo "  -f | --TARGET_FRAMEWORK    : [Required] The Framework to build. Valid values:" 
     echo "                              For CPU docker: 
                                             Tensorflow 1.15: tf1
 					    Tensorflow 2 :   tf2
 					    Pytorch:         pytorch";
     echo  "                             For GPU dockers:
-                                            Tensorflow 1.15:       tf1
-                                            Tensorflow 2 :         tf2
+                                            TensorFlow 1.15:       tf1
+                                            TensorFlow 2 :         tf2
                                             optimizer_tensorflow:  opt_tf1
                                             optimizer_tensorflow2: opt_tf2
-                                            optimizer_pytorch:     opt-pytorch
-                                            Pytorch:               pytorch"; 
+                                            optimizer_pytorch:     opt_pytorch
+                                            PyTorch:               pytorch"; 
     echo  "                             For ROCM dockers:
                                             optimizer_tensorflow2: opt_tf2
                                             optimizer_pytorch:     opt_pytorch
-                                            Tensorflow 2 :         tf2
-                                            Pytorch:               pytorch";
+                                            TensorFlow 2 :         tf2
+                                            PyTorch:               pytorch";
     echo "  -h | --help              : This message";
     return ${rtn}
 }

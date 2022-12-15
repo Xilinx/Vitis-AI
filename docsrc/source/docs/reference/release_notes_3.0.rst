@@ -10,6 +10,11 @@ Documentation and Github Repository
 - Restructured user documentation
 - Restructured repository directory structure for clarity and ease-of-use
 
+Docker Containers and GPU Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Migrated from multi-framework to per framework Docker containers
+- Enabled Docker ROCm GPU support for quantization and pruning
+
 Model Zoo
 ~~~~~~~~~
 

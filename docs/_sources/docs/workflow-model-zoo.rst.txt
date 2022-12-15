@@ -36,8 +36,8 @@ Adaptable & Real-Time AI Inference Acceleration
 
 .. _workflow-model-zoo:
 
-Introduction
-============
+Vitis AI Model Zoo
+==================
 
 The Vitis |trade| AI Model Zoo which is incorporated into the Vitis AI repository includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx™ platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, etc. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration. 
 

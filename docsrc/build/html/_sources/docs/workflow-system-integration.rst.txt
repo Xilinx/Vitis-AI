@@ -1,6 +1,6 @@
-======================
-Toolchain Integration
-======================
+===================
+Integrating the DPU
+===================
 
 .. _vitis-integration:
 
@@ -34,7 +34,7 @@ Linux DPU Recipes
 
 Yocto and PetaLinux users will require bitbake recipes for the Vitis AI components that are compiled for the target. These recipes are provided in the `source code folder <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/petalinux_recipes>`__.
 
-.. important:: For Vitis AI releases >= v2.0, Vivado users (Zynq |reg| Ultrascale+ |trade| and Kria |trade| applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo |trade| and Versal |reg| designs must include XRT. By default, the Vitis AI Docker images* `include XRT <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/docker/docker_build_gpu.sh#L40>`__. In addition, the Linux bitbake recipe for VART `assumes <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/blob/vai3.0_update/src/petalinux_recipes/recipes-vitis-ai/vart/vart_3.0.bb#L17>`__ by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must either leverage ``vart_3.0_vivado.bb`` or, comment out the line ``PACKAGECONFIG:append = " vitis"`` in the ``vart_3.0.bb`` recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.
+.. important:: For Vitis AI releases >= v2.0, Vivado users (Zynq |reg| Ultrascale+ |trade| and Kria |trade| applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo |trade| and Versal |reg| designs must include XRT. By default, the Vitis AI Docker images incorporate XRT. Perhaps most important is that the Linux bitbake recipe for VART `assumes <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/blob/vai3.0_update/src/petalinux_recipes/recipes-vitis-ai/vart/vart_3.0.bb#L17>`__ by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must either leverage ``vart_3.0_vivado.bb`` or, comment out the line ``PACKAGECONFIG:append = " vitis"`` in the ``vart_3.0.bb`` recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT, which is not compatible with the Vivado will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.
 
 .. _whole-application-acceleration:
 

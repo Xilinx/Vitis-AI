@@ -4,7 +4,7 @@ Vitis AI - A Brief Introduction
 
 The page intends to provide a brief introduction to each component of the Vitis AI |trade| workflow, and provide a unified landing page that will assist developers in navigating to key resources for each stage in the workflow. 
 
-.. tip:: Review this page in its entirety as a first step on your journey with Vitis AI.
+.. tip:: Review this Vitis AI HTML documentation in its entirety as a first step on your journey with Vitis AI.  In these pages you will find many important pieces of information that we believe will help to augment the formal user and product guides.
 
 Documentation
 -------------
@@ -32,7 +32,7 @@ Xilinx uses this acronym to identify soft accelerators that target deep-learning
 
 A DPU can be comprised purely of elements that are available in the Xilinx |reg| programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the Xilinx AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of both programmable logic and AI Engine array resources.
 
-Each DPU architecture has its own instruction set, and the Vitis AI Compiler targets that instruction set with the neural network operators to be deployed in the source network.
+
 
 An example of the DPUCZ, targeting Zynq |reg| Ultrascale+ |trade| devices is shown in the following image:
 
@@ -48,13 +48,20 @@ Vitis AI provides both the DPU IP as well as the required tools to deploy both s
 
    Vitis AI 1000 Foot View
 
+What is perhaps of great significance to the user is that Vitis AI DPUs are general purpose AI inference accelerators.  A single DPU instance in your design can enable you to deploy multiple CNNs simultaneously, and furthermore can process multiple streams simultaneously.  Of course, this is predicated on the DPU having sufficient parallelism to support the combination of these networks and the number of streams.  Multiple DPU instances can be instantiated per device, and the DPU scales in size to accomodate users requirements.
+
+The Vitis AI DPU architecture is what we refer to as a "Matrix of (Heterogeneous) Processing Engines".  While on the surface, Vitis AI DPU architectures may bear some visual similarity to a systolic array, the similarity ends there.  Each DPU architecture has its own instruction set, and the Vitis AI Compiler compiles an executable ``.Xmodel`` for each network to be deployed.  The compiled instructions in the ``.Xmodel`` are executed by the DPU, which is itself a micro-coded processor with its own Instruction Set Architecture.  The Vitis AI Runtime addresses the underlying tasks of scheduling the inference of multiple networks, multiple streams and even, multiple DPU instances. The mix of processing engines in the DPU is heterogeneous, with the DPU having different engines specialized for different tasks.  For instance, CONV2D operators are accelerated in a purpose-build PE for that purpose, while depthwise convolutions are processed by another.
+
+One advantage of this architecture is that there is no need to load a new bitstream or build a new hardware platform when you want to change the network.  This is an important differentiator from Data Flow accelerator architectures that are purpose-built for a single network.  That said, both the Matrix of Processing Engines and Data Flow architectures have a place in Xilinx designs.  If you have need of a highly optimized, specialized, Data Flow accelerator for inference, check out the `FINN & Brevitas  <https://xilinx.github.io/finn/>`__ solutions.  Data Flow architectures based on FINN can support inference at line rates for high-speed communications, as well as extremely high sample rates for inference in the RF domain.  Neither of these two applications is a great fit for Vitis AI.  The reality is that both of these flows are complementary, and support for both can play an important role in customer product differentiation and future-proofing.
+
+
 Test-Drive Vitis AI on a Supported Platform
 --------------------------------------------
 
 In the early stages of evaluation, it is recommended that developers obtain and leverage a supported Vitis AI target platform. Several Xilinx evaluation platforms are directly supported with pre-built SD card images that enable the developer to evaluate the Vitis AI workflow. Because these images are ready-to-use, there is no immediate need for
 the developer to master the integration of the DPU IP. This path provides an excellent starting point for developers who are software or data science centric.
 
-To get started, you will need to know which platform you are planning to target. New users should consult with a local FAE or ML Specialist, review the DPU product guides, review the target platform documentation, and finally, review the :doc:`workflow-model-zoo` performance metrics.
+To get started, you will need to know which platform you are planning to target. New users should consult with a local FAE or ML Specialist, review the DPU product guides, review the target platform documentation, and finally, review the :doc:`Model Zoo <workflow-model-zoo>` performance metrics.
 
 Supported Evaluation Targets
 ----------------------------

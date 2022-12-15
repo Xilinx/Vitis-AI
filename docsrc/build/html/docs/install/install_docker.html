@@ -138,11 +138,15 @@ function OptanonWrapper() { }
 <h1>Installing Docker<a class="headerlink" href="#installing-docker" title="Permalink to this heading">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>In most cases, Developers will want to leverage the GPU-enabled Docker as it provides support for accelerated quantization. Prior to installing Docker, please ensure that you understand the Nvidia driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
+<p>In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they provides support for accelerated quantization. Prior to installing Docker for CUDA-capable GPUs, please ensure that you understand the Nvidia driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For ROCm distributions, developers should reference <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md">ROCm docker installation</a> for further details of docker installation.</p>
 </div>
 <section id="installing-nvidia-container-toolkit">
 <h2>Installing NVIDIA Container Toolkit<a class="headerlink" href="#installing-nvidia-container-toolkit" title="Permalink to this heading">¶</a></h2>
-<p>If you are building the Vitis AI Docker Image with GPU acceleration, you must install the NVIDIA Container Toolkit which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a>
+<p>If you are building the Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a>
 for additional information.</p>
 <p>For Ubuntu distributions, Nvidia driver and Container Toolkit installation can generally be accomplished as shown in the following example (use sudo for non-root users):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">purge</span> <span class="n">nvidia</span><span class="o">*</span> <span class="n">libnvidia</span><span class="o">*</span>
@@ -181,7 +185,7 @@ for additional information.</p>
 </section>
 <section id="id1">
 <h2>Installing Docker<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
-<p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker GPU support, please refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
+<p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, please refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
 </section>
 </section>
 
