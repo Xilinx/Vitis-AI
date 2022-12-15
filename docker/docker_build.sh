@@ -116,6 +116,7 @@ function execute
      -f ${DOCKERFILE} -t $IMAGE_TAG ./ "
  echo "$buildcmd"
  $buildcmd
+ docker tag ${IMAGE_TAG} ${IMAGE_LATEST_TAG}
  rtn=$?
  return ${rtn}
 }
@@ -219,8 +220,17 @@ function main
         validate_args
         rtn=$?
     fi
+    IMG_FW=""
+    case $TARGET_FRAMEWORK in
+        tf1) IMG_FW="tensorflow";;
+        tf2) IMG_FW="tensorflow2";;
+        pytorch) IMG_FW="pytorch";; 
+        opt_tf1) IMG_FW="opt-tensorflow";;
+        opt_tf2) IMG_FW="opt-tensorflow2";;
+        opt_pytorch) IMG_FW="opt-pytorch";; 
+    esac
 
-    BRAND="${BRAND:-vitis-ai-${DOCKER_TYPE}-${TARGET_FRAMEWORK}}"
+    BRAND="${BRAND:-vitis-ai-${IMG_FW}-${DOCKER_TYPE}}"
     # Final Build Image Tag
     IMAGE_TAG=${DOCKER_REPO}${BRAND}:${VERSION}
     IMAGE_LATEST_TAG=${DOCKER_REPO}${BRAND}:latest
