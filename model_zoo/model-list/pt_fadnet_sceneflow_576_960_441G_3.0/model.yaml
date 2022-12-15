@@ -14,21 +14,19 @@
 # limitations under the License.
 
 
-description: pruned fadnet for disparity estimation on tartanair
-input size: 512*640
-float ops: 92G
+description: fadnet for disparity estimation on scene flow.
+input size: 576*960
+float ops: 441G
 task: disparity estimation
 framework: pytorch
-prune: '0.65'
+prune: 'no'
 version: 3.0
 files:
-- name: pt_fadnet_tartanair_512_640_0.65_92G_3.0
+- name: pt_fadnet_sceneflow_576_960_441G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnet_tartanair_512_640_0.65_92G_3.0.zip
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnet_sceneflow_576_960_441G_3.0.zip
   checksum: 
-  
-  
   
   
   
