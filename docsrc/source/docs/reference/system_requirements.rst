@@ -7,9 +7,11 @@ The following table lists Vitis |trade| AI developer workstation system requirem
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | Component                                                              | Requirement                                                              |
 +========================================================================+==========================================================================+
-| GPU (Optional, but strongly recommended for quantization acceleration) | NVIDIA GPU supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100) |
+| ROCm GPU (GPU is optional but strongly recommended for quantization)   | AMD ROCm GPUs supporting ROCm v5.4, requires Ubuntu 20.04                |
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| CUDA Driver                                                            | NVIDIA-470 or higher for CUDA 11.2                                      |
+| CUDA GPU (GPU is optional but strongly recommended for quantization)   | NVIDIA GPUs supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100)|
++------------------------------------------------------------------------+--------------------------------------------------------------------------+
+| CUDA Driver                                                            | NVIDIA-470 or higher for CUDA 11.2                                       |
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | Docker Version                                                         | 19.03 or higher, nvidia-docker2                                          |
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
@@ -23,15 +25,11 @@ The following table lists Vitis |trade| AI developer workstation system requirem
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
 |                                                                        | AMD EPYC 7F52 64-bit CPU                                                 |
 +------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| ROCm                                                                   | ROCm GPU supporting ROCm 5.4                                             |
-+------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| Operating System                                                       | Ubuntu  20.04                                                            |
-+------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
 Vitis AI Supported Board Targets
 ---------------------------------
 
-The following table lists target boards that are supported natively by Vitis AI:
+The following table lists target boards that are supported with pre-built board images by Vitis AI:
 
 .. note:: Custom platform support can for Edge/Embedded devices may be enabled by the developer through Vitis and Vivado workflows.
 

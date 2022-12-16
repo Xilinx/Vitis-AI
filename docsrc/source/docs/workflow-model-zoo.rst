@@ -58,8 +58,8 @@ To make the job of using the Model Zoo a little easier, we have provided a downl
 
 
 
-Model File Nomenclature Decoder
--------------------------------
+Model File Nomenclature
+-----------------------
 
 When downloading and using models from the Model Zoo, it will be important to you to understand the nomenclature used for each file.
 

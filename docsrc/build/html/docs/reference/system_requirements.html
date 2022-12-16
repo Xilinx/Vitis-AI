@@ -150,35 +150,38 @@ function OptanonWrapper() { }
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>GPU (Optional, but strongly recommended for quantization acceleration)</p></td>
-<td><p>NVIDIA GPU supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100)</p></td>
+<tr class="row-even"><td><p>ROCm GPU (GPU is optional but strongly recommended for quantization)</p></td>
+<td><p>AMD ROCm GPUs supporting ROCm v5.4, requires Ubuntu 20.04</p></td>
 </tr>
-<tr class="row-odd"><td><p>CUDA Driver</p></td>
-<td><p>NVIDIA-450 or higher for CUDA 11.0</p></td>
+<tr class="row-odd"><td><p>CUDA GPU (GPU is optional but strongly recommended for quantization)</p></td>
+<td><p>NVIDIA GPUs supporting CUDA 11.0 or higher, (eg: NVIDIA P100, V100, A100)</p></td>
 </tr>
-<tr class="row-even"><td><p>Docker Version</p></td>
+<tr class="row-even"><td><p>CUDA Driver</p></td>
+<td><p>NVIDIA-470 or higher for CUDA 11.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>Docker Version</p></td>
 <td><p>19.03 or higher, nvidia-docker2</p></td>
 </tr>
-<tr class="row-odd"><td><p>Operating System</p></td>
+<tr class="row-even"><td><p>Operating System</p></td>
 <td><p>Ubuntu 18.04, 20.04</p></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p>CentOS 7.8, 7.9, 8.1, 8.2</p></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p>RHEL 8.3, 8.4</p></td>
 </tr>
-<tr class="row-even"><td><p>CPU</p></td>
+<tr class="row-odd"><td><p>CPU</p></td>
 <td><p>Intel i3/i5/i7/i9/Xeon 64-bit CPU</p></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p>AMD EPYC 7F52 64-bit CPU</p></td>
 </tr>
 </tbody>
 </table>
 <section id="vitis-ai-supported-board-targets">
 <h2>Vitis AI Supported Board Targets<a class="headerlink" href="#vitis-ai-supported-board-targets" title="Permalink to this heading">¶</a></h2>
-<p>The following table lists target boards that are supported natively by Vitis AI:</p>
+<p>The following table lists target boards that are supported with pre-built board images by Vitis AI:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Custom platform support can for Edge/Embedded devices may be enabled by the developer through Vitis and Vivado workflows.</p>

@@ -1,6 +1,6 @@
-========================
+=================
 Installing Docker
-========================
+=================
 
 .. important:: In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they provides support for accelerated quantization. Prior to installing Docker for CUDA-capable GPUs, please ensure that you understand the Nvidia driver, CUDA :doc:`Host System Requirements <../reference/system_requirements>` for Vitis AI.
 
@@ -54,7 +54,7 @@ The output should appear similar to this:
 
 Users should reference `Nvidia driver installation <https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html>`__ for further details of driver installation.
 
-Installing Docker
------------------
+Docker Install
+--------------
 
 Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, please refer to official Docker `documentation <https://docs.docker.com/engine/install/>`__ to install the Docker engine.

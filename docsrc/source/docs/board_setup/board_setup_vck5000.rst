@@ -13,8 +13,8 @@ No. Accelerator Card DPU IP
 4   VCK5000-PROD     DPUCVDX8H_8pe_normal
 === ================ =====================
 
-1. VCK5000-PROD Card Setup in Host
-------------------------------
+1. VCK5000-PROD Card Setup
+--------------------------
 
 We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
 
@@ -33,8 +33,8 @@ The following installation steps were performed in this script.
 
 .. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
 
-2. Environment Variable Setup in Docker Container
--------------------------------------------------
+2. Docker Container Environment Variable Setup
+----------------------------------------------
 
 Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then started Docker. In the docker container, execute the following steps. You can use the following command to set environment variables. It should be noted that the xclbin file should be in the
 ``/opt/xilinx/overlaybins`` directory. There are four xclbins to choose from depending on the parameters you use.

@@ -124,11 +124,13 @@ Is it possible to use the DPU without PetaLinux?
 
 There are at least two potential interpretations of this question:
 
-- Is it possible to deploy the DPUCZ using Yocto flows, or even Ubuntu, rather than PetaLinux?
-Yes, what is important to consider is that each release of the Vitis AI tool and the DPUCZ IP is provided with drivers and a runtime that targets a specific Linux kernel release. Misalignment between the target kernel version can pose challenges and may require extensive code changes.
+`Is it possible to deploy the DPUCZ using Yocto flows, or even Ubuntu, rather than PetaLinux?`
 
-- Is it possible to deploy the DPUCZ without using Linux? 
-We do have proof-of-concept beta support for both Green Hills Integrity and Blackberry QNX. For QNX and Integrity support, users should contact their local FAE or Sales representative to request additional discussions with the factory. As of this release, no support exists for bare-metal or FreeRTOS; however, Zynq UltraScale+ family members do support asymmetric multiprocessing, with the potential that developers can integrate the DPU via Linux, while continuing to develop the bulkof their application in their chosen OS. Please refer to `UG1137 <https://docs.xilinx.com/r/en-US/ug1137-zynq-ultrascale-mpsoc-swdev/Asymmetric-Multiprocessing-AMP>`__ for additional information on AMP modes of operation.
+	Yes, what is important to consider is that each release of the Vitis AI tool and the DPUCZ IP is provided with drivers and a runtime that targets a specific Linux kernel release. Misalignment between the target kernel version can pose challenges and may require extensive code changes.
+
+`Is it possible to deploy the DPUCZ without using Linux?` 
+
+	We do have proof-of-concept beta support for both Green Hills Integrity and Blackberry QNX. For QNX and Integrity support, users should contact their local FAE or Sales representative to request additional discussions with the factory. As of this release, no support exists for bare-metal or FreeRTOS; however, Zynq UltraScale+ family members do support asymmetric multiprocessing, with the potential that developers can integrate the DPU via Linux, while continuing to develop the bulkof their application in their chosen OS. Please refer to `UG1137 <https://docs.xilinx.com/r/en-US/ug1137-zynq-ultrascale-mpsoc-swdev/Asymmetric-Multiprocessing-AMP>`__ for additional information on AMP modes of operation.
 
 Can the DPUCZ be used for alternate purposes beyond deployment of neural networks? For example, signal processing operations?
 -----------------------------------------------------------------------------------------------------------------------------

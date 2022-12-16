@@ -12,7 +12,7 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Vitis AI Linux Recipes &mdash; Vitis AI 3.0 documentation</title>
+  <title>Model Zoo Table &mdash; Vitis AI 3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/contentui.css" type="text/css" />
@@ -65,10 +65,6 @@ function OptanonWrapper() { }
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
@@ -76,6 +72,10 @@ function OptanonWrapper() { }
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -124,9 +124,9 @@ function OptanonWrapper() { }
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Vitis AI Linux Recipes</li>
+      <li>Model Zoo Table</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/docs/petalinux-recipes.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/docs/workflow-modelzoo-table.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -134,97 +134,8 @@ function OptanonWrapper() { }
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <table class="sphinxhide"><tr><td align="center"><h1><p>Vitis AI</p>
-</h1><p>Adaptable &amp; Real-Time AI Inference Acceleration</p>
-</td></tr></table><section id="vitis-ai-linux-recipes">
-<h1>Vitis AI Linux Recipes<a class="headerlink" href="#vitis-ai-linux-recipes" title="Permalink to this heading">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The instructions refer to the sources found in the <code class="docutils literal notranslate"><span class="pre">/src/petalinux_recipes</span></code> folder within the Vitis AI repository.</p>
-</div>
-<p>There are two ways to install the <code class="docutils literal notranslate"><span class="pre">Vitis</span> <span class="pre">AI</span></code> libraries: * To rebuild
-the system by configuring PetaLinux. (Build-Time) * To install VAI3.0
-to the target leveraging a pre-built package. (Run-Time) See the board
-setup instructions for details of the online installation
-<a class="reference external" href="../../docs/board_setup/vai_install_to_target">process</a></p>
-</section>
-<section id="to-rebuild-the-system-by-configuring-petalinux">
-<h1>To rebuild the system by configuring PetaLinux<a class="headerlink" href="#to-rebuild-the-system-by-configuring-petalinux" title="Permalink to this heading">¶</a></h1>
-<p>If users want to install VAI3.0 into the rootfs when generating system image
-with PetaLinux, users need to use the VAI3.0 recipes. Users can obtain the
-recipes for VAI3.0 in the following two ways. * Using
-<code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> in this repo. * Upgrading PetaLinux esdk.</p>
-<section id="how-to-use-recipes-vitis-ai">
-<h2>How to use <code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code><a class="headerlink" href="#how-to-use-recipes-vitis-ai" title="Permalink to this heading">¶</a></h2>
-<div class="line-block">
-<div class="line"><strong>Note</strong></div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> enables <strong>Vitis flow by default</strong>. If want to use
-the Vivado flow, please comment the following line in
-<code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai/vart/vart_3.0.bb</span></code></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#PACKAGECONFIG_append = &quot; vitis&quot;</span>
-</pre></div>
-</div>
-<ol class="arabic simple">
-<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> folder to
-<code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/project-spec/meta-user/</span></code></p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp Vitis-AI/src/petalinux_recipes/recipes-vitis-ai &lt;petalinux project&gt;/project-spec/meta-user/
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Edit
-<code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/project-spec/meta-user/conf/user-rootfsconfig</span></code>
-file, appending the following lines:</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span>
-<span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">dev</span>
-<span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">dbg</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p>Source PetaLinux tool and run <code class="docutils literal notranslate"><span class="pre">petalinux-config</span> <span class="pre">-c</span> <span class="pre">rootfs</span></code> command.
-Select the following option.</p></li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="n">user</span> <span class="n">packages</span> <span class="o">---&gt;</span>
-<span class="n">Select</span> <span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span>
-</pre></div>
-</div>
-<p>Then, save it and exit.</p>
-<ol class="arabic simple" start="4">
-<li><p>Run <code class="docutils literal notranslate"><span class="pre">petalinux-build</span></code></p></li>
-</ol>
-<div class="line-block">
-<div class="line">Note the following:</div>
-<div class="line">* After you run the above successfully, the vitis-ai-library, VART3.0
-and the dependent packages will all be installed into the rootfs image.</div>
-<div class="line">* If you want to compile the example on the target, please select the
-<code class="docutils literal notranslate"><span class="pre">vitis-ai-library-dev</span></code> and <code class="docutils literal notranslate"><span class="pre">packagegroup-petalinux-self-hosted</span></code>.
-Then, recompile the system.</div>
-<div class="line">* If you want to use vaitracer tool, please select the
-<code class="docutils literal notranslate"><span class="pre">vitis-ai-library-dbg</span></code>. And copy <code class="docutils literal notranslate"><span class="pre">recipes-vai-kernel</span></code> folder to
-<code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/project-spec/meta-user/</span></code>. Then, recompile the
-system.</div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp Vitis-AI/src/petalinux_recipes/recipes-vai-kernel &lt;petalinux project&gt;/project-spec/meta-user/
-</pre></div>
-</div>
-</section>
-<section id="how-to-use-upgrade-petalinux-esdk">
-<h2>How to use <code class="docutils literal notranslate"><span class="pre">Upgrade</span> <span class="pre">PetaLinux</span> <span class="pre">esdk</span></code><a class="headerlink" href="#how-to-use-upgrade-petalinux-esdk" title="Permalink to this heading">¶</a></h2>
-<p>Run the following commands to upgrade the PetaLinux.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;petalinux-v2022.2&gt;/settings
-petalinux-upgrade -u ‘http://petalinux.xilinx.com/sswreleases/rel-v2022/sdkupdate/2022.2_update1/’ -p ‘aarch64’
-</pre></div>
-</div>
-<p>Then, users can find <code class="docutils literal notranslate"><span class="pre">vitis-ai-library_3.0.bb</span></code> recipe in
-<code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/components/yocto/layers/meta-vitis-ai</span></code>. For
-details about PetaLinux upgrading, refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade-Option">PetaLinux
-Upgrade</a></p>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">2022.2_update1</span></code> will be released approximately 1 month
-after Vitis 3.0 release. The name of <code class="docutils literal notranslate"><span class="pre">2022.2_update1</span></code> may be changed.
-Please modify it accordingly.</p>
-</section>
+  <section id="model-zoo-table">
+<h1>Model Zoo Table<a class="headerlink" href="#model-zoo-table" title="Permalink to this heading">¶</a></h1>
 </section>
 
 

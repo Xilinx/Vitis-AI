@@ -37,17 +37,7 @@ Adaptable & Real-Time AI Inference Acceleration
 Vitis AI Linux Recipes
 ======================
 
-+-----------------------+
-| 📌\ **Important Note** |
-+-----------------------+
-| These instructions    |
-| refer to the sources  |
-| found in the          |
-| ``/sr                 |
-| c/petalinux_recipes`` |
-| folder within the     |
-| Vitis-AI repository.  |
-+-----------------------+
+.. note:: The instructions refer to the sources found in the ``/src/petalinux_recipes`` folder within the Vitis AI repository.
 
 There are two ways to install the ``Vitis AI`` libraries: \* To rebuild
 the system by configuring PetaLinux. (Build-Time) \* To install VAI3.0

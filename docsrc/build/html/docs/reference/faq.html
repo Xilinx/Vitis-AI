@@ -259,14 +259,14 @@ license can be found in the Optimizer <a class="reference internal" href="../wor
 <section id="is-it-possible-to-use-the-dpu-without-petalinux">
 <h2>Is it possible to use the DPU without PetaLinux?<a class="headerlink" href="#is-it-possible-to-use-the-dpu-without-petalinux" title="Permalink to this heading">¶</a></h2>
 <p>There are at least two potential interpretations of this question:</p>
-<ul class="simple">
-<li><p>Is it possible to deploy the DPUCZ using Yocto flows, or even Ubuntu, rather than PetaLinux?</p></li>
-</ul>
-<p>Yes, what is important to consider is that each release of the Vitis AI tool and the DPUCZ IP is provided with drivers and a runtime that targets a specific Linux kernel release. Misalignment between the target kernel version can pose challenges and may require extensive code changes.</p>
-<ul class="simple">
-<li><p>Is it possible to deploy the DPUCZ without using Linux?</p></li>
-</ul>
-<p>We do have proof-of-concept beta support for both Green Hills Integrity and Blackberry QNX. For QNX and Integrity support, users should contact their local FAE or Sales representative to request additional discussions with the factory. As of this release, no support exists for bare-metal or FreeRTOS; however, Zynq UltraScale+ family members do support asymmetric multiprocessing, with the potential that developers can integrate the DPU via Linux, while continuing to develop the bulkof their application in their chosen OS. Please refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1137-zynq-ultrascale-mpsoc-swdev/Asymmetric-Multiprocessing-AMP">UG1137</a> for additional information on AMP modes of operation.</p>
+<p><cite>Is it possible to deploy the DPUCZ using Yocto flows, or even Ubuntu, rather than PetaLinux?</cite></p>
+<blockquote>
+<div><p>Yes, what is important to consider is that each release of the Vitis AI tool and the DPUCZ IP is provided with drivers and a runtime that targets a specific Linux kernel release. Misalignment between the target kernel version can pose challenges and may require extensive code changes.</p>
+</div></blockquote>
+<p><cite>Is it possible to deploy the DPUCZ without using Linux?</cite></p>
+<blockquote>
+<div><p>We do have proof-of-concept beta support for both Green Hills Integrity and Blackberry QNX. For QNX and Integrity support, users should contact their local FAE or Sales representative to request additional discussions with the factory. As of this release, no support exists for bare-metal or FreeRTOS; however, Zynq UltraScale+ family members do support asymmetric multiprocessing, with the potential that developers can integrate the DPU via Linux, while continuing to develop the bulkof their application in their chosen OS. Please refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1137-zynq-ultrascale-mpsoc-swdev/Asymmetric-Multiprocessing-AMP">UG1137</a> for additional information on AMP modes of operation.</p>
+</div></blockquote>
 </section>
 <section id="can-the-dpucz-be-used-for-alternate-purposes-beyond-deployment-of-neural-networks-for-example-signal-processing-operations">
 <h2>Can the DPUCZ be used for alternate purposes beyond deployment of neural networks? For example, signal processing operations?<a class="headerlink" href="#can-the-dpucz-be-used-for-alternate-purposes-beyond-deployment-of-neural-networks-for-example-signal-processing-operations" title="Permalink to this heading">¶</a></h2>

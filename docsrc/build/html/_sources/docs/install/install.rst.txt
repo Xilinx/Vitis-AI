@@ -251,6 +251,7 @@ You can now start the Docker for Vitis AI using the following command:
 
    ../docker_run.sh xilinx/vitis-ai-<gpu|cpu|rockm>-<tf1|tf2|opt_tf1|opt_tf2|pytorch|opt_pytorch>:latest
 
+
 .. important:: Use ``./docker_run.sh`` as a script reference should you have customized requirements for launching your Docker container.
 
 In most cases, you have now completed the installation. Congratulations!
