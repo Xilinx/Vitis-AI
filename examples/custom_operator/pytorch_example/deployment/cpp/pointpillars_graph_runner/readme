@@ -39,7 +39,7 @@ Running on cloud DPU:
 
 1, compile
 
-        bash build.sh
+        bash build_cloud.sh
 
 2, run
 
