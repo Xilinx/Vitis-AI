@@ -8,7 +8,7 @@
 # Vitis AI Library v3.0
 
 ## Introduction
-The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2021.2.
+The Vitis AI Library is a set of high-level libraries and APIs built for efficient AI inference with Deep-Learning Processor Unit (DPU). It is built based on the Vitis AI Runtime with Unified APIs, and it fully supports XRT 2022.2.
 
 The Vitis AI Library provides an easy-to-use and unified interface by encapsulating many efficient and high-quality neural networks. This simplifies the use of deep-learning neural networks, even for users without knowledge of deep-learning or FPGAs. The Vitis AI Library allows users to focus more on the development of their applications, rather than the underlying hardware.
 
@@ -61,17 +61,17 @@ For `VCK190`, follow steps in [Setting Up the Target](https://pages.gitenterpris
 	 	  
 ### Running Vitis AI Library Examples
 
-1. Download the [vitis_ai_library_r2.5.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz) and 
-the [vitis_ai_library_r2.5.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_video.tar.gz). Copy them from host to the target using scp with the following command.
+1. Download the [vitis_ai_library_r3.0.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_images.tar.gz) and 
+the [vitis_ai_library_r3.0.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_video.tar.gz). Copy them from host to the target using scp with the following command.
 ```
-[Host]$scp vitis_ai_library_r2.5.*_images.tar.gz root@IP_OF_BOARD:~/
-[Host]$scp vitis_ai_library_r2.5.*_video.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r3.0.*_images.tar.gz root@IP_OF_BOARD:~/
+[Host]$scp vitis_ai_library_r3.0.*_video.tar.gz root@IP_OF_BOARD:~/
 ```
 2. Untar the image and video packages on the target.
 ```
 cd ~
-tar -xzvf vitis_ai_library_r2.5.*_images.tar.gz -C Vitis-AI/examples/vai_library
-tar -xzvf vitis_ai_library_r2.5.*_video.tar.gz -C Vitis-AI/examples/vai_library
+tar -xzvf vitis_ai_library_r3.0.*_images.tar.gz -C Vitis-AI/examples/vai_library
+tar -xzvf vitis_ai_library_r3.0.*_video.tar.gz -C Vitis-AI/examples/vai_library
 ```
 3. Enter the directory of example in target board, take `facedetect` as an example.
 ```
@@ -111,12 +111,12 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../setup/vck5000/README.md) to set up the host.
+For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst) to set up the host.
 
 ### <div id="idu50"></div>Running Vitis AI Library Examples on VCK5000
 
 Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
-Thus, `Vitis-AI-Libray` examples are located in the path of `/workspace/examples/Vitis-AI-Library/` in the docker system. 
+Thus, `vai_libray` examples are located in the path of `/workspace/examples/vai_library/` in the docker system. 
 
 **`/workspace/examples/vai_library/` is the path for the following example.**
  
@@ -124,7 +124,7 @@ If you encounter any path errors in running examples, check to see if you follow
 
 1. Select the model for your platform.  
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [resnet50 yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_2.5/model.yaml) as an example.
+	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [resnet50 yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_3.0/model.yaml) as an example.
 
 	* If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
@@ -133,41 +133,41 @@ If you encounter any path errors in running examples, check to see if you follow
 
 	* For DPUCVDX8H_4pe_miscdwc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+	  tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_6pe_dwc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_6pe_misc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_8pe_normal DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+	  tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
 **Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
 
-2. Download the [vitis_ai_library_r2.5.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz) and [vitis_ai_library_r2.5.x_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_video.tar.gz) packages and untar them.
+2. Download the [vitis_ai_library_r3.0.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_images.tar.gz) and [vitis_ai_library_r3.0.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_video.tar.gz) packages and untar them.
 ```
 cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz -O vitis_ai_library_r2.5.0_images.tar.gz
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_video.tar.gz -O vitis_ai_library_r2.5.0_video.tar.gz
-tar -xzvf vitis_ai_library_r2.5.0_images.tar.gz -C examples/vai_library/
-tar -xzvf vitis_ai_library_r2.5.0_video.tar.gz -C examples/vai_library/
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_images.tar.gz -O vitis_ai_library_r3.0.0_images.tar.gz
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_video.tar.gz -O vitis_ai_library_r3.0.0_video.tar.gz
+tar -xzvf vitis_ai_library_r3.0.0_images.tar.gz -C examples/vai_library/
+tar -xzvf vitis_ai_library_r3.0.0_video.tar.gz -C examples/vai_library/
 ```
 3. Enter the directory of sample and then compile it.
 ```
@@ -192,52 +192,6 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
-
-### <div id="idu200"></div>Running Vitis AI Library Examples on Alveo-U200/Alveo-U250
-
-Please make sure you are already inside Vitis-AI docker.
-To build the `DPUCADF8H` supported examples in the AI Library, run as below.
-
-```
-cd /vitis_ai_home/src/Vitis-AI-Library
-sudo rm /lib/x86_64-linux-gnu/libjson-c.so.3
-sudo ln -s /usr/local/lib/libjson-c.so.5 /lib/x86_64-linux-gnu/libjson-c.so.3
-./cmake.sh --clean --type=release --cmake-options=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX --cmake-options=-DENABLE_DPUCADF8H_RUNNER=ON
-```
-This will generate AI libraries and executable files to under `build_dir_default`.
-
-:pushpin: **Note:** To modify the library source code, view and modify them under `/vitis_ai_home/src/Vitis-AI-Library`. Before compiling the AI libraries, please confirm the compiled output path. The default output path is : `$HOME/build`. If you want to change the default output path, please modify the `build_dir_default` in cmake.sh.
-
-1. Download and untar the model package.
-```
-wget -O inception_v1_tf-u200-u250-r2.5.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-u200-u250-r2.5.0.tar.gz
-wget -O resnet_v1_50_tf-u200-u250-r2.5.0.tar.gz https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_50_tf-u200-u250-r2.5.0.tar.gz
-tar -xvf inception_v1_tf-u200-u250-r2.5.0.tar.gz
-tar -xvf resnet_v1_50_tf-u200-u250-r2.5.0.tar.gz 
-```
-
-2. Download the [vitis_ai_library_r2.5.x_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz) package and untar. Extracted images can be found under `samples` folder.
-```
-cd /vitis_ai_home/tools/Vitis-AI-Library
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r2.5.0_images.tar.gz -O vitis_ai_library_r2.5.0_images.tar.gz
-tar -xzvf vitis_ai_library_r2.5.0_images.tar.gz
-```
-
-3. Setup the environment.
-```sh
-source ${VAI_HOME}/setup/alveo/setup.sh DPUCADF8H
-export LD_LIBRARY_PATH=<vitis-ai-library lib path>:$LD_LIBRARY_PATH
-```
-:pushpin: **Note:** The default library install path for vitis-ai-library is `$HOME/.local/<target>/lib`.
-
-4. Run the classification image test example.
-```
-<vitis-ai-library build path>/Vitis-AI-Library/classification/test_classification <model_dir> <img_path>
-
-Example:
-~/build/build.Ubuntu.18.04.x86_64.Release/Vitis-AI-Library/classification/test_classification inception_v1_tf <img_path>
-```
-:pushpin: **Note:** The default build path for vitis-ai-library is `$HOME/build/<target>/Vitis-AI-Library/`.
 
 ## Tools
 In this release, `xdputil` tool is introduced for board developing. It's preinstalled in the latest board image. The source code of `xdputil` is under `usefultools`.
