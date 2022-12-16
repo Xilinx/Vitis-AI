@@ -102,7 +102,7 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
 	```
 	cd /workspace/examples
 	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
-	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C VART
+	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
 	```
 2. Download the model.  	
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
