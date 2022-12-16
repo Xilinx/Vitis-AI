@@ -33,7 +33,7 @@ Running on edge DPU:
 
 Running on cloud DPU:
 
-    # /usr/bin/python3 pointpillars_main.py ../../../model/compiled/<platform>/pointpillars_custom_op.xmodel ../cpp/pointpillars_graph_runner/data/sample_pointpillars.bin
+    # /usr/bin/python3 pointpillars_main.py ../../model/compiled/<platform>/pointpillars_custom_op.xmodel ../cpp/pointpillars_graph_runner/data/sample_pointpillars.bin
 
    output:
 0 [18.45653382  4.06586637 -1.74428117  1.73001252  4.3507645   1.48856234 1.69500005] 0.8807970779778823
