@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +26,15 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_efficientnet-lite_imagenet_224_224_0.77G_3.0.zip
-  checksum: 
-
-
-
+  checksum: null
+- name: efficientnet_lite_tf2
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet_lite_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: cd47f3a5e91f7f53f6e985ab19c59233
+- name: efficientnet_lite_tf2
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet_lite_tf2-vck190-r3.0.0.tar.gz
+  checksum: f1a39f31b58075f4df2b0bef44617b1a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -26,17 +26,17 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0zip
-  checksum: 
+  checksum: null
 - name: vehicle_type_resnet18_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 6fc7c5cc9e5813471e1c81cd4808dd7b
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: e37939d82296a64764ace32e96bb827c
 - name: vehicle_type_resnet18_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck190-r2.5.0.tar.gz
-  checksum: 8f930500968d1055ecdf6f26c90fc221
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck190-r3.0.0.tar.gz
+  checksum: 5fbfb179a01ca780c65b5b918f370b76
 - name: vehicle_type_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

@@ -26,37 +26,37 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_sceneflow_576_960_412G_3.0.zip
-  checksum: 
+  checksum: null
 - name: FADNet_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: f58b7423b718b50bd652974e5527f076
 - name: FADNet_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 7f64bd90cde4aa740b91d309ef26119c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 57f37a36ffa98efa48682acec6c67cad
 - name: FADNet_2_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: a8ce96aca0f244525aa953a1e4370061
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 81a0c5e6c06eea5ca6b45f7bf7988c7d
 - name: FADNet_0_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck190-r2.5.0.tar.gz
-  checksum: f12ef44e16b4b94c9b99ab5d0b46a411
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck190-r3.0.0.tar.gz
+  checksum: 19125caf17b886804c0e206091def6bb
 - name: FADNet_1_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck190-r2.5.0.tar.gz
-  checksum: 38beb6b8fb62dd3c1104f00f16644be2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck190-r3.0.0.tar.gz
+  checksum: 7243dc85eca9a0aa04510d0504683f46
 - name: FADNet_2_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck190-r2.5.0.tar.gz
-  checksum: 0ecec99b8e652ab39bc3ba14ca004041
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck190-r3.0.0.tar.gz
+  checksum: 91e72ce1dccd8e1df8c4c7f8321474cb
 - name: FADNet_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

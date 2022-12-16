@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: b0000deabea16c476383b47f64b9f728
+  checksum: 6441fc87ff783d3379017e6dbc2ddbbb
 - name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-vck190-r3.0.0.tar.gz
-  checksum: bb210a56c7187e6cb5bcb93c1a6074b3
+  checksum: 4821194d4be9d8e1bd5131233fd93692
 - name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

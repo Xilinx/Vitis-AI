@@ -26,7 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv1_imagenet_224_224_0.16_2.52G_3.0.zip
-  checksum: 
-  
-  
+  checksum: null
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

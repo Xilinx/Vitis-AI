@@ -26,17 +26,17 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-make-classification_VMMR_224_224_3.64G_3.0.zip
-  checksum: 
+  checksum: null
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 2bf40aa58e83f8e2444b375f99b1cb8e
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: d096ddda11406aa9c3b3620f73146ac2
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck190-r2.5.0.tar.gz
-  checksum: 9d5f2fde64c783756a57c737b8cbdadc
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck190-r3.0.0.tar.gz
+  checksum: a8fd14b4ae329fa709843c70e4d7efe8
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

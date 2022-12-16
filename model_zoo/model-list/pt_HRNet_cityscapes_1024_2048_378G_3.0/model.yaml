@@ -26,8 +26,15 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_HRNet_cityscapes_1024_2048_378G_3.0.zip
-  checksum: 
-  
-  
-  
+  checksum: null
+- name: HRNet_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: faa5aa7593d287288bd04deba3e9a72c
+- name: HRNet_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck190-r3.0.0.tar.gz
+  checksum: d1c0f73eee15aecbf50472946431e7c0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

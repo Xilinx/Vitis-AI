@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_mask_detection_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 6c77af50b1a21d88191a986adc48e14b
+  checksum: 061cb4f714543ce6f9b5a58962e77b70
 - name: face_mask_detection_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_mask_detection_pt-vck190-r3.0.0.tar.gz
-  checksum: ade4741a6efb194e6eef82b57c74821c
+  checksum: 154288e14de806a28a195c485720d785
 - name: face_mask_detection_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

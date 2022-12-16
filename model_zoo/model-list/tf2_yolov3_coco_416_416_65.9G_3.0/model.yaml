@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: ae417567b1462c7d5b6708285643f140
+  checksum: 2a2d211ac3796d79a6036db59e5270b1
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vck190-r3.0.0.tar.gz
-  checksum: dc91325b4ce526e88263b8ff73d7b8fe
+  checksum: 79facbf8ccd8f383e9a25f7ce7bf7a58
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: f6cbd1263452e36bec5374b6a83ad441
+  checksum: 236958aef84f2ed11360513550f12073
 - name: ofa_yolo_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck190-r3.0.0.tar.gz
-  checksum: f87af248b692db9b8e52c821329cd83a
+  checksum: f85fa06f1963d043e1ff16701b71a4e2
 - name: ofa_yolo_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

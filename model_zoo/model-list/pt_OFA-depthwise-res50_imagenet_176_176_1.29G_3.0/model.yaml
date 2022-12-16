@@ -30,13 +30,13 @@ files:
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: de39afad2a6e8a74c3c12248b76c3f5d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 4d1af1e5d49ef9b1e7e03cbf0b0d24a5
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck190-r2.5.0.tar.gz
-  checksum: a2d2b6f20457cc3870a96632937d9560
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck190-r3.0.0.tar.gz
+  checksum: 986a2a5a4cef608854f77197e61560e9
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

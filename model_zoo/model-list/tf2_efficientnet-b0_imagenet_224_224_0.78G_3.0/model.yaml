@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,13 +30,13 @@ files:
 - name: efficientnet-b0_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 432b3e175a7257f3f8fe9d56db65c428
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 060c1eabbd76fb1ac314aa655fd432f4
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck190-r2.5.0.tar.gz
-  checksum: 7c03d4feb41a4a7409cd393d14815dac
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck190-r3.0.0.tar.gz
+  checksum: fe1c3e394fd9904382904771ba969ebb
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 867cedc11c63a20e91df7fb8bac65097
+  checksum: a22e8c4c8b524af9226ab14cd1643850
 - name: salsanext_v2_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck190-r3.0.0.tar.gz
-  checksum: 4f039ad537a27e2b021e957ea4d0c530
+  checksum: 56a8258d943c8ee15e91980c43d89a93
 - name: salsanext_v2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

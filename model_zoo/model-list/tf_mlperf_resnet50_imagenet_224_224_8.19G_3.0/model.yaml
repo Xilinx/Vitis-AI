@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: c6541689c0e19e4a7da2ab8db40545c2
+  checksum: bc9f4283b9ad2a5c886a7a447320edcd
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=MLPerf_resnet50_v1.5_tf-vck190-r3.0.0.tar.gz
-  checksum: 3cbea8856961851643c2f325acfaf86f
+  checksum: 21bda25aee9a6b538b540acc9fc19601
 - name: MLPerf_resnet50_v1.5_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

@@ -26,6 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pmg_grocerystore_224_224_2.28G_3.0.zip
-  checksum: 
-
+  checksum: null
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

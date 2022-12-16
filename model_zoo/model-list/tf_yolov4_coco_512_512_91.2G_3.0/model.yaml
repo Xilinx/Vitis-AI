@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 8039b02b9ce6a86d091a14d50e4ff3c2
+  checksum: 0adc69df72738a59c4443cfc38d3f2ec
 - name: yolov4_leaky_512_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-vck190-r3.0.0.tar.gz
-  checksum: 46625576bb679e6a086872b1e0fc8bb3
+  checksum: e26052f7f330a5fa70be24fc625d89a0
 - name: yolov4_leaky_512_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

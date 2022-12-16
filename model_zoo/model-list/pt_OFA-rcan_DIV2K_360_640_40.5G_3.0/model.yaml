@@ -30,13 +30,13 @@ files:
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 8be5e1cf6cabef8f974f2522a3b0d604
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 845ba0b351d685f0b2a54077bf432db2
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck190-r2.5.0.tar.gz
-  checksum: 841ccf3b13d0dc3fedcb6b65c908b140
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck190-r3.0.0.tar.gz
+  checksum: 70b1b5e2c0f4e4a26ebf5205eda0080b
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

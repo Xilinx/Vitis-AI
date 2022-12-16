@@ -1,4 +1,5 @@
-# Copyright 2022 Xilinx Inc.
+
+# Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-tiny_SQuADv1.1_384_453M_3.0.zip
-  checksum:  
-
+  checksum: null
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

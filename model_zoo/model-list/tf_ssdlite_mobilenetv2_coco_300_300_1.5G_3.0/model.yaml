@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 83ca836f09b34119bf53d88b8aca04db
+  checksum: 03181dd1d4f929e3b0be4640e70c530d
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-vck190-r3.0.0.tar.gz
-  checksum: d9719c65b1287d79df2baf1218ea7c61
+  checksum: 9409b557c94786ece2969086ce156403
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

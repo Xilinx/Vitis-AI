@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_416_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 5e4f0a8646a5423cf8129f342832c5e5
+  checksum: 96b2a7bc6ef8994879bf671876a44779
 - name: yolov4_leaky_416_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_416_tf-vck190-r3.0.0.tar.gz
-  checksum: e34c74869b817535fd0a693aaea09b52
+  checksum: ea46e1faaaa159f9ffabca84f6802560
 - name: yolov4_leaky_416_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

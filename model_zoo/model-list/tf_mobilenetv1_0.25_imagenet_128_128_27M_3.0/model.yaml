@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 53a565631ee7e4f82aa6aff2faed2b04
+  checksum: 0f7bc0a9691a9a4d29bf8ff4b1d75923
 - name: mobilenet_v1_0_25_128_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_0_25_128_tf-vck190-r3.0.0.tar.gz
-  checksum: c6de5058f5583854a080e39a8b5be5ec
+  checksum: 3853677964ac03fefa7eb1685e85982b
 - name: mobilenet_v1_0_25_128_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

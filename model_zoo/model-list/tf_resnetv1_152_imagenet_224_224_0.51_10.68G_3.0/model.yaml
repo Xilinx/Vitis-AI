@@ -26,17 +26,17 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_152_imagenet_224_224_0.51_10.68G_3.0.zip
-  checksum: 
+  checksum: null
 - name: resnet_v1_152_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104_kv260-r2.5.0.tar.gz
-  checksum: 59d04316ac7dd303c8b061ca1924ead8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: c11f00667838c12dd1b49fb9b2d48222
 - name: resnet_v1_152_tf
   type: xmodel
   board: vck190
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r2.5.0.tar.gz
-  checksum: f9e341895c5f3c5a8336e4b2e06da816
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_tf-vck190-r3.0.0.tar.gz
+  checksum: 2cf2477944a4dc00b334697983a5d539
 - name: resnet_v1_152_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

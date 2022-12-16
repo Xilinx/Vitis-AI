@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 51c7eff3e320e393ef1c70e9532a53de
+  checksum: 0723cc58d74b7ec79ce2f9a13d9d95a2
 - name: ssd_inception_v2_coco_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-vck190-r3.0.0.tar.gz
-  checksum: 99d435f63b6d97974a85b233a76b9a44
+  checksum: 97ae1406e3ae6d874f3492a20907c80b
 - name: ssd_inception_v2_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

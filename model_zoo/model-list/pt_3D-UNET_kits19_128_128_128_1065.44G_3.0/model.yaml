@@ -26,6 +26,10 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_3D-UNET_kits19_128_128_128_1065.44G_3.0.zip
-  checksum:  
-
+  checksum: null
+- name: 3D-Unet_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=3D-Unet_pt-vck190-r3.0.0.tar.gz
+  checksum: 63713d0f6f628ba21808a09f688e0e1b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

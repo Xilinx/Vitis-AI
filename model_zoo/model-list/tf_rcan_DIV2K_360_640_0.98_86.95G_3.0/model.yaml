@@ -1,3 +1,4 @@
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 7d691b9c64b24bc90bf5c943bfe57ffa
+  checksum: 1cf3e916192f135bcd81b38743e0bf48
 - name: rcan_pruned_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck190-r3.0.0.tar.gz
-  checksum: b7a7eef9b897f94390941a51492f05c3
+  checksum: cd5a8d14c24d77257916010896fc9790
 - name: rcan_pruned_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

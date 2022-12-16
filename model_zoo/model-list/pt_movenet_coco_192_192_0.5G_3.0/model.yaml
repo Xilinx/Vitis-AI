@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 3779e9f2032485cecc925abfa150e8a6
+  checksum: 25e36baa493b702b121666238ba72150
 - name: movenet_ntd_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-vck190-r3.0.0.tar.gz
-  checksum: 8b9e62fd3d7e6376c757d1dc9db20318
+  checksum: 738790fa469440d71e54c02bc999ed62
 - name: movenet_ntd_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
