@@ -59,16 +59,16 @@ vai_runtime
 
 ## Quick Start For Embedded
 ### Setting Up the Host
-For `MPSOC`, follow [Setting Up the Host](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step1-setup-cross-compiler) to set up the host for embedded.  
-For `VCK190`, follow [Setting Up the Host](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/vck190/README.html#step1-setup-cross-compiler) to set up the host for embedded.
+For `MPSOC`, follow [Setting Up the Host](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-1-setup-cross-compiler) to set up the host for embedded.  
+For `VCK190`, follow [Setting Up the Host](../../board_setup/vck190/board_setup_vck190.rst#step-1-setup-cross-compiler) to set up the host for embedded.
 
 ### Setting Up the Target
-For `MPSOC`, follow [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.  
-For `VCK190`, follow [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.
+For `MPSOC`, follow [Setting Up the Target](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-2-setup-the-target) to set up the target.  
+For `VCK190`, follow [Setting Up the Target](../../board_setup/vck190/board_setup_vck190.rst#step-2-setup-the-target) to set up the target.
 	  
 ### Running Vitis AI Examples
 
-Follow [Running Vitis AI Examples](../../docs/docs/board_setup/mpsoc/README.html#step3-run-the-vitis-ai-examples) to run Vitis AI examples.
+Follow [Running Vitis AI Examples](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-3-run-the-vitis-ai-examples) to run Vitis AI examples.
 
 Note: When you update from VAI1.3 to VAI2.0, VAI2.5 or VAI3.0, refer to the following to modify your compilation options.
 1. For Petalinux 2021.1 and above, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.

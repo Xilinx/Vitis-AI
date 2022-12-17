@@ -55,8 +55,8 @@ cd ~/Vitis-AI/src/vai_library
 ```
 
 ### Setting Up the Target  
-For `MPSOC`, follow steps in [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target) to set up the target.  
-For `VCK190`, follow steps in [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/vck190/README.html#step2-setup-the-target) to set up the target.
+For `MPSOC`, follow steps in [Setting Up the Target](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-2-setup-the-target) to set up the target.  
+For `VCK190`, follow steps in [Setting Up the Target](../../board_setup/vck190/board_setup_vck190.rst#step-2-setup-the-target) to set up the target.
 
 	 	  
 ### Running Vitis AI Library Examples

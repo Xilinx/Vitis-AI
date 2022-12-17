@@ -113,7 +113,7 @@ To improve the user experience, the Vitis AI Runtime packages, VART samples, Vit
 Step 3: Run the Vitis AI Examples
 ----------------------------------
 
-Follow `Running Vitis AI Examples <board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples>`__ to run Vitis AI examples.
+Follow `Running Vitis AI Examples <../mpsoc/board_setup_mpsoc.rst#step-3-run-the-vitis-ai-examples>`__ to run Vitis AI examples.
 
 References
 ----------

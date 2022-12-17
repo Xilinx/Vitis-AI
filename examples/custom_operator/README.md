@@ -31,7 +31,8 @@ custom_operator
 │   │   ├── cpp
 │   │   └── python
 │   ├── model
-│   │   └── compiled
+│   │   ├── compiled
+│   │   └── quantized
 │   └── op_registration
 │       ├── cpp
 │       └── python
@@ -41,10 +42,12 @@ custom_operator
     │   ├── cpp
     │   └── python
     ├── model
-    │   └── compiled
+    │   ├── compiled
+    │   └── quantized
     └── op_registration
         ├── cpp
         └── python
+
 ```
 
 ## Step 1 : Quantize
@@ -124,7 +127,7 @@ The following figure is the block flow of programming in `graph_runner`
 After you finished coding, you need to compile/cross-compile the source code to generate the executable program.
 
 ## Step 5 : Run the demo 
-Before you run the demo, make sure the environment of the board has been set up correctly. If not, refer to [board setup](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/board_setup/mpsoc/README.html#step2-setup-the-target)   
+Before you run the demo, make sure the environment of the board has been set up correctly. If not, refer to [board setup](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-2-setup-the-target)   
 
 Also, make sure the following files are generated or ready.
 
