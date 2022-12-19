@@ -3,7 +3,7 @@
 Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO TensorFlow1.
 
 ```bash
-$ conda activate vitis-ai-wego-tf1
+$ conda activate vitis-ai-tensorflow
 ```
 
 # Runing the Examples
