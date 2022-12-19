@@ -9,7 +9,7 @@
  
 The VART libraries and Vitis-AI applications are typically cross-compiled on the host, leveraging a Vitis-AI specific sysroot and SDK.
 
-Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [setup folder](../../../setup/petalinux).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
+Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [board_setup](../../board_setup/vai_install_to_target/README.md).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
 
 Outside of the petalinux-build flow, users should follow the below simple instructions to create the required sysroot and SDK on the host.
 
@@ -29,7 +29,7 @@ $ sudo chmod +x ./petalinux-v2022.2-10141622-installer.run
 $ ./petalinux-v2022.2-10141622-installer.run -d <install destination>
 ```
 
-2. Download the cross-compiler installation script [sdk-2022.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.2.0.0.sh) to the host.  We recommend installing the SDK to the user's home folder (~/petalinux_sdk_2022.1) for the best user experience.  If you select a different install path, ensure that it has read-write permissions.
+2. Download the cross-compiler installation script [sdk-2022.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.2.0.0.sh) to the host.  We recommend installing the SDK to the user's home folder (~/petalinux_sdk_2022.2) for the best user experience.  If you select a different install path, ensure that it has read-write permissions.
 
 ```
 $ mkdir petalinux_sdk_2022.2
@@ -61,7 +61,7 @@ source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2022.2-r3.0.0.tar.gz -O vitis_ai_2022.2-r3.0.0.tar.gz
 rm -r ~/petalinux_sdk_2022.2/sysroots/cortexa72-cortexa53-xilinx-linux/usr/share/cmake/XRT/
-tar -xzvf vitis_ai_2022.2-r3.0.0.tar.gz -C ~/petalinux_sdk_2022.1/sysroots/cortexa72-cortexa53-xilinx-linux
+tar -xzvf vitis_ai_2022.2-r3.0.0.tar.gz -C ~/petalinux_sdk_2022.2/sysroots/cortexa72-cortexa53-xilinx-linux
 ```
 
 ****************
