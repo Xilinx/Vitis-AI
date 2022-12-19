@@ -32,7 +32,7 @@
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/image_util.hpp>
 
-#include "fadnet.hpp"
+#include "fadnet_v2.hpp"
 
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
@@ -54,14 +54,14 @@ using namespace cv;
 
 namespace vitis {
 namespace ai {
-class FadNetImp : public FadNet {
+class FadNetV2Imp : public FadNetV2 {
  public:
-  explicit FadNetImp();
-  FadNetImp(const FadNetImp&) = delete;
-  FadNetImp& operator=(const FadNetImp&) = delete;
+  explicit FadNetV2Imp();
+  FadNetV2Imp(const FadNetV2Imp&) = delete;
+  FadNetV2Imp& operator=(const FadNetV2Imp&) = delete;
 
  public:
-  virtual ~FadNetImp();
+  virtual ~FadNetV2Imp();
   virtual std::vector<cv::Mat> run(
       const std::vector<std::pair<cv::Mat, cv::Mat>>& imgs) override;
   virtual size_t get_input_batch() override;
@@ -85,20 +85,20 @@ static vector<vitis::ai::library::OutputTensor> sort_tensors(
     const vector<vitis::ai::library::OutputTensor>& tensors,
     vector<string>& layer_names);
 
-FadNet::FadNet() {}
+FadNetV2::FadNetV2() {}
 
-FadNet::~FadNet() {}
+FadNetV2::~FadNetV2() {}
 
-std::vector<cv::Mat> FadNetImp::run(
+std::vector<cv::Mat> FadNetV2Imp::run(
 		const std::vector<std::pair<cv::Mat, cv::Mat>>& imgs) {
   return FADnet_run(imgs);
 }
 
-std::unique_ptr<FadNet> FadNet::create() {
-  return std::make_unique<FadNetImp>();
+std::unique_ptr<FadNetV2> FadNetV2::create() {
+  return std::make_unique<FadNetV2Imp>();
 }
 
-FadNetImp::FadNetImp() : tasks_{} {
+FadNetV2Imp::FadNetV2Imp() : tasks_{} {
   LOG_IF(INFO, ENV_PARAM(DEBUG_FADNET))
       << ENV_PARAM(FADNET_MODEL_0) << std::endl
       << ENV_PARAM(FADNET_MODEL_1) << std::endl
@@ -118,13 +118,9 @@ FadNetImp::FadNetImp() : tasks_{} {
   vector<string> input_names_k2;
   if (ENV_PARAM(FADNET_MODEL_2).find("pruned") != std::string::npos)
      // pruned model
-     input_names_k2 = {"3585", "input_34", "3581",
-                       "3582", "3583", "4236_inserted_fix_30",
-                       "4236_inserted_fix_16", "4237"};
+     input_names_k2 = {"21512", "input_34", "21505", "input_101", "input_182"};
   else
-     input_names_k2 = {"3585", "input_34", "3581",
-                       "3582", "3583", "4236_inserted_fix_30",
-                       "4236_inserted_fix_16", "4237"};
+     input_names_k2 = {"21512", "input_34", "21505", "input_101", "input_182"};
   auto outputs_l_unsort = tasks_[0]->getOutputTensor(0u);
   outputs_l_ = sort_tensors(outputs_l_unsort, output_names_k0);
 
@@ -138,7 +134,7 @@ FadNetImp::FadNetImp() : tasks_{} {
   }
 }
 
-FadNetImp::~FadNetImp() {}
+FadNetV2Imp::~FadNetV2Imp() {}
 
 #ifdef ENABLE_NEON
 static float vector_mul(const int8_t* input1, const int8_t* input2, float scale,
@@ -505,7 +501,7 @@ static vector<vitis::ai::library::OutputTensor> sort_tensors (
 }
 
 // run the fadnet
-vector<Mat> FadNetImp::FADnet_run(
+vector<Mat> FadNetV2Imp::FADnet_run(
       const vector<pair<cv::Mat, cv::Mat>>& input_images) {
   vector<cv::Mat> left_mats;
   vector<cv::Mat> right_mats;
@@ -559,12 +555,12 @@ vector<Mat> FadNetImp::FADnet_run(
   // run the rest kernel
   __TIC__(FADNET_COPY_INPUT_K2)
   copy_into_tensor(outputs_l_[2],      inputs_k2_[1]);
-  copy_into_tensor(outputs_l_[0],      inputs_k2_[2]);
-  copy_into_tensor(outputs_l_[1],      inputs_k2_[3]);
-  copy_into_tensor(input_tensor_left,  inputs_k2_[4]);
-  copy_into_tensor(input_tensor_left,  inputs_k2_[5]);
-  copy_into_tensor(input_tensor_left,  inputs_k2_[6]);
-  copy_into_tensor(input_tensor_right, inputs_k2_[7]);
+  //copy_into_tensor(outputs_l_[0],      inputs_k2_[2]);
+  copy_into_tensor(outputs_l_[1],      inputs_k2_[2]);
+  copy_into_tensor(input_tensor_left,  inputs_k2_[3]);
+  //copy_into_tensor(input_tensor_left,  inputs_k2_[5]);
+  //copy_into_tensor(input_tensor_left,  inputs_k2_[6]);
+  copy_into_tensor(input_tensor_right, inputs_k2_[4]);
   __TOC__(FADNET_COPY_INPUT_K2)
 
   //exit(0);
@@ -608,12 +604,12 @@ vector<Mat> FadNetImp::FADnet_run(
   return rets;
 }
 
-size_t FadNetImp::get_input_batch() { return tasks_[0]->get_input_batch(0, 0); }
+size_t FadNetV2Imp::get_input_batch() { return tasks_[0]->get_input_batch(0, 0); }
 
-int FadNetImp::get_input_width() const {
+int FadNetV2Imp::get_input_width() const {
   return tasks_[0]->getInputTensor(0u)[0].width;
 }
-int FadNetImp::get_input_height() const {
+int FadNetV2Imp::get_input_height() const {
   return tasks_[0]->getInputTensor(0u)[0].height;
 }
 

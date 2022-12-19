@@ -35,7 +35,7 @@ lib_opencv=" -lopencv_videoio  -lopencv_imgcodecs -lopencv_highgui -lopencv_imgp
 
 name=$(basename $PWD)
 if [[ "$CXX"  == *"sysroot"* ]];then
- inc_x=" -I=/install/Release/include/onnxruntime -I=/install/Release/include "
+ inc_x="-I=/usr/include/onnxruntime -I=/install/Release/include/onnxruntime -I=/install/Release/include -I=/usr/include/xrt"
  link_x="  -L=/install/Release/lib"
 else
  inc_x=" -I/usr/include/onnxruntime  -I/usr/include/xrt"
@@ -43,7 +43,7 @@ else
 # link_x="  -L/myspace/build/Release/lib"   # test dir; it will be in /usr/lib after image done
 fi
 
- $CXX -O3  -I. \
+ $CXX -O3 -I. \
      ${inc_x} \
      ${link_x}  \
      -o test_${name}_onnx -std=c++17 \
@@ -52,7 +52,7 @@ fi
      ${lib_opencv}  \
      ${lib_x}      \
      ${lib_onnx}
- $CXX -O3  -I. \
+ $CXX -O3 -I. \
      ${inc_x} \
      ${link_x}  \
      -o test_accuracy_${name}_onnx -std=c++17 \
@@ -61,7 +61,7 @@ fi
      ${lib_opencv}  \
      ${lib_x}      \
      ${lib_onnx}
- $CXX -O3  -I. \
+ $CXX -O3 -I. \
      ${inc_x} \
      ${link_x}  \
      -o test_performance_${name}_onnx -std=c++17 \
