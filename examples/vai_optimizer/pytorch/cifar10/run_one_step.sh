@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # one-step method
-#source 0_setup_env.sh
-#source 1_train_baseline.sh
+source 0_setup_env.sh
+source 1_train_baseline.sh
 source 2_search.sh
 source 3_retrain_slim_model.sh

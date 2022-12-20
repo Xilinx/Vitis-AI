@@ -33,10 +33,10 @@ parser.add_argument(
     '--excludes', type=list, default=None, help='excludes module')
 
 parser.add_argument(
-    '--targeted_flops',
+    '--targeted_macs',
     type=int,
     default=290,
-    help='targeted flops subnet need to be export')
+    help='targeted macs subnet need to be export')
 
 parser.add_argument(
     '--pretrained_ofa_model',
@@ -46,7 +46,7 @@ parser.add_argument(
 parser.add_argument(
     '--data_dir',
     type=str,
-    default='/dataset/cifar10',
+    default='./dataset/cifar10',
     help='Dataset directory')
 parser.add_argument(
     '--num_workers',
@@ -245,8 +245,8 @@ if __name__ == '__main__':
 
   pareto_global = ofa_pruner.load_subnet_config('cifar10_pareto_global.txt')
 
-  static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
-      ofa_model, pareto_global[str(args.targeted_flops)]['subnet_setting'])
+  static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
+      ofa_model, pareto_global[str(args.targeted_macs)]['subnet_setting'])
 
   model = static_subnet
 
@@ -266,5 +266,5 @@ if __name__ == '__main__':
   top1, top5 = evaluate(val_loader, model, criterion)
 
   print('subnet Acc@top1:', top1)
-  print('subnet flops:', flops)
+  print('subnet macs:', macs)
   print('subnet params:', params)

@@ -60,15 +60,15 @@ parser.add_argument(
 parser.add_argument(
     '--evo_search_step', type=int, default=10, help='evo search step')
 parser.add_argument(
-    '--evo_search_targeted_min_flops',
+    '--evo_search_targeted_min_macs',
     type=int,
     default=200,
-    help='evo search targeted_min_flops')
+    help='evo search targeted_min_macs')
 parser.add_argument(
-    '--evo_search_targeted_max_flops',
+    '--evo_search_targeted_max_macs',
     type=int,
     default=250,
-    help='evo search targeted_max_flops')
+    help='evo search targeted_max_macs')
 
 parser.add_argument(
     '--pretrained_ofa_model',
@@ -78,7 +78,7 @@ parser.add_argument(
 parser.add_argument(
     '--data_dir',
     type=str,
-    default='/dataset/imagenet/raw-data',
+    default='./dataset/imagenet/raw-data',
     help='Dataset directory')
 parser.add_argument(
     '--num_workers',
@@ -228,14 +228,14 @@ if __name__ == '__main__':
     name = 'module.' + k if not k.startswith('module') else k
     v.copy_(pretrained_state_dicts[name])
 
-  targeted_min_flops = args.evo_search_targeted_min_flops
-  targeted_max_flops = args.evo_search_targeted_max_flops
+  targeted_min_macs = args.evo_search_targeted_min_macs
+  targeted_max_macs = args.evo_search_targeted_max_macs
 
-  assert targeted_min_flops <= targeted_max_flops
+  assert targeted_min_macs <= targeted_max_macs
 
   pareto_global = ofa_pruner.run_evolutionary_search(
       model, calibration_fn, (train_loader,), eval_fn, (val_loader,), 'acc@top1', 'max',
-      targeted_min_flops, targeted_max_flops, args.evo_search_step,
+      targeted_min_macs, targeted_max_macs, args.evo_search_step,
       args.evo_search_parent_popu_size, args.evo_search_evo_iter,
       args.evo_search_mutate_size, args.evo_search_mutate_prob,
       args.evo_search_crossover_size)

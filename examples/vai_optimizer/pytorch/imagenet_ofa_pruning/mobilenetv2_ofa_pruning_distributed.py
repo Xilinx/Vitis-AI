@@ -42,7 +42,7 @@ parser = argparse.ArgumentParser(description='PyTorch OFA ImageNet Training')
 parser.add_argument(
     '--data',
     type=str,
-    default='/dataset/imagenet/raw-data',
+    default='./dataset/imagenet/raw-data',
     help='path to dataset')
 
 # ofa config
@@ -442,11 +442,11 @@ def validate_subnet(train_loader, val_loader, model, ofa_pruner, criterion,
           model, 'max')
     else:
       dynamic_subnet_setting = evaluated_subnet[net_id]
-      static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
+      static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
           model, dynamic_subnet_setting)
 
     if len(evaluated_subnet[net_id]) == 0:
-      static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
+      static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
           dynamic_subnet, dynamic_subnet_setting)
 
     static_subnet = static_subnet.cuda()
@@ -469,7 +469,7 @@ def validate_subnet(train_loader, val_loader, model, ofa_pruner, criterion,
         'mode': 'evaluate',
         'acc1': acc1,
         'acc5': acc5,
-        'flops': flops,
+        'macs': macs,
         'params': params
     }
 

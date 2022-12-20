@@ -44,7 +44,7 @@ parser.add_argument(
 parser.add_argument(
     '--data_dir',
     type=str,
-    default='/dataset/cifar10',
+    default='./dataset/cifar10',
     help='Dataset directory')
 parser.add_argument(
     '--num_workers',
@@ -249,7 +249,7 @@ def evaluate(dataloader, model, criterion, ofa_pruner=None, train_loader=None):
   if ofa_pruner:
     dynamic_subnet, dynamic_subnet_setting = ofa_pruner.sample_subnet(
         model, 'max')
-    static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
+    static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
         dynamic_subnet, dynamic_subnet_setting)
 
     model = static_subnet.cuda()

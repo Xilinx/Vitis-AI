@@ -59,15 +59,15 @@ parser.add_argument(
 parser.add_argument(
     '--evo_search_step', type=int, default=10, help='evo search step')
 parser.add_argument(
-    '--evo_search_targeted_min_flops',
+    '--evo_search_targeted_min_macs',
     type=int,
     default=200,
-    help='evo search targeted_min_flops')
+    help='evo search targeted_min_macs')
 parser.add_argument(
-    '--evo_search_targeted_max_flops',
+    '--evo_search_targeted_max_macs',
     type=int,
     default=300,
-    help='evo search targeted_max_flops')
+    help='evo search targeted_max_macs')
 
 parser.add_argument(
     '--pretrained_ofa_model',
@@ -77,7 +77,7 @@ parser.add_argument(
 parser.add_argument(
     '--data_dir',
     type=str,
-    default='/dataset/cifar10',
+    default='./dataset/cifar10',
     help='Dataset directory')
 parser.add_argument(
     '--num_workers',
@@ -233,32 +233,32 @@ if __name__ == '__main__':
   assert isinstance(checkpoint, dict)
   for k, v in model.state_dict().items():
     v.copy_(checkpoint[k])
-  
+
   dynamic_subnet, dynamic_subnet_setting = ofa_pruner.sample_subnet(
       model, 'max')
-  static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
+  static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
       dynamic_subnet, dynamic_subnet_setting)
 
-  max_subnet_flops = flops
+  max_subnet_macs = macs
 
   dynamic_subnet, dynamic_subnet_setting = ofa_pruner.sample_subnet(
       model, 'min')
-  static_subnet, _, flops, params = ofa_pruner.get_static_subnet(
+  static_subnet, _, macs, params = ofa_pruner.get_static_subnet(
       dynamic_subnet, dynamic_subnet_setting)
 
-  min_subnet_flops = flops
+  min_subnet_macs = macs
 
-  print('max subnet flops(M):', max_subnet_flops)
-  print('min subnet flops(M):', min_subnet_flops)
+  print('max subnet macs(M):', max_subnet_macs)
+  print('min subnet macs(M):', min_subnet_macs)
 
-  targeted_min_flops = args.evo_search_targeted_min_flops
-  targeted_max_flops = args.evo_search_targeted_max_flops
+  targeted_min_macs = args.evo_search_targeted_min_macs
+  targeted_max_macs = args.evo_search_targeted_max_macs
 
-  assert targeted_min_flops <= targeted_max_flops and min_subnet_flops <= targeted_min_flops and targeted_max_flops <= max_subnet_flops 
+  assert targeted_min_macs <= targeted_max_macs and min_subnet_macs <= targeted_min_macs and targeted_max_macs <= max_subnet_macs
 
   pareto_global = ofa_pruner.run_evolutionary_search(
       model, calibration_fn, (train_loader,), eval_fn, (val_loader,), 'acc@top1', 'max',
-      targeted_min_flops, targeted_max_flops, args.evo_search_step,
+      targeted_min_macs, targeted_max_macs, args.evo_search_step,
       args.evo_search_parent_popu_size, args.evo_search_evo_iter,
       args.evo_search_mutate_size, args.evo_search_mutate_prob,
       args.evo_search_crossover_size)
