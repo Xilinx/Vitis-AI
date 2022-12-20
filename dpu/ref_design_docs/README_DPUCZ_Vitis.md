@@ -1,11 +1,3 @@
-﻿<table class="sphinxhide">
- <tr>
-   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
-   </td>
- </tr>
-</table>
-
-
 # Zynq UltraScale＋ MPSoC DPU TRD V4.1 Vitis 2022.2
 
 ## Table of Contents
@@ -667,22 +659,10 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
 	b. Navigate to Windows -> Preference -> Library Repositories
     
-		i. Using already DPU-TRD clone location(skip 4.d step). Recommend this way.
+		i. Using already DPU-TRD clone location.
 
   ![WORKSPACE](./doc/6.4.png)   
     
-		ii. Link Git Location
-      
-			1. Location - Location to which the DPU TRD to be downloaded
-
-			2. Git URL - DPU TRD URL - https://github.com/Xilinx/Vitis-AI.git 
-  
-			3. Branch - master
-  
-			4. click Apply and Close
-
-  ![URL](./doc/URL.png)   
- 
 4. Creation Application Project
 
 	a. File->New->Application Project->Next->Choose the zcu102_base platform->Next
@@ -698,25 +678,11 @@ The DPU TRD can run in gui flow. Please refer to the following steps.
 
   ![SYSROOT](./doc/sysroot.png) 
  
-	d. Template selection - You have to download the DPU TRD from git and seletct the DPU kernel
-  
-		i.Click Vitis IDE Libraries(highlighted)
-
-  ![ide](./doc/ide.png) 
-
-		ii.Select the DPU and click on Download
-
-  ![download](./doc/download.png) 
-
-		iii.Once the download is complete you see DPU as installed, click OK
-
-  ![install](./doc/install.png) 
-
-	e. Choose the DPU Kernel(RTL Kernel)
+	d. Choose the DPU Kernel(RTL Kernel)
 
   ![DPU_KERNEL](./doc/6.8.png) 
 
-	f. dpu_trd application project is created.
+	e. dpu_trd application project is created.
 
 
 5. Choose the Hardware in Active Build configuration, Only Hardware Configuration is supported.
