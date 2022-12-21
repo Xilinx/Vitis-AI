@@ -86,6 +86,7 @@ if __name__ == '__main__':
     for i in range(run_size):
         images_batch.append(data[0])
     x.append(tf.convert_to_tensor(np.array(images_batch),dtype='float32'))
+    r = model(x[0])[0]
     if FLAGS.mode == "normal":
         run_func()
     else:

@@ -169,6 +169,7 @@ if __name__ == '__main__':
             
     n_of_group_run = args.batch_iter
     
+    r=model(data)
     if args.mode == "normal":
         run_func()
     else:
