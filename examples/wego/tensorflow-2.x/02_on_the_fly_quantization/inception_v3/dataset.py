@@ -27,18 +27,18 @@ import numpy as np
 
 DEFAULT_IMAGE_SIZE = 299
 
-def get_images_infor_from_file(image_dir, size):
-  cnt = 0
-  listimage = os.listdir(image_dir)
-  imgs = []
-  for i in range(len(listimage)):
-    img_name  = listimage[i]
-    img_path = os.path.join(image_dir, img_name)
-    imgs.append(img_path)
-    cnt = cnt+1
-    if cnt == size:
-      break
-  return imgs
+def get_images_infor_from_file(image_dir):
+
+  def _get_image_path_list(dir):
+    r = []
+    for root, dirs, files in os.walk(dir):
+      for f in files:
+        r.append(os.path.join(root, f))
+    return r
+
+  list_image = _get_image_path_list(image_dir)
+
+  return list_image
 
 class ImagenetSequence(Sequence):
   def __init__(self, filenames, batch_size, output_height=DEFAULT_IMAGE_SIZE, output_width=DEFAULT_IMAGE_SIZE, central_fraction=0.875):
@@ -52,7 +52,7 @@ class ImagenetSequence(Sequence):
     return int(np.ceil(len(self.filenames) / float(self.batch_size)))
 
   def __getitem__(self, idx):
-    batch_x = self.filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
+    batch_x = self.filenames[idx * self.batch_size : (idx + 1) * self.batch_size]
 
     processed_imgs = []
 

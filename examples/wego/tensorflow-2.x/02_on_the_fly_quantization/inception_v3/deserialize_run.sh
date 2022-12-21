@@ -31,8 +31,7 @@ recipe_path=/tmp/wego_example_recipes/tensorflow-2.x
 IMAGE_DIR="${recipe_path}/images/classification"
 
 python inference.py                                                   \
-        --serialized_model_path ${serialized_wego_module_path}  \
-        --eval_image_path $IMAGE_DIR                            \
-	--mode "normal"
+        --serialized_model_path ${serialized_wego_module_path}        \
+        --eval_image_path $IMAGE_DIR                                  
 
 unset XLNX_BUFFER_POOL

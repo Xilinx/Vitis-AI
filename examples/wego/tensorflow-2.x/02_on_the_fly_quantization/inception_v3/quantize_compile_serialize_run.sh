@@ -32,12 +32,10 @@ recipe_path=/tmp/wego_example_recipes/tensorflow-2.x
 IMAGE_DIR="${recipe_path}/images/classification"
 
 python inference.py                                                       \
-        --input_graph ${float_model_path}                      \
-        --calibration_images_folder ${calibration_images_folder}    \
-        --serialize                                                 \
-        --mode "normal"                                               \
-	--eval_image_path $IMAGE_DIR                                \
-        --batch_iter 1200                                           \
-        --nthreads 16
+        --input_graph ${float_model_path}                                 \
+        --calibration_images_folder ${calibration_images_folder}          \
+        --calib_size 1000                                                 \
+        --serialize                                                       \
+        --eval_image_path $IMAGE_DIR                                      
 
 export XLNX_BUFFER_POOL=0
