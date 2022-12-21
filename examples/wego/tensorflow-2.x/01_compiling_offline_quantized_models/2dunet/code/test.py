@@ -138,6 +138,7 @@ if  __name__ == '__main__':
     x=tf.convert_to_tensor(img_tensor,dtype='float32') 
     img_list_group.append(x)
 
+    r = model(img_list_group[0])[0].numpy()
     if args.mode == "normal":
         img_tensor = np.zeros((1, IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.float32)
         img_tensor[0] = np.array(img)
