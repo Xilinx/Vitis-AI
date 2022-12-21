@@ -27,4 +27,14 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pmg_grocerystore_224_224_2.28G_3.0.zip
   checksum: null
+- name: pmg_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: dd518b08e8a74da9132d704b1573eb19
+- name: pmg_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-vck190-r3.0.0.tar.gz
+  checksum: 78de8eb44da53e4509ad4972fc8ece20
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -27,4 +27,34 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_sceneflow_576_960_0.51_201G_3.0.zip
   checksum: null
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: cc03f5a00d2a144b02cb3ecb9442f997
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 656d2d5c1e4af0141f00727db5d0928e
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: ac2b6256a991329238d411d3a172c0cc
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-vck190-r3.0.0.tar.gz
+  checksum: 3fb244a0418debca5d14682734231282
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-vck190-r3.0.0.tar.gz
+  checksum: ddcfacebf16dd1b4f976e44145aa0e57
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck190-r3.0.0.tar.gz
+  checksum: 10322ec30e7e4a5b99af64c8a138fabe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

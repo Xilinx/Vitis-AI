@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cflownet_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 3d1c8e328b0fab043dff520214663dd3
+  checksum: b9a4ebb48edab09971c4d2c34aae466a
 - name: cflownet_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=cflownet_pt-vck190-r3.0.0.tar.gz
-  checksum: d6b6944144e4d86b23471695d5c3b20d
+  checksum: c04a4e30b0123ea77fb830fe133841eb
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

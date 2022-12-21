@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-S_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 5752a5a8aa6ad596e123562590076db4
+  checksum: f5dc1523447e983ec5a61bcb8ed4d809
 - name: efficientNet-edgetpu-S_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-S_tf-vck190-r3.0.0.tar.gz
-  checksum: 95838291b368881bd78722046ff8014a
+  checksum: 37637967b31ad8299110a3ebc66c5925
 - name: efficientNet-edgetpu-S_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

@@ -27,4 +27,14 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_0.39_23.78G_3.0.zip
   checksum: null
+- name: vgg_19_pruned_0_39_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_pruned_0_39_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: c02dc548f071e615d92d181dfaa413d3
+- name: vgg_19_pruned_0_39_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_pruned_0_39_tf-vck190-r3.0.0.tar.gz
+  checksum: c26b58778b78ffd049eb38d350e72a43
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

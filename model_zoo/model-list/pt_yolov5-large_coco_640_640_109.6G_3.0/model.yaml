@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: f89b0df082e4649e2549c1188795ec4e
+  checksum: abefb67ddd977045d6f9108710cb94e7
 - name: yolov5_large_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck190-r3.0.0.tar.gz
-  checksum: a4586bf7fd7cec9b0c1247620c2e2f7d
+  checksum: 11ab0556f86b5a6ad024c5f9e4b56aaf
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

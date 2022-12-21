@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 7f9e5fd83c6d04c0ba2b6f6a14a68064
+  checksum: 92324ad146897dde8c6024e4aa3f9e52
 - name: xilinxSR_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck190-r3.0.0.tar.gz
-  checksum: c5f16acbb63b64fa9306bed9a09452c5
+  checksum: 40cf73901a101e1c386e3a419852911d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

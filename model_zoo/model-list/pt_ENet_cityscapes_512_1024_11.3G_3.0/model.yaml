@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 5827892bab20652e83abcca0542608f3
+  checksum: 46c5e0b26177fea241490fa39ce934cc
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck190-r3.0.0.tar.gz
-  checksum: 7a6eec434362c8bf28cc3471e32299e2
+  checksum: 15a96b1254677d5c90274598d73d5dfd
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck50006pe-DPUCVDX8H-DWC

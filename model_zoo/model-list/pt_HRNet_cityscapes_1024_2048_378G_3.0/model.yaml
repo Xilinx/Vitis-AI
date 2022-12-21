@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: faa5aa7593d287288bd04deba3e9a72c
+  checksum: 2c7f250c4b7cb82275c7e4dc1bafd9fd
 - name: HRNet_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck190-r3.0.0.tar.gz
-  checksum: d1c0f73eee15aecbf50472946431e7c0
+  checksum: 8842eb923070de586d6fb8e502788f0e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

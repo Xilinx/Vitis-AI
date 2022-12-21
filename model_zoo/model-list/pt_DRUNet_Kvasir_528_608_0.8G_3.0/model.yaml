@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 8f945e56bf7747f5013486ef6c785045
+  checksum: 8fb0b8f4088ca3570e2aa07afbcc0ce7
 - name: drunet_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-vck190-r3.0.0.tar.gz
-  checksum: 4c5dbf4cb9c61b023fb233f5c8c0f474
+  checksum: c67380f50ecc84033f7ded048e972ada
 - name: drunet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

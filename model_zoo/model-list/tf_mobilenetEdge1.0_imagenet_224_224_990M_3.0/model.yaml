@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 8c116ccd1249cb3552e6a426605cb413
+  checksum: 082eddbfebf800ed0b56baf34592e77c
 - name: mobilenet_edge_1_0_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-vck190-r3.0.0.tar.gz
-  checksum: 1046f8624ffaeb2e2115f364b2b79c2d
+  checksum: 250d23e3a4e52ecd0d874b4fb200a087
 - name: mobilenet_edge_1_0_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

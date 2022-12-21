@@ -31,10 +31,10 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: db90b8ec0487f1e27efa482f494ca6d2
+  checksum: 07d3d654e34df5ddda50a11a3e97a687
 - name: efficientdet_d2_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-vck190-r3.0.0.tar.gz
-  checksum: 06ad3319031fc462c983adcf6e4c9157
+  checksum: d7234211d5396136626977ddc9fd8d58
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

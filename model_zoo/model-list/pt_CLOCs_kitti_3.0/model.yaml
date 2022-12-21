@@ -41,42 +41,42 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 1948a3e1a3e5076b7c046546ab1d9f72
+  checksum: ae8656fbe8387bafce6e1f0a252b6919
 - name: clocs_pointpillars_kitti_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 41288203e23c0126874bcb90d795f256
+  checksum: 59a75015b92accd8e51112164de8bdda
 - name: clocs_yolox_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: d4d1a35f03c262491a53aab694cd5796
+  checksum: 9c9e3f79eb478ee84c9c08b4b4f917a8
 - name: clocs_fusion_cnn_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 94b478a6b0d7d720d4c5d7547f15fdf6
+  checksum: f72c7652a627071ff9406dd8269e5998
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck190-r3.0.0.tar.gz
-  checksum: 6eb21226d990de0e787992b218a938db
+  checksum: fd9a0bc2f46d7cc45aaf6e5dfbf4315b
 - name: clocs_pointpillars_kitti_1_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck190-r3.0.0.tar.gz
-  checksum: c4aa7dc2ab189db5862b652f6a04fdec
+  checksum: b03f0bb19747a61fa04b300dbf09b72b
 - name: clocs_yolox_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck190-r3.0.0.tar.gz
-  checksum: 1adbdd7700d1a8b41c58008633dbbfbc
+  checksum: d60927d8df4d3b8f70321b4beb6070d7
 - name: clocs_fusion_cnn_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck190-r3.0.0.tar.gz
-  checksum: f11c3571d904c43bccbfdeeb8f3deb34
+  checksum: 1110c72689bb90d6202bfd9a3f1b9d94
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 0f0d0524a0bb3ad54e29cb80cbc026aa
+  checksum: 35361e40ed4e02aa3d0eeb13621c45b8
 - name: inception_v3_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_tf2-vck190-r3.0.0.tar.gz
-  checksum: 97a5ba45e9fe2333f1541a8ad35b2d08
+  checksum: dedf1c7589bdaaa270e31ddba2465870
 - name: inception_v3_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

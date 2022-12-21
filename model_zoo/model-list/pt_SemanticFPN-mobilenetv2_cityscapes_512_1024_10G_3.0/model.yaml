@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 5428873967da5d2ae628f94277982027
+  checksum: 5154b6d1805592686b52946ac0bb3bea
 - name: SemanticFPN_Mobilenetv2_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-vck190-r3.0.0.tar.gz
-  checksum: 26e727e2089341fb00de7022520fb5d8
+  checksum: 02980177e8a40df28a8977abf9b52a80
 - name: SemanticFPN_Mobilenetv2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
