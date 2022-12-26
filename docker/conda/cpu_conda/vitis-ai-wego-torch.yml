@@ -9,6 +9,9 @@ dependencies:
   - wego_torch
   - pytorch_nndct_wego
   - torchvision_wego
+  - xnnc
+  - xcompiler      
+  - vaic
   - pyyaml
   - jupyter
   - ipywidgets

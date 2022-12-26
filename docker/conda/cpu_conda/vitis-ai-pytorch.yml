@@ -10,6 +10,9 @@ dependencies:
   - pytorch_nndct_cpu
   - vaic
   - vart
+  - dpuv3-pycompiler
+  - xnnc
+  - xcompiler
   - vai_utf
   - networkx
   - pyyaml

@@ -9,5 +9,8 @@ dependencies:
   - tensorflow-onnx_gpu
   - vai_q_tensorflow_gpu
   - vaic
+  - dpuv3-pycompiler
+  - xnnc
+  - xcompiler
   - vart
   - rt-engine

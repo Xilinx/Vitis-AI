@@ -23,6 +23,7 @@ if [[ ${DOCKER_TYPE} == "cpu"  ]]; then
     && mamba create  -n  vitis-ai-tensorflow  vai_q_tensorflow  tensorflow-onnx -c  ${VAI_CONDA_CHANNEL} -c conda-forge -c anaconda \
     && conda activate vitis-ai-tensorflow \
     && pip install -r /scratch/pip_requirements.txt keras==2.8 \
+    && pip install pycocotools scikit-image tqdm easydict \
     &&  pip uninstall -y tensorflow protobuf \
     && pip uninstall -y h5py \
     && pip uninstall -y h5py \
@@ -46,6 +47,7 @@ else
     && conda activate vitis-ai-tensorflow \
     && mamba install vai_q_tensorflow_gpu -c ${VAI_WEGO_CONDA_CHANNEL}/wegotf1 -c conda-forge -c anaconda \
     && pip install -r /scratch/pip_requirements.txt  \
+    && pip install pycocotools scikit-image tqdm easydict \
     && pip uninstall -y protobuf \
     && pip uninstall -y h5py \
     && pip uninstall -y h5py \

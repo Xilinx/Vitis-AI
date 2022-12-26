@@ -7,6 +7,10 @@ channels:
 dependencies:
   - python=3.7
   - vaic
+  - dpuv3-pycompiler
+  - xnnc
+  - xcompiler
   - vart
   - rt-engine
   - vai_utf
+  - tensorflow-onnx

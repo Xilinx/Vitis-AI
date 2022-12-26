@@ -71,11 +71,11 @@ function execute
      fi
      if [[ "$DOCKER_TYPE" == 'rocm' ]]; then
 	if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
- 	    VAI_BASE="rocm/pytorch:rocm5.4_ubuntu20.04_py3.7_pytorch_1.12.1"
+ 	    VAI_BASE="rocm/pytorch:rocm5.4.1_ubuntu20.04_py3.7_pytorch_1.12.1"
 	    add_args=" --build-arg TARGET_FRAMEWORK=$TARGET_FRAMEWORK "
             BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
          else
-            VAI_BASE="rocm/tensorflow:rocm5.4-tf2.10-dev"
+            VAI_BASE="rocm/tensorflow:rocm5.4.1-tf2.10-dev"
          fi
      fi
      BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"

@@ -25,6 +25,7 @@ if [[ $EUID -eq 0 ]]; then
 fi
 sudo chmod a+rw /dev/kfd
 sudo chmod a+rw /dev/dri/renderD*
+sudo chown -R vitis-ai-user /opt/vitis_ai/conda &
 . /opt/vitis_ai/conda/etc/profile.d/conda.sh
 conda activate base
 export PATH=/opt/vitis_ai/conda/bin:$PATH

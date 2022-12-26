@@ -9,6 +9,9 @@ dependencies:
   - python=3.7
   - pytorch_nndct
   - vaic
+  - dpuv3-pycompiler
+  - xnnc
+  - xcompiler
   - vart
   - vai_utf
   - pyyaml
