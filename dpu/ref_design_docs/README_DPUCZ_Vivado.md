@@ -224,7 +224,7 @@ $TRD_HOME/prj/Vivado/hw/srcs/top/ip/top_DPUCZDX8G_0/arch.json
 
 #### 5.2.3 DPU PetaLinux BSP
 
-Please follow [$TRD_HOME/prj/Vivado/sw/README.md](./README_DPUCZ_Vivado_sw.md) to get more details on DPU Petalinux system customization.
+Please follow [DPU Petalinux System Customization Guide](./README_DPUCZ_Vivado_sw.md) to get more details.
 
 Setup PetaLinux working environment according to [PetaLinux Tools Documentation (UG1144)](https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment). 
 

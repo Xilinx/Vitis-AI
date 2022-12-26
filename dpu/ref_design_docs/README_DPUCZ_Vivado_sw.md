@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Zynq UltraScale＋ MPSoC DPU v4.1 Firmware Workflow
+# Zynq UltraScale＋ MPSoC DPU v4.1 Vivado Flow Reference Design for Petalinux 2022.2
 
 
 - [1 Overview](#1-overview)
