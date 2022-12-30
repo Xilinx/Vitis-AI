@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv1_1.0_imagenet_224_224_0.12_1G_3.0.zip
-  checksum: e5ea86914e5d4d27fb5ecad1759b215d
+  checksum: 77c87d569979c4e62c0cce88c1ce9d74
 - name: mobilenet_v1_1_0_224_pruned_0_12_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260
