@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnet_sceneflow_576_960_441G_3.0.zip
-  checksum: null
+  checksum: b2f737fccf996aa8dd9aa928cc7f7003
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

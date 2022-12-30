@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_ENet_cityscapes_512_1024_11.3G_3.0.zip
-  checksum: 723bacf08f836423b328c5185bc8535b
+  checksum: b339265259bc6ee36545ecc9a856b250
 - name: ENet_cityscapes_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

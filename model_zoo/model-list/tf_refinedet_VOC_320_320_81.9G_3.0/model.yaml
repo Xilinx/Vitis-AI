@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_refinedet_VOC_320_320_81.9G_3.0.zip
-  checksum: 6e4da3ab25a8860a58f6e00118d13ade
+  checksum: eb5a3c6cf20075adb470183ec18bf6ba
 - name: refinedet_VOC_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

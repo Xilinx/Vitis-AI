@@ -16,17 +16,17 @@
 
 description: PointPillars on KITTI.
 input size: 12000*100*4
-float ops: 10.8G
+float ops: 11.2G
 task: 3d detection
 framework: pytorch
 prune: 'no'
 version: 3.0
 files:
-- name: pt_pointpillars_kitti_12000_100_10.8G_3.0
+- name: pt_pointpillars_kitti_12000_100_11.2G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_kitti_12000_100_10.8G_3.0.zip
-  checksum: c5d1f39ba0ff2120aecae8b326ae0542
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_kitti_12000_100_11.2G_3.0.zip
+  checksum: 66ca4cbc9429d88dada93d1ab26fdac6
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

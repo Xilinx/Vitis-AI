@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg19_imagenet_224_224_0.24_29.79G_3.0.zip
-  checksum: 38095e7506715897eac9929045139e25
+  checksum: beff9287def21717d2f28e1c551976db
 - name: vgg_19_pruned_0_24_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

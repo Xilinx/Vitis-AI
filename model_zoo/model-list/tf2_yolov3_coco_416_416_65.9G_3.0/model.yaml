@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_yolov3_coco_416_416_65.9G_3.0.zip
-  checksum: 137583eae110e06e164d44fa2eab7a0b
+  checksum: dec56b7c48ec59e5ad8267794bc51404
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260

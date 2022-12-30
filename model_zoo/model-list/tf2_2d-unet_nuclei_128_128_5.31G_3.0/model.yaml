@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_2d-unet_nuclei_128_128_5.31G_3.0.zip
-  checksum: 148753a32a6134f261bb2f2145669468
+  checksum: 6d5a7adf24beea5e874d757a7a085744
 - name: medical_seg_cell_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260

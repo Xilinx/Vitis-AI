@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_bert-base_SQuAD_128_22.34G_3.0.zip
-  checksum: 652998100c6a0c04fcd604d27a739e58
+  checksum: 29ee9a0b464e532865f5d2581865edfe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

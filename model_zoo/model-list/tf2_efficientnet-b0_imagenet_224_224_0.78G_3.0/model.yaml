@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_efficientnet-b0_imagenet_224_224_0.78G_3.0.zip
-  checksum: 897fa5f99caee4dac909e12c7c836375
+  checksum: 49227ad0221f3fcfcc288d4a84bef09d
 - name: efficientnet-b0_tf2
   type: xmodel
   board: zcu102 & zcu104 & kv260

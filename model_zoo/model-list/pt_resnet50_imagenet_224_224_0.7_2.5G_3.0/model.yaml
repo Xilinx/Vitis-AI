@@ -16,17 +16,17 @@
 
 description: resnet50 classifier on ImageNet.
 input size: 224*224
-float ops: 3.0G
+float ops: 2.5G
 task: classification
 framework: pytorch
 prune: '0.7'
 version: 3.0
 files:
-- name: pt_resnet50_imagenet_224_224_0.7_3.0G_3.0
+- name: pt_resnet50_imagenet_224_224_0.7_2.5G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_resnet50_imagenet_224_224_0.7_3.0G_3.0.zip
-  checksum: 213b26bb8a6839a6a1dd8b1ba9b3e0e8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_resnet50_imagenet_224_224_0.7_2.5G_3.0.zip
+  checksum: 920664ab7373622350d0edb0c54223d0
 - name: resnet50_pruned_0_7_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

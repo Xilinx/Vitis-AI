@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_DRUNet_Kvasir_528_608_0.8G_3.0.zip
-  checksum: 5dd16d4d4f4cde23598a3860240f13aa
+  checksum: 7ab40c0cdf8ff422b9c252e0f4a785ff
 - name: drunet_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

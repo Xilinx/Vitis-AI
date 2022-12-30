@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_efficientnet-edgetpu-s_imagenet_224_224_4.72G_3.0.zip
-  checksum: f2053c0cc63c071a1158f07e7465bf6a
+  checksum: 56a3a1102a2368521a3d20958ad7349c
 - name: efficientNet-edgetpu-S_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

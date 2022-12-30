@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ViT_imagenet_352_352_21.3G_3.0.zip
-  checksum: 54e2da4cc7887aedc9692517d758e748
+  checksum: 695d3f6a44de0c9f09abe1af03c64d74
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

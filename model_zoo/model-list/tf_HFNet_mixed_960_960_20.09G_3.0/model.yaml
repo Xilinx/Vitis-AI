@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_HFNet_mixed_960_960_20.09G_3.0.zip
-  checksum: null
+  checksum: f897cb2929cc59f3c75c9e943d75be51
 - name: hfnet_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

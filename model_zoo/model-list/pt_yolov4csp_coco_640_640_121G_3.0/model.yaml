@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_yolov4csp_coco_640_640_121G_3.0.zip
-  checksum: null
+  checksum: 92c8584df185cdbe66c29a1feb94ffcd
 - name: yolov4_csp_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

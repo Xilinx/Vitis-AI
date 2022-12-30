@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mlperf_resnet34_coco_1200_1200_433G_3.0.zip
-  checksum: f1dca2c36484eb07a6a076f62dbb8304
+  checksum: c9984f4ba59667e39857e0e1f13ae21e
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

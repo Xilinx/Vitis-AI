@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdinceptionv2_coco_300_300_9.62G_3.0.zip
-  checksum: 362255b10224842d3b332cc52954565c
+  checksum: 023d4f5df605daa0a1a171c054545a24
 - name: ssd_inception_v2_coco_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

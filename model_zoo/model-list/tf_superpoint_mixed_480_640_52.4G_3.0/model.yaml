@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_superpoint_mixed_480_640_52.4G_3.0.zip
-  checksum: e9d83b33af99ce280255371d737cf428
+  checksum: d4e23a5b45f452fe0261b438a0f550d5
 - name: superpoint_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

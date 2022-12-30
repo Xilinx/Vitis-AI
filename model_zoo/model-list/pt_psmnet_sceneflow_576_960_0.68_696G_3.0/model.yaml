@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_psmnet_sceneflow_576_960_0.68_696G_3.0.zip
-  checksum: null
+  checksum: b7e467560315b93032a098c696d8c3e7
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

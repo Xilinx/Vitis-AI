@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdlite_mobilenetv2_coco_300_300_1.5G_3.0.zip
-  checksum: d6fb679e9805450b8487ff478d844eec
+  checksum: 47a5fdc29eeac671720291ceadb9a0a2
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

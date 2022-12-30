@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv4_imagenet_299_299_24.55G_3.0.zip
-  checksum: 54b27537c61adcac48a497a5b6fd99ac
+  checksum: 124b846db7b3c30bea5f5f3bb304262a
 - name: inception_v4_2016_09_09_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

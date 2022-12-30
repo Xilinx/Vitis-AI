@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-depthwise-res50_imagenet_176_176_1.29G_3.0.zip
-  checksum: 640ed89b7c9e005364b4cee16e1339b2
+  checksum: 8458e02c4d7b02b77c817f18dfd06d6a
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

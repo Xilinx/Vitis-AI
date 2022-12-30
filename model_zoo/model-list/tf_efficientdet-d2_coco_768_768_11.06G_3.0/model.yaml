@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_efficientdet-d2_coco_768_768_11.06G_3.0.zip
-  checksum: 95c86d7013c742d958ddd0f0986961a7
+  checksum: 56205c63b1db78005d41f1a3376b8ddc
 - name: efficientdet_d2_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

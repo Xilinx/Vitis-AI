@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-rcan_DIV2K_360_640_40.5G_3.0.zip
-  checksum: 6a7a679815f7d057586cca85c5b26bc5
+  checksum: fc5ef807a038be816f7944b9f3bb4d5d
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

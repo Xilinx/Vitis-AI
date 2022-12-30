@@ -25,8 +25,8 @@ files:
 - name: pt_salsanextv2_semantic-kitti_64_2048_0.75_33.27G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_salsanextv2_semantic-kitti_64_2048_0.75_32G_3.0.zip
-  checksum: f3ec2f6d0e114eac8fe74e7573eb03f6
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_salsanextv2_semantic-kitti_64_2048_0.75_33.27G_3.0.zip
+  checksum: e68f1bea84a5e004c2c0f056b3009c86
 - name: salsanext_v2_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

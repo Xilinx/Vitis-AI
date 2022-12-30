@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_mobilenetv2_cityscapes_1024_2048_132.74G_3.0.zip
-  checksum: 6b2eddd24ea35f19e11a8c98c01fe287
+  checksum: d5e1201bfce94aa3beec43724e7f015d
 - name: mobilenet_v2_cityscapes_tf
   type: xmodel
   board: zcu102 & zcu104 & kv260

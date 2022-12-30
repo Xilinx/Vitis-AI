@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_HRNet_cityscapes_1024_2048_378G_3.0.zip
-  checksum: null
+  checksum: e2089e82f867dde390df195d48fce1f6
 - name: HRNet_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

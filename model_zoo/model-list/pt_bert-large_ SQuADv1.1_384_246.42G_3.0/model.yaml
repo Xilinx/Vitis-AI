@@ -27,5 +27,5 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-large_
     SQuADv1.1_384_246.42G_3.0.zip
-  checksum: null
+  checksum: aa23a400e0b6f7d9a927fed6d7962ac8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

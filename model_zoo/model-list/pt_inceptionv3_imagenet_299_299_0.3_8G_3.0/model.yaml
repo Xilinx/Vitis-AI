@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_inceptionv3_imagenet_299_299_0.3_8G_3.0.zip
-  checksum: dce5dbcccc704b415aa19c3ccbc12ea1
+  checksum: c7b9b9f91e566637c6ff6536590ce79b
 - name: inception_v3_pruned_0_3_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

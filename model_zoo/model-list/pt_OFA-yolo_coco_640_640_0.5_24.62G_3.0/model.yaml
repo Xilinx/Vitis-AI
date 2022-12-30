@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-yolo_coco_640_640_0.5_24.62G_3.0.zip
-  checksum: 653dd1e2ab8c3a9539b119a904f1be9d
+  checksum: 127cac350a457c3b50901a8cddf117be
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

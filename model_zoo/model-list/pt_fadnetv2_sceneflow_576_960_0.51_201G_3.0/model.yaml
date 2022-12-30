@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_sceneflow_576_960_0.51_201G_3.0.zip
-  checksum: null
+  checksum: ae2eb2d6bf46156daa2021fa878dcd5c
 - name: FADNet_v2_pruned_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
