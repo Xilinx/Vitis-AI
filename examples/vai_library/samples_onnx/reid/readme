@@ -32,13 +32,18 @@ Important:
 
    run the executable file.
 
-    sample : env DEBUG_USE_NEW_SCHEDULE=0 ./test_reid_onnx /usr/share/vitis_ai_library/models/personreid-res50_onnx_pt/personreid-res50_onnx_pt.onnx sample_reid_001.jpg sample_reid_002.jpg
+    sample : ./test_reid_onnx /usr/share/vitis_ai_library/models/personreid-res50_onnx_pt/personreid-res50_onnx_pt.onnx sample_reid_001.jpg sample_reid_002.jpg
     output : 
 batch 0
 dismat : 0.547
 
+
+Performance:
+sample: ./test_performance_reid_onnx /usr/share/vitis_ai_library/models/personreid-res50_onnx_pt/personreid-res50_onnx_pt.onnx -s 60 -t 1 ./test_performance_reid.list
+
+
 Accuracy:
     test accuracy of personreid-res50_onnx_pt:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_reid_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    ./test_accuracy_reid_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
     sample:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_reid_onnx /usr/share/vitis_ai_library/models/personreid-res50_onnx_pt/personreid-res50_onnx_pt.onnx query_list.txt gallery_list.txt result.txt -t 2
+    ./test_accuracy_reid_onnx /usr/share/vitis_ai_library/models/personreid-res50_onnx_pt/personreid-res50_onnx_pt.onnx query_list.txt gallery_list.txt result.txt -t 2

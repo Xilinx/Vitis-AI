@@ -664,5 +664,9 @@ __TOC__(softmax_neon_old_c)
     cout << "========================" << endl;
   }
 
+  if (d != nullptr) delete []d;
+  if (output != nullptr) delete []output;
+  if (output_neon != nullptr) delete []output_neon;
+
   return 0;
 }

@@ -130,16 +130,25 @@ PsmNetImp::PsmNetImp() : tasks_{}, vai_res_{}, dpu_sfm_{} {
                              {0.017429, 0.017507, 0.01712475});
   tasks_[1]->setMeanScaleBGR({103.53, 116.28, 123.675},
                              {0.017429, 0.017507, 0.01712475});
+#ifndef PSMNET_FINAL
   // ### kernel 0 part ###
   vector<size_t> kernel0_concat_channel = {64, 128};
-  vector<string> kernel0_task0_outs = {"input_152", "input_148", "input_144",
-                                       "input_140"};
+  vector<string> kernel0_task0_outs = {"input_152", "input_148", "input_144", "input_140"};
   vector<string> kernel0_task1_inps = {"fix_0", "fix_1", "fix_2", "fix_3"};
   // ### kernel 1 part ###
   vector<size_t> kernel1_concat_channel = {64, 128};
-  vector<string> kernel1_task0_outs = {"input_308", "input_304", "input_300",
-                                       "input_296"};
+  vector<string> kernel1_task0_outs = {"input_308", "input_304", "input_300", "input_296"};
   vector<string> kernel1_task1_inps = {"fix_0", "fix_1", "fix_2", "fix_3"};
+#else
+// ### kernel 0 part ###
+  vector<size_t> kernel0_concat_channel = {64, 12};
+  vector<string> kernel0_task0_outs =  {"input_279", "input_287", "input_295", "input_303"}; /*for tartanair*/
+  vector<string> kernel0_task1_inps = {"fix_3", "fix_2", "fix_1", "fix_0"}; /*for tartanair*/
+  // ### kernel 1 part ###
+  vector<size_t> kernel1_concat_channel = {64, 12};
+  vector<string> kernel1_task0_outs = {"input_591", "input_599", "input_607", "input_615"};/*for tartanair*/
+  vector<string> kernel1_task1_inps = {"fix_3", "fix_2", "fix_1", "fix_0"}; /*for tartanair*/
+#endif
 
   auto outputs_l_unsort = tasks_[0]->getOutputTensor(0u);
   outputs_l_ = sort_tensors(outputs_l_unsort, kernel0_concat_channel,

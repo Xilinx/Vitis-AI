@@ -32,7 +32,7 @@ Important:
 
    run the executable file.
 
-    sample : env DEBUG_USE_NEW_SCHEDULE=0 ./test_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx sample_facequality5pt.jpg
+    sample : ./test_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx sample_facequality5pt.jpg
     output : 
 I1209 20:00:14.563274 67008 test_face_quality_onnx.cpp:76] batch 0
 I1209 20:00:14.563339 67008 test_face_quality_onnx.cpp:40] score : 0.746494 points
@@ -42,8 +42,12 @@ I1209 20:00:14.563473 67008 test_face_quality_onnx.cpp:42] 0.6 0.5
 I1209 20:00:14.563503 67008 test_face_quality_onnx.cpp:42] 0.366667 0.7375
 I1209 20:00:14.563534 67008 test_face_quality_onnx.cpp:42] 0.75 0.75
 
+
+Performance:
+    sample : ./test_performance_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx -s 60 -t 6 test_performance_facequality5pt.list
+
 Accuracy:
     test accuracy of resnet50_pt_onnx:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_face_quality_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    ./test_accuracy_face_quality_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
     sample:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx test_list.txt result.txt -t 2
+    ./test_accuracy_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx test_list.txt result.txt -t 2

@@ -66,13 +66,15 @@ int main( int argc, char *argv[]) {
     std::cout << "save name:" << name << std::endl;
     cv::imwrite(png_name, result[i]);
     auto out = std::ofstream(name + ".txt");
-    for (auto m = 0; m < result[i].rows; m++) {
-      for (auto n = 0; n < result[i].cols; n++) {
-        out << (int)result[i].at<uchar>(m, n) << " "; 
+    if (out.is_open()) {
+      for (auto m = 0; m < result[i].rows; m++) {
+        for (auto n = 0; n < result[i].cols; n++) {
+          out << (int)result[i].at<uchar>(m, n) << " "; 
+        }
+        out << "\n";
       }
-      out << "\n";
+      out.close();
     }
-    out.close();
   }
   return 0;
 }

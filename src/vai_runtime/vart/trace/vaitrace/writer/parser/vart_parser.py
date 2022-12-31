@@ -462,12 +462,13 @@ class DPUEventParser():
     def get_dpu_ip_summary(self):
         return self.dpu_ip.summary()
 
-    def get_dpu_profile_summary(self, fmt="vtf"):
+    def get_dpu_profile_summary(self, options, fmt="vtf"):
         """
         DPU Profile Summary Format:
         Kernel Name,Number Of Runs,CU Full Name,Minimum Time (ms),Average Time (ms),Maximum Time (ms),Workload(GOP),DPU Performance(GOP/s),Mem IO(MB),Mem Bandwidth(MB/s),
         """
 
+        runmachine = options.get('run_machine', {})
         subgraph_stat_time = {}
         subgraph_stat_hwcnt = {}
         ret = []
@@ -484,7 +485,8 @@ class DPUEventParser():
                 workload_raw = run_event.workload_raw
                 subg_idx = "%s|%s" % (subgrap_name, workload_raw)
                 time = run_event.duration
-                hwcounter = run_event.hwcounter
+                if runmachine == "aarch64":
+                    hwcounter = run_event.hwcounter
 
                 if (subg_idx in self.xmodelInfo):
                     pass
@@ -492,8 +494,9 @@ class DPUEventParser():
                 subgraph_stat_time.setdefault(dpu_id, {}).setdefault(
                     subg_idx, []).append(time)
 
-                subgraph_stat_hwcnt.setdefault(dpu_id, {}).setdefault(
-                    subg_idx, []).append(hwcounter)
+                if runmachine == "aarch64":
+                    subgraph_stat_hwcnt.setdefault(dpu_id, {}).setdefault(
+                            subg_idx, []).append(hwcounter)
 
         for core_id in subgraph_stat_time.keys():
             for subg_idx in subgraph_stat_time[core_id]:
@@ -510,9 +513,12 @@ class DPUEventParser():
                 batch = dpu_core.batch
                 ctrl_freq = dpu_core.axilite_freq
 
-                hw_cnt_stat = subgraph_stat_hwcnt[core_id][subg_idx]
-                hw_counter = sum(hw_cnt_stat) / len(hw_cnt_stat)
-                hw_rt = hw_counter / ctrl_freq * 1000
+                if runmachine == "aarch64":
+                    hw_cnt_stat = subgraph_stat_hwcnt[core_id][subg_idx]
+                    hw_counter = sum(hw_cnt_stat) / len(hw_cnt_stat)
+                    hw_rt = hw_counter / ctrl_freq * 1000
+                elif runmachine == "x86_64":
+                    hw_rt = avg_t
 
                 display_name = "%s:batch-%d" % (cu_name, batch)
 
@@ -523,7 +529,10 @@ class DPUEventParser():
                 ot = str(self.xmodelInfo.get(subg_idx, {}).get(
                     "o_tensor_shape", "")).replace(",", "_")
 
-                effic = (workload * batch / hw_rt) / (dpu_core.peak_ops) * 1000
+                if runmachine == "aarch64":
+                    effic = (workload * batch / hw_rt) / (dpu_core.peak_ops) * 1000
+                elif runmachine == "x86_64":
+                    effic = 0
 
                 load_img_size = int(self.xmodelInfo.get(
                     subg_idx, {}).get("load_io_img_size", 0))

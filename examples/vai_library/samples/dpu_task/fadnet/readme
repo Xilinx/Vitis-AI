@@ -24,6 +24,12 @@ sh build.sh
 (pruned model)
 env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_pruned_0_pt/FADNet_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_pruned_1_pt/FADNet_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_pruned_2_pt/FADNet_pruned_2_pt.xmodel ./demo_fadnet demo_fadnet_left.png demo_fadnet_right.png
 
+(v2 model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_v2_0_pt/FADNet_v2_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_v2_1_pt/FADNet_v2_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_v2_2_pt/FADNet_v2_2_pt.xmodel ./demo_fadnet_v2 demo_fadnet_left.png demo_fadnet_right.png
+
+(v2 pruned model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_0_pt/FADNet_v2_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_1_pt/FADNet_v2_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_2_pt/FADNet_v2_pruned_2_pt.xmodel ./demo_fadnet_v2 demo_fadnet_left.png demo_fadnet_right.png
+
 after execute, the result will store as a picture named result_fadnet.jpg.
 
 # run the performance
@@ -33,3 +39,9 @@ after execute, the result will store as a picture named result_fadnet.jpg.
 
 (pruned model)
 env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_pruned_0_pt/FADNet_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_pruned_1_pt/FADNet_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_pruned_2_pt/FADNet_pruned_2_pt.xmodel ./test_performance_fadnet -t 3 -s 60 test_performance_fadnet.list
+
+(v2 model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_v2_0_pt/FADNet_v2_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_v2_1_pt/FADNet_v2_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_v2_2_pt/FADNet_v2_2_pt.xmodel ./test_performance_fadnet_v2 -t 3 -s 60 test_performance_fadnet.list
+
+(v2 pruned model)
+env FADNET_MODEL_0=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_0_pt/FADNet_v2_pruned_0_pt.xmodel FADNET_MODEL_1=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_1_pt/FADNet_v2_pruned_1_pt.xmodel FADNET_MODEL_2=/usr/share/vitis_ai_library/models/FADNet_v2_pruned_2_pt/FADNet_v2_pruned_2_pt.xmodel ./test_performance_fadnet_v2 -t 3 -s 60 test_performance_fadnet.list

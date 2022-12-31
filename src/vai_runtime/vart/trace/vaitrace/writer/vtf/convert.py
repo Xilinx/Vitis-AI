@@ -134,11 +134,12 @@ def convert_dpu(raw_data, hwInfo, options):
 
     runmode = options.get('control', {}).get('runmode')
 
+    runmachine = options.get('control', {}).get('platform',{}).get('machine',{})
     dpu_parser = DPUEventParser()
     timelines = dpu_parser.parse(
         raw_data, hwInfo, {"time_offset": offset, "time_limit": timeout, "runmode": runmode})
 
-    dpu_profile_summary = dpu_parser.get_dpu_profile_summary()
+    dpu_profile_summary = dpu_parser.get_dpu_profile_summary({"run_machine": runmachine})
 
     """extracting all strings"""
     for dpu in timelines:

@@ -117,7 +117,7 @@ void SSDdetector::Detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
       auto score = conf_data[idx * num_classes_ + label];
       auto& bbox = decoded_bboxes_[idx];
       if (bbox.size() == 0) continue;
-      Vehiclev3Result res;
+      Vehiclev3Result res{};
       res.label = label;
       res.score = score;
       res.x = bbox[0] - 0.5f * bbox[2];

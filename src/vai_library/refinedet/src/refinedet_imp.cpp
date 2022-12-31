@@ -51,11 +51,7 @@ RefineDetResult RefineDetImp::run(const cv::Mat& input_image) {
     image = input_image;
   }
   __TIC__(DPREFINEDET_SET_IMG)
-  if (is_tf_) {
-    configurable_dpu_task_->setInputImageBGR(image);
-  } else {
-    configurable_dpu_task_->setInputImageBGR(image);
-  }
+  configurable_dpu_task_->setInputImageBGR(image);
   __TOC__(DPREFINEDET_SET_IMG)
 
   __TIC__(DPREFINEDET_DPU)
@@ -86,11 +82,7 @@ std::vector<RefineDetResult> RefineDetImp::run(
     images.push_back(img);
   }
   __TIC__(DPREFINEDET_SET_IMG)
-  if (is_tf_) {
-    configurable_dpu_task_->setInputImageBGR(images);
-  } else {
-    configurable_dpu_task_->setInputImageBGR(images);
-  }
+  configurable_dpu_task_->setInputImageBGR(images);
   __TOC__(DPREFINEDET_SET_IMG)
 
   __TIC__(DPREFINEDET_DPU)

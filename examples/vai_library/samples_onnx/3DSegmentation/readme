@@ -32,7 +32,7 @@ Important:
 
    run the executable file.
 
-    sample : env DEBUG_USE_NEW_SCHEDULE=0 ./test_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx  scan_dir
+    sample : ./test_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx  scan_dir
     output : 
 width 2048 height 64 
 load file 
@@ -42,8 +42,13 @@ scan_dir/scan_z.txt 127405
 scan_dir/scan_remission.txt 127405
 start running
 
+
+Performance:
+    sample : ./test_performance_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx test_performance_3Dsegmentation.list -s 60 -t 6 test_performance_3Dsegmentation.list
+   
+
 Accuracy:
     test accuracy of salsanext_v2_onnx_pt:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_3DSegmentation_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    ./test_accuracy_3DSegmentation_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
     sample:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx image.list result.txt -t 2
+    ./test_accuracy_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx image.list result.txt -t 2

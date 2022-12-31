@@ -73,12 +73,11 @@ int main(int argc, char* argv[]) {
   }
 
   std::string anno_file_name = argv[1];
-  struct stat* file_stat = new struct stat;
-  if (stat(anno_file_name.c_str(), file_stat) != 0) {
+  struct stat file_stat{};
+  if (stat(anno_file_name.c_str(), &file_stat) != 0) {
     std::cerr << "file:" << anno_file_name << " state error!" << std::endl;
     exit(-1);
   }
-  delete file_stat;
   auto points_info = PointsInfo();
   auto sweeps = std::vector<SweepInfo>();
   read_inno_file_pp_nus(anno_file_name, points_info, 5, sweeps);

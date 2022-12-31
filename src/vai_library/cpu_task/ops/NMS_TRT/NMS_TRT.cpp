@@ -173,28 +173,28 @@ class TFSSDdetector {
 
   std::map<int, std::vector<float> > decoded_bboxes_;
 
-  const unsigned int num_classes_;
+  const unsigned int num_classes_=0;
   CodeType code_type_;
-  bool variance_encoded_in_target_;
-  unsigned int keep_top_k_;
+  bool variance_encoded_in_target_=false;
+  unsigned int keep_top_k_=0;
   std::vector<float> confidence_threshold_;
-  float nms_confidence_;
-  unsigned int nms_top_k_;
-  float nms_threshold_;
-  float eta_;
+  float nms_confidence_=0.0;
+  unsigned int nms_top_k_=0;
+  float nms_threshold_=0.0;
+  float eta_=0.0;
 
   std::vector<float> priors_;
-  float y_scale_;
-  float x_scale_;
-  float height_scale_;
-  float width_scale_;
+  float y_scale_=0.0;
+  float x_scale_=0.0;
+  float height_scale_=0.0;
+  float width_scale_=0.0;
 
-  SCORE_CONVERTER score_converter_;
-  float scale_score_;
-  float scale_loc_;
+  SCORE_CONVERTER score_converter_=SIGMOID;
+  float scale_score_=0.0;
+  float scale_loc_=0.0;
 
-  bool clip_;
-  int num_priors_;
+  bool clip_=false;
+  int num_priors_=0;
 };
 
 TFSSDdetector::TFSSDdetector(unsigned int num_classes, 

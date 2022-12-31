@@ -435,12 +435,13 @@ vai_overview_add_performance(efficientdet_d2 efficientdet_d2 EfficientDetD2)
 vai_overview_add_accuracy(efficientdet_d2 efficientdet_d2)
 
 # bosch related: bosch_ssdobjdet bosch_fcnsemseg
-if(ENABLE_BOSCH_FCNSEMSEG AND (NOT DISABLE_ALL))
-vai_overview_add_performance(bosch_ssdobjdet bosch_ssdobjdet Bosch_Ssdobjdet)
+if( ENABLE_BOSCH_FCNSEMSEG  AND (NOT DISABLE_ALL))
+  vai_overview_add_performance(bosch_fcnsemseg bosch_fcnsemseg Bosch_Fcnsemseg)
 endif()
-if(ENABLE_BOSCH_SSDOBJDET AND (NOT DISABLE_ALL))
-vai_overview_add_performance(bosch_fcnsemseg bosch_fcnsemseg Bosch_Fcnsemseg)
+if( ENABLE_BOSCH_SSDOBJDET  AND (NOT DISABLE_ALL))
+  vai_overview_add_performance(bosch_ssdobjdet bosch_ssdobjdet Bosch_Ssdobjdet)
 endif()
+
 # monodepth2
 vai_overview_add_test(monodepth2 monodepth2 Monodepth2 NO_VIDEO)
 vai_overview_add_performance(monodepth2 monodepth2 Monodepth2)

@@ -142,8 +142,10 @@ class Resnet50PtOnnx : public OnnxTask {
     auto input_shape = input_shapes[0];
     int total_number_elements = calculate_product(input_shape);
     std::vector<float> input_tensor_values(total_number_elements);
+    auto hw_batch = input_shape[0];
+    auto valid_batch = std::min((int)hw_batch, (int)batch_images.size());
 
-    preprocess(batch_images, input_tensor_values, input_shape);
+    preprocess(batch_images, input_tensor_values, input_shape, valid_batch);
 
     std::vector<Ort::Value> input_tensors = convert_input(
         input_tensor_values, input_tensor_values.size(), input_shape);
@@ -151,38 +153,39 @@ class Resnet50PtOnnx : public OnnxTask {
     std::vector<Ort::Value> output_tensors;
     run_task(input_tensors, output_tensors);
 
-    auto results = postprocess(output_tensors[0]);
+    auto results = postprocess(output_tensors[0], valid_batch);
     return results;
   }
 
  protected:
   void preprocess(const std::vector<cv::Mat>& images,
                   std::vector<float>& input_tensor_values,
-                  std::vector<int64_t>& input_shape) {
-    auto batch = input_shape[0];
+                  std::vector<int64_t>& input_shape, int valid_batch) {
+    // auto batch = input_shape[0];
     auto channel = input_shape[1];
     auto height = input_shape[2];
     auto width = input_shape[3];
     auto batch_size = channel * height * width;
 
     auto size = cv::Size((int)width, (int)height);
-    CHECK_EQ(images.size(), batch)
-        << "images number be read into input buffer must be equal to batch";
+    // CHECK_EQ(images.size(), batch)
+    //    << "images number be read into input buffer must be equal to batch";
 
-    for (auto index = 0; index < batch; ++index) {
+    for (auto index = 0; index < valid_batch; ++index) {
       auto resize_image = preprocess_image(images[index], size);
       set_input_image(resize_image,
                       input_tensor_values.data() + batch_size * index);
     }
   }
 
-  std::vector<Resnet50PtOnnxResult> postprocess(Ort::Value& output_tensor) {
+  std::vector<Resnet50PtOnnxResult> postprocess(Ort::Value& output_tensor,
+                                                int valid_batch) {
     std::vector<Resnet50PtOnnxResult> results;
     auto output_shape = output_tensor.GetTensorTypeAndShapeInfo().GetShape();
-    auto batch = output_shape[0];
+    // auto batch = output_shape[0];
     auto channel = output_shape[1];
     auto output_tensor_ptr = output_tensor.GetTensorMutableData<float>();
-    for (auto index = 0; index < batch; ++index) {
+    for (auto index = 0; index < valid_batch; ++index) {
       auto softmax_output =
           softmax(output_tensor_ptr + channel * index, channel);
       auto tb_top5 = topk(softmax_output, 5);

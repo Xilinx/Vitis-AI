@@ -34,9 +34,10 @@ vtf_events = []
 dpu_ip_summary = {}
 
 
-def convert_dpu(raw_data, dpu_ip_data):
+def convert_dpu(raw_data, dpu_ip_data, options):
     global dpu_ip_summary
 
+    runmachine = options.get('control', {}).get('platform',{}).get('machine',{})
     dpu_parser = DPUEventParser()
     timelines = dpu_parser.parse(raw_data, dpu_ip_data, {})
 
@@ -60,7 +61,7 @@ def convert_dpu(raw_data, dpu_ip_data):
             report["dpu"]["scheduling"][cu_name] = scheduling_rate
 
     # "{subg_name},{runs},{cu_name},{batch},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{depth},\n"
-    dpu_summary = dpu_parser.get_dpu_profile_summary("json")
+    dpu_summary = dpu_parser.get_dpu_profile_summary({"run_machine": runmachine},"json")
 
     for row in dpu_summary:
         row = row.strip().split(',')
@@ -194,7 +195,7 @@ def xat_to_json(xat, options):
 
     saveTo = options.get('cmdline_args', {}).get('output', None)
 
-    dpuProfilingSummary = convert_dpu(xat.get('vart'), xat.get('hwInfo'))
+    dpuProfilingSummary = convert_dpu(xat.get('vart'), xat.get('hwInfo'), options)
 
     powerInfoSummary = convert_power_info(xat.get('power', {}))
     cpuTaskSummary = convert_cpu_task(xat.get('vart', {}))

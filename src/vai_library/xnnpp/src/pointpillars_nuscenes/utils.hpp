@@ -22,12 +22,13 @@ namespace ai {
 namespace pointpillars_nus {
 
 struct ScoreIndex {
-  uint32_t index;
-  int8_t score;
+  uint32_t index=0;
+  int8_t score=0;
 };
 
 struct Point {
-  float x, y;
+  float x=0.0;
+  float y=0.0;
   Point() {}
   Point(double _x, double _y) { x = _x, y = _y; }
 

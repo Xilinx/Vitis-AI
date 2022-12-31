@@ -17,6 +17,7 @@
 
 #include <glog/logging.h>
 #include <stdio.h>
+#include <mutex>
 
 #include <chrono>
 #include <ctime>
@@ -63,8 +64,8 @@ static void fill_exp_lut(std::vector<float>& exp_lut, int8_t input_fix_point) {
 DpuSfm::DpuSfm(const char* xclbin, vitis::ai::library::OutputTensor& input) {
   auto batch = input.batch;
   graph_ = vitis::ai::WeakStore<std::string, vai_graph>::create(
-      "graph_softmax_conv1d", std::string(xclbin), std::string("graph_softmax_conv1d")); /*for vai3.0*/
-      //"graph_sfm", std::string(xclbin), std::string("graph_sfm")); /*for vai2.5*/
+      //"graph_softmax_conv1d", std::string(xclbin), std::string("graph_softmax_conv1d")); /*for vai3.0*/
+      "graph_sfm", std::string(xclbin), std::string("graph_sfm")); /*for vai2.5*/
   inBO_ = vitis::ai::ImportedXrtBo::create(graph_->h_->dhdl, input);
   inBO = xrtBOAlloc(graph_->h_->dhdl, SFM_INPUT_BYTE, XCL_BO_FLAGS_CACHEABLE, 0);
   in_ptr_ = xrtBOMap(inBO);
@@ -77,10 +78,10 @@ DpuSfm::DpuSfm(const char* xclbin, vitis::ai::library::OutputTensor& input) {
   for (auto c = 0; c < NUM_OF_CORE; ++c) {
     char cfg_rtp_name[256] = {0};
     char lut_rtp_name[256] = {0};
-    sprintf(cfg_rtp_name, "graph_softmax_conv1d.superkernel[%d].in[1]", c); /*for vai3.0*/
-    //sprintf(cfg_rtp_name, "graph_sfm.superkernel[%d].in[1]", c); /*for vai2.5*/
-    sprintf(lut_rtp_name, "graph_softmax_conv1d.superkernel[%d].in[2]", c);
-    //sprintf(lut_rtp_name, "graph_sfm.superkernel[%d].in[2]", c); /*for vai2.5*/
+    //sprintf(cfg_rtp_name, "graph_softmax_conv1d.superkernel[%d].in[1]", c); /*for vai3.0*/
+    sprintf(cfg_rtp_name, "graph_sfm.superkernel[%d].in[1]", c); /*for vai2.5*/
+    //sprintf(lut_rtp_name, "graph_softmax_conv1d.superkernel[%d].in[2]", c);
+    sprintf(lut_rtp_name, "graph_sfm.superkernel[%d].in[2]", c); /*for vai2.5*/
     xrtGraphUpdateRTP(graph_->g_, cfg_rtp_name, (char*)control_params, 6*sizeof(int32_t));
     xrtGraphUpdateRTP(graph_->g_, lut_rtp_name, (char*)exp_lut_.data(), 256*sizeof(float));
   }
@@ -110,8 +111,8 @@ void DpuSfm::run_with() {
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtSyncBOAIENB(graph_->h_->dhdl, inBO_[b].real->bo,
                      //(std::string("gmio_sfm_a") + std::to_string(c)).c_str(),
-                     (std::string("graph_softmax_conv1d.datain[") + std::to_string(c)+"]").c_str(), /*for vai3.0*/
-                     //(std::string("graph_sfm.datain[") + std::to_string(c)+"]").c_str(), /*for vai2.5*/
+                     //(std::string("graph_softmax_conv1d.datain[") + std::to_string(c)+"]").c_str(), /*for vai3.0*/
+                     (std::string("graph_sfm.datain[") + std::to_string(c)+"]").c_str(), /*for vai2.5*/
                      XCL_BO_SYNC_BO_GMIO_TO_AIE, SFM_INPUT_BYTE,
                      inBO_[b].offset + SFM_INPUT_BYTE * c);
     }
@@ -133,16 +134,16 @@ void DpuSfm::run_with() {
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtSyncBOAIENB(graph_->h_->dhdl, outBO_,
                      //(std::string("gmio_sfm_c") + std::to_string(c)).c_str(),
-                     (std::string("graph_softmax_conv1d.dataout[") + std::to_string(c)+"]").c_str(), /*for vai3.0*/
-                     //(std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str(), /*for vai2.5*/
+                     //(std::string("graph_softmax_conv1d.dataout[") + std::to_string(c)+"]").c_str(), /*for vai3.0*/
+                     (std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str(), /*for vai2.5*/
                      XCL_BO_SYNC_BO_AIE_TO_GMIO, SFM_OUTPUT_BYTE,
                      batch_offset + SFM_OUTPUT_BYTE * c);
     }
     for (auto c = 0; c < NUM_OF_CORE; ++c) {
       xrtGMIOWait(graph_->h_->dhdl,
                   //(std::string("gmio_sfm_c") + std::to_string(c)).c_str());
-                  (std::string("graph_softmax_conv1d.dataout[") + std::to_string(c)+"]").c_str()); /*for vai3.0*/
-                  //(std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str()); /*for vai2.5*/
+                  //(std::string("graph_softmax_conv1d.dataout[") + std::to_string(c)+"]").c_str()); /*for vai3.0*/
+                  (std::string("graph_sfm.dataout[") + std::to_string(c)+"]").c_str()); /*for vai2.5*/
     }
   }
 }

@@ -222,6 +222,8 @@ message SegmentationParam {
   string color1 = 1;
   string color2 = 2;
   string color3 = 3;
+  bool specify_output_layer = 4;
+  string output_tensor_name = 5;
 }
 
 message PlatenumParam {

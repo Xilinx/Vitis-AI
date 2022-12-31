@@ -304,6 +304,23 @@ function(vai_overview_add_dpu_task)
           DESTINATION ${SAMPLE_INATLL_PATH}/dpu_task/${ARG_NAME})
   install(TARGETS test_performance_${ARG_NAME}
           DESTINATION ${SAMPLE_INATLL_PATH}/dpu_task/${ARG_NAME})
+
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_VAI_INSTALL_FOLDER}/demo_${ARG_NAME}_v2.cpp)
+    add_executable(demo_${ARG_NAME}_v2 ${ARG_VAI_INSTALL_FOLDER}/demo_${ARG_NAME}_v2.cpp
+      ${ARG_VAI_INSTALL_FOLDER}/${ARG_NAME}_v2.cpp)
+    add_executable(
+      test_performance_${ARG_NAME}_v2
+      ${ARG_VAI_INSTALL_FOLDER}/test_performance_${ARG_NAME}_v2.cpp
+      ${ARG_VAI_INSTALL_FOLDER}/${ARG_NAME}_v2.cpp)
+    target_link_libraries(demo_${ARG_NAME}_v2 PRIVATE ${ARG_REQUIRE})
+    target_link_libraries(test_performance_${ARG_NAME}_v2 PRIVATE ${ARG_REQUIRE})
+
+    install(TARGETS demo_${ARG_NAME}_v2
+          DESTINATION ${SAMPLE_INATLL_PATH}/dpu_task/${ARG_NAME})
+    install(TARGETS test_performance_${ARG_NAME}_v2
+          DESTINATION ${SAMPLE_INATLL_PATH}/dpu_task/${ARG_NAME})
+  endif()
+  
   if(ARG_VAI_INSTALL_FOLDER)
     foreach(_file ${ARG_SRCS_OBJ})
       install(FILES ${_file}

@@ -26,14 +26,14 @@ namespace clocs {
 
 // constexpr uint32_t MAX_POINTS_NUM = 64;
 // constexpr uint32_t MAX_VOXELS_NUM = 40000;
-enum VoxelType {
-  POINTPILLARS = 0,
-  POINTPILLARS_NUS = 1,
-  CENTERPOINT_WAYMO = 2,
-};
+// enum VoxelType {
+//   POINTPILLARS = 0,
+//   POINTPILLARS_NUS = 1,
+//   CENTERPOINT_WAYMO = 2,
+// };
 
 struct VoxelConfig {
-  VoxelType type;
+  // VoxelType type;
   std::vector<float> input_means;
   std::vector<float> input_scales;
   int max_points_num;              // 20

@@ -38,9 +38,13 @@ static void bgr_to_yuv420(const char *filename) {
     yuvImg_sp420.data[c++] = yuvImg_i420.data[h * w + i];
   }
   auto fp = fopen(out_file.c_str(), "wb");
-  fwrite(yuvImg_sp420.data, h, w * 3 / 2, fp);
-  fclose(fp);
-  LOG(INFO) << "converting " << image_file_name << " to " << out_file;
+  if(fp) {
+    fwrite(yuvImg_sp420.data, h, w * 3 / 2, fp);
+    fclose(fp);
+    LOG(INFO) << "converting " << image_file_name << " to " << out_file;
+  } else {
+    LOG(INFO) << "failed converting " << image_file_name;
+  }
 }
 
 int main(int argc, char *argv[]) {

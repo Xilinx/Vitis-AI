@@ -97,15 +97,6 @@ void BCCImp::cleanmem(unsigned int idx)
 
 void BCCImp::preprocess(const cv::Mat& input_img, int idx) {
   cv::Mat img;
-  float ratio = float(input_img.rows)/float(input_img.cols);
-  if (ratio < float(size.height)/float(size.width)) {
-     new_height[idx] = int(size.width*ratio);
-     new_width[idx] = size.width;
-  } else {
-     new_height[idx] = size.height;
-     new_width[idx] = int(size.height/ratio);
-  }
-
   __TIC__(resize)
   if (cv::Size(new_width[idx], new_height[idx]) != input_img.size()) {
     cv::resize(input_img, img, cv::Size(new_width[idx], new_height[idx]), 0, 0, cv::INTER_LANCZOS4);
@@ -135,12 +126,27 @@ void BCCImp::preprocess(const cv::Mat& input_img, int idx) {
 
 }
 
+void BCCImp::setVarForPostProcess(const cv::Mat& input_img, int idx)
+{
+    float ratio = float(input_img.rows)/float(input_img.cols);
+    if (ratio < float(size.height)/float(size.width)) {
+       new_height[idx] = int(size.width*ratio);
+       new_width[idx] = size.width;
+    } else {
+       new_height[idx] = size.height;
+       new_width[idx] = int(size.height/ratio);
+    }
+}
+
 BCCResult BCCImp::run( const cv::Mat &input_img) {
 
   __TIC__(BCC_total)
   __TIC__(BCC_setimg)
 
   real_batch_size = 1;
+
+
+  setVarForPostProcess(input_img, 0);
   if (need_preprocess_) {
     cleanmem(0);
     preprocess(input_img, 0);
@@ -167,6 +173,9 @@ std::vector<BCCResult> BCCImp::run( const std::vector<cv::Mat> &input_img) {
   __TIC__(BCC_setimg)
 
   real_batch_size = std::min(int(input_img.size()), int(batch_size));
+  for (auto i = 0; i < real_batch_size; i++) {
+    setVarForPostProcess(input_img[i], i);
+  }
   if (need_preprocess_) {
     cleanmem();
     for (auto i = 0; i < real_batch_size; i++) {

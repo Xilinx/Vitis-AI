@@ -50,11 +50,12 @@ def convert_dpu(raw_data, hwInfo, options):
 
     runmode = options.get('control', {}).get('runmode')
 
+    runmachine = options.get('control', {}).get('platform',{}).get('machine',{})
     dpu_parser = DPUEventParser()
     timelines = dpu_parser.parse(
             raw_data, hwInfo, {"time_offset": offset, "time_limit": timeout, "runmode": runmode})
 
-    dpu_profile_summary = dpu_parser.get_dpu_profile_summary("txt")
+    dpu_profile_summary = dpu_parser.get_dpu_profile_summary( {"run_machine": runmachine}, "txt")
 
     """extracting all strings"""
     for dpu in timelines:
@@ -81,9 +82,8 @@ DPU_TABLE_NOTES = \
 Bat: Batch size of the DPU instance
 WL(Work Load): Computation workload (MAC indicates two operations), unit is GOP
 SW_RT(Software Run time): The execution time calculate by software in milliseconds, unit is ms
-HW_RT(Hareware Run time): The execution time from hareware operation in milliseconds, unit is ms
+HW_RT(Hareware Run time): The execution time from hardware counter in milliseconds, unit is ms
 Effic(Efficiency): The DPU actual performance divided by peak theoretical performance,unit is %
-Perf(Performance): The DPU performance in unit of GOP per second, unit is GOP/s
 LdFM(Load Size of Feature Map): External memory load size of feature map, unit is MB
 LdWB(Load Size of Weight and Bias): External memory load size of bias and weight, unit is MB
 StFM(Store Size of Feature Map): External memory store size of feature map, unit is MB
@@ -91,8 +91,20 @@ AvgBw(Average bandwidth): External memory average bandwidth. unit is MB/s
 ....
 """
 
+DPU_TABLE_CLOUD_NOTES = \
+    """
+"~0": Value is close to 0, Within range of (0, 0.001)
+Bat: Batch size of the DPU instance
+WL(Work Load): Computation workload (MAC indicates two operations), unit is GOP
+SW_RT(Software Run time): The execution time calculate by software in milliseconds, unit is ms
+LdFM(Load Size of Feature Map): External memory load size of feature map, unit is MB
+LdWB(Load Size of Weight and Bias): External memory load size of bias and weight, unit is MB
+StFM(Store Size of Feature Map): External memory store size of feature map, unit is MB
+AvgBw(Average bandwidth): External memory average bandwidth. unit is MB/s
+....
+"""
 
-def print_dpu_table(dpu_summary_data):
+def print_dpu_table(dpu_summary_data, runmachine):
     """
     ['subgraph_conv1,651,DPUCZDX8G_1:batch-1,0.067,11.461,34.191,7.718,673.388,49.947,4357.893,\n',
      'subgraph_conv1,215,DPUCZDX8G_2:batch-1,34.404,34.585,45.104,7.718,223.155,49.947,1444.167,\n']
@@ -101,6 +113,9 @@ def print_dpu_table(dpu_summary_data):
     #freq = hwin_summary_data[0]
     header = ['DPU Id', 'Bat', 'DPU SubGraph',
               'WL', 'SW_RT', 'HW_RT', 'Effic', 'LdWB', 'LdFM', 'StFM', 'AvgBw']
+
+    header_cloud = ['DPU Id', 'Bat', 'DPU SubGraph',
+                          'WL', 'SW_RT', 'LdWB', 'LdFM', 'StFM', 'AvgBw']
     pr_data = []
     # pr_data.append(header)
 
@@ -130,19 +145,29 @@ def print_dpu_table(dpu_summary_data):
         hw_rt = items[12]
         rank_id = int(items[13])
         #bandwidth = "{:,}".format(round(float(items[11])))
+        if runmachine == "aarch64":
+            pr_data.append([ip_name, ip_batch, subgraph_name,
+                workload, ave_t, hw_rt, effic, mem_ld_fm, mem_ld_w, mem_st_fm, mem_io_bw, rank_id])
+        elif runmachine == "x86_64":
+            pr_data.append([ip_name, ip_batch, subgraph_name,
+                workload, ave_t, mem_ld_fm, mem_ld_w, mem_st_fm, mem_io_bw, rank_id])
 
-        pr_data.append([ip_name, ip_batch, subgraph_name,
-                        workload, ave_t, hw_rt, effic, mem_ld_fm, mem_ld_w, mem_st_fm, mem_io_bw, rank_id])
+        
 
     pr_data.sort(key=lambda a: (a.pop() + (hash(a[0]) % 128) * 4096))
 
     if len(pr_data) == 0:
         return
-
-    pr_data.insert(0, header)
+    if runmachine == "aarch64":
+        pr_data.insert(0, header)
+    elif runmachine == "x86_64":
+        pr_data.insert(0, header_cloud)
     print("DPU Summary:", file=output_f)
     print_ascii_table(pr_data, output_f)
-    print("\nNotes:%s" % DPU_TABLE_NOTES, file=output_f)
+    if runmachine == "aarch64":
+        print("\nNotes:%s" % DPU_TABLE_NOTES, file=output_f)
+    elif runmachine == "x86_64":
+        print("\nNotes:%s" % DPU_TABLE_CLOUD_NOTES, file=output_f)
 
 
 def print_cpu_task_table(cpu_task_summary):
@@ -238,15 +263,15 @@ def print_cpu_func_table(cpp_summary, py_summary):
 
 
 # Statistical information for DPU kernels(min/max time etc.)
-def output_profile_summary():
+def output_profile_summary(runmachine):
     global pyFuncSummary, cpuTaskSummary, cppFuncSummary, dpu_profile_summary
 
-    print_dpu_table(dpu_profile_summary)
+    print_dpu_table(dpu_profile_summary, runmachine)
     print_cpu_task_table(cpuTaskSummary)
     print_cpu_func_table(cppFuncSummary, pyFuncSummary)
 
 
-def output(saveTo=None):
+def output(runmachine, saveTo=None):
     global output_f
 
     if saveTo != None:
@@ -257,17 +282,18 @@ def output(saveTo=None):
             output_f = sys.stdout
             logging.error("Fail opening: %s" % saveTo)
 
-    output_profile_summary()
+    output_profile_summary(runmachine)
 
 
 def xat_to_txt(xat, options):
     global XRT_INFO, DEBUG_MODE, cpuTaskSummary, cppFuncSummary, pyFuncSummary
 
     saveTo = options.get('cmdline_args', {}).get('output', None)
+    runmachine = options.get('control', {}).get('platform',{}).get('machine',{})
 
     convert_dpu(xat.get('vart'), xat.get('hwInfo'), options)
     cpuTaskSummary = convert_cpu_task(xat.get('vart', {}))
     pyFuncSummary = convert_pyfunc(xat.get('pyfunc', {}))
     cppFuncSummary = convert_cppfunc(xat.get('function', {}))
 
-    output(saveTo)
+    output(runmachine,saveTo)

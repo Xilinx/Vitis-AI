@@ -248,6 +248,9 @@ int main(int argc, char* argv[]) {
 
       cout << "========================" << endl;
     }
+  if(output != nullptr) delete []output;
+  if(output_neon != nullptr) delete []output_neon;
+  if(output_neon_table != nullptr) delete []output_neon_table;
 
   return 0;
 }

@@ -113,8 +113,10 @@ class FaceQualityOnnx : public OnnxTask {
     auto input_shape = input_shapes[0];
     int total_number_elements = calculate_product(input_shape);
     std::vector<float> input_tensor_values(total_number_elements);
+    auto hw_batch = input_shape[0];
+    auto valid_batch = std::min((int)hw_batch, (int)batch_images.size());
 
-    preprocess(batch_images, input_tensor_values, input_shape);
+    preprocess(batch_images, input_tensor_values, input_shape, valid_batch);
 
     std::vector<Ort::Value> input_tensors = convert_input(
         input_tensor_values, input_tensor_values.size(), input_shape);
@@ -122,24 +124,24 @@ class FaceQualityOnnx : public OnnxTask {
     std::vector<Ort::Value> output_tensors;
     run_task(input_tensors, output_tensors);
 
-    auto results = postprocess(output_tensors);
+    auto results = postprocess(output_tensors, valid_batch);
     return results;
   }
 
  protected:
   void preprocess(const std::vector<cv::Mat>& images,
                   std::vector<float>& input_tensor_values,
-                  std::vector<int64_t>& input_shape) {
-    auto batch = input_shape[0];
+                  std::vector<int64_t>& input_shape, int valid_batch) {
+    // auto batch = input_shape[0];
     auto channel = input_shape[1];
     auto height = input_shape[2];
     auto width = input_shape[3];
     auto batch_size = channel * height * width;
     auto size = cv::Size(width, height);
-    CHECK_EQ(images.size(), batch)
-        << "images number be read into input buffer must be equal to batch";
+    // CHECK_EQ(images.size(), batch)
+    //    << "images number be read into input buffer must be equal to batch";
 
-    for (auto index = 0; index < batch; ++index) {
+    for (auto index = 0; index < valid_batch; ++index) {
       auto resize_image = preprocess_image(images[index], size);
       set_input_image(resize_image,
                       input_tensor_values.data() + batch_size * index);
@@ -147,7 +149,7 @@ class FaceQualityOnnx : public OnnxTask {
   }
 
   std::vector<FaceQualityOnnxResult> postprocess(
-      std::vector<Ort::Value>& output_tensors) {
+      std::vector<Ort::Value>& output_tensors, int valid_batch) {
     std::vector<FaceQualityOnnxResult> results;
     auto input_width = getInputWidth();
     auto input_height = getInputHeight();
@@ -158,17 +160,17 @@ class FaceQualityOnnx : public OnnxTask {
     auto output_point_shape =
         output_tensors[0].GetTensorTypeAndShapeInfo().GetShape();
 
-    auto batch = output_point_shape[0];
+    auto hw_batch = output_point_shape[0];
     auto channel = output_point_shape[1];
 
-    for (auto index = 0; index < batch; ++index) {
+    for (auto index = 0; index < valid_batch; ++index) {
       // 5 points
       auto points = std::unique_ptr<std::array<std::pair<float, float>, 5>>(
           new std::array<std::pair<float, float>, 5>());
       auto total_number_elements =
           output_tensors[0].GetTensorTypeAndShapeInfo().GetElementCount();
       // auto size = total_number_elements / batch * sizeof(float);
-      auto size = total_number_elements / batch;
+      auto size = total_number_elements / hw_batch;
       for (auto i = 0u; i < points->size(); i++) {
         auto x = point_layer_ptr[size * index + i] / input_width;
         auto y = point_layer_ptr[size * index + i + channel / 2] / input_height;

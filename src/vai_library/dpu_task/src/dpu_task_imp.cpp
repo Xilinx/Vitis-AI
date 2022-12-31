@@ -240,30 +240,32 @@ DpuTaskImp::~DpuTaskImp() {  //
 void DpuTaskImp::run(size_t idx) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
       << "running dpu task " << model_name_ << "[" << idx << "]";
-  auto inputs =
-      dynamic_cast<vart::RunnerExt*>(runners_[idx].get())->get_inputs();
-  auto outputs =
-      dynamic_cast<vart::RunnerExt*>(runners_[idx].get())->get_outputs();
-  std::pair<uint32_t, int> v;
-  for (auto input : inputs) {
-    input->sync_for_write(0, input->get_tensor()->get_data_size() /
-                                 input->get_tensor()->get_shape()[0]);
-  }
-  if (ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME)) {
-    auto start = std::chrono::steady_clock::now();
-    v = runners_[idx]->execute_async(inputs, outputs);
-    auto end = std::chrono::steady_clock::now();
-    auto time =
-        std::chrono::duration_cast<std::chrono::microseconds>(end - start)
-            .count();
-    TimeMeasure::getThreadLocalForDpu().add(int(time));
-  } else {
-    v = runners_[idx]->execute_async(inputs, outputs);
-  }
-  runners_[idx]->wait((int)v.first, -1);
-  for (auto output : outputs) {
-    output->sync_for_read(0, output->get_tensor()->get_data_size() /
-                                 output->get_tensor()->get_shape()[0]);
+  auto vin = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
+  auto vout = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
+  if (vin && vout ) {
+     auto inputs = vin->get_inputs();
+     auto outputs = vout->get_outputs();
+     std::pair<uint32_t, int> v;
+     for (auto input : inputs) {
+       input->sync_for_write(0, input->get_tensor()->get_data_size() /
+                                    input->get_tensor()->get_shape()[0]);
+     }
+     if (ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME)) {
+       auto start = std::chrono::steady_clock::now();
+       v = runners_[idx]->execute_async(inputs, outputs);
+       auto end = std::chrono::steady_clock::now();
+       auto time =
+           std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+               .count();
+       TimeMeasure::getThreadLocalForDpu().add(int(time));
+     } else {
+       v = runners_[idx]->execute_async(inputs, outputs);
+     }
+     runners_[idx]->wait((int)v.first, -1);
+     for (auto output : outputs) {
+       output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                    output->get_tensor()->get_shape()[0]);
+     }
   }
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
       << "dpu task " << model_name_ << "[" << idx << "]";
@@ -718,19 +720,21 @@ get_all_input_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners) {
   input_tensors.reserve(runners.size());
   for (auto& runner : runners) {
     auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
-    auto inputs = dpu_runner_ext->get_inputs();
-    //# Get the current format
-    auto fmt = runner->get_tensor_format();
-    auto ret = std::vector<vitis::ai::library::InputTensor>{};
-    ret.reserve(inputs.size());
-    int c = 0;
-    for (auto& t : inputs) {
-      ret.emplace_back(convert_tensor_buffer_to_input_tensor(t, fmt));
-      LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
-          << "input tensor[" << c << "]: " << ret.back();
-      c++;
+    if (dpu_runner_ext ) {
+      auto inputs = dpu_runner_ext->get_inputs();
+      //# Get the current format
+      auto fmt = runner->get_tensor_format();
+      auto ret = std::vector<vitis::ai::library::InputTensor>{};
+      ret.reserve(inputs.size());
+      int c = 0;
+      for (auto& t : inputs) {
+        ret.emplace_back(convert_tensor_buffer_to_input_tensor(t, fmt));
+        LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
+            << "input tensor[" << c << "]: " << ret.back();
+        c++;
+      }
+      input_tensors.emplace_back(ret);
     }
-    input_tensors.emplace_back(ret);
   }
   return input_tensors;
 }
@@ -806,11 +810,13 @@ std::vector<vitis::ai::library::OutputTensor> DpuTaskImp::getOutputTensor(
 }
 
 size_t DpuTaskImp::get_input_batch(size_t kernel_idx, size_t node_idx) const {
-  return dynamic_cast<vart::RunnerExt*>(runners_[kernel_idx].get())
+  auto v = dynamic_cast<vart::RunnerExt*>(runners_[kernel_idx].get());
+  return v ? v
       ->get_inputs()[node_idx]
       ->get_tensor()
       ->get_shape()
-      .at(0);
+      .at(0)
+    :  0 ;
 }
 
 size_t DpuTaskImp::get_num_of_kernels() const {  //

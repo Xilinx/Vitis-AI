@@ -80,7 +80,7 @@ def dpuEventPaired(start: vaiTimelineEvent, end: vaiTimelineEvent):
     start.startTime = start.ts
     start.endTime = end.ts
     start.duration = start.endTime - start.startTime
-    start.hwcounter = int(end.info.get("hwconuter"), 0)
+    start.hwcounter = int(end.info.get("hwconuter",0))
 
     return start
 

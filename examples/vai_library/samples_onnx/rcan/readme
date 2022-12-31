@@ -32,6 +32,10 @@ Important:
 
    run the executable file.
 
-    sample : env DEBUG_USE_NEW_SCHEDULE=0 ./test_rcan_onnx /usr/share/vitis_ai_library/models/ofa_rcan_latency_onnx_pt/ofa_rcan_latency_onnx_pt.onnx sample_rcan.png
+    sample : ./test_rcan_onnx /usr/share/vitis_ai_library/models/ofa_rcan_latency_onnx_pt/ofa_rcan_latency_onnx_pt.onnx sample_rcan.png
     output : 
 batch_0.jpg
+
+
+Performance:
+sample: ./test_performance_rcan_onnx /usr/share/vitis_ai_library/models/ofa_rcan_latency_onnx_pt/ofa_rcan_latency_onnx_pt.onnx -s 60 -t 1 ./test_performance_rcan.list

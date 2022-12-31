@@ -539,13 +539,13 @@ class TestNormalizePerf : public ::testing::Test {
   }
 
  protected:
-  int height;
-  int width;
-  int channel;
-  int output_fix_pos;
-  int8_t *input;
-  int8_t *output;
-  float *scale;
+  int height=0;
+  int width=0;
+  int channel=0;
+  int output_fix_pos=0;
+  int8_t *input=nullptr;
+  int8_t *output=nullptr;
+  float *scale=nullptr;
 };
 
 TEST_F(TestNormalizePerf, Test_Perf_NEON_AS_NCS_512x64x64) {

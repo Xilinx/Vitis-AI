@@ -28,7 +28,8 @@
 using namespace std;
 
 struct Point {
-  float x, y;
+  float x=0.0;
+  float y=0.0;
   Point() {}
   Point(double _x, double _y) { x = _x, y = _y; }
 
@@ -77,9 +78,9 @@ using namespace std;
 template <class T> 
 struct T3D {
   std::vector<T> data;
-  size_t height;
-  size_t width;
-  size_t channel;
+  size_t height=0;
+  size_t width=0;
+  size_t channel=0;
   bool check_dim() {
     if (height * width * channel == data.size()) {
       return true;

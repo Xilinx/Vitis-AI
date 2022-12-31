@@ -32,7 +32,7 @@ Important:
 
    run the executable file.
 
-    sample : env DEBUG_USE_NEW_SCHEDULE=0 ./test_textmountain_onnx /usr/share/vitis_ai_library/models/textmountain_onnx_pt/textmountain_onnx_pt.onnx sample_textmountain.jpg
+    sample : ./test_textmountain_onnx /usr/share/vitis_ai_library/models/textmountain_onnx_pt/textmountain_onnx_pt.onnx sample_textmountain.jpg
     output : 
 batch-0
 30,213,31,34,924,40,923,218,0.999417
@@ -45,9 +45,12 @@ batch-0
 521,1066,746,1066,746,1210,521,1210,0.99957
 161,1093,469,1093,469,1237,161,1237,0.99933
 
+Performance:
+sample: ./test_performance_textmountain_onnx /usr/share/vitis_ai_library/models/textmountain_onnx_pt/textmountain_onnx_pt.onnx -s 60 -t 1 ./test_performance_textmountain.list
+
 
 Accuracy:
     test accuracy of textmountain_onnx_pt:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_textmountain_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    ./test_accuracy_textmountain_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
     sample:
-    env DEBUG_USE_NEW_SCHEDULE=0 ./test_accuracy_textmountain_onnx /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx textmountain_dataset/ image.list result.txt -t 2
+    ./test_accuracy_textmountain_onnx /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx textmountain_dataset/ image.list result.txt -t 2

@@ -189,8 +189,8 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
     vector<int>& special_k) {
   vector<vector<int>> subset(0, vector<int>(16, -1));
   Peaks candidate;
-  for (auto peaks : all_peaks) {
-    for (auto peak : peaks) {
+  for (auto& peaks : all_peaks) {
+    for (auto& peak : peaks) {
       candidate.emplace_back(peak);
     }
   }
@@ -254,8 +254,6 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
     }
   }
   for (size_t i = 0; i < subset.size(); ++i) {
-    for (size_t j = 0; j < subset[i].size(); ++j) {
-    }
     if (subset[i][15] < 4 || subset[i][14] / subset[i][15] < 0.4) {
       subset.erase(subset.begin() + i);
       --i;

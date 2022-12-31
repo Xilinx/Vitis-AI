@@ -1564,18 +1564,18 @@ void forward_strided_slice(xir::Op* cur, std::vector<std::int32_t> begin,
   //   end[shrink_axis_mask - 1] = begin[shrink_axis_mask - 1] + 1;
   std::int32_t in_shape_num =
       cur->get_input_tensor("input")->get_shape().size();
-  int* indata = nullptr;
+  std::vector<std::int32_t> indata;
   auto in_shape = cur->get_input_tensor("input")->get_shape();
   auto in_size = cur->get_input_tensor("input")->get_element_num();
   auto its = cur->get_input_tensors();
   for (auto it : its) {
     if (it->has_attr("shape_info")) {
       auto si = it->get_attr<std::vector<std::int32_t>>("shape_info");
-      indata = new int[si.size()];
+      indata.resize(si.size());
       for (auto i = 0; i < in_size; i++) indata[i] = si[i];
     }
   }
-  if (indata == nullptr) return;
+  if (indata.empty()) return;
   UNI_LOG_CHECK(begin.size() == (unsigned int)in_shape_num,
                 XIR_INVALID_ARG_OCCUR)
       << "the size of begin is: " << begin.size()

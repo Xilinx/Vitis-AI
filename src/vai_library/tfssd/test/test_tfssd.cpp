@@ -29,12 +29,15 @@ int main(int argc, char *argv[]) {
 
   Mat img = cv::imread(argv[2]);
   if (img.empty()) {
-    cerr << "cannot load " << argv[1] << endl;
+    cerr << "cannot load " << argv[2] << endl;
     abort();
   }
 
   auto ssd = vitis::ai::TFSSD::create(argv[1], true);
-
+  if (!ssd) {
+    cerr << "cannot create " << argv[1] << endl;
+    abort();
+  }
   int width = ssd->getInputWidth();
   int height = ssd->getInputHeight();
 

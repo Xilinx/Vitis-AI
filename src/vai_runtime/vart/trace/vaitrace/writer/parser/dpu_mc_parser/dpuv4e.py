@@ -26,10 +26,10 @@ class dpuv4eInstParser(dpuMcParserBase):
             self.inst_desc("CONVINIT", 0b1001, 5),
             self.inst_desc("DPTWISE", 0b1010, 5),
             self.inst_desc("DWINIT", 0b1011, 4),
-            self.inst_desc("POOLINIT", 0b0110, 3),
-            self.inst_desc("POOL", 0b1100, 4),
+            self.inst_desc("POOLINIT", 0b0110, 4),
+            self.inst_desc("POOL", 0b1100, 5),
             self.inst_desc("ELEWINIT", 0b1101, 2),
-            self.inst_desc("ELEW", 0b1110, 3),
+            self.inst_desc("ELEW", 0b1110, 4),
             self.inst_desc("END", 0b0111, 1)
         ]
 

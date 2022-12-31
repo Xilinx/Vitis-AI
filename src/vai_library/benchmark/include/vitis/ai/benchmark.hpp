@@ -130,7 +130,9 @@ static void report(std::ostream* p_out) {
   float fps = ((float)g_total) / sec;
   out << "FPS=" << fps << "\n";
   out << "E2E_MEAN=" << g_e2e_mean << "\n";
-  out << "DPU_MEAN=" << g_dpu_mean << "\n";
+  if (g_dpu_mean>0.01) {
+    out << "DPU_MEAN=" << g_dpu_mean << "\n";
+  }
   out << std::flush;
   return;
 }

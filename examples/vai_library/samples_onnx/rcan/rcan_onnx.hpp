@@ -67,18 +67,18 @@ void get_output_image(cv::Mat& image, const float* data) {
 
 static void preprocess(const std::vector<cv::Mat>& images,
                        std::vector<float>& input_tensor_values,
-                       std::vector<int64_t>& input_shape) {
-  auto batch = input_shape[0];
+                       std::vector<int64_t>& input_shape, int valid_batch) {
+  // auto batch = input_shape[0];
   auto channel = input_shape[1];
   auto height = input_shape[2];
   auto width = input_shape[3];
   auto batch_size = channel * height * width;
 
   auto size = cv::Size((int)width, (int)height);
-  CHECK_EQ(images.size(), batch)
-      << "images number be read into input buffer must be equal to batch";
+  // CHECK_EQ(images.size(), batch)
+  //    << "images number be read into input buffer must be equal to batch";
 
-  for (auto index = 0; index < batch; ++index) {
+  for (auto index = 0; index < valid_batch; ++index) {
     cv::Mat resize_image;
     if (images[index].size() != size) {
       cv::resize(images[index], resize_image, size);
@@ -90,17 +90,18 @@ static void preprocess(const std::vector<cv::Mat>& images,
   }
 }
 
-std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor) {
+std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor,
+                                        int valid_batch) {
   std::vector<RcanOnnxResult> results;
   auto output_shape = output_tensor.GetTensorTypeAndShapeInfo().GetShape();
-  auto batch = output_shape[0];
+  // auto batch = output_shape[0];
   // auto channel = output_shape[1];
   auto width = output_shape[3];
   auto height = output_shape[2];
   // LOG(INFO) << "batch:" << batch << ", channel:" << channel
   //          << ", width:" << width << ", height:" << height;
   auto output_tensor_ptr = output_tensor.GetTensorMutableData<float>();
-  for (auto index = 0; index < batch; ++index) {
+  for (auto index = 0; index < valid_batch; ++index) {
     cv::Mat result_img = cv::Mat(height, width, CV_8UC3);
     __TIC__(GET_OUTPUT_IMAGE)
     get_output_image(result_img, output_tensor_ptr);
@@ -145,8 +146,11 @@ class RcanOnnx : public OnnxTask {
     auto input_shape = input_shapes[0];
     int total_number_elements = calculate_product(input_shape);
     std::vector<float> input_tensor_values(total_number_elements, 0.f);
+    auto hw_batch = input_shape[0];
+    auto valid_batch = std::min((int)hw_batch, (int)batch_images.size());
     __TIC__(PRE)
-    this->preprocess(batch_images, input_tensor_values, input_shape);
+    this->preprocess(batch_images, input_tensor_values, input_shape,
+                     valid_batch);
     __TOC__(PRE)
 
     std::vector<Ort::Value> input_tensors = convert_input(
@@ -158,7 +162,7 @@ class RcanOnnx : public OnnxTask {
     __TOC__(RUN)
 
     __TIC__(POST)
-    auto results = this->postprocess(output_tensors[0]);
+    auto results = this->postprocess(output_tensors[0], valid_batch);
     __TOC__(POST)
     return results;
   }
@@ -166,12 +170,13 @@ class RcanOnnx : public OnnxTask {
  protected:
   void preprocess(const std::vector<cv::Mat>& images,
                   std::vector<float>& input_tensor_values,
-                  std::vector<int64_t>& input_shape) {
-    ::preprocess(images, input_tensor_values, input_shape);
+                  std::vector<int64_t>& input_shape, int valid_batch) {
+    ::preprocess(images, input_tensor_values, input_shape, valid_batch);
   }
 
-  std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor) {
-    return ::postprocess(output_tensor);
+  std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor,
+                                          int valid_batch) {
+    return ::postprocess(output_tensor, valid_batch);
   }
 };
 

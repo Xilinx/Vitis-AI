@@ -56,9 +56,9 @@ class FTD_Filter_Linear {
   std::array<float, 8> paray;
   std::array<float, 8> paras;
   std::array<float, 4> parar;
-  float frame_id;
-  float frame_start;
-  float frame_max;
+  float frame_id=0.0;
+  float frame_start=0.0;
+  float frame_max=0.0;
   std::array<int, 4> allregion;
 };
 

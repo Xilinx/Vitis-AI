@@ -33,6 +33,9 @@ class SegmentationImp : public vitis::ai::TConfigurableDpuTask<Segmentation> {
   virtual SegmentationResult run_8UC3(const cv::Mat& image) override;
   virtual std::vector<SegmentationResult> run_8UC3(
       const std::vector<cv::Mat>& images) override;
+
+ private:
+  int output_tensor_index_;
 };
 
 }  // namespace ai

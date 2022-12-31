@@ -158,10 +158,7 @@ int test_main(const int width, const int height, const int c) {
   vitis::ai::max_index_void(d, width, height, c, results_neon);
   __TOC__(neon)
   __TIC__(neon1)
-  auto rr = vitis::ai::max_index(d, width, height, c);
-  if (0) {
-    rr.size();
-  }
+  auto rr = vitis::ai::max_index(d, width, height, c);  (void)rr;
   __TOC__(neon1)
   auto x = std::memcmp(&results_neon[0], &results_c[0], g);
   if (x != 0) {
@@ -180,6 +177,8 @@ int test_main(const int width, const int height, const int c) {
         break;
       }
     }
+    delete[] results_c;
+    delete[] d;
     abort();
   }
   delete[] results_c;

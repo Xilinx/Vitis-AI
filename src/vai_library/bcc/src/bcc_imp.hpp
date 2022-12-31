@@ -40,6 +40,7 @@ class BCCImp
   std::vector<float> mean;
   std::vector<float> scale;
   bool need_preprocess_= true;
+  void setVarForPostProcess(const cv::Mat& img, int idx);
   void preprocess(const cv::Mat& img, int idx);
   virtual BCCResult run(const cv::Mat &img) override;
   virtual std::vector<BCCResult> run( const std::vector<cv::Mat> &img) override;
