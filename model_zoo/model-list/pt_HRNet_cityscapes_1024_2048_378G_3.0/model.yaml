@@ -37,4 +37,14 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck190-r3.0.0.tar.gz
   checksum: 8842eb923070de586d6fb8e502788f0e
+- name: HRNet_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: cd53090103e4f49061380e3b45c9d416
+- name: HRNet_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 848f24e33aa836511c82400e1997ef4c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

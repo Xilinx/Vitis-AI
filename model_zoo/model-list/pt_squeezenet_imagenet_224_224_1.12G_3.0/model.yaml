@@ -38,34 +38,4 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck190-r3.0.0.tar.gz
   checksum: 9bd2c99c724dc3a51702743d4341c35f
-- name: squeezenet_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 2cb433122da2e689980c62f76c008ce1
-- name: squeezenet_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: 8b7d965c24df4bb141dbb2918489df79
-- name: squeezenet_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: afa4e4b990e11cbcdfef7b3c46467a22
-- name: squeezenet_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: 839300eb0e8b334c879f8846e1fbd03a
-- name: squeezenet_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: c79f58fcb092aa2236f28b511f35802d
-- name: squeezenet_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: 7f099ef1241cddafc79a1dc9a5a097fe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

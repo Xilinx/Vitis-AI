@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: b2e30855cbd0a07aefc371fdf16ded9c
+  checksum: 532f0321f20447af1f162f5b7d70264b
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: d9b1974f35e73f67d8f5c2107ba84afa
+  checksum: 42ccf069d0a8be39baa71e56779e901e
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 58422e5c8cd6f72efd5ad361acf5c0e0
+  checksum: 60f6785608e48936d143e2de62031359
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 9234fc892a0a2c976c992a2bdea6481f
-- name: ssd_resnet_50_fpn_coco_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: bdbfe870dc486165b0d577118c31cb7c
-- name: ssd_resnet_50_fpn_coco_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: da8615ae24d501405f4299e3c9e59fba
+  checksum: d85b86bc20037480b23d673f28295ff3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

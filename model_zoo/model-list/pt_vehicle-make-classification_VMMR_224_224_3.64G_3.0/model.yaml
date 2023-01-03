@@ -40,31 +40,21 @@ files:
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 3b82d47ed2ecccb2173899d943bddd18
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: f03870628a28866e2c4d1ca1d515e56c
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: b27920f49a1662e9aeecb2e0a1c83235
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: b9eb43ac67565d95007784b6073c3436
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 28b0e2257125d1606a78cead448df233
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 770424370ddc0ce50874a9ca4c7f8d8b
 - name: vehicle_make_resnet18_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: d79c73297f318f3a6a898ddafa619765
-- name: vehicle_make_resnet18_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: f944c42a8dd5d7b3c1186b04db0f01f4
-- name: vehicle_make_resnet18_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: 6425f8eecd5c7c5a7c64bfce7f9966d1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_make_resnet18_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: e5c643e545134a4f0c824af4a72f2321
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

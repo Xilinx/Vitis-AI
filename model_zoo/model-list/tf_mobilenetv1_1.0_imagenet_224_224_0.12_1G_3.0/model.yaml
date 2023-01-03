@@ -41,15 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_pruned_0_12_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 14c4796e71ee0baa051fb034d026fd99
+  checksum: af83de8bfacc01576483ea05496651b0
 - name: mobilenet_v1_1_0_224_pruned_0_12_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_pruned_0_12_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 836ec7e51181684b6d994b891b95f18a
-- name: mobilenet_v1_1_0_224_pruned_0_12_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v1_1_0_224_pruned_0_12_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 76f2c28d53974bcf76cea8c211aa4b6e
+  checksum: cafa10c512d80919de29165fc631b4fe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

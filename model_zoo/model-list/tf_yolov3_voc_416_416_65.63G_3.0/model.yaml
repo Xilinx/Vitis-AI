@@ -46,30 +46,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: b8b5071637722a5bbd686a47f8f4059c
+  checksum: 0e5506cec8aa107f6e97cb146886042e
 - name: yolov3_voc_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 26f6f19140622c193ce6d556a71e8991
+  checksum: d81a0423e991370746884e365984ab8f
 - name: yolov3_voc_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: c6601cea679fce0def98ad3a9fe1a721
+  checksum: f96abec95913536f7d20ef302a5e7d81
 - name: yolov3_voc_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: c0cf0e96d522d8a0d4ccec5b18923683
-- name: yolov3_voc_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: a2537cf5071f58acf34050846b72cf5b
-- name: yolov3_voc_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: a6c4892bcf45ab7a5cac69836a4967e7
+  checksum: 41af72a743346a8dfc690ace90e8e824
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

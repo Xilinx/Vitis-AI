@@ -37,4 +37,19 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5s6_pt-vck190-r3.0.0.tar.gz
   checksum: 19edb37bd44b0e23c90a9b806460dfbe
+- name: yolov5s6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5s6_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 79a88e6b9b5514a8d891a33d42ad10b5
+- name: yolov5s6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5s6_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: c6393c1f9fb82377bc514dca32a62b15
+- name: yolov5s6_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5s6_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 0ced5b07d06d39d3a5b7cd89956ffeda
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

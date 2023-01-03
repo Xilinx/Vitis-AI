@@ -41,5 +41,5 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v3_small_1_0_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: bfacde3922c097898967092efa3e386f
+  checksum: b22e84f7bac643c007d724d6ea966108
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

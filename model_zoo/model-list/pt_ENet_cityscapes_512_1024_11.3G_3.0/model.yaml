@@ -39,22 +39,22 @@ files:
   checksum: 15a96b1254677d5c90274598d73d5dfd
 - name: ENet_cityscapes_pt
   type: xmodel
-  board: vck50006pe-DPUCVDX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck50006pe-DPUCVDX8H-DWC-r2.0.0.tar.gz
-  checksum: 8f528fd3de57c53103f7c67e7122c7d9
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 6172d9b1d4ed3a35fa1d224052cb20df
 - name: ENet_cityscapes_pt
   type: xmodel
-  board: vck50008pe-DPUCVDX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck50008pe-DPUCVDX8H-r2.0.0.tar.gz
-  checksum: fe07726324b25dbfb111d3c34feaff85
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 0089f700bcd77a9d95cca1df6a2a8c48
 - name: ENet_cityscapes_pt
   type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u50lv-DPUCAHX8H-r2.0.0.tar.gz
-  checksum: 00387789ae764166df496719622764cb
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 1b17a59843db6bce3253916a9736c646
 - name: ENet_cityscapes_pt
   type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.0.0.tar.gz
-  checksum: d8801068b4549f00979419f333e60fab
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: d3357c2a1a8c5bd9d8b2e4f90ebd3726
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

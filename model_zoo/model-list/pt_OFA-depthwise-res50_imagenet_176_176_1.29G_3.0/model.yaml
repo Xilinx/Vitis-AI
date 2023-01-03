@@ -40,16 +40,11 @@ files:
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 22fe93c9d654a1a43ec7c73c6b927377
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 42621cfb7077f03719bac857e7f78d3f
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: f1939ba9d063f2cc3df44c892d6d18fd
-- name: ofa_depthwise_res50_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: 5dec2aed5a5b6d26564a13f8929ff483
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: a51c764badaffc18baf533234f58df8d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

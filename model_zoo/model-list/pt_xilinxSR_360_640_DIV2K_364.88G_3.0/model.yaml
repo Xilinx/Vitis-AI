@@ -37,4 +37,24 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck190-r3.0.0.tar.gz
   checksum: 40cf73901a101e1c386e3a419852911d
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 75bfed876280a20ad92f43fa9c21fda8
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 6cd63fd3e89e27076f41acbef152e5f6
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: f06aef05eb647e5fdecf7304865e1db8
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 150588b7a51d76d9ae3f6e27af1e37d9
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

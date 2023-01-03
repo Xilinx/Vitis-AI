@@ -37,4 +37,19 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-vck190-r3.0.0.tar.gz
   checksum: 78de8eb44da53e4509ad4972fc8ece20
+- name: pmg_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: daba8b7b8b4920d1f46aca4c203222df
+- name: pmg_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 8a2fc7d752123a8b9dcb72d2d3ef22d6
+- name: pmg_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pmg_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 9c6cc9df140a8d40ee1debd74ca25278
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
