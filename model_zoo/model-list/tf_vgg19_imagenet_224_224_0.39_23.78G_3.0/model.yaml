@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_pruned_0_39_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: c02dc548f071e615d92d181dfaa413d3
+  checksum: 07b5529fd8d08964e20b9405c5826aff
 - name: vgg_19_pruned_0_39_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_19_pruned_0_39_tf-vck190-r3.0.0.tar.gz
-  checksum: c26b58778b78ffd049eb38d350e72a43
+  checksum: 357c80da7f298cb0047ca3cc98f24c55
 - name: vgg_19_pruned_0_39_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

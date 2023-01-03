@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_pruned_0_51_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 23f65a9f98b979e2a38685620f1241b7
+  checksum: 3e690be867e2f5e9f0115d81db8b4cec
 - name: resnet_v1_152_pruned_0_51_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v1_152_pruned_0_51_tf-vck190-r3.0.0.tar.gz
-  checksum: cd92ec8993aa4faaef2a48bb3f395146
+  checksum: 4fede2d40d358114755d61bfcb50c10f
 - name: resnet_v1_152_pruned_0_51_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

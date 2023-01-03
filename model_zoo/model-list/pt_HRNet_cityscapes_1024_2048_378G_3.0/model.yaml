@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 2c7f250c4b7cb82275c7e4dc1bafd9fd
+  checksum: bea55b0b98e7460895d68b3d30d460f4
 - name: HRNet_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck190-r3.0.0.tar.gz
-  checksum: 8842eb923070de586d6fb8e502788f0e
+  checksum: 1d47dae2bc20329be70e972f8fb74172
 - name: HRNet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

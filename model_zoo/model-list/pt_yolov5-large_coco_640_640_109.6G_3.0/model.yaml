@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: abefb67ddd977045d6f9108710cb94e7
+  checksum: 14ebad91249c97cf10a7263d8d53f1ea
 - name: yolov5_large_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck190-r3.0.0.tar.gz
-  checksum: 11ab0556f86b5a6ad024c5f9e4b56aaf
+  checksum: 9316bfa2ddfe9b496c1c583e413cacb3
 - name: yolov5_large_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

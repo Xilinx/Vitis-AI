@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: f6c87a5cd4efbc18bda7e6228c08fe33
+  checksum: a916d595cf631b9d190482f980137176
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck190-r3.0.0.tar.gz
-  checksum: 4ebb7ed1ef9a401458c484e25dac1ae5
+  checksum: 0c6c640e725aded98aeb0d25226b4600
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

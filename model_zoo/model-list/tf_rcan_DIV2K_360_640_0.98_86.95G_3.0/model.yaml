@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 41b6fe060fc545fe467a4de62cdf85e2
+  checksum: 69ebe60bb0c2b83bcd73693b61b1a500
 - name: rcan_pruned_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck190-r3.0.0.tar.gz
-  checksum: 1ea04839585c87d57e3224fab3aa556a
+  checksum: 0677db9ab1ae7088f4fe3eac4977a492
 - name: rcan_pruned_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

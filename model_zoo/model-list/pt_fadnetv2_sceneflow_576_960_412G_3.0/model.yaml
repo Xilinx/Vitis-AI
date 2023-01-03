@@ -31,32 +31,32 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: b1179dc0a98565c07ca5af15e24d5cc9
+  checksum: ba47459fa27dee1707adc0448f1b1e9e
 - name: FADNet_v2_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 924cbcf122733dc1ff2eb8142cc2eaba
+  checksum: b903cf98e1c023cd416919026c737eb8
 - name: FADNet_v2_2_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 37a29c6630b3667f992e689787814091
+  checksum: 6a7a4cec678a06da7cf3ce19d1e89436
 - name: FADNet_v2_0_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck190-r3.0.0.tar.gz
-  checksum: b118770a33a1fbcd33fc1c8fcddb7725
+  checksum: d2cb3fff3c2dd117a91ca60206da9a6b
 - name: FADNet_v2_1_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck190-r3.0.0.tar.gz
-  checksum: bf08d099b96beff1fcb7c66936a83772
+  checksum: c1147c904ced84228731b38da5e7a3de
 - name: FADNet_v2_2_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck190-r3.0.0.tar.gz
-  checksum: 15c44da804e85a81a1d47c6191f5145a
+  checksum: eb4558620c54eaf9b4746a0373ae3826
 - name: FADNet_v2_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

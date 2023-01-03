@@ -31,5 +31,5 @@ files:
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=3D-Unet_pt-vck190-r3.0.0.tar.gz
-  checksum: 36589cb55c6d624b726b50c38615c306
+  checksum: 84ed84e15fb886edc1b0fb3e5f95845d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

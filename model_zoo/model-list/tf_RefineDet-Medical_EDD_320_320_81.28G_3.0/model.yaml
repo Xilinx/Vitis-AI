@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 75db4cbce7b6e7cca6df913b87c909b7
+  checksum: a797b5f04d0e5dc92c10aa91f9e19dd4
 - name: RefineDet-Medical_EDD_baseline_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck190-r3.0.0.tar.gz
-  checksum: d665c7993fef8117761d91f49d7742f9
+  checksum: 2f83f0e3dff45d8bf6dea308e2a5c9dd
 - name: RefineDet-Medical_EDD_baseline_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

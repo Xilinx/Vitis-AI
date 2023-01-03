@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 378694b5431210c5de2c8cc6fd204f9f
+  checksum: 08f5e869bcf01b0f960a4727cb23f74c
 - name: inception_resnet_v2_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck190-r3.0.0.tar.gz
-  checksum: 6e3f22c30820149ebebe9decb5fa9332
+  checksum: 7575b1ba63ded3c5db3a5ee2fad06f94
 - name: inception_resnet_v2_tf
   type: xmodel
   board: u200-DPUCADF8H & u250-DPUCADF8H

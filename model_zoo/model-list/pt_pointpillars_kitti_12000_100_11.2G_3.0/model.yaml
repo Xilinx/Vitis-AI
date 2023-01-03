@@ -31,22 +31,22 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 227062aad96fde45a664ae65b72bced1
+  checksum: 1525fde18c181280bd449df55f637cbd
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 9ea258f539873bf00890cba9d68094cd
+  checksum: be78a7b01a81fe564f8387c49226dc2a
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck190-r3.0.0.tar.gz
-  checksum: 5b536a3107c41c889e010a3dd69fa0ce
+  checksum: 04f314aa74dac017352d6643a4b130fa
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck190-r3.0.0.tar.gz
-  checksum: c7e9d3663c7779cae44a5d74f1b92a82
+  checksum: a49a45114e27607169e49f0546b36cca
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

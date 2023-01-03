@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: c4d0881910598cbed2273471993f93d0
+  checksum: 4524df14c593eff19e91ad55e8584e46
 - name: inception_v3_pruned_0_4_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_pt-vck190-r3.0.0.tar.gz
-  checksum: dd59c3f94302e109819f561e6f51e322
+  checksum: 1df1bf1957d66ddeb753c5fb97011424
 - name: inception_v3_pruned_0_4_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

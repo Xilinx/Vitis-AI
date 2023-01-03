@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 67de93eef3922d4b381d5411e3121595
+  checksum: 380760305be044238826b110d45a3bf1
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_resnet_50_fpn_coco_tf-vck190-r3.0.0.tar.gz
-  checksum: 97677ff4046587e88499e421dbb98efc
+  checksum: 5cc33dafb6c1e717ca323001d810ff1b
 - name: ssd_resnet_50_fpn_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

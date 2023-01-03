@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 3de26389683f20eccc87aac099ce1f35
+  checksum: d49058ad4709f65a368bcd53c7b8aa91
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck190-r3.0.0.tar.gz
-  checksum: 5cfdce916f6bc5e3082069c68948249b
+  checksum: f64d3ba7a3a2a5488d5490a0733e0420
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

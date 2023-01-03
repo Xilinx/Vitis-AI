@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2_coco_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 6361e4ae92d0f42ad630ac90e688838a
+  checksum: f047dc67625efb41848e674c27a14517
 - name: ssd_mobilenet_v2_coco_tf
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2_coco_tf-vck190-r3.0.0.tar.gz
-  checksum: 03691d175a775e8e570f01f0e5fab85f
+  checksum: cfef074dd07b5eb721569fb65c47e25c
 - name: ssd_mobilenet_v2_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

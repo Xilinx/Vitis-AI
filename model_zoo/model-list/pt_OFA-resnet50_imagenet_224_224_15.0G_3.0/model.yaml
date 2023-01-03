@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_baseline_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: f9e8ead0464d154eede21a59a207cd5b
+  checksum: 66dc9d1b6a17233e91e7c9b651755421
 - name: ofa_resnet50_baseline_pt
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_baseline_pt-vck190-r3.0.0.tar.gz
-  checksum: b154b00abb29f610358e3a1a5e7bab44
+  checksum: dc149ab7aa8f51e78a9cfe2ec9e6fb7b
 - name: ofa_resnet50_baseline_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe

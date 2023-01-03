@@ -31,12 +31,12 @@ files:
   type: xmodel
   board: zcu102 & zcu104 & kv260
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
-  checksum: 6693e71f779bbde32120d752f60a7069
+  checksum: bc063514e144dd41cd3ce8bd0a46dd18
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck190-r3.0.0.tar.gz
-  checksum: 3354e5d0d98672cc2190a03b7cc59547
+  checksum: 7be8eff9578569356d0d38426cc41ac6
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
