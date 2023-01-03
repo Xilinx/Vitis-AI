@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 22d318f66b28df9c751cdf2ff7eeaec8
+  checksum: fbb9fd012db0acbf1e7f5f32a46ca6ce
 - name: ofa_resnet50_pruned_0_60_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 51bd1c6c3e79388f2bc7e35130fb034a
+  checksum: 8a27069705dbeb59197f6ed917923325
 - name: ofa_resnet50_pruned_0_60_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 418909d88963add0966641b43fc0966f
+  checksum: 9c47807e0fc759036f392a1e09f99747
 - name: ofa_resnet50_pruned_0_60_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: f0b7fb8b9be3f2f1eb2d93cea18b4817
-- name: ofa_resnet50_pruned_0_60_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 367a381716c38e5de2ae183774b677f9
-- name: ofa_resnet50_pruned_0_60_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_resnet50_pruned_0_60_pt-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 8bacfdb770736daaff2beca218086bc1
+  checksum: 09d23a8bd93330170d84623d23d4551b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

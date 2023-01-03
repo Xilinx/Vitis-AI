@@ -57,4 +57,14 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck190-r3.0.0.tar.gz
   checksum: 10322ec30e7e4a5b99af64c8a138fabe
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 9036a68f7d3d7ba8ef2390feead79618
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 39a57d91b6b7d06e24264b790f51f60a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

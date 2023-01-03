@@ -41,15 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 2cfcea07055813fda91e252c214b94e9
+  checksum: 1f7d877be15b77abf8112a494ddb4f2c
 - name: ssd_inception_v2_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: a0624ccda133466e18ba1d4615817560
-- name: ssd_inception_v2_coco_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: cc3f62c55ad07e8dcedccac6866cf20d
+  checksum: c5f520f36032e4fa75ec173c7581aa80
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

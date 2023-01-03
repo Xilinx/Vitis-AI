@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 1a248d377710bd7dc63a093c6cfcb9a0
+  checksum: bd97beb68d3ded19637699273f432d6d
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: cef83c6f6f2a7239564599dac8aabe94
+  checksum: 5cb888f3a530c97ce502e2a0ff0f942f
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 1d441ff71740793ae4077cb588d364c5
+  checksum: fc92a51a8af24678b271bb1493166104
 - name: yolov3_coco_416_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 079ae8db4861fbd2604230c79d3ba957
-- name: yolov3_coco_416_tf2
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: e4b4c3a3f004243ea92dc6280e061ab0
-- name: yolov3_coco_416_tf2
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 569db7276e82b719d3477db083725fd1
+  checksum: 19df9cbcf45c7c34504401b037bc1336
 license: license link

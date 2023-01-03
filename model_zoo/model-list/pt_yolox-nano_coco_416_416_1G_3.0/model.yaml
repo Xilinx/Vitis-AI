@@ -37,4 +37,9 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolox_nano_pt-vck190-r3.0.0.tar.gz
   checksum: a56bff2aa9a234634e280405f326c40f
+- name: yolox_nano_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolox_nano_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: a8500e8f131c6b08aaf87426060c9477
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

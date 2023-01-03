@@ -41,25 +41,15 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: fbacf0419f8e7360bd99b4f91efadc09
+  checksum: 3de1099852145b76b0955a97275810b2
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: b3d6ef212572126cf0c531bf33efdfcc
+  checksum: a8930b621a7c5aae5023d10dd554af1c
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 72e20e64376e71a8d67825418471ef88
-- name: ofa_yolo_pruned_0_50_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 0e3d15bc36f512f96e64cc90d0db9ece
-- name: ofa_yolo_pruned_0_50_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 34b90cd8c866e436ccab190a8968de1a
+  checksum: d8f312fa59fcf9b3d700584ec00b4790
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

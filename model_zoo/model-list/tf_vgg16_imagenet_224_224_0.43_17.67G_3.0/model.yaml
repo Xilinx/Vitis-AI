@@ -41,25 +41,15 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_43_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 8a389e24898b61b4aef2b993ab7c2a6a
+  checksum: 37c2b045dd2cdd44033c5506aa81b2a4
 - name: vgg_16_pruned_0_43_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_43_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 8d8b590b9aadd6663b89296e3ff486cb
+  checksum: 0f16f428282639ce8813bab3a1ac326e
 - name: vgg_16_pruned_0_43_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_43_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: b7b4a7d20dcaaa563c692767b69b1786
-- name: vgg_16_pruned_0_43_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_43_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 85d447fd7c2c311c3684d32bdee399f0
-- name: vgg_16_pruned_0_43_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=vgg_16_pruned_0_43_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: bea2732330555f2c770729386187b792
+  checksum: 5deabeceb45642d8d0ef0b322e44cd95
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

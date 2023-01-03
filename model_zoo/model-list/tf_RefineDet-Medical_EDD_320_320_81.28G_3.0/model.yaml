@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: c1553656efae1fa2c2f252f66dc6eb91
+  checksum: 4ecfb07e3bca37ca7fd87de49bb13989
 - name: RefineDet-Medical_EDD_baseline_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 74b8ece844370c048bcbab52253a1935
+  checksum: d842e0d3e5917d4a157006eef5d80e75
 - name: RefineDet-Medical_EDD_baseline_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 5e0a568288276773af03d46804c6d03f
+  checksum: 9bd65109afbf5836ef7f470af74a4d86
 - name: RefineDet-Medical_EDD_baseline_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 0887c695aff2b232a79a56462f191cb3
-- name: RefineDet-Medical_EDD_baseline_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: ad1288deda62f1f2db2a089d19fe6248
-- name: RefineDet-Medical_EDD_baseline_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_baseline_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: fa1c74a0254425d212ed16d758debc72
+  checksum: ba68cf28fe4a0a0befe25c4a3182c162
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

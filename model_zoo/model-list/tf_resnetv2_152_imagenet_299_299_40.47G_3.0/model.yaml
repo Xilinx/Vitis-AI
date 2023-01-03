@@ -41,5 +41,5 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_152_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: fe5dbc9ae493d1b0e160b234fb778bba
+  checksum: 9341eed259b76a013cabce935cbd5d52
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

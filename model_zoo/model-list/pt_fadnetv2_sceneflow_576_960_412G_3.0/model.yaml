@@ -60,91 +60,31 @@ files:
 - name: FADNet_v2_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 331f1e987e58afa0777d914b0d3f27c9
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: b0a37867d56a940679c93a4cecd42ac5
 - name: FADNet_v2_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 0a9151e408f0b2b9ebf6396ea13510df
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 672ac9a259d1f4547e1d004edf36491a
 - name: FADNet_v2_2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: d8b071bd009741d10b06094fb81f1af2
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 763a2c592c909775a4444c661db95cca
 - name: FADNet_v2_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: 6fbb3fd87d2d464bf00f63aceb91d23c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: f5171b2614a3535d0e9ecf8efa1a1f0a
 - name: FADNet_v2_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: 1f66fcf900b6b1dbe17fc32174d1ff11
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: b893e8e8a040ff89d8774bcf575cc264
 - name: FADNet_v2_2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: d9a0afe3bcc6240c93e8f8d88c2bc1b5
-- name: FADNet_v2_0_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 6f8efe37fd65abf71aca68d4bbc71ec1
-- name: FADNet_v2_1_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 4484f38d25660ae0358e87eb094173c4
-- name: FADNet_v2_2_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: f6285746d509e73484dae7aa49734cca
-- name: FADNet_v2_0_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: f3f0db373297092a51670c739c12d413
-- name: FADNet_v2_1_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: 4cd484918c34d6a73cb5519fe769e59b
-- name: FADNet_v2_2_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: 6ce2e829adb68dae6347f65f32c65e3a
-- name: FADNet_v2_0_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: 1b4fed452e6b8fb0540258603c49036b
-- name: FADNet_v2_1_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: f25bda3036b5a15c1ceb52463cf4f97e
-- name: FADNet_v2_2_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: 7e4e20bc1a0f174071e659082c737689
-- name: FADNet_v2_0_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: 8108b1014339990bc08d9683600535cd
-- name: FADNet_v2_1_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: a014a069d443c330ee0a1ba471024924
-- name: FADNet_v2_2_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: 16a76a92d44c3dcd526a02c8c83994c4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: cdfc2414c2e4b333b10fa9bc3872edea
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

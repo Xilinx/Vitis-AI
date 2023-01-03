@@ -41,15 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 8cf0f0e798c221128968318f2f29e824
+  checksum: 8e9f96cfcaba57211226b0dcf3ac7fc6
 - name: ssdlite_mobilenet_v2_coco_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: f8c1661324933a2870da5cfc489d0075
-- name: ssdlite_mobilenet_v2_coco_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: ad1a375d7c5f6ec466162b9c9d7f3e4e
+  checksum: 9ee1af9b9d1cd6d823c41cf2dce83fb6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

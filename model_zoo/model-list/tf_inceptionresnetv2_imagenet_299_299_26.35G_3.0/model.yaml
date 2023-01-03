@@ -46,25 +46,15 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: b3b610673c233178eb403216110ebcb7
+  checksum: 7e0c57a67beaedfc078e804e533160a6
 - name: inception_resnet_v2_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 4958eb3923bdfa20779a82a47160b629
+  checksum: 52d6bfb2cde4133a4eb367a08ed8aafc
 - name: inception_resnet_v2_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 92a1fa7c089a4622422ac8c44f462c5e
-- name: inception_resnet_v2_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 34613ed6d146c097a15b03dd9e1f438e
-- name: inception_resnet_v2_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: b7662ffda14c13c1f19bb6a25bf9a229
+  checksum: f979f843a9500ee31d0c7212df8d25db
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

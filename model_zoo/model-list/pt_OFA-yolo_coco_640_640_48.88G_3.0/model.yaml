@@ -41,25 +41,15 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 4d9f1123eb6270475f48807ee9f39754
+  checksum: 479a2a4ea8a46101e913be65cc549780
 - name: ofa_yolo_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 7c0f2a0b789b6f8bc64c8c34016d1367
+  checksum: 1104f4b3e0164c935681bdcd243e8c6a
 - name: ofa_yolo_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 0bbc014fb870cd75e9bd903e029b065c
-- name: ofa_yolo_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: d7327b14e44385ba7eb8546fcc3efc5b
-- name: ofa_yolo_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: ad55d08c483a4d9e0744f7706e696152
+  checksum: 40be911085268273934f5a9360bd2b80
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

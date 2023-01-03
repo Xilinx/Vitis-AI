@@ -40,31 +40,21 @@ files:
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 91ae75f1ab2805f45fabd760f0d0da03
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: d6401b274caa0685225691badf58c28a
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
-  checksum: 6a2770f6cec6a49ecc96a967f7658b9c
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 556f96973108dbe5dd1a4c46ea80f7de
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 4f96f8bdc08be8c19166ebe44efe21ad
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 26f83f0298bff4c403fb834fac8d237b
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-8pe-r2.5.0.tar.gz
-  checksum: 4d6333b2fe46ade62ac47a991cab7ece
-- name: ofa_rcan_latency_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-u50lv-DPUCAHX8H-r2.5.0.tar.gz
-  checksum: 2a964a3107382bd450c1b23bfcf2274f
-- name: ofa_rcan_latency_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
-  checksum: c52ab026f4bb38fe46b97d51779e94f0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 9e5283d3104747cfff04ff99eca1f8ae
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

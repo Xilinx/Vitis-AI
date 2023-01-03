@@ -50,21 +50,31 @@ files:
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 569c3ba6cd7e95d73a59c5b855b41011
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 1e29ccd42cceaf7aec9944a48b9d24f5
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 6511a4c8e14ac7b7abd55bf3ae610ed0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: c70e857cb96013af55a8a03e10945734
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 135d61ac31ee31dafbdc0960954b7dde
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 59108cf708166e595dc5aef27194b729
 - name: pointpillars_kitti_12000_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 96b98d3d15c910a4a5233e6259c3a8a0
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: b01ea0efd5e84aad2d47deb56f0475f6
 - name: pointpillars_kitti_12000_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 967f4271e3b9ee9b18082b39fc6c1bd1
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: ffd7fd402d86513d811d8ac8d97628d2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

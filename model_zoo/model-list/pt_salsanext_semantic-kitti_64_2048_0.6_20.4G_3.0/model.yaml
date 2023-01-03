@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: e297e2047ff2adf883969abba4d38682
+  checksum: 6a393fbe4ab9d80ef49b94cec0f23957
 - name: salsanext_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: c7f1d584e619ff7af588cae8aa4b0200
+  checksum: 91bfd2a2056fdbea823e3339c47df5d2
 - name: salsanext_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 4e0e0cd7d4f79895b61e2af94ce0dc96
+  checksum: 2ffaeda7752058bc65c6d5d991920fe2
 - name: salsanext_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: ce532bca42ef8af61ddf422e3e4560ce
-- name: salsanext_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 03c8f86326f21e2593f12ceef54f21f9
-- name: salsanext_pt
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 056ee3c68092890598b255fde7fbf1f8
+  checksum: 4be9615f8ff11c2ddd20dd5b8231ab2a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

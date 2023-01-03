@@ -77,44 +77,44 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck190-r3.0.0.tar.gz
   checksum: 1110c72689bb90d6202bfd9a3f1b9d94
-- name: clocs_pointpillars_kitti_0_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: c9f4f9ef00fbf116e49a18475026c8bb
-- name: clocs_pointpillars_kitti_1_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: 473acae6c47a4a01078001f1c2b95865
 - name: clocs_yolox_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: a1da3b23306c1ae29a70fd7231795336
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 3b486d63a2bf02b34972e8fddeb37163
 - name: clocs_fusion_cnn_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: f9124767b75b6754f104d64bc8290c3d
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 6ccc997cf724b95367eddc670b30cbb3
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 0708cf75b78d2bbd4c4d05ce6333cfed
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 1f0678ccfb761bfd169c51863ea3bd0d
 - name: clocs_pointpillars_kitti_1_pt
   type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 0d5c343a159c52ab3af2e6e0769f5492
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: f00fe3fedab155d3471054e770481653
 - name: clocs_yolox_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: 70fe4099be9c91675a010bf9af9e0d83
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 74c86c82c9ebab0c6b36fd4e203a2a84
 - name: clocs_fusion_cnn_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
-  checksum: b4504f822aabafb176d1f258f9d4f5a3
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 0a96ee1837363b8d6cbf1d25a4833b13
+- name: clocs_pointpillars_kitti_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: dd170b2738d62da33c4a27bf6dda54ca
+- name: clocs_pointpillars_kitti_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: a188ac9ff089c2b7e936f2c1b0cc7a70
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

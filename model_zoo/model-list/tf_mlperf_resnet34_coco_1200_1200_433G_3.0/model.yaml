@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: b0f6f2fe6eb6f71f390f457c12c07956
+  checksum: 32c9cea7df5e88ef9021b4ba2beba51c
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 51cd76c35ffbf89857f7a4b5f2afe3ff
+  checksum: 1809a753adf7ba6e9ca3d21464f35fb7
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 6dc1c473e7086ebd4870a7873224a6b0
+  checksum: f644786c8996c2ec83ea40ca0ed81d15
 - name: mlperf_ssd_resnet34_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 6bc1baada86e5fdac762588c7c6598d1
-- name: mlperf_ssd_resnet34_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 56e2ccf7a986371721b39bd4f4dce154
-- name: mlperf_ssd_resnet34_tf
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=mlperf_ssd_resnet34_tf-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: 2b659d0171194a8c76410dd29a07ff15
+  checksum: f68c0fc7f76fa161580bef4bfd08cec5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

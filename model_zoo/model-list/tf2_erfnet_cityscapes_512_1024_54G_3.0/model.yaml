@@ -41,30 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 423de4165a3e0a94f2898954a468b32a
+  checksum: 6a7ef272e5080fc22bed3d61731fd7fb
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 9988fbe5ae385af14f7830f4bf0adbf8
+  checksum: ba0e8cd254c7176f9bc12f69ce9eff7f
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: ec1338058fc6667fec73f4e38e9b6a85
+  checksum: 0ffcce406a5f18fd599cd268d60bcb7f
 - name: semantic_seg_citys_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 8b3ba20365757c1881b8783e002ade81
-- name: semantic_seg_citys_tf2
-  type: xmodel
-  board: u50lv-DPUCAHX8H
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u50lv-DPUCAHX8H-r3.0.0.tar.gz
-  checksum: 0f937dee0064ca9886f513af561b98ef
-- name: semantic_seg_citys_tf2
-  type: xmodel
-  board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u55c-u50lv-DPUCAHX8H-DWC-r3.0.0.tar.gz
-  checksum: f07c12bb84f8f2837c29b0828b7085ed
+  checksum: fdb06ff3ad18cb15c1fa3853cf115efe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

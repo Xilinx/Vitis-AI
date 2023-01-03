@@ -40,6 +40,6 @@ files:
 - name: efficientnet-b0_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
-  checksum: e5cf620f1edb0ccfdb594d63accbef72
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 39c0300ea9e6ce424318bd2648d47e8a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
