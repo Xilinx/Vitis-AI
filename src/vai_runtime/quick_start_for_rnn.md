@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-# Vitis AI Runtime v2.5 Quick-start for RNN
+# Vitis AI Runtime v3.0 Quick-start for RNN
  
 ## Setting Up the Host
 Before you compile the VART for cloud, please load and run the docker container according to the [installation instructions](../../../docs/quick-start/install)
