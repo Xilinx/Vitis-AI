@@ -31,6 +31,14 @@ The following installation steps were performed in this script.
 3.  Install the VCK5000-PROD Card Target Platform.
 4.  Install DPU V4E xclbin for VCK5000-PROD.
 
+After the script is executed successfully, use the XRT command to check that the installation was successful.
+
+   ::
+
+      /opt/xilinx/xrt/bin/xbutil examine
+
+The result should contain the correct information for System Configuration, XRT and Devices present.
+
 .. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
 
 2. Environment Variable Setup in Docker Container
@@ -41,19 +49,27 @@ Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then start
 
 1. For 4PE 350 Hz, you can select DPU IP via the following command.
 
-   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc``
+   ::
+
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc
 
 2. For 6PE 350 Hz with DWC, you can select DPU IP via the following command.
 
-   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc``
+   ::
+
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc
 
 3. For 6PE 350 Hz with MISC, you can select DPU IP via the following command.
 
-   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc``
+   ::
+
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc
 
 4. For 8PE 350 Hz, you can select DPU IP via the following command.
 
-   ``source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal``
+   ::
+
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:
