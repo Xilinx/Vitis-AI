@@ -34,10 +34,10 @@ The following installation steps were performed in this script.
 After the script is executed successfully, use the XRT command to check that the installation was successful.
 
    ::
-   
+
       /opt/xilinx/xrt/bin/xbutil examine
 
-The result should contain the correct information for "System Configuration, XRT, Devices present".
+The result should contain the correct information for System Configuration, XRT and Devices present.
 
 .. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
 
