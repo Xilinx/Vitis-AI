@@ -37,7 +37,7 @@
   note: vaitrace requires root permission
 
 - Result
-Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summary in Vitis Analyzer 2020.2
+Upload all csv files and xrt.run_summary and open the xclbin.ex.run_summary in Vitis Analyzer 2020.2
 
 ### VART Python Program Profiling
 - Device  
@@ -97,7 +97,7 @@ Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summar
    # python3 -m vaitrace_py ./resnet50.py 2 resnet50.xmodel
    ```
 - Result  
-  Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summary in Vitis Analyzer 2020.2
+  Upload all csv files and xrt.run_summary and open the xclbin.ex.run_summary in Vitis Analyzer 2020.2
 
 ### Text summary and fine grained mode
 - Device  
@@ -125,6 +125,6 @@ Upload all csv files and xclbin.ex.run_summary and open the xclbin.ex.run_summar
   lop_trace=true
   ```
 - Result  
-  - Collect all csv files and xclbin.ex.run_summary
+  - Collect all csv files and xrt.run_summary
   - Open the run summary by Vitis Analyzer, it show OpenCL API calls and DPU events on the same timeline
     <p align="center"><img src="img/vitis_analyzer_dpu_opencl_lop.PNG"></p>
