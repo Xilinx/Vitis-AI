@@ -27,4 +27,19 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_psmnet_sceneflow_576_960_0.68_696G_3.0.zip
   checksum: d6d5eab438cbde7a2da236b668ddeaa4
+- name: PSMNet_pruned_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=PSMNet_pruned_0_pt-vck190-r3.0.0.tar.gz
+  checksum: d19e7d1071f9ce02db649a763d867a3c
+- name: PSMNet_pruned_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=PSMNet_pruned_1_pt-vck190-r3.0.0.tar.gz
+  checksum: c3b0d83a930c22f2e8a5f4f0e80ce223
+- name: PSMNet_pruned_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=PSMNet_pruned_2_pt-vck190-r3.0.0.tar.gz
+  checksum: a38933e81e3f1dee6892b36f2edc5aff
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
