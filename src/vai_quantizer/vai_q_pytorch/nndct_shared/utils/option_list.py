@@ -161,7 +161,16 @@ class NndctOption(object):
 
   nndct_inspect_debug = Option(name="inspect_debug", dtype=bool, default=False, action="store_true", env="NNDCT_INSPECT_DEBUG", help="turn on inspector")
 
-  nndct_op_instancenorm_mode = Option(name="instancenorm_mode", dtype=str, default='quant_input_output', help="Instancenorm quantization mode: quant_input_output, ipu")
+  nndct_op_instancenorm_mode = Option(name="instancenorm_mode", dtype=str, default='quant_input_output', help="Instancenorm quantization mode: quant_input_output, ipu_8bw")
+
+  nndct_op_groupnorm_mode = Option(name="groupnorm_mode", dtype=str, default='quant_input_output', help="Groupnorm quantization mode: quant_input_output, ipu_8bw")
   
   nndct_check_onnx = Option(name="check_onnx", dtype=bool, default=False, action="store_true", help="check exported onnx")
   
+  nndct_inspect_test = Option(name="inspect_test", dtype=bool, default=False, action="store_true", env="NNDCT_INSPECT_TEST", help="embed target related test in torch quantizer")
+
+  nndct_target = Option(name="target", dtype=str, default="", env="NNDCT_TARGET", help="target name")
+  
+  nndct_traversal_graph_mode = Option(name="nndct_traversal_graph_mode", dtype=int, default=0, env="NNDCT_GRAPH_SEARCH",help="0: auto, 1:recursion, 2: iteration")
+  
+

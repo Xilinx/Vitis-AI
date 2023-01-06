@@ -28,6 +28,7 @@ from nndct_shared.utils import NndctOption, PatternType, NndctScreenLogger, QErr
 from .fuse_conv_bn import ConvBnHandler
 from .fuse_embed_ln_actv import EmbedLnActvHandler
 from nndct_shared.quantization import maybe_get_quantizer
+from nndct_shared.utils import  NndctOption
 #from nndct_shared.optimization.parse_utils import _GRAPH_SCOPE_SYM, get_full_name
 
 #_ACT_TYPES = [NNDCT_OP.RELU, NNDCT_OP.RELU6]
@@ -48,13 +49,23 @@ CleInfo = namedtuple("CleInfo", ["conv_group", "scale_factor"])
 class OptimizeCommander(object):
   def __init__(self, graph):
     self._graph = graph
-  
+    self.graph_depth = graph.get_graph_depth()
+    if NndctOption.nndct_traversal_graph_mode.value == 0:
+      if self.graph_depth > 900:
+        self._collect_layer_groups = self._collect_layer_groups_iteration
+      else:
+        self._collect_layer_groups = self._collect_layer_groups_recursion
+    if NndctOption.nndct_traversal_graph_mode.value == 1:
+        self._collect_layer_groups = self._collect_layer_groups_recursion
+    if NndctOption.nndct_traversal_graph_mode.value == 2:
+        self._collect_layer_groups = self._collect_layer_groups_iteration
+    
   def SetNegativeSlope(self):
     for node in self._graph.nodes:
       if node.op.type == NNDCT_OP.LEAKY_RELU:
         quant_mode, _ = maybe_get_quantizer()
         if quant_mode is None or NndctOption.nndct_quant_off.value:
-          print('no quant')
+          NndctScreenLogger().warning2user_once(QWarning.LEAKYRELU, f"Preserve negative_slope({node.node_attr(node.op.AttrName.ALPHA)}) of LeakyReLU without quantization.")
         else:
           if node.node_attr(node.op.AttrName.ALPHA) != 0.1015625:
             NndctScreenLogger().warning2user_once(QWarning.LEAKYRELU, f"Force to change negative_slope of LeakyReLU from {node.node_attr(node.op.AttrName.ALPHA)} to 0.1015625 because DPU only supports this value. It is recommended to change all negative_slope of LeakyReLU to 0.1015625 and re-train the float model for better deployed model accuracy.")
@@ -216,9 +227,67 @@ class OptimizeCommander(object):
       cle_info_set = self._cross_layer_equalization_for_conv(equalized_groups)
       
     return self._graph
-    
-  def _collect_layer_groups(self, node, conv_layer_groups, visited=None, conv_group=None):
-  
+                
+  def _collect_layer_groups_iteration(self, node_in, conv_layer_groups_in, visited_in=None, conv_group_in=None):
+    def _gather_conv_group(group): 
+      if len(group) > 1 and group not in conv_layer_groups:
+        conv_layer_groups.append(group)
+      return []
+
+    task_stack = [[node_in, conv_layer_groups_in, visited_in, conv_group_in, 1]]
+    while len(task_stack) > 0:
+
+        node, conv_layer_groups, visited, conv_group ,last_run_child_node_flag = task_stack.pop()
+        if not visited:
+          visited = []
+
+        if not conv_group:
+          conv_group = []
+
+        if node in visited:
+          last_run_child_node_flag = last_run_child_node_flag - 1
+          if last_run_child_node_flag > 0:
+            for k in range(last_run_child_node_flag):
+                _gather_conv_group(conv_group)
+          continue 
+
+        visited.append(node)
+
+        if node.op.type in _CLE_TYPES:
+          conv_group.append(node)
+          if len(node.out_nodes) > 1:
+            conv_group = _gather_conv_group(conv_group)    
+        elif node.op.type in _ACT_TYPES:
+          if node.op.type == NNDCT_OP.RELUK:
+            conv_group.append(node)
+          if len(node.out_nodes) > 1:
+            conv_group = _gather_conv_group(conv_group)
+        elif node.op.type in _POOL_TYPES:
+          if len(node.out_nodes) > 1:
+            conv_group = _gather_conv_group(conv_group)
+        else:
+          conv_group = _gather_conv_group(conv_group)
+
+        new_task_list = []
+
+        for c_node in self._graph.children(node):
+            new_task_list.append([c_node, conv_layer_groups, visited, conv_group, 1])
+        new_task_list.reverse()
+        
+        if len(new_task_list) > 0:
+            new_task_list[0][-1] = last_run_child_node_flag +  new_task_list[0][-1]
+            
+        if len(new_task_list) == 0:
+            for k in range(last_run_child_node_flag):
+                _gather_conv_group(conv_group)
+            
+        for task in new_task_list:
+            task_stack.append(task)
+            
+ 
+
+        
+  def _collect_layer_groups_recursion(self, node, conv_layer_groups, visited=None, conv_group=None):
     def _gather_conv_group(group): 
       if len(group) > 1 and group not in conv_layer_groups:
         conv_layer_groups.append(group)

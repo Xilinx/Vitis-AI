@@ -16,17 +16,15 @@
 # limitations under the License.
 #
 
-from unicodedata import name
 import torch
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.utils import NndctOption
-from nndct_shared.quantization import quantize_tensors 
+from nndct_shared.quantization import quantize_tensors, kernel_need_quant
 import pytorch_nndct.utils as py_utils
 import numpy as np
-import struct 
-
+from pytorch_nndct.utils import Const
+from .fix_ops import NndctISqrt
 __all__ = ['LayerNorm']
-EPS = 0.0000152587890625
 
 class deephi_LayerNorm(torch.nn.LayerNorm):
   r"""DeePhi ReLU operation"""
@@ -38,8 +36,10 @@ class deephi_LayerNorm(torch.nn.LayerNorm):
     self.param_quantized = False
 
   def forward(self, input):
-    if NndctOption.nndct_quant_off.value or not self.quantizer.configer.is_node_quantizable(self.node, lstm=False):
-      return super().forward(input)
+    if not kernel_need_quant(self.quantizer, self.node):
+      output = super().forward(input)
+      output = quantize_tensors([output], self.node)[0]
+      return output
     
     # quantize parameters
     qweight = None
@@ -135,7 +135,7 @@ class deephi_LayerNorm(torch.nn.LayerNorm):
       sum_sq = torch.sum(square, dtype=torch.float32)
       sum_sq = sum_sq.to(torch.bfloat16)
       mean_sq = sum_sq/w
-      mean_sq = mean_sq + EPS 
+      mean_sq = mean_sq + Const.EPS.value 
 
       mean_sq = mean_sq.to(torch.float32).cpu().numpy()
       mean_arr = np.empty([1])
@@ -158,6 +158,7 @@ class deephi_LayerNorm(torch.nn.LayerNorm):
       v = v.to(torch.float32)
       w_inv = 1.0/w
       sum_t = torch.sum(v, dtype=torch.float32)
+
       mean_t = sum_t * w_inv
       mean_t = mean_t.to(torch.bfloat16)
       v = v.to(torch.bfloat16)
@@ -167,7 +168,7 @@ class deephi_LayerNorm(torch.nn.LayerNorm):
       square = torch.square(sub)
       sum_sq = torch.sum(square, dtype=torch.float32)
       mean_sq = sum_sq/w
-      mean_sq = mean_sq + EPS 
+      mean_sq = mean_sq + Const.EPS.value 
 
       mean_sq = mean_sq.to(torch.float32).cpu().detach().numpy()
       mean_arr = np.empty([1])
@@ -187,22 +188,89 @@ class deephi_LayerNorm(torch.nn.LayerNorm):
         y = mul.reshape(-1,).to(torch.float32)
 
       return y
-        
+
+    # e.g. inp: (N, C, H, W), normalized_shape=[H, W)
+    def simulatedLayerNorm3(inp, normalized_shape, elementwise_affine, weight, bias, ifp, wfp, bfp):
+      inp = torch.floor(inp * (2**ifp))  # float32
+      inp = inp.to(torch.bfloat16)  # bfloat16
+      dim = [i for i in range(inp.dim()) if i >= inp.dim()-len(normalized_shape)] # normlized_shape dim=[2, 3]
+      
+      # mean: aie_mean equals to torch.mean(inp, dim, keepdim=True) except adding details
+      # aid_add input 
+      inp_temp1 = inp.reshape((-1,) + normalized_shape) # (N*C, H, W), bfloat16
+      numel = inp_temp1[0].numel() # element number
+      inp_temp2 = inp_temp1.reshape(inp_temp1.shape[0], -1, 8) # (N*C, H*W/8, 8), bfloat16
+      inp_v8 = inp_temp2.sum(dim=-2, keepdim=False, dtype=torch.float32) # (N*C, 8), float32
+      # aie add v8
+      sum_aie = py_utils.aie_add_v8(inp_v8) # aie sum: (N*C, ), float32
+      # aie mean
+      mean_aie = sum_aie/numel  # float32
+      # reshape mean
+      dim_mean = []  # (N, C, 1, 1)
+      for i in range(inp.dim()):
+        if i < inp.dim() - len(normalized_shape):
+          dim_mean.append(inp.shape[i])
+        else:
+          dim_mean.append(1)
+      mean = mean_aie.reshape(dim_mean)  # (N, C, 1, 1)
+      mean = mean.to(torch.bfloat16)  # (N, C, 1, 1)
+      
+      # x-mu
+      sub = inp - mean           # bfloat16
+      sub = sub.to(torch.float32) # float32
+      
+      # var
+      square = torch.square(sub) # float32
+      var = square.mean(dim, dtype=torch.float32) # float32, (N, C)
+      var = var + Const.EPS.value 
+      
+      # isqrt: 1/sqrt(var)
+      isqrt = torch.empty_like(var)
+      NndctISqrt(var, isqrt) # CUDA/CPU: float32
+      isqrt = isqrt.to(torch.bfloat16)
+
+      # mul: (x-mu)*(1/sigma)
+      for i in range(isqrt.dim(), sub.dim()): # isqrt shape: (N, C, 1, 1)
+        isqrt = torch.unsqueeze(isqrt, dim=-1)
+      mul = torch.mul(sub, isqrt) # float32, (N, C, H, W)
+      mul = mul.to(torch.bfloat16).to(torch.float32) # float32
+     
+      # affine: layernom*gamma + beta
+      if elementwise_affine:
+        weight = torch.floor(weight * (2 ** wfp)) # float32
+        weight = weight.to(torch.bfloat16) / (2 ** wfp) # bfloat16
+        weight = weight.to(torch.float32)  # float32
+        bias = torch.floor(bias * (2 ** bfp))  # float32
+        bias = bias.to(torch.bfloat16) / (2 ** bfp)  # bfloat16
+        bias =bias.to(torch.float32)  # float32
+        axb = mul * weight + bias # ax+b, float32; weight,bias: normalized_shape 
+        out = axb.to(torch.bfloat16).to(torch.float32)
+      else:
+        out = mul
+
+      return out
+
     # quantization configure
     input_name = self.node.in_nodes[0]
     input_node = self.quantizer.configer.get_Nndctnode(input_name)
     if not self.quantizer.configer.node_output_quantizable(input_node):
       input_name = input_node.in_nodes[0]
     fragpos = self.quantizer.get_quant_config(input_name, False)[1]
-    wfp = self.quantizer.get_quant_config(self.params_name[0], False, tensor_type='param')[1]
-    bfp = self.quantizer.get_quant_config(self.params_name[1], False, tensor_type='param')[1]
+    wfp, bfp = None, None
+    wfp = self.quantizer.get_quant_config(self.params_name[0], False, tensor_type='param')[1] if self.elementwise_affine else None
+    bfp = self.quantizer.get_quant_config(self.params_name[1], False, tensor_type='param')[1] if self.elementwise_affine else None
 
     # quantization method
     if NndctOption.nndct_op_layernorm_mode.value == "aie2_16bw" or NndctOption.nndct_ip_asr.value:
       output = layernorm_process(simulatedLayerNorm1, qinput, fragpos, self.normalized_shape, qweight, wfp, qbias, bfp, self.eps)
       output = quantize_tensors([output], self.node, method=4)[0]
-    elif NndctOption.nndct_op_layernorm_mode.value == "bert_8bw" or NndctOption.nndct_ip_v70_bert.value: 
-      output = layernorm_process(simulatedLayerNorm2, qinput, fragpos, self.normalized_shape, qweight, wfp, qbias, bfp, self.eps)
+    elif NndctOption.nndct_op_layernorm_mode.value == "bert_8bw" or NndctOption.nndct_ip_v70_bert.value:
+      if self.quant_mode <= 1:
+        output = torch.nn.functional.layer_norm(qinput, self.normalized_shape, qweight, qbias, self.eps)
+      else:
+        # output = layernorm_process(simulatedLayerNorm2, qinput, fragpos, self.normalized_shape, qweight, wfp, qbias, bfp, self.eps)
+        output = simulatedLayerNorm3(qinput, self.normalized_shape, self.elementwise_affine, qweight, qbias, fragpos, wfp, bfp)
+
       output = quantize_tensors([output], self.node, method=4)[0] # 4: floor
     else:
       output = torch.nn.functional.layer_norm(qinput, self.normalized_shape, qweight, qbias, self.eps)

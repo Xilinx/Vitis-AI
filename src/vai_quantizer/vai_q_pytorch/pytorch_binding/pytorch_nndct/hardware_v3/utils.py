@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-from nndct_shared.utils import set_option_value
+from nndct_shared.utils import set_option_value, NndctOption
 from pytorch_nndct.qproc.utils import (get_deploy_graph_list,
                                        prepare_quantizable_module,
                                        register_output_hook,
@@ -28,15 +28,26 @@ def prepare_deployable_graph(module, input_args, device, output_dir):
         input_args=input_args,
         export_folder=output_dir,
         device=device)
+    
+    if len(graph.all_blocks()) > 1:
+      quant_module.from_script(True)
+    else:
+      quant_module.from_script(False)
+
+    quant_off_stat = NndctOption.nndct_quant_off.value
+    param_corr_stat = NndctOption.nndct_param_corr.value
     set_option_value("nndct_quant_off", True)
+    set_option_value("nndct_param_corr", False)
     register_output_hook(quant_module, record_once=True)
     set_outputs_recorder_status(quant_module, True)
+    quant_module.eval()
     if isinstance(input_args, tuple):
       _ = quant_module.to(device)(*input_args)
     else:
       _ = quant_module.to(device)(input_args)
     deploy_graphs, dev_graph = get_deploy_graph_list(quant_module, graph, need_partition=False)
-    set_option_value("nndct_quant_off", False)
+    set_option_value("nndct_quant_off", quant_off_stat)
+    set_option_value("nndct_param_corr", param_corr_stat)
     return dev_graph, deploy_graphs
 
 

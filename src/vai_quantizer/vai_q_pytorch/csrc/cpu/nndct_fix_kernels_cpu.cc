@@ -394,3 +394,49 @@ void cpu_tanh_table_lookup<double>(const int N,
                                     const double* table,
                                     double* output,
                                     int fragpos);
+// Layernorm isqrt AIE2, float32 iteration
+static inline int float2int_cpu(const float x){
+ return *(int*)&x; 
+}
+
+static inline float int2float_cpu(const int x){
+  return *((float *)&x);
+}
+
+void _isqrt(const float& x, float& y){
+  float x2, threehalfs; 
+  int i;
+  x2  = x*0.5;
+  y = x;
+  threehalfs = 1.5;
+  i = float2int_cpu(y); // bitwise float32 to int32 
+  i = 0x5f3759df - (i >> 1);
+  y = int2float_cpu(i); // bitwise int32 to float32
+  y = y*(threehalfs - (x2*y*y)); // Newton steps
+  y = y*(threehalfs - (x2*y*y));
+  y = y*(threehalfs - (x2*y*y));
+  y = y*(threehalfs - (x2*y*y));
+}
+
+template<typename Dtype>
+static void _layernorm_isqrt(const int N, 
+                          const Dtype* src, 
+                          Dtype* dst){
+  for(int index=0; index < N; index++){
+    float result_ = 1.0;
+    _isqrt(src[index], result_); 
+    dst[index] = result_; // auto cast: float to Dtype
+  }
+}
+
+template<typename Dtype>
+void cpu_layernorm_isqrt(const int N, const Dtype* src, Dtype* dst){ 
+  _layernorm_isqrt(N, src, dst);
+}
+
+template
+void cpu_layernorm_isqrt<float>(const int N, const float* src, float* dst); 
+
+template
+void cpu_layernorm_isqrt<double>(const int N, const double* src, double* dst);
+

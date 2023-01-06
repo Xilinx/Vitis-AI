@@ -81,7 +81,7 @@ def get_deploy_graph_infos(quantizer: BaseQuantizer, deploy_graphs: List[Graph])
   
   return graph_quant_info_list
     
-
+        
 class DevGraphOptimizer(object):
   """Optimze graph for device computation
  
@@ -319,6 +319,9 @@ class DevGraphOptimizer(object):
     for trans_node in removed_nodes:
       self._dev_graph.remove_node(trans_node)
     
+
+
+
   def layout_tranform(self):
     """layout_transform TORCH(NCHW) -> XIR(NHWC)"""
  
@@ -426,7 +429,7 @@ class DevGraphOptimizer(object):
     swim_transpose = defaultdict(list)
     swim_in_transpose = defaultdict(list)
     sink_transpose = defaultdict(list)
-    
+
     for node in insert_pos:
       tranpose_out_order = tuple(_find_swim_order(node.out_tensors[0].ndim))
       swim_transpose[tranpose_out_order].append(node)
@@ -452,7 +455,7 @@ class DevGraphOptimizer(object):
           node = q.popleft()
           for pn in self._dev_graph.parents(node):
             if pn not in visited:
-             
+
               if not _have_special_layout(pn) or pn.op.type in implicit_ops:
                 continue
       
@@ -589,43 +592,79 @@ class DevGraphOptimizer(object):
     # for node in self._dev_graph.nodes:
     #   print(node.op.type, node.name, node.transpose_out_order)    
     # remove consecutive transpose
-    
-    def merge_father_and_child(node, visited, transpose_group, reserverd_nodes):
+
+    def merge_transpose_group(transpose_group):
+      order = []
+      reserved_trans = None
+      for trans in transpose_group:
+        if trans not in nodes_need_to_remove:
+          reserved_trans = trans
+          
+        if not order:
+          order = trans.node_attr(trans.op.AttrName.ORDER)
+        else:
+          new_order = len(order) * [None]
+          tmp_order = trans.node_attr(trans.op.AttrName.ORDER)
+          for i in range(len(order)):
+            t_i = tmp_order[i]
+            new_order[i] = order[t_i]
+          order = new_order 
+      
+      if reserved_trans is None:
+        reserved_trans = transpose_group[-1]
+      
+      reserved_trans.set_node_attr(reserved_trans.op.AttrName.ORDER, order)
+      reserverd_nodes.append(reserved_trans)
+          
+      transpose_group.clear()
+
+    def merge_father_and_child_recursion(node, visited, transpose_group, reserverd_nodes):
       visited.append(node)
       if _is_permute_op(node):
         if node.out_nodes and all([_is_permute_op(cn) for cn in self._dev_graph.children(node)]):
-          transpose_group.append(node)
+          if len(node.out_nodes) > 1:
+            transpose_group.append(node)
+            merge_transpose_group(transpose_group)
         else:
           transpose_group.append(node)
-          
-          order = []
-          reserved_trans = None
-          for trans in transpose_group:
-            if trans not in nodes_need_to_remove:
-              reserved_trans = trans
-              
-            if not order:
-              order = trans.node_attr(trans.op.AttrName.ORDER)
-            else:
-              new_order = len(order) * [None]
-              tmp_order = trans.node_attr(trans.op.AttrName.ORDER)
-              for i in range(len(order)):
-                t_i = tmp_order[i]
-                new_order[i] = order[t_i]
-              order = new_order 
-          
-          if reserved_trans is None:
-            reserved_trans = transpose_group[-1]
-          
-          reserved_trans.set_node_attr(reserved_trans.op.AttrName.ORDER, order)
-          reserverd_nodes.append(reserved_trans)
-              
-          transpose_group.clear()
+          merge_transpose_group(transpose_group)
 
       for cn in self._dev_graph.children(node):
         if cn not in visited:
           merge_father_and_child(cn, visited, transpose_group, reserverd_nodes)
-    
+
+    def merge_father_and_child_iteration(node_in, visited_in, transpose_group_in, reserverd_nodes_in):
+      task_stack = [[node_in, visited_in, transpose_group_in, reserverd_nodes_in]]
+      while len(task_stack) > 0:
+          node, visited, transpose_group, reserverd_nodes = task_stack.pop()
+          visited.append(node)
+          if _is_permute_op(node):
+            if node.out_nodes and all([_is_permute_op(cn) for cn in self._dev_graph.children(node)]):
+              if len(node.out_nodes)>1:
+                transpose_group.append(node)
+                merge_transpose_group(transpose_group)
+              else:
+                transpose_group.append(node)
+            else:
+              transpose_group.append(node)
+              merge_transpose_group(transpose_group)
+
+          task_list = []
+          for cn in self._dev_graph.children(node):
+            if cn not in visited:
+              task_list.append([cn, visited, transpose_group, reserverd_nodes])
+          task_list.reverse()
+          for task in task_list:
+              task_stack.append(task)
+
+    def merge_father_and_child(node, visited, transpose_group, reserverd_nodes):
+      pass
+ 
+    if NndctOption.nndct_traversal_graph_mode.value == 1:
+        merge_father_and_child = merge_father_and_child_recursion
+    else:
+        merge_father_and_child = merge_father_and_child_iteration     
+        
     def merge_brothers(reserverd_nodes):
       remove_nodes = []
       for node in self._dev_graph.nodes:
@@ -961,6 +1000,7 @@ class DevGraphOptimizer(object):
           dtype = input.data.dtype
           operand2 = np.array(np.ones(input.shape, dtype=dtype) * other.data)
           other.from_ndarray(operand2)
+          other.node.transpose_out_order = None
           if not other.is_param_tensor():
             other.node.set_node_attr(other.node.op.AttrName.DATA, operand2)
 

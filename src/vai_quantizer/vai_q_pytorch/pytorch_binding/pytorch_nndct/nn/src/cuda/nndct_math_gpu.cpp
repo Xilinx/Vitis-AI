@@ -422,6 +422,34 @@ void LogSoftmaxSub(Tensor Tinput,
 }
 
 template <typename Dtype>
+void _LayernormISqrt(Tensor Tinput, 
+                         Tensor Toutput, 
+                         int64_t device_id)
+{
+    auto input  = Tinput.data<Dtype>();
+    auto output  = Toutput.data<Dtype>();
+    int64_t num_ele = Tinput.numel();
+    
+    if (device_id == 0)
+      cuda_layernorm_isqrt(num_ele, input, output);
+    else if (device_id == 1)
+      cpu_layernorm_isqrt(num_ele, input, output);
+}
+
+void LayernormISqrt(Tensor Tinput, 
+                         Tensor Toutput,
+                         int64_t device_id){
+  if (Tinput.dtype() == at::kFloat)
+    _LayernormISqrt<float>(Tinput, 
+                               Toutput,
+                               device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _LayernormISqrt<double>(Tinput, 
+                                Toutput,
+                                device_id);
+}
+
+template <typename Dtype>
 void _LayernormInvSqrt(Tensor Tinput, 
                          Tensor Toutput, 
                          int64_t device_id)

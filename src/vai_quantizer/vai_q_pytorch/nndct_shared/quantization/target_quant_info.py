@@ -23,10 +23,12 @@ class TargetQuantInfoMgr(NndctGraphHolder):
         log_debug_info(f"{node.name}, {node.op.type}, {self._device_allocator.get_node_device_type(node.name)}, {self._device_allocator.get_node_device_msg(node.name)}")
     quant_config = self._device_allocator.get_quant_config()
     self._quant_info = convert_quant_config_to_dict(quant_config, init=True)
+
     keys = list(self._quant_info["output"].keys())
     # update key value
     for key in keys:
-      if len(dev_graph.node(key).out_tensors) > 1:
+      key_node = dev_graph.node(key)
+      if len(key_node.out_tensors) > 1 and self._device_allocator.get_node_device_type(key_node.name) != DeviceType.DPU:
         value = self._quant_info["output"][key][0]
         new_value = []
         for tensor in dev_graph.node(key).out_tensors:

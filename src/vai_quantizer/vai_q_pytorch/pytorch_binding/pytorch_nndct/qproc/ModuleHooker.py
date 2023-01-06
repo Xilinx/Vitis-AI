@@ -597,12 +597,12 @@ class ModuleHooker(object):
   @classmethod
   def register_tensor_dtype_and_shape_hook(cls, module):
     torch2nndct_dtype_mapper = lambda torch_dtype: {
-      "torch.float64": "float64",
-      "torch.float32": "float32",
-      "torch.float16": "float16",
-      "torch.int64": "int64",
-      "torch.int32": "int32",
-      "torch.bool": "bool",
+      torch.float64: "float64",
+      torch.float32: "float32",
+      torch.float16: "float16",
+      torch.int64: "int64",
+      torch.int32: "int32",
+      torch.bool: "bool",
     }.get(torch_dtype, torch_dtype)
     handlers = []
 
@@ -612,10 +612,13 @@ class ModuleHooker(object):
           return torch2nndct_dtype_mapper(output.dtype), tuple(output.shape)
         else:
           return type(output), None
+      quantizer = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
       if hasattr(op, "node"):
         node = op.node
+        if not isinstance(outputs, (list, tuple)):
+          outputs = [outputs]
         for nndct_tensor, output in zip(node.out_tensors, outputs):
-          dtype, tensor_shape = _get_output_dtype_and_shape
+          dtype, tensor_shape = _get_output_dtype_and_shape(output)
           nndct_tensor.from_des(tensor_shape, dtype)
 
     def _hooker(op, record_func):

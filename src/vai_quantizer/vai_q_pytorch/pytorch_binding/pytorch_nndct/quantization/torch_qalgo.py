@@ -367,7 +367,7 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
   def calibrate(self, tensor):
     scope = 5
     with torch.no_grad():
-      if self._method == "modal":
+      if self._method == "diffs":
           scope = 5
       elif self._method == "maxmin":
         scope = 1
@@ -759,7 +759,7 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
 
   def calibrate(self, tensor):
     scope = 5
-    if self._method == "modal":
+    if self._method == "diffs":
       scope = 5
     elif self._method == "maxmin":
       scope = 1

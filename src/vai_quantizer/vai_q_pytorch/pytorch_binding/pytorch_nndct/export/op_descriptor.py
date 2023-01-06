@@ -431,24 +431,6 @@ else:
     return "{output} = {input}.dtype".format(output=output_str, input=input_str)
     return op
 
-  @staticmethod
-  def neg(ctx, node, output_str):
-    input_str = ctx.infer_attr_value(node.node_config("input"))
-    return "{output} = -{input}".format(output=output_str, input=input_str)
-    return op
-  
-  @staticmethod
-  def remainder(ctx, node, output_str):
-    input_str = ctx.infer_attr_value(node.node_config("input"))
-    other_str = ctx.infer_attr_value(node.node_config("other"))
-    return "{output} = {input} % {other}".format(output=output_str, input=input_str, other=other_str)
-
-
-  @staticmethod
-  def mul(ctx, node, output_str):
-    input_str = ctx.infer_attr_value(node.node_config("input"))
-    other_str = ctx.infer_attr_value(node.node_config("other"))
-    return "{output} = {input} * {other}".format(output=output_str, input=input_str, other=other_str)
 
   @staticmethod
   def int_(ctx, node, output_str):
@@ -471,8 +453,6 @@ else:
 MISC_OP_DISCR_MAP = {
     NNDCT_OP.INPUT: OpDescriptor.input,
     NNDCT_OP.TUPLE_INPUT: OpDescriptor.input,
-    NNDCT_OP.RSUB: OpDescriptor.rsub,
-    NNDCT_OP.STRIDED_SLICE: OpDescriptor.strided_slice,
     NNDCT_OP.SLICE_TENSOR_INPLACE_COPY: OpDescriptor.slice_tensor_inplace_copy,
     NNDCT_OP.INDEX: OpDescriptor.index,
     NNDCT_OP.INT: OpDescriptor.int_,
@@ -493,8 +473,5 @@ MISC_OP_DISCR_MAP = {
     NNDCT_OP.TUPLE_INDEX: OpDescriptor.tuple_index,
     NNDCT_OP.DEVICE: OpDescriptor.device,
     NNDCT_OP.DTYPE: OpDescriptor.dtype,
-    NNDCT_OP.NEG: OpDescriptor.neg,
-    NNDCT_OP.SCALAR_REMAINDER: OpDescriptor.remainder,
-    NNDCT_OP.SCALAR_MUL: OpDescriptor.mul,
-    NNDCT_OP.CONSTANT_WITH_RESHAPE:OpDescriptor.constant_with_reshape
+    NNDCT_OP.CONSTANT_WITH_RESHAPE: OpDescriptor.constant_with_reshape
 }

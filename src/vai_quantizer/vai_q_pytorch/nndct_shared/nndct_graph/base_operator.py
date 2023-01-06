@@ -154,7 +154,7 @@ class NndctIrAttr(object):
       value = list(value)
       self._is_container = True
     if value:
-      if self._type is not Any and (not isinstance(value[0], (self._type, type(None), Tensor))):
+      if self._type is not Any and (not isinstance(value[0], (self._type, type(None)))):
         raise TypeError(
           f"The type of attr '{self._name.value}' should be {self._type} instead of {type(value[0])}"
         )

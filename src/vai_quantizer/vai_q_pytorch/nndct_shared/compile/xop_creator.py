@@ -311,7 +311,7 @@ def default_xop(xop_type: str, xgraph: XGraph, node: Node,
     input_list.append(input_op)
     
   input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
-  
+ 
   attrs = _get_xir_attr_from_node(node)
   xgraph.create_fixed_normal_op(
       node.name, xop_type, quant_config, attrs=attrs, input_ops=input_ops)
@@ -578,7 +578,7 @@ def hswish(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
   
   input_ops["input"] = [hsigmoid_op, const_op]
   mul_op = xgraph.create_normal_op(node.name + '_mul', "mul", input_ops=input_ops)
-  if quant_config:
+  if quant_config and node.name in quant_config['output']:
     mul_fp = [8, None]
     mul_fp[0], _ = quant_config['output'][node.name][0]
     mul_fp[1] = mul_fp[0] - 1
@@ -673,7 +673,7 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.RELU6: ("relu6", to_xir("relu6")),
     NNDCT_OP.MEAN: ("reduction_mean", reduction_mean),
     NNDCT_OP.BATCH_NORM: ("scale", scale),
-    NNDCT_OP.LAYER_NORM: ("layernorm", to_xir("layernorm")),
+    # NNDCT_OP.LAYER_NORM: ("layernorm", to_xir("layernorm")),
     NNDCT_OP.QUANT_STUB: ("data", data_xop),
     NNDCT_OP.MAX: ("reduction_max", to_xir("reduction_max")),
     NNDCT_OP.TRANSPOSE: ("transpose", to_xir("transpose")),

@@ -24,11 +24,18 @@ class XCompiler(object):
 
 
   @staticmethod
-  def compile_xgraph(xmodel_file, xgraph, target):
-    cmd = {
-    "inspector" : True,
-    "target" : [target],
-    }
+  def compile_xgraph(xmodel_file, xgraph, target, fingerprint):
+    if fingerprint is not None:
+      cmd = {
+        "inspector": True,
+        "fingerprint": [fingerprint],
+      }
+    elif target is not None:
+      cmd = {
+        "inspector": True,
+        "target": [target],
+      }
+    
     compiled_graph = xcompiler.xcompiler(xgraph.graph, cmd)
     if NndctOption.nndct_inspect_debug.value:
       output_file = "_".join([xmodel_file, target]) + NNDCT_KEYS.XMODEL_SUFFIX

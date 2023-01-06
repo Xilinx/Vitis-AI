@@ -611,7 +611,8 @@ this kind of parameter will not be quantized. Please embed the parameter into CO
           #print(f'After change : {self.get_quant_config(node, False)}')
 
     # shift_bias and shift_cut check and adjustment
-    self._node_relative_fix_pos_check()
+    if NndctOption.nndct_ip_asr.value is False:
+      self._node_relative_fix_pos_check()
 
   def export_quant_config(self, export_file=None, adjust_pos=True, inference_check=True):
     if inference_check and quant_model_inferenced(self.quant_model) is False:

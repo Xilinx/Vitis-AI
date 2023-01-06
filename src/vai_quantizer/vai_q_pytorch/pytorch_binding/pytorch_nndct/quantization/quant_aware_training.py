@@ -195,8 +195,15 @@ class QatProcessor(object):
         else:
           node, attr = key, None
           tensor_type = 'act'
+        
+        quant_method = None
+        if (not name == TensorTypes.PARAM) and NndctOption.nndct_ip_v70_bert_qat.value:
+          specil_method_op = ['nndct_layer_norm', 'nndct_softmax']
+          if self._graph.node(node).op.type in specil_method_op:
+            print(node)
+            quant_method = 4
 
-        tqt_quantizer = tqt_mod.TQTQuantizer(get_bitwidth(qinfo), tensor_type)
+        tqt_quantizer = tqt_mod.TQTQuantizer(get_bitwidth(qinfo), tensor_type, method = quant_method)
         qconfig = self._node_to_qconfig.get(node, config_mod.LayerRuntimeSpec())
         if name == TensorTypes.PARAM:
           qconfig.add_weight_quantizer(attr, tqt_quantizer)
@@ -364,8 +371,9 @@ class QatProcessor(object):
         transforms_mod.QuantizeLinear(),
         transforms_mod.ReplacePooling2d(),
         transforms_mod.ReplaceLeakyReLU(),
-        transforms_mod.ReplaceLayerNorm(),
     ]
+    if NndctOption.nndct_ip_v70_bert_qat.value:
+      transforms.append(transforms_mod.ReplaceLayerNorm())
     transformer = module_transform.ModuleTransformer(model, model_topo,
                                                      transforms)
     return transformer.transform(excluded_nodes)

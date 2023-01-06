@@ -440,6 +440,14 @@ __device__ static inline float as_bfloat16_numpy(float x){
   return *(float *)&itmp;
 }
 
+__device__ static inline int float2int_cuda(float x){
+  return *(int*)&x; 
+}
+
+__device__ static inline float int2float_cuda(int x){
+  return *((float *)&x);
+}
+
 __device__ float exp_sim(short x)
 {
   float ftmp, fz, fres, fx;
@@ -1110,6 +1118,56 @@ void cuda_log_softmax_sub<double>(const int N,
                                     const double* input,
                                     double* output,
                                     const double* sum);
+
+/*
+Layernorm isqrt AIE2, float32 iteration
+*/
+__device__ float isqrt(float x){
+  float x1, x2, y, threehalfs; 
+  int i;
+  x2  = x*0.5;
+  y = x;
+  threehalfs = 1.5;
+  i = float2int_cuda(y); // bitwise float32 to int32 
+  i = 0x5f3759df - (i >> 1);
+  y = int2float_cuda(i); // bitwise int32 to float32
+
+  y = y*(threehalfs - (x2*y*y)); // Newton steps
+  y = y*(threehalfs - (x2*y*y));
+  y = y*(threehalfs - (x2*y*y));
+  y = y*(threehalfs - (x2*y*y));
+  return y;
+}
+
+template<typename Dtype>
+__global__ static void _layernorm_isqrt(const int N,
+                                         const Dtype* input,
+                                         Dtype* output) {
+  NNDCT_KERNEL_LOOP(i, N){
+    output[i] = isqrt(input[i]);
+  }
+}
+
+template<typename Dtype>
+void cuda_layernorm_isqrt(const int N,
+                            const Dtype* input,
+                            Dtype* output)
+{
+  _layernorm_isqrt<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
+      N,
+      input,
+      output);
+  
+} 
+
+template
+void cuda_layernorm_isqrt<float>(const int N,
+                                    const float* input,
+                                    float* output);
+template
+void cuda_layernorm_isqrt<double>(const int N,
+                                    const double* input,
+                                    double* output);
 
 /*
 Layernorm Inv Sqrt AIE2

@@ -408,6 +408,8 @@ def _get_node_scope(node):
     return node.name.split("::")[0]
 
 def _valid_bnfp(bnfp):
+  if bnfp == None:
+    return False
   return not(bnfp[0] == 67108864 and bnfp[1] == 4096)
 
 def insert_fix_neuron_in_script_model(script_model, quantizer):

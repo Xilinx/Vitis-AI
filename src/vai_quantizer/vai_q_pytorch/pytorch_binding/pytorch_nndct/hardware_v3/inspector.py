@@ -51,7 +51,6 @@ class InspectorImpl(object):
     self._module_root = module.__class__.__module__.replace(".", "/")
     dev_graph, deploy_graphs = prepare_deployable_graph(copied_model, input_args, device, output_dir)
     self._device_allocator.process(dev_graph)
-    # quant_config = self._device_allocator.get_quant_config()
 
     for node in dev_graph.nodes:
       node.target_device = self._device_allocator.get_node_device(node.name)
@@ -60,6 +59,7 @@ class InspectorImpl(object):
     self._show_partition_result_on_screen(dev_graph, output_dir, verbose_level)
     self._dump_txt(dev_graph, output_dir)
     self._graph = dev_graph
+    self._graph.clean_tensors_data()
     """
     xir_convert = CompilerFactory.get_compiler("xmodel")
     xcompiler = CompilerFactory.get_compiler("xcompiler")
@@ -158,6 +158,12 @@ class InspectorImpl(object):
     f.write("# Pytorch: conv:[1, 3, 4, 4] -> permute(order=(0, 2, 3, 1)):[1, 4, 4, 3] -> reshape(shape=(1, -1):[1, 48] =>\n")
     f.write("# Xmodel: conv:[1, 4, 4, 3] -> reshape(shape=(1, -1):[1, 48]\n")
     f.write("# In example 2, the permute inserted by quantizer can't be canceled out by inserting a permute in float model. \n# After model modification, output data memory layout changed.\n")
+    f.write('''# Explanation of some hardware constraints messages:
+  "Try to assign {pattern name} to DPU failed.": The compiler refuses to deploy this pattern on DPU.
+  "Convert nndct graph to XIR failed.": If you encounter this problem, please contact the developer.
+  "{op type} can't be converted to XIR.": The operator cannot be represented by XIR.
+  "{op type} can't be assigned to DPU.": Although the operator can be converted to XIR, it cannot be deployed on the DPU.
+  ''')
     f.write("\n")   
 
   def _dump_body(self, f, graph):
@@ -220,7 +226,9 @@ class InspectorImpl(object):
   def _attach_extra_node_msg(self, graph):
     transpose_order_to_msg = {
       (0, 3, 1, 2): "from 'NHWC' to 'NCHW'",
-      (0, 2, 3, 1): "from 'NCHW' to 'NHWC'"
+      (0, 2, 3, 1): "from 'NCHW' to 'NHWC'",
+      (0, 4, 3, 1, 2): "from 'NHWDC' to 'NCDHW'",
+      (0, 3, 4, 2, 1): "from 'NCDHW' to 'NHWDC'"
     }
     for node in graph.nodes:
       if node.op.type == NNDCT_OP.PERMUTE and any([kw in node.name for kw in ["swim_transpose", "sink_transpose"]]):

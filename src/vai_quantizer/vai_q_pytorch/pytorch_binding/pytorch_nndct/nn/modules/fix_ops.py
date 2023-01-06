@@ -50,6 +50,7 @@ __all__ = ["NndctFixNeuron",
            "NndctInverseAIE2",\
            "NndctLogSoftmaxFastLn",\
            "NndctLogSoftmaxSub",\
+           "NndctISqrt",\
            "NndctLayernormInvSqrt"]     
 
 def support_onnx_export():
@@ -175,7 +176,7 @@ def NndctSigmoidSimulation(Tinput, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   Tinput = clone_view_tensor(Tinput)
   if device_id == 1:
-    print("Sigmoid simulation dose not support CPU")
+    print("Sigmoid simulation does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.SigmoidSimulation(Tinput, Toutput, fragpos, device_id)
@@ -196,7 +197,7 @@ def NndctTanhSimulation(Tinput, Toutput, fragpos):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   Tinput = clone_view_tensor(Tinput)
   if device_id == 1:
-    print("Tanh simulation dose not support CPU")
+    print("Tanh simulation does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.TanhSimulation(Tinput, Toutput, fragpos, device_id)
@@ -208,7 +209,7 @@ def NndctSoftmaxExpApproximate(Tinput, Toutput):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   Tinput = clone_view_tensor(Tinput)
   if device_id == 1:
-    print("Softmax Exponent Approximate dose not support CPU")
+    print("Softmax Exponent Approximate does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.SoftmaxExpApproximate(Tinput, Toutput, device_id)
@@ -220,7 +221,7 @@ def NndctSoftmaxLOD(Tinput, Toutput):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   Tinput = clone_view_tensor(Tinput)
   if device_id == 1:
-    print("Softmax LOD dose not support CPU")
+    print("Softmax LOD does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.SoftmaxLOD(Tinput, Toutput, device_id)
@@ -232,7 +233,7 @@ def NndctSoftmaxSimulationPart1(Tinput, Toutput):
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   Tinput = clone_view_tensor(Tinput)
   if device_id == 1:
-    print("Softmax Simulation Part 1 dose not support CPU")
+    print("Softmax Simulation Part 1 does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.SoftmaxSimulationPart1(Tinput, Toutput, device_id)
@@ -244,7 +245,7 @@ def NndctSoftmaxSimulationPart2(sum, Toutput):
   device_id = 1 if Toutput.device == torch.device("cpu") else 0
   sum = clone_view_tensor(sum)
   if device_id == 1:
-    print("Softmax Simulation Part 2 dose not support CPU")
+    print("Softmax Simulation Part 2 does not support CPU")
   else:
     if support_onnx_export():
       torch.ops.vai.SoftmaxSimulationPart2(sum, Toutput, device_id)
@@ -432,7 +433,7 @@ def NndctExpApprAIE2(Tinput, Toutput, bit_width):
   Tinput = clone_view_tensor(Tinput)
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   if device_id == 1:
-    print("Exp Approximation dose not support CPU")
+    print("Exp Approximation does not support CPU")
   else:
     torch.ops.vai.ExpApprAIE2(Tinput, Toutput, device_id, bit_width)
 
@@ -441,7 +442,7 @@ def NndctLogSoftmaxFastLn(Tinput, Toutput):
   Tinput = clone_view_tensor(Tinput)
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   if device_id == 1:
-    print("LogSoftmax fast ln dose not support CPU")
+    print("LogSoftmax fast ln does not support CPU")
   else:
     torch.ops.vai.LogSoftmaxFastLn(Tinput, Toutput, device_id)
 
@@ -450,16 +451,22 @@ def NndctLogSoftmaxSub(Tinput, Toutput, Tsum):
   Tinput = clone_view_tensor(Tinput)
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   if device_id == 1:
-    print("LogSoftmax subtraction dose not support CPU")
+    print("LogSoftmax subtraction does not support CPU")
   else:
     torch.ops.vai.LogSoftmaxSub(Tinput, Toutput, Tsum, device_id)
+
+@pre_and_post_process_f16_tensor
+def NndctISqrt(Tinput, Toutput):
+  Tinput = clone_view_tensor(Tinput)
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  torch.ops.vai.LayernormISqrt(Tinput, Toutput, device_id)
 
 @pre_and_post_process_f16_tensor
 def NndctLayernormInvSqrt(Tinput, Toutput):
   Tinput = clone_view_tensor(Tinput)
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   if device_id == 1:
-    print("Layernorm InvSqrt dose not support CPU")
+    print("Layernorm InvSqrt does not support CPU")
   else:
     torch.ops.vai.LayernormInvSqrt(Tinput, Toutput, device_id)
 
@@ -468,7 +475,7 @@ def NndctInverseAIE2(Tinput, Toutput):
   Tinput = clone_view_tensor(Tinput)
   device_id = 1 if Tinput.device == torch.device("cpu") else 0
   if device_id == 1:
-    print("Inverse AIE2 dose not support CPU")
+    print("Inverse AIE2 does not support CPU")
   else:
     torch.ops.vai.InverseAIE2(Tinput, Toutput, device_id)
     

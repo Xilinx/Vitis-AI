@@ -28,10 +28,13 @@ class QuantOptimizer(object):
     
     commander = OptimizeCommander(graph=graph)
     commander.DecoupleSharedParamsInConv()
-    commander.FuseEmbedLnActv()
+    if NndctOption.nndct_ip_asr.value is True:
+      commander.FuseEmbedLnActv()
     if fuse_conv_bn:
       commander.FuseBnToConv()
       commander.ConvertBNParams()
+      
+    graph.remove_node_by_types([NNDCT_OP.DROPOUT])
       
     if NndctOption.nndct_equalization.value:
       NndctScreenLogger().info(f"=>Doing weights equalization...")
@@ -42,7 +45,7 @@ class QuantOptimizer(object):
     else:
       self._tag_quant_nodes(graph)
 
-    graph.remove_node_by_types([NNDCT_OP.DROPOUT])
+    #graph.remove_node_by_types([NNDCT_OP.DROPOUT])
 
     if NndctOption.nndct_leaky_relu_approximate.value:
       commander.SetNegativeSlope()

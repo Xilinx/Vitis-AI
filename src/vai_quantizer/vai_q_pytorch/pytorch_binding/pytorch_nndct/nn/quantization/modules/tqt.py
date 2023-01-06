@@ -105,7 +105,7 @@ class FakeQuantizer(nn.Module):
 
 class TQTQuantizer(FakeQuantizer):
 
-  def __init__(self, bitwidth, tensor_type):
+  def __init__(self, bitwidth, tensor_type, method = None):
     super(TQTQuantizer, self).__init__(bitwidth)
 
     valid_tensor_types = ['weight', 'act']
@@ -115,7 +115,10 @@ class TQTQuantizer(FakeQuantizer):
     self.tensor_type = tensor_type
 
     # See TorchQuantizer::do_quantize() in quantization/torchquantizer.py
-    self.method = 3 if tensor_type == 'weight' else 2
+    if method is not None:
+      self.method = method
+    else:
+      self.method = 3 if tensor_type == 'weight' else 2
     self.quantize_fn_cls = tqt_ops.TQTQuantize
 
     self.log_threshold = nn.Parameter(torch.tensor([0.0]))

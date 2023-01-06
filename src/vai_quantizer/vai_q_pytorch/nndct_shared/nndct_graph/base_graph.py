@@ -58,6 +58,33 @@ class GraphBase(ABC):
     Returns:
     set: set of op types
     """
+    
+  @abstractproperty
+  def get_topological_graph_nodes_list(self):
+    """Get topological sorting nodes list
+
+    Returns:
+    set: list of nodes sort by topological
+    """
+
+  def get_graph_depth(self):
+    topological_graph_nodes_list = self.get_topological_graph_nodes_list()
+    depth = {}
+    max_depth = 0
+    # init default depth
+    for node in topological_graph_nodes_list:
+      depth[node.name] = 0
+    input_nodes = [node for node in topological_graph_nodes_list if not node.in_nodes]
+    #
+    for node in topological_graph_nodes_list:
+      if node not in input_nodes:
+        for pn in self.parents(node):
+          if pn.owning_block is not node.owning_block and pn.name not in depth:
+              depth[pn.name] = -1
+          depth[node.name] = max([depth[node.name], depth[pn.name] + 1])
+          max_depth = max(max_depth, depth[node.name])
+    return max_depth
+
 
 class Graph(GraphBase):
   """ Graph object of NNDCT, contain list of NndctNodes.
@@ -322,6 +349,11 @@ class Graph(GraphBase):
     sorted_nodeset = sorted(nodeset, key=lambda n: n.topo_position)
     return sorted_nodeset
 
+  def get_topological_graph_nodes_list(self):
+ 
+    nodes_list = [node for node in self.nodes]
+    return Graph.top_sort_nodeset(nodes_list)
+
   @property
   def name(self):
     return self._name
@@ -442,5 +474,9 @@ class Graph(GraphBase):
   @property
   def return_node(self):
     return self._top_block.return_node
+
+  def clean_tensors_data(self):
+    for tensor in self.tensors:
+      tensor.clean_data()
 
 

@@ -109,15 +109,16 @@ class BaseQuantizer():
       outputBak = self._QuantInfo['output'].keys()
       inputBak = self._QuantInfo['input'].keys()
       self.load_quant_config()
+     
       # check node names in loaded quant_info.json are all the same as those in test mode
       NndctScreenLogger().check2user(QError.CALIB_RESULT_MISMATCH,
         f"Node name mismatch is found when \
-          loading quantization steps of tensors. \
-          Please make sure Vai_q_pytorch version and pytorch version for test mode \
-          are the same as those in calibration (or QAT training) mode.", 
+loading quantization steps of tensors. \
+Please make sure Vai_q_pytorch version and pytorch version for test mode \
+are the same as those in calibration (or QAT training) mode.", 
           not (any([p not in self._QuantInfo['param'].keys() for p in paramBak]) or
           any([o not in self._QuantInfo['output'].keys() for o in outputBak]) or
-          any([i not in self._QuantInfo['input'].keys() for i in inputBak]))) 
+          any([i not in self._QuantInfo['input'].keys() for i in inputBak])), exit_status=0) 
 
       if NndctOption.nndct_stat.value > 0:
         print('Loaded quantization infos:')
@@ -352,8 +353,11 @@ class OriginBaseQuantizer(BaseQuantizer):
         return idx
 
   def get_in_node_config(self, node, in_node_index, real_value=True, tensor_type='output'):
-    idx = self._get_in_node_quant_config_index(node, in_node_index)
-    return self.get_quant_config(node.in_nodes[in_node_index], real_value, tensor_type, idx=idx)
+    if node.name in self._QuantInfo['input']:
+      return self.get_quant_config(node.name, real_value, 'input', idx=in_node_index)
+    else:
+      idx = self._get_in_node_quant_config_index(node, in_node_index)
+      return self.get_quant_config(node.in_nodes[in_node_index], real_value, tensor_type, idx=idx)
 
 
   def get_quant_config(self, name, real_value=True, tensor_type='output', idx=0):

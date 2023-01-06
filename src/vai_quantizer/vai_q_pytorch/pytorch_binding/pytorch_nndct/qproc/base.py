@@ -176,23 +176,31 @@ class TorchQuantProcessor():
       set_outputs_recorder_status(quant_module, True)
         
     # intialize quantizer 
-    if target is None:
+    if target is None or quant_config_file:
+      if target is not None and quant_config_file is not None:
+        NndctScreenLogger().warning2user(QWarning.HW_AWARE_QUANT, "The hardware-aware quantization is turned off by quant_config_file.")
       quantizer.setup(graph, False, lstm_app, custom_quant_ops=custom_quant_ops)
     else:
       tmp_module = copy.deepcopy(quant_module)
       connect_module_with_graph(tmp_module, graph)
       tmp_module, input_args = to_device(tmp_module, input_args, device)
+      quant_off_stat = NndctOption.nndct_quant_off.value
+      param_corr_stat = NndctOption.nndct_param_corr.value
       nndct_utils.set_option_value("nndct_quant_off", True)
+      nndct_utils.set_option_value("nndct_param_corr", False)
       register_output_hook(tmp_module, record_once=True)
       set_outputs_recorder_status(tmp_module, True)
+      tmp_module.eval()
       if isinstance(input_args, tuple):
         _ = tmp_module(*input_args)
       else:
         _ = tmp_module(input_args)
 
-      nndct_utils.set_option_value("nndct_quant_off", False)
+      nndct_utils.set_option_value("nndct_quant_off", quant_off_stat)
+      nndct_utils.set_option_value("nndct_param_corr", param_corr_stat)
       _, dev_graph = get_deploy_graph_list(tmp_module, graph, need_partition=False)
       quantizer.setup_for_target(target, graph, dev_graph)
+      dev_graph.clean_tensors_data()
       
     # connect module with graph
     connect_module_with_graph(quant_module, graph)
@@ -242,6 +250,7 @@ class TorchQuantProcessor():
       multi_graph = self.quantizer.graph
       index = 0
       for module in self.quantizer.quant_model:
+        module.requires_grad_(requires_grad=True)
         module_name = module._get_name()
         module_graph = Graph(graph_name=module_name)
         for node in multi_graph.nodes:
@@ -258,12 +267,15 @@ class TorchQuantProcessor():
           adaquant.finetune(run_fn, run_args)
         else:
           adaquant.finetune_v2(run_fn, run_args)
+        module.requires_grad_(requires_grad=grad_enabled)
     else:
+      self.quantizer.quant_model.requires_grad_(requires_grad=True)
       adaquant = self.advanced_quant_setup(self.quantizer.quant_model, self.quantizer.graph, self._example_inputs)
       if NndctOption.nndct_ft_mode.value == 0:
         adaquant.finetune(run_fn, run_args)
       else:
         adaquant.finetune_v2(run_fn, run_args)
+      self.quantizer.quant_model.requires_grad_(requires_grad=grad_enabled)
     
     NndctScreenLogger().info(f"=>Export fast finetuned parameters ...")
     # export finetuned parameters
