@@ -58,11 +58,13 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
 
 - DPU Summary  
   A table of the number of runs and min/avg/max times for each kernel 
-  <p align="center"><img src="img/dpu_dma_profiling.png"></p>
+  <p align="center"><img src="img/dpu_summary.png"></p>
 
 - DDR Transfer Rates  
-  Line graphs of achieved FPS and read/write transfer rates (in MB/s) as sampled during the application
-  <p align="center"><img src="img/dpu_summary.png"></p>
+  Line graphs of achieved FPS and read/write transfer rates (in MB/s) as sampled during the application, Only available for edge platforms
+  - For Zynq MPSoC devices, DDRC_PORT_S[n] in the report represent the traffic pass throught S[n] port of DDR Memory Controller. [ref.](https://docs.xilinx.com/r/en-US/ug1085-zynq-ultrascale-trm/Block-Diagram?tocId=ycliZesl_R3fScaJ2DWc3w)
+  - For Versal devices, DDRC_PORT_S[n] in the report represent the traffic pass throught Versal DDRMC[n]. [ref.1](https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/DDR4-Memory-Controller), [ref.2](https://docs.xilinx.com/r/en-US/pg313-network-on-chip/NoC-Architecture)
+  <p align="center"><img src="img/dpu_dma_profiling.png"></p>
 - Timeline Trace   
   This will include timed events from VART, HAL APIs, and the DPUs
       <p align="center"><img src="img/timeline_trace.png"></p>
