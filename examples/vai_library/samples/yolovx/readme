@@ -55,8 +55,8 @@ I1122 08:23:07.407517 17157 process_result.hpp:32] RESULT: 74	444.84	122.72	459.
 
 
 Performance: 
-    ./test_performance_yolovx tsd_yolox_pt test_performance_yolovx_csp.list -s 60 -t <thead number> 
-    ./test_performance_yolovx yolox_nano_pt test_performance_yolovx.list -s 60 -t <thead number> 
+    ./test_performance_yolovx tsd_yolox_pt test_performance_yolovx_csp.list -s 60 -t <thread> 
+    ./test_performance_yolovx yolox_nano_pt test_performance_yolovx.list -s 60 -t <thread> 
 
 
 Accuracy:

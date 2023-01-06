@@ -34,7 +34,7 @@ Important:
         The result is written in SA_gate_base_pt_color_result.png
 
 Performance: 
-    ./test_performance_RGBDsegmentation SA_gate_base_pt test_performance_RGBDsegmentation.list -s 60 -t <thead number> 
+    ./test_performance_RGBDsegmentation SA_gate_base_pt test_performance_RGBDsegmentation.list -s 60 -t <thread> 
 
 
 Accuracy:

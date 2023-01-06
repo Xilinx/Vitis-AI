@@ -42,7 +42,7 @@ I1209 19:25:50.604938 66670 process_result.hpp:29] 0.75 0.75
 
 
 Performance: 
-    ./test_performance_facequality5pt face-quality_pt test_performance_facequality5pt.list -s 60 -t <thead number> 
+    ./test_performance_facequality5pt face-quality_pt test_performance_facequality5pt.list -s 60 -t <thread> 
 
 
 Accuracy:

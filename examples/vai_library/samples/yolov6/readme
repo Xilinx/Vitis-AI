@@ -60,7 +60,7 @@ I1122 08:24:40.236506 17191 process_result.hpp:32] RESULT: 58	210.98	174.64	267.
 I1122 08:24:40.236553 17191 process_result.hpp:32] RESULT: 58	334.13	176.66	358.36	219.05	0.307358
 
 Performance: 
-    ./test_performance_yolov6 yolov6m_pt test_performance_yolov6.list -s 60 -t <thead number> 
+    ./test_performance_yolov6 yolov6m_pt test_performance_yolov6.list -s 60 -t <thread> 
 
 
 Accuracy:

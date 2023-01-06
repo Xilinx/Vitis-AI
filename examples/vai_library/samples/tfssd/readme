@@ -80,11 +80,11 @@ I0709 05:51:29.020546  4018 process_result.hpp:43] RESULT: 18   1.76009 10.391  
 
 
 Performance: 
-    ./test_performance_tfssd ssd_mobilenet_v1_coco_tf test_performance_tfssd.list -s 60 -t <thead number> 
-    ./test_performance_tfssd ssd_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thead number> 
-    ./test_performance_tfssd ssd_resnet_50_fpn_coco_tf test_performance_tfssd.list -s 60 -t <thead number> 
-    ./test_performance_tfssd ssdlite_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thead number> 
-    ./test_performance_tfssd ssd_inception_v2_coco_tf test_performance_tfssd.list -s 60 -t <thead number> 
+    ./test_performance_tfssd ssd_mobilenet_v1_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_resnet_50_fpn_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssdlite_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_inception_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
 
 
 Accuracy:

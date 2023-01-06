@@ -48,11 +48,11 @@ Important:
     output :
 
 Performance: 
-    ./test_performance_rcan rcan_pruned_tf test_performance_rcan.list -s 60 -t <thead number> 
-    ./test_performance_rcan drunet_pt test_performance_drunet.list -s 60 -t <thead number> 
-    ./test_performance_rcan ofa_rcan_latency_pt test_performance_rcan.list -s 60 -t <thead number> 
-    ./test_performance_rcan SESR_S_pt test_performance_sesr.list -s 60 -t <thead number> 
-    ./test_performance_rcan xilinxSR_pt test_performance_sesr.list -s 60 -t <thead number> 
+    ./test_performance_rcan rcan_pruned_tf test_performance_rcan.list -s 60 -t <thread> 
+    ./test_performance_rcan drunet_pt test_performance_drunet.list -s 60 -t <thread> 
+    ./test_performance_rcan ofa_rcan_latency_pt test_performance_rcan.list -s 60 -t <thread> 
+    ./test_performance_rcan SESR_S_pt test_performance_sesr.list -s 60 -t <thread> 
+    ./test_performance_rcan xilinxSR_pt test_performance_sesr.list -s 60 -t <thread> 
 
 
 Accuracy:

@@ -132,7 +132,7 @@ I1209 19:19:13.330499 66613 process_result.hpp:43] RESULT: 50   273.781 247.757 
 I1209 19:19:13.330546 66613 process_result.hpp:43] RESULT: 50   301.359 153.595 337.808 176.405 0.106691
 I1209 19:19:13.330590 66613 process_result.hpp:43] RESULT: 49   273.676 31.192  298.188 101.414 0.106691
 Performance: 
-    ./test_performance_efficientdet_d2 efficientdet_d2_tf test_performance_efficientdet_d2.list -s 60 -t <thead number> 
+    ./test_performance_efficientdet_d2 efficientdet_d2_tf test_performance_efficientdet_d2.list -s 60 -t <thread> 
 
 
 I1209 19:19:13.330639 66613 process_result.hpp:43] RESULT: 49   201.71  75.8001 218.879 119.89  0.106691

@@ -116,7 +116,7 @@ lane: 3
 
 
 Performance: 
-    ./test_performance_ultrafast ultrafast_pt test_performance_ultrafast.list -s 60 -t <thead number> 
+    ./test_performance_ultrafast ultrafast_pt test_performance_ultrafast.list -s 60 -t <thread> 
 
 
 Accuracy:

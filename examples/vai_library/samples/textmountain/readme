@@ -82,7 +82,7 @@ result num: 9
     sample : ./test_accuracy_textmountain textmountain_pt  test_accuracy_textmountain.list
 
 Performance: 
-    ./test_performance_textmountain textmountain_pt test_performance_textmountain.list -s 60 -t <thead number> 
+    ./test_performance_textmountain textmountain_pt test_performance_textmountain.list -s 60 -t <thread> 
 
 
 Accuracy:

@@ -35,7 +35,7 @@ Important:
 
 
 Performance: 
-    ./test_performance_covid19segmentation FPN-resnet18_covid19-seg_pt test_performance_covid19segmentation.list -s 60 -t <thead number> 
+    ./test_performance_covid19segmentation FPN-resnet18_covid19-seg_pt test_performance_covid19segmentation.list -s 60 -t <thread> 
 
 
 Accuracy:

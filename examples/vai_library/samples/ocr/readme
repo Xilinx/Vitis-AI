@@ -65,7 +65,7 @@ Important:
     sample : ./test_accuracy_ocr ocr_pt  test_accuracy_ocr.list
 
 Performance: 
-    ./test_performance_ocr ocr_pt test_performance_ocr.list -s 60 -t <thead number> 
+    ./test_performance_ocr ocr_pt test_performance_ocr.list -s 60 -t <thread> 
 
 
 Accuracy:

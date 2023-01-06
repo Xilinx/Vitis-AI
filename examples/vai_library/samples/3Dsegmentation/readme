@@ -39,8 +39,8 @@ Important:
 
 
 Performance: 
-    ./test_performance_3Dsegmentation salsanext_pt test_performance_3Dsegmentation.list -s 60 -t <thead number> 
-    ./test_performance_3Dsegmentation salsanext_v2_pt test_performance_3Dsegmentation.list -s 60 -t <thead number> 
+    ./test_performance_3Dsegmentation salsanext_pt test_performance_3Dsegmentation.list -s 60 -t <thread> 
+    ./test_performance_3Dsegmentation salsanext_v2_pt test_performance_3Dsegmentation.list -s 60 -t <thread> 
 
 
 Accuracy:

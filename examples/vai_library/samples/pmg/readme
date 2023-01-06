@@ -37,7 +37,7 @@ Important:
 
 
 Performance: 
-    ./test_performance_pmg pmg_pt test_performance_pmg.list -s 60 -t <thead number> 
+    ./test_performance_pmg pmg_pt test_performance_pmg.list -s 60 -t <thread> 
 
 
 Accuracy:

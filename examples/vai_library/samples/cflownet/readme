@@ -29,7 +29,7 @@ copy the compiled executable file and test data to the development board.
 
 
 Performance: 
-    ./test_performance_cflownet cflownet_pt test_performance_cflownet.list -s 60 -t <thead number> 
+    ./test_performance_cflownet cflownet_pt test_performance_cflownet.list -s 60 -t <thread> 
 
 
 Accuracy:

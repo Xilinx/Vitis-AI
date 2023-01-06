@@ -98,9 +98,9 @@ I0519 08:31:57.864874 993652 process_result.hpp:36] RESULT: 75	239.293	195.315	2
       ./test_accuracy_ofa_yolo_mt ofa_yolo_pt accimage.list result.txt
     output:
 Performance: 
-    ./test_performance_ofa_yolo ofa_yolo_pt test_performance_ofa_yolo.list -s 60 -t <thead number> 
-    ./test_performance_ofa_yolo ofa_yolo_pruned_0_30_pt test_performance_ofa_yolo.list -s 60 -t <thead number> 
-    ./test_performance_ofa_yolo ofa_yolo_pruned_0_50_pt test_performance_ofa_yolo.list -s 60 -t <thead number> 
+    ./test_performance_ofa_yolo ofa_yolo_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
+    ./test_performance_ofa_yolo ofa_yolo_pruned_0_30_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
+    ./test_performance_ofa_yolo ofa_yolo_pruned_0_50_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
 
 
       result file result.txt

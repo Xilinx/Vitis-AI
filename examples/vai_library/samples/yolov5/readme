@@ -69,9 +69,9 @@ I1122 08:17:12.164940 17134 process_result.hpp:44] RESULT: 75	241.162	198.025	25
 
 
 Performance: 
-    ./test_performance_yolov5 yolov5_large_pt test_performance_yolov5.list -s 60 -t <thead number> 
-    ./test_performance_yolov5 yolov5_nano_pt test_performance_yolov5.list -s 60 -t <thead number> 
-    ./test_performance_yolov5 yolov5s6_pt test_performance_yolov5.list -s 60 -t <thead number> 
+    ./test_performance_yolov5 yolov5_large_pt test_performance_yolov5.list -s 60 -t <thread> 
+    ./test_performance_yolov5 yolov5_nano_pt test_performance_yolov5.list -s 60 -t <thread> 
+    ./test_performance_yolov5 yolov5s6_pt test_performance_yolov5.list -s 60 -t <thread> 
 
 
 Accuracy:

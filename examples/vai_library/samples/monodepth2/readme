@@ -37,7 +37,7 @@ Important:
     sample : ./test_accuracy_monodepth2 monodepth2_pt  test_accuracy_monodepth2.list
 
 Performance: 
-    ./test_performance_monodepth2 monodepth2_pt test_performance_monodepth2.list -s 60 -t <thead number> 
+    ./test_performance_monodepth2 monodepth2_pt test_performance_monodepth2.list -s 60 -t <thread> 
 
 
 Accuracy:

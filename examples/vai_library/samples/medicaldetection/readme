@@ -93,11 +93,11 @@ process_result.hpp:39] RESULT: BE 0.77812 286.834 90.4995 319.217 145.242
 
 
 Performance: 
-    ./test_performance_medicaldetection RefineDet-Medical_EDD_tf test_performance_medicaldetection.list -s 60 -t <thead number> 
-    ./test_performance_medicaldetection RefineDet-Medical_EDD_baseline_tf test_performance_medicaldetection.list -s 60 -t <thead number> 
-    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_5_tf test_performance_medicaldetection.list -s 60 -t <thead number> 
-    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_75_tf test_performance_medicaldetection.list -s 60 -t <thead number> 
-    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_85_tf test_performance_medicaldetection.list -s 60 -t <thead number> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_baseline_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_5_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_75_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_85_tf test_performance_medicaldetection.list -s 60 -t <thread> 
 
 
 Accuracy:

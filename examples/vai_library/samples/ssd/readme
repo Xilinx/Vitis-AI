@@ -44,7 +44,7 @@ I0709 05:51:18.754155  3990 process_result.hpp:43] RESULT: 3    629.963 325.847 
 
 
 Performance: 
-    ./test_performance_ssd mlperf_ssd_resnet34_tf test_performance_ssd.list -s 60 -t <thead number> 
+    ./test_performance_ssd mlperf_ssd_resnet34_tf test_performance_ssd.list -s 60 -t <thread> 
 
 
 Accuracy:

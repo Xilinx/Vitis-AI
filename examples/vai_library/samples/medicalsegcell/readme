@@ -38,7 +38,7 @@ Important:
 
 
 Performance: 
-    ./test_performance_medicalsegcell medical_seg_cell_tf2 test_performance_medicalsegcell.list -s 60 -t <thead number> 
+    ./test_performance_medicalsegcell medical_seg_cell_tf2 test_performance_medicalsegcell.list -s 60 -t <thread> 
 
 
 Accuracy:

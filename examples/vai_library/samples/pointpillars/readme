@@ -55,7 +55,7 @@ Important:
 
 
 Performance: 
-    ./test_performance_pointpillars pointpillars_kitti_12000_0_pt pointpillars_kitti_12000_1_pt pointpillars_kitti_12000_pt test_performance_pointpillars.list -s 60 -t <thead number> 
+    ./test_performance_pointpillars pointpillars_kitti_12000_0_pt pointpillars_kitti_12000_1_pt pointpillars_kitti_12000_pt test_performance_pointpillars.list -s 60 -t <thread> 
 
 
 Accuracy:
