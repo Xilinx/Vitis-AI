@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pmg_grocerystore_224_224_2.28G_3.0.zip
-  checksum: 33c6d01cabf048c32a82b8f44cf00286
+  checksum: cae9ed831ade844b046ec8ea9b214456
 - name: pmg_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

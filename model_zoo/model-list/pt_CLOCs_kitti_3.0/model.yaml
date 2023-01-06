@@ -36,7 +36,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_CLOCs_kitti_3.0.zip
-  checksum: f55a5342eb5cb164d99335fdc35f2ee4
+  checksum: 2d082e0ae0a8dedf2b3cbf45c60e6d23
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
