@@ -27,4 +27,24 @@ files:
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-color-classification_VCoR_224_224_3.64G_3.0.zip
   checksum: 379c7bf70991976cd633b5b08ad9c0ff
+- name: chen_color_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=chen_color_resnet18_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 4c20fd37b4065c2aa1de4cd42d3fdb7c
+- name: chen_color_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=chen_color_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 140ed8faa2f6ee349c5a82742ce723e5
+- name: chen_color_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=chen_color_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 2e6cc1fcbe38f94b51bf8eb26a7223cd
+- name: chen_color_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=chen_color_resnet18_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 1d441d821973cf13a74eea4f16a6cf49
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
