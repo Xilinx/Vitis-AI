@@ -8,7 +8,7 @@ Once-for-all network is built on PyTorch Framework.
 
 Vitis AI Quantizer supports PyTorch Framework.
 
-You can find detail guide how to quantize PyTorch model using Vitis-AI Quantizer in https://www.xilinx.com/html_docs/vitis_ai/1_3/pytorch.html#nvh1592318322520
+You can find detail guide how to quantize PyTorch model using Vitis-AI Quantizer in https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Inspect-Float-Model-Before-Quantization
 
  
 
@@ -52,38 +52,52 @@ You can find detail guide how to quantize PyTorch model using Vitis-AI Quantizer
   pip install ofa
   
   # modify resnet50 design space to support DPUCZDX8G compiler
+  # we need to check where ofa folder is located. 
+  # if ofa foler is located in /opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.7/site-packages/  
+  chmod o+w /opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.7/site-packages/ofa/imagenet_classification/networks/resnets.py
+  vim /opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.7/site-packages/ofa/imagenet_classification/networks/resnets.py
   
-  chmod o+w /home/vitis-ai-user/.local/lib/python3.6/site-packages/ofa/imagenet_classification/networks/resnets.py
-  
-  vim /home/vitis-ai-user/.local/lib/python3.6/site-packages/ofa/imagenet_classification/networks/resnets.py
+  # if ofa foler is located in /home/vitis-ai-user/.local/lib/python3.7/site-packages/
+  chmod o+w /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/imagenet_classification/networks/resnets.py
+  vim /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/imagenet_classification/networks/resnets.py
   
     at line 2: add the following
             import torch
 
-    at line 21: modify the following
+    at line 28: modify the following
             from: self.global_avg_pool = MyGlobalAvgPool2d(keep_dim=False) 
             to: self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
 
-    after line 30: add new line 31 as the following 
+    after line 37: add new line 38 as the following 
              x = torch.flatten(x, start_dim=1, end_dim=-1)
 
     # setup tab space to match the other indent space
     :retab! 16
-    # replace indent using 'tab'key instead of 'space bar'key on new line 31
+    # replace indent using 'tab'key instead of 'space bar'key on new line 38
 
 
   # modify imagenet folder for ofa design space
-  vim ~/.local/lib/python3.6/site-packages/ofa/imagenet_classification/data_providers/imagenet.py
+  chmod o+w /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/imagenet_classification/data_providers/imagenet.py
+  vim /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/imagenet_classification/data_providers/imagenet.py
   
     at line 20: modify the following
             from: DEFAULT_PATH = '/dataset/imagenet'
             to: DEFAULT_PATH = '/workspace/imagenet'
             
-    at line 135: modify the following
+    at line 183: modify the following
             from: return os.path.join(self.save_path, 'train')
             to: return os.path.join(self.save_path, 'val')
           
+  # modify my_random_resize_crop.py to fix bug in the original repo.          
+  chmod o+w /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/utils/my_dataloader/my_random_resize_crop.py
+  vim /home/vitis-ai-user/.local/lib/python3.7/site-packages/ofa/utils/my_dataloader/my_random_resize_crop.py
+  
+    after line 39: add new line 40 as the following 
+	    self.interpol = interpolation
           
+    at line 86: modify the following
+            from: interpolate_str = _pil_interpolation_to_str[self.interpolation]
+            to: interpolate_str = _pil_interpolation_to_str[self.interpol]
 
   ```
 
@@ -101,7 +115,7 @@ Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 
   ```sh
   # create model folder to store the searched model
-  cd $/workspace/examples/DPUCZDX8G/ofa_resnet50
+  cd /workspace/examples/DPUCZDX8G/ofa_resnet50
   mkdir models
   ```
   
@@ -109,7 +123,7 @@ Jupyter is preinstalled in the Xilinx Vitis-AI Docker image.
 
   ```sh
   # Launch Jupyter notebook server
-  cd $/workspace/examples/DPUCZDX8G/ofa_resnet50
+  cd /workspace/examples/DPUCZDX8G/ofa_resnet50
   jupyter notebook --no-browser --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password=''
   ```
   
