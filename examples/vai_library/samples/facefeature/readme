@@ -36,6 +36,10 @@ I0719 12:23:19.529546 14146 process_result.hpp:25] float features :
 
 
 
+Performance: 
+    ./test_performance_facefeature facerec-resnet20_mixed_pt test_performance_facefeature.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_facefeature <model_name> <image_list_filename_0> <image_list_filename_1> <output_filename_0> <output_filename_1>
 

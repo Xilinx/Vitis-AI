@@ -28,6 +28,10 @@ copy the compiled executable file and test data to the development board.
     sample : ./test_performance_cflownet cflownet_pt -t 4 -s 20 test_performance_cflownet.list
 
 
+Performance: 
+    ./test_performance_cflownet cflownet_pt test_performance_cflownet.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_cflownet  <filelist_name> <database_dir> <output_dir> [thread_number]
 

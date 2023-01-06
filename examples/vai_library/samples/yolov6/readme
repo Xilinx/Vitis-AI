@@ -59,6 +59,10 @@ I1122 08:24:40.236457 17191 process_result.hpp:32] RESULT: 72	483.03	171.61	513.
 I1122 08:24:40.236506 17191 process_result.hpp:32] RESULT: 58	210.98	174.64	267.51	213.00	0.307358
 I1122 08:24:40.236553 17191 process_result.hpp:32] RESULT: 58	334.13	176.66	358.36	219.05	0.307358
 
+Performance: 
+    ./test_performance_yolov6 yolov6m_pt test_performance_yolov6.list -s 60 -t <thead number> 
+
+
 Accuracy:
     test accuracy of yolov6_m_pt:
     ./test_accuracy_yolov6_mt <model_name> <image_list_filename> <output_filename> -t <thread>

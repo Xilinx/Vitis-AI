@@ -32,4 +32,8 @@ Important:
     
     sample : ./test_jpeg_c2d2_lite C2D2_Lite_0_pt C2D2_Lite_1_pt image.list
     output : 0.332031
+Performance: 
+    ./test_performance_c2d2_lite C2D2_Lite_0_pt C2D2_Lite_1_pt c2d2_lite test_performance_c2d2_lite.list -s 60 -t <thead number> 
+
+
 

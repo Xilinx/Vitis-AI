@@ -18,7 +18,6 @@ Important:
   Valid model name:
     SA_gate_base_pt
 
-
 1, compile
 
     execute the following command:
@@ -28,11 +27,15 @@ Important:
 2, copy the compiled executable file and test image to the development board.
 
    run the executable file.
-    
-    sample : ./test_jpeg_RGBDsegmentation SA_gate_base_pt sample_rgbdsegmentation_bgr.jpg  sample_rgbdsegmentation_hha.jpg
-    output : 
+
+    sample : ./test_jpeg_RGBDsegmentation SA_gate_base_pt sample_rgbdsegmentation_bgr.jpg sample_rgbdsegmentation_hha.jpg
+    output :
         The result is written in SA_gate_base_pt_result.png
         The result is written in SA_gate_base_pt_color_result.png
+
+Performance: 
+    ./test_performance_RGBDsegmentation SA_gate_base_pt test_performance_RGBDsegmentation.list -s 60 -t <thead number> 
+
 
 Accuracy:
     ./test_accuracy_RGBDsegmentation  <model_name> <RGB_image_path> <HHA_image_path> <image_list_file>  <output_filename>

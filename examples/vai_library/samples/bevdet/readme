@@ -63,6 +63,10 @@ Important:
     label: 8 score: 0.164516 bbox: -12.3125 -14.8125 -1.6726 0.606531 0.616082 1.78269 2.43297 0 0
     label: 8 score: 0.164516 bbox: -10.1125 -13.1875 -1.72128 0.578756 0.58787 1.75505 2.91479 -0.09375 0.296875
 
+Performance: 
+    ./test_performance_bevdet bevdet_0_pt bevdet_1_pt bevdet_2_pt bevdet_pt img.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_bevdet_mt <model_name> <image_name_list> <data_path> <result_file_path> [batch]
 

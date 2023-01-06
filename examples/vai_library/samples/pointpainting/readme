@@ -76,6 +76,10 @@ label: 8 bbox: -10.664 0.318761 -1.82515 0.396945 0.37914 0.827337 5.97069 0 0 s
 
 
 
+Performance: 
+    ./test_performance_pointpainting semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt pointpainting test_performance_pointpainting.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_pointpainting_nuscenes <model_name_0> <model_name_1> <model_name_2> <info_list_filename> <output_filename>
     ./test_accuracy_pointpainting_seg <model_name_0> <model_name_1> <model_name_2> <image_list_filename> <output_filename>

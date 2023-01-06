@@ -49,6 +49,11 @@ I0419 01:19:15.925938  8623 process_result.hpp:24] r.index 2 sedan, r.score 0.01
 I0419 01:19:15.926102  8623 process_result.hpp:24] r.index 11 convertible r.score 6.48781e-05
 I0419 01:19:15.926282  8623 process_result.hpp:24] r.index 1 SUV, r.score 3.23009e-06
 
+Performance: 
+    ./test_performance_vehicleclassification vehicle_make_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thead number> 
+    ./test_performance_vehicleclassification vehicle_type_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_vehicleclassification <model_name> <input_list_filename> <output_filename>
 

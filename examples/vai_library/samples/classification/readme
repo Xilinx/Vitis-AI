@@ -471,12 +471,12 @@ I0317 08:55:27.606523  3307 process_result.hpp:24] r.index 955 jackfruit, jak, j
     sample : ./test_jpeg_classification ofa_resnet50_0_9B_pt sample_classification.jpg
     output :
 WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1021 06:32:19.149286 16621 demo.hpp:1183] batch: 0     image: sample_classification.jpg
-I1021 06:32:19.149432 16621 process_result.hpp:24] r.index 109 brain coral, r.score 0.97712
-I1021 06:32:19.149626 16621 process_result.hpp:24] r.index 973 coral reef, r.score 0.00146904
-I1021 06:32:19.149737 16621 process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00054043
-I1021 06:32:19.149857 16621 process_result.hpp:24] r.index 786 sewing machine, r.score 0.000175452
-I1021 06:32:19.149979 16621 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000175452
+I1225 18:53:18.206403  6329 demo.hpp:1193] batch: 0     image: sample_classification.jpg
+I1225 18:53:18.206581  6329 process_result.hpp:24] r.index 109 brain coral, r.score 0.249066
+I1225 18:53:18.223493  6329 process_result.hpp:24] r.index 973 coral reef, r.score 0.0159223
+I1225 18:53:18.223598  6329 process_result.hpp:24] r.index 997 bolete, r.score 0.00313528
+I1225 18:53:18.223672  6329 process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.00313528
+I1225 18:53:18.223762  6329 process_result.hpp:24] r.index 305 dung beetle, r.score 0.00215484
 
     sample : ./test_jpeg_classification person-orientation_pruned_558m_pt sample_orientation.jpg
     output :
@@ -591,39 +591,39 @@ process_result.hpp:24] r.index 397 puffer, pufferfish, blowfish, globefish, r.sc
     
     sample : ./test_jpeg_classification ofa_resnet50_baseline_pt sample_classification.jpg
     output :
-I1119 15:24:06.235543 289514 demo.hpp:1183] batch: 0 image: sample_classification.jpg
-process_result.hpp:24] r.index 109 brain coral, r.score 0.865453
-process_result.hpp:24] r.index 973 coral reef, r.score 0.00275455
-process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00243088
-process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00089427
-process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000696458
+I1225 18:57:30.835377  6342 demo.hpp:1193] batch: 0     image: sample_classification.jpg
+I1225 18:57:30.835738  6342 process_result.hpp:24] r.index 109 brain coral, r.score 0.503139
+I1225 18:57:30.852828  6342 process_result.hpp:24] r.index 973 coral reef, r.score 0.0134082
+I1225 18:57:30.853138  6342 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.00299177
+I1225 18:57:30.853340  6342 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00299177
+I1225 18:57:30.853543  6342 process_result.hpp:24] r.index 329 sea cucumber, holothurian, r.score 0.00233
     
     sample : ./test_jpeg_classification ofa_resnet50_pruned_0_45_pt sample_classification.jpg
     output :
-I1119 15:36:32.930680 293982 demo.hpp:1183] batch: 0 image: sample_classification.jpg
-process_result.hpp:24] r.index 109 brain coral, r.score 0.878346
-process_result.hpp:24] r.index 973 coral reef, r.score 0.00316781
-process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00169561
-process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00132054
-process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000706834
+I1225 18:58:13.256497  6347 demo.hpp:1193] batch: 0     image: sample_classification.jpg
+I1225 18:58:13.256669  6347 process_result.hpp:24] r.index 109 brain coral, r.score 0.384079
+I1225 18:58:13.256829  6347 process_result.hpp:24] r.index 973 coral reef, r.score 0.0148924
+I1225 18:58:13.256989  6347 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00332294
+I1225 18:58:13.258795  6347 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.00293248
+I1225 18:58:13.258982  6347 process_result.hpp:24] r.index 329 sea cucumber, holothurian, r.score 0.00201546
     
     sample : ./test_jpeg_classification ofa_resnet50_pruned_0_60_pt sample_classification.jpg
     output :
-I1119 15:28:06.838694 289919 demo.hpp:1183] batch: 0 image: sample_classification.jpg
-process_result.hpp:24] r.index 109 brain coral, r.score 0.87997
-process_result.hpp:24] r.index 973 coral reef, r.score 0.00247165
-process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00132298
-process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000802429
-process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000624932
+I1225 18:58:48.132052  6350 demo.hpp:1193] batch: 0     image: sample_classification.jpg
+I1225 18:58:48.132205  6350 process_result.hpp:24] r.index 109 brain coral, r.score 0.44328
+I1225 18:58:48.132350  6350 process_result.hpp:24] r.index 973 coral reef, r.score 0.011813
+I1225 18:58:48.132434  6350 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.0029868
+I1225 18:58:48.132551  6350 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.00232612
+I1225 18:58:48.132678  6350 process_result.hpp:24] r.index 329 sea cucumber, holothurian, r.score 0.00159872
     
     sample : ./test_jpeg_classification ofa_resnet50_pruned_0_74_pt sample_classification.jpg
     output :
-I1119 15:40:33.533044 294390 demo.hpp:1183] batch: 0 image: sample_classification.jpg
-process_result.hpp:24] r.index 109 brain coral, r.score 0.902281
-process_result.hpp:24] r.index 973 coral reef, r.score 0.00223653
-process_result.hpp:24] r.index 646 maze, labyrinth, r.score 0.00135652
-process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.000932324
-process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000440399
+I1225 18:59:09.717976  6355 demo.hpp:1193] batch: 0     image: sample_classification.jpg
+I1225 18:59:09.718101  6355 process_result.hpp:24] r.index 109 brain coral, r.score 0.470742
+I1225 18:59:09.718236  6355 process_result.hpp:24] r.index 973 coral reef, r.score 0.0110708
+I1225 18:59:09.718305  6355 process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.00317184
+I1225 18:59:09.718385  6355 process_result.hpp:24] r.index 997 bolete, r.score 0.00217997
+I1225 18:59:09.718451  6355 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.00192382
 
     sample : ./test_jpeg_classification resnet50_pruned_0_3_pt sample_classification.jpg
     output :
@@ -715,6 +715,77 @@ I1122 08:20:59.473611 17148 process_result.hpp:24] r.index 973 coral reef, r.sco
 I1122 08:20:59.473740 17148 process_result.hpp:24] r.index 5 electric ray, crampfish, numbfish, torpedo, r.score 0.000334088 
 I1122 08:20:59.473965 17148 process_result.hpp:24] r.index 955 jackfruit, jak, jack, r.score 0.000202635 
 I1122 08:20:59.474115 17148 process_result.hpp:24] r.index 392 rock beauty, Holocanthus tricolor, r.score 0.000122904
+
+
+Performance: 
+    ./test_performance_classification inception_resnet_v2_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v1_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v4_2016_09_09_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v1_0_25_128_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v1_0_5_160_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v2_1_0_224_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v2_1_4_224_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_101_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_152_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_50_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_19_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification MLPerf_resnet50_v1.5_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_edge_1_0_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_edge_0_75_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification_squeezenet squeezenet_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v2_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_1_0_224_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v2_50_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v2_101_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v2_152_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification efficientNet-edgetpu-S_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification efficientNet-edgetpu-M_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification efficientNet-edgetpu-L_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification person-orientation_pruned_558m_pt test_performance_orienclassification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_resnet50_0_9B_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_depthwise_res50_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v3_small_1_0_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification efficientnet-b0_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification chen_color_resnet18_pt test_performance_carcolor.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v1_1_0_224_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_16_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification efficientnet_lite_tf2 test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v1_1_0_224_pruned_0_11_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification mobilenet_v1_1_0_224_pruned_0_12_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_16_pruned_0_43_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_16_pruned_0_5_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_50_pruned_0_38_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_50_pruned_0_65_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_2_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_4_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_3_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_4_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_5_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v3_pruned_0_6_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pruned_0_3_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pruned_0_4_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pruned_0_5_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pruned_0_6_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet50_pruned_0_7_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_resnet50_baseline_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_resnet50_pruned_0_45_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_resnet50_pruned_0_60_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification ofa_resnet50_pruned_0_74_pt test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_19_pruned_0_24_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification vgg_19_pruned_0_39_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v4_pruned_0_2_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v4_pruned_0_4_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v1_pruned_0_087_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification inception_v1_pruned_0_157_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_101_pruned_0_346_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_101_pruned_0_568_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_152_pruned_0_51_tf test_performance_classification.list -s 60 -t <thead number> 
+    ./test_performance_classification resnet_v1_152_pruned_0_60_tf test_performance_classification.list -s 60 -t <thead number> 
 
 
 Accuracy:

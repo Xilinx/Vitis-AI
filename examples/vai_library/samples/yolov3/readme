@@ -60,6 +60,11 @@ I0530 02:07:58.396745 519058 process_result.hpp:44] RESULT: 2   271.949 141.241 
 I0530 02:07:58.396829 519058 process_result.hpp:44] RESULT: 2   193.414 137.306 208.75  155.768 0.469957
 I0530 02:07:58.396914 519058 process_result.hpp:44] RESULT: 2   173.308 137.306 193     155.768 0.319147
 
+Performance: 
+    ./test_performance_yolov3 yolov3_voc_tf test_performance_yolov3.list -s 60 -t <thead number> 
+    ./test_performance_yolov3 yolov3_coco_416_tf2 test_performance_yolov3.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_yolov3_mt <model_name> <image_list_filename> <output_filename> -t <thread>
 

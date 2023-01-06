@@ -61,6 +61,10 @@ label: 7 bbox: -13.7014 0.805452 -1.31363 0.663449 0.681679 1.36873 1.45409 0 0 
  
 
    
+Performance: 
+    ./test_performance_pointpillars_nuscenes pointpillars_nuscenes_40000_64_0_pt pointpillars_nuscenes_40000_64_1_pt pointpillars_nuscenes test_performance_pointpillars_nuscenes.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_pointpillars_nuscenes <model_name_0> <model_name_1> <info_list_filename> <output_filename>
 

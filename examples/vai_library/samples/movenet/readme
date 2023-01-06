@@ -50,6 +50,10 @@ I0524 03:23:06.539813 16984 demo.hpp:1183] batch: 0     image: sample_movenet.jp
 [512.939, 735.303]
 [369.105, 735.002]
 
+Performance: 
+    ./test_performance_movenet movenet_ntd_pt test_performance_movenet.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_movenet <model_name> <image_list_filename> <output_filename>
 

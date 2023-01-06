@@ -41,6 +41,10 @@ I1209 19:26:35.540131 66677 process_result.hpp:41] feat size: [256 x 1] First 5 
 
 
 
+Performance: 
+    ./test_performance_fairmot FairMot_pt test_performance_fairmot.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_fairmot <model_name> <image_list_file>  <result_file>
 

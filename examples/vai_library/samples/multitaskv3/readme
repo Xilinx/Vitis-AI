@@ -45,6 +45,10 @@ I0317 11:16:36.563236  3832 process_result.hpp:67] 2 0.710012 0.500317 0.0244424
 
 
 
+Performance: 
+    ./test_performance_multitaskv3 multi_task_v3_pt test_performance_multitaskv3.list -s 60 -t <thead number> 
+
+
 Accuracy: (only for multi_task_v3_pt)
     ./test_accuracy_multitaskv3_segmentation multi_task_v3_pt_acc image_list_0.txt image_set_0_repo_name result_0.txt segmentation
     ./test_accuracy_multitaskv3_detection multi_task_v3_pt_acc image_list_1.txt image_set_1_repo_name result_1.txt

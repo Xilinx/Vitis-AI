@@ -34,6 +34,10 @@ Important:
 
 
 
+Performance: 
+    ./test_performance_polypsegmentation HardNet_MSeg_pt test_performance_polypsegmentation.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_polypsegmentation_mt <model_name> <image_list_filename> <output_filename>
 

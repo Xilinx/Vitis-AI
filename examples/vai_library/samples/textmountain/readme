@@ -32,54 +32,58 @@ Important:
       output : 
 result num: 9
 0   0.999436
-  923 218
   30 213
   31 34
   924 40
+  923 218
 1   0.997079
-  667 454
   266 442
   271 252
   672 264
+  667 454
 2   0.996345
-  78 832
-  0 832
   0 698
   78 698
+  78 832
+  0 832
 3   0.999372
-  484 847
   122 838
   126 695
   488 704
+  484 847
 4   0.999382
-  939 842
-  537 842
   537 704
   939 704
+  939 842
+  537 842
 5   0.999258
-  464 1024
-  78 1024
   78 885
   464 885
+  464 1024
+  78 1024
 6   0.999149
-  834 1024
-  516 1024
   516 917
   834 917
+  834 1024
+  516 1024
 7   0.999524
-  746 1210
-  521 1210
   521 1066
   746 1066
+  746 1210
+  521 1210
 8   0.999313
-  469 1232
-  161 1232
   161 1093
   469 1093
+  469 1232
+  161 1232
       
     sample : ./test_performance_textmountain textmountain_pt -t 4 -s 20   test_performance_textmountain.list
 
     sample : ./test_accuracy_textmountain textmountain_pt  test_accuracy_textmountain.list
+
+Performance: 
+    ./test_performance_textmountain textmountain_pt test_performance_textmountain.list -s 60 -t <thead number> 
+
 
 Accuracy:
     ./test_accuracy_textmountain <model_name> <dataset_path> <image_list_filename> <output_path>

@@ -64,6 +64,10 @@ bbox:   59.45  -7.7875  0.288085  1.81077  4.21016  1.54883  1.95266  score:  0.
  
 
    
+Performance: 
+    ./test_performance_centerpoint centerpoint_0_pt centerpoint_1_pt centerpoint test_performance_centerpoint.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_centerpoint <model_name_0> <model_name_1> <image_list_filename> <binary_file_set_repo_name> <output_filename>
 

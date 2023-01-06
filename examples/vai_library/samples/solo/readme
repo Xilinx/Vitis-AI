@@ -40,4 +40,8 @@ I1213 13:36:38.491391 10265 process_result.hpp:108] object: 5 orange    0.30419
 I1213 13:36:38.491513 10265 process_result.hpp:108] object: 6 chair    0.35602
 I1213 13:36:38.491626 10265 process_result.hpp:108] object: 7 orange    0.33824
 I1213 13:36:38.491748 10265 process_result.hpp:108] object: 8 sink    0.32094
+Performance: 
+    ./test_performance_solo solo_pt test_performance_solo.list -s 60 -t <thead number> 
+
+
  

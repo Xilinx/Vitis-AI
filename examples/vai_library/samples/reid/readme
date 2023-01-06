@@ -68,6 +68,17 @@ distmat : 0.736
 distmat :  0.684
 
 
+Performance: 
+    ./test_performance_reid facereid-small_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid-res50_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid facereid-large_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid-res18_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid_res50_pruned_0_4_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid_res50_pruned_0_5_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid_res50_pruned_0_6_pt test_performance_reid.list -s 60 -t <thead number> 
+    ./test_performance_reid personreid_res50_pruned_0_7_pt test_performance_reid.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_reid <model_name> <image_list_0_filename> <image_list_1_filename> <output_filename>
 

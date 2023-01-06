@@ -99,6 +99,13 @@ I1122 08:12:25.842007 17109 process_result.hpp:44] RESULT: 75	167.12	232.452	186
 I1122 08:12:25.842067 17109 process_result.hpp:44] RESULT: 75	549.358	297.721	587.642	400.836	0.676214
 I1122 08:12:25.842133 17109 process_result.hpp:44] RESULT: 75	240.919	198.193	252.919	213.156	0.575294
 
+Performance: 
+    ./test_performance_yolov4 face_mask_detection_pt test_performance_face_mask.list -s 60 -t <thead number> 
+    ./test_performance_yolov4 yolov4_leaky_416_tf test_performance_yolov4.list -s 60 -t <thead number> 
+    ./test_performance_yolov4 yolov4_leaky_512_tf test_performance_yolov4.list -s 60 -t <thead number> 
+    ./test_performance_yolov4 yolov4_csp_pt test_performance_yolov4.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_yolov4_mt <model_name> <image_list_filename> <output_filename> -t <thread>
 

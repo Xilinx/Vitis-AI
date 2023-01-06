@@ -20,6 +20,7 @@ Important:
     drunet_pt
     SESR_S_pt
     ofa_rcan_latency_pt
+    xilinxSR_pt
 
 1, compile
 
@@ -40,8 +41,18 @@ Important:
     sample : ./test_jpeg_rcan SESR_S_pt sample_sesr.png
     output :
 
-    sample : ./test_jpeg_rcan ofa_rcan_latency_pt sample_sesr.png
+    sample : ./test_jpeg_rcan ofa_rcan_latency_pt sample_rcan.png
     output :
+
+    sample : ./test_jpeg_rcan xilinxSR_pt sample_sesr.png
+    output :
+
+Performance: 
+    ./test_performance_rcan rcan_pruned_tf test_performance_rcan.list -s 60 -t <thead number> 
+    ./test_performance_rcan drunet_pt test_performance_drunet.list -s 60 -t <thead number> 
+    ./test_performance_rcan ofa_rcan_latency_pt test_performance_rcan.list -s 60 -t <thead number> 
+    ./test_performance_rcan SESR_S_pt test_performance_sesr.list -s 60 -t <thead number> 
+    ./test_performance_rcan xilinxSR_pt test_performance_sesr.list -s 60 -t <thead number> 
 
 
 Accuracy:

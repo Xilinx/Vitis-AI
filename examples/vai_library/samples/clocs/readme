@@ -60,6 +60,10 @@ label:0 bbox: 51.4023 16.0047 -1.54256 1.6252 3.66371 1.52386 1.56219 score:0.29
 
 
 
+Performance: 
+    ./test_performance_clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt clocs test_performance_clocs.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_clocs clocs <model_name_0> <model_name_1> <model_name_2> <model_name_3> <info_list_filename> <dataset_repo_name> <output_filename>
 

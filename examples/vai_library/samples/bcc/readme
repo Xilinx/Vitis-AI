@@ -30,10 +30,14 @@ Important:
    run the executable file.
     
     sample : ./test_jpeg_bcc bcc_pt sample_bcc.jpg
-    output : 1922
+    output : 2062
 
     sample : ./test_performance_bcc bcc_pt -t 4 -s 20 test_performance_bcc.list
 
+
+
+Performance: 
+    ./test_performance_bcc bcc_pt test_performance_bcc.list -s 60 -t <thead number> 
 
 
 Accuracy:

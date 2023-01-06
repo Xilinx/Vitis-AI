@@ -23,6 +23,7 @@
  */
 #pragma once
 #include <glog/logging.h>
+#include <memory>
 
 #include <opencv2/core.hpp>
 

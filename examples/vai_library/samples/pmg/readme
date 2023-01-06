@@ -36,8 +36,12 @@ Important:
 
 
 
+Performance: 
+    ./test_performance_pmg pmg_pt test_performance_pmg.list -s 60 -t <thead number> 
+
+
 Accuracy:
-    ./test_accuracy_pmg <model_name> <dataset_repo_name> <output_filename>
+    ./test_accuracy_pmg <model_name> <data_list_file> <output_filename>
 
     sample:
-    ./test_accuracy_pmg pmg_pt dataset result.txt
+    ./test_accuracy_pmg pmg_pt pmg_accuracy_list.txt result.txt

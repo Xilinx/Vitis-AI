@@ -32,13 +32,13 @@ int main(int argc, char* argv[]) {
     vector<Mat> imgs;
     for(size_t i = 0; i < hfnet->get_input_batch(); ++i)
       imgs.push_back(img);
-    if (1) {
-      auto result = hfnet->run(imgs);
-      LOG(INFO) << "res scales: " << result[0].scale_h << " " << result[0].scale_w;
-      for(size_t k = 0; k < result[0].keypoints.size(); ++k)
-        circle(imgs[0], Point(result[0].keypoints[k].first*result[0].scale_w,
-               result[0].keypoints[k].second*result[0].scale_h), 1, Scalar(0, 0, 255), -1);
-      imwrite("result_hfnet.jpg", imgs[0]);
+    auto result = hfnet->run(imgs);
+    for(size_t i = 0; i < hfnet->get_input_batch(); ++i) {
+      LOG(INFO) << "res scales: " << result[i].scale_h << " " << result[i].scale_w;
+      for(size_t k = 0; k < result[i].keypoints.size(); ++k)
+        circle(imgs[i], Point(result[i].keypoints[k].first*result[i].scale_w,
+               result[i].keypoints[k].second*result[i].scale_h), 1, Scalar(0, 0, 255), -1);
+      imwrite(string("result_hfnet_")+to_string(i)+".jpg", imgs[i]);
       //imshow(std::string("result ") + std::to_string(c), result[c]);
       //waitKey(0);
     }

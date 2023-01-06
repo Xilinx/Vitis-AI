@@ -34,17 +34,17 @@ static cv::Mat process_result(cv::Mat &image,
     LOG_IF(INFO, is_jpeg) << "RESULT2: "
                           << "\t" << xmin << "\t" << ymin << "\t" << xmax
                           << "\t" << ymax << "\t" << score << "\n";
-    auto label = 2;
-    if (label == 1) {
-      cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                    cv::Scalar(0, 255, 0), 1, 1, 0);
-    } else if (label == 2) {
-      cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                    cv::Scalar(255, 0, 0), 1, 1, 0);
-    } else if (label == 3) {
-      cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                    cv::Scalar(0, 0, 255), 1, 1, 0);
-    }
+    // auto label = 2;
+    // if (label == 1) {
+    //   cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
+    //                 cv::Scalar(0, 255, 0), 1, 1, 0);
+    // } else if (label == 2) {
+       cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
+                     cv::Scalar(255, 0, 0), 1, 1, 0);
+    // } else if (label == 3) {
+    //   cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
+    //                 cv::Scalar(0, 0, 255), 1, 1, 0);
+    // }
   }
 
   return img;

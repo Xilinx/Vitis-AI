@@ -39,6 +39,10 @@ I0709 05:51:00.051163  3930 process_result_tf.hpp:35] RESULT15:         20      
 
 
 
+Performance: 
+    ./test_performance_refinedet refinedet_VOC_tf test_performance_refinedet.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_refinedet_mt <model_name> <image_list_filename> <output_filename> -t <thread>
 

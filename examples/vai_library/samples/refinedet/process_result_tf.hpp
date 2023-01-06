@@ -37,7 +37,7 @@ static cv::Mat process_result_tf(cv::Mat& image,
                           << "\t" << ymax << "\t" << score << "\n";
     auto label = box.label;
     cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                  cv::Scalar(255 / label, label * 10, 255), 1, 1, 0);
+                  cv::Scalar(255.0 / label, label * 10, 255), 1, 1, 0);
   }
 
   return img;

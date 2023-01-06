@@ -43,6 +43,10 @@ I1201 05:39:55.123904 32330 process_result.hpp:56] 1 0.459395 0.573588 0.0294832
 
 
 
+Performance: 
+    ./test_performance_multitask MT-resnet18_mixed_pt test_performance_multitask.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_multitask_mt <model_name> <image_list_filename> <output_filename> <output_director> -t <thread>
 

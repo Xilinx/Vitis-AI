@@ -34,6 +34,10 @@ Important:
 
 
 
+Performance: 
+    ./test_performance_covid19segmentation FPN-resnet18_covid19-seg_pt test_performance_covid19segmentation.list -s 60 -t <thead number> 
+
+
 Accuracy:
     ./test_accuracy_covid19segmentation <model_name> <image_set_repo_name> <image_list_filename> <output_filename>
 

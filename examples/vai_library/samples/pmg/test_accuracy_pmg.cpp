@@ -27,18 +27,32 @@
 
 using namespace std;
 using namespace cv;
-namespace fs=std::filesystem;
+std::vector<std::string> vlist;
+
+void LoadListNames(const std::string& filename,  std::vector<std::string> &vlist)
+{
+  ifstream Tin;
+  Tin.open(filename, ios_base::in);
+  std::string str;
+  if(!Tin)  {
+     std::cout<<"Can't open the file " << filename << "\n";      exit(-1);
+  }
+  while( getline(Tin, str)) {
+    vlist.emplace_back(str);
+  }
+  Tin.close();
+}
 
 int main(int argc, char *argv[]) {
   if (argc < 4) {
-    std::cerr << "usage :" << argv[0] << " <model_name> <test_dir>  <result_file>" 
+    std::cerr << "usage :" << argv[0] << " <model_name> <test_list>  <result_file>"
               << "\n        model_name is pmg_pt " << std::endl;
     abort();
   }
 
   auto net = vitis::ai::PMG::create(argv[1]);
 
-  std::string test_dir(argv[2]);  
+  LoadListNames(argv[2],  vlist);
 
   ofstream Tout;
   Tout.open(argv[3], ios_base::out);
@@ -47,36 +61,19 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  std::vector<fs::path> vpath;
-  std::vector<fs::path> vpath2;
-  for(auto it=fs::directory_iterator(test_dir); it != fs::directory_iterator(); ++it) {
-    if (fs::is_directory(*it)) {
-       vpath.emplace_back(it->path() );
-    }
-  }
-  std::sort(vpath.begin(), vpath.end());
-
-  for(auto& it : vpath) {
-    vpath2.clear();
-    for(auto it2=fs::directory_iterator(it); it2 != fs::directory_iterator(); ++it2) {
-      if (fs::is_regular_file(*it2)) {
-         vpath2.emplace_back(it2->path() );
-      }
-    }
-    std::sort(vpath2.begin(), vpath2.end());
-    for(auto& it2: vpath2) {
-       Mat img = cv::imread(it2.string());
-       if (img.empty()) {
-         cerr << "cannot load " << it2 << endl;
-         Tout << "0\n";
-         continue;
-       }
-       auto result = net->run(img);  
-       // Tout << result.classidx  << "\n";
-       Tout << result.classidx  << "\n";
-    }   
+  for(auto& it: vlist) {
+     Mat img = cv::imread(it);
+     if (img.empty()) {
+       cerr << "cannot load " << it << endl;
+       Tout << "0\n";
+       continue;
+     }
+     auto result = net->run(img);
+     // Tout << result.classidx  << "\n";
+     Tout << result.classidx  << "\n";
   }
 
   Tout.close();
   return 0;
 }
+
