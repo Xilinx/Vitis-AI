@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
                       cv::Scalar(0, 0, 255), 1, 1, 0);
       } else {
         cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                      cv::Scalar(255 / label, 255 - label * 10, label), 1, 1,
+                      cv::Scalar(255.0 / label, 255 - label * 10, label), 1, 1,
                       0);
       }
     }

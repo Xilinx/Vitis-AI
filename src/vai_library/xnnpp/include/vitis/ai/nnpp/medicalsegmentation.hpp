@@ -60,7 +60,7 @@ class MedicalSegmentationPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return A unique printer of MedicalSegmentationPostProcess.
+   * @return A unique pointer of MedicalSegmentationPostProcess.
    */
   static std::unique_ptr<MedicalSegmentationPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
@@ -70,7 +70,7 @@ class MedicalSegmentationPostProcess {
 
   /**
    * @brief The post-processing function of the MedicalSegmentation network.
-   * @return The struct of MedicalSegmentationResult.
+   * @return Struct of MedicalSegmentationResult.
    */
   virtual MedicalSegmentationResult medicalsegmentation_post_process(
       unsigned int idx) = 0;

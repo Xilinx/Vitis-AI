@@ -108,7 +108,7 @@ class FaceDetect : public ConfigurableDpuTaskBase {
 
   /**
    * @brief Function to get detect threshold.
-   * @return The detect threshold. The value ranges from 0 to 1.
+   * @return The detect threshold. The value ranges from 0 to 1.0f.
    */
   virtual float getThreshold() const = 0;
 
@@ -116,7 +116,7 @@ class FaceDetect : public ConfigurableDpuTaskBase {
    * @brief Function of update detect threshold.
    * @note The detection results will filter by detect threshold (score >=
    * threshold).
-   * @param threshold The detect threshold. The value ranges from 0 to 1.
+   * @param threshold The detect threshold. The value ranges from 0 to 1.0f.
    */
   virtual void setThreshold(float threshold) = 0;
 

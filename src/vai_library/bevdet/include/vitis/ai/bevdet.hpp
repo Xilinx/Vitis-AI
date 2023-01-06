@@ -30,15 +30,16 @@ namespace vitis {
 namespace ai {
 
 struct CenterPointResult {
-  float bbox[9];
   /// Bounding box 3d: {x, y, z, x_size, y_size, z_size, yaw,vel1,vel2}
-  float score;
+  float bbox[9];
   /// Score
-  uint32_t label;
+  float score;
+  /// the class label
   //'car',         'truck',   'construction_vehicle',
   //'bus',         'trailer', 'barrier',
   //'motorcycle',  'bicycle', 'pedestrian',
   //'traffic_cone'
+  uint32_t label;
 };
 
 /**

@@ -81,10 +81,10 @@ struct BroadcastOpIndex {
   std::vector<int32_t> c_;
   std::vector<int32_t> a_strides_;
   std::vector<int32_t> b_strides_;
-  int index_c_;
-  int num_of_c_;
-  int index_a_;
-  int index_b_;
+  int index_c_=0;
+  int num_of_c_=0;
+  int index_a_=0;
+  int index_b_=0;
   std::vector<int32_t> c_i_;
 
  private:

@@ -32,25 +32,24 @@
 namespace vitis {
 namespace ai {
 
-/**
- *@brief Multitask Network Type , declaration multitask Network
- */
-/// number of classes
-/// label: 0 name: "background"
-/// label: 1 name: "person"
-/// label: 2 name: "car"
-/// label: 3 name: "truck"
-/// label: 4 name: "bus"
-/// label: 5 name: "bike"
-/// label: 6 name: "sign"
-/// label: 7 name: "light"
+#if 0
+ class and corresponding name
+ label: 0 name: "background"
+ label: 1 name: "person"
+ label: 2 name: "car"
+ label: 3 name: "truck"
+ label: 4 name: "bus"
+ label: 5 name: "bike"
+ label: 6 name: "sign"
+ label: 7 name: "light"
+#endif
 
 /**
  * @brief Base class for ADAS MuiltTask from an image (cv::Mat).
  *
  * Input an image (cv::Mat).
  *
- * Output is a struct of MultiTaskResult include segmentation results, 
+ * Output is a struct of MultiTaskResult includes segmentation results, 
  detection results and vehicle towards;
  *
  * Sample code:
@@ -110,7 +109,7 @@ class MultiTask {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be different. This depends on
+   * @note For different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -118,7 +117,7 @@ class MultiTask {
   virtual size_t get_input_batch() const = 0;
 
   /**
-   * @brief Function of get running result from the MultiTask network.
+   * @brief Function to get running result from the MultiTask network.
    * @note The type is CV_8UC1 of the MultiTaskResult.segmentation.
    * @param image Input image
    * @return The struct of MultiTaskResult
@@ -165,7 +164,7 @@ class MultiTask {
  *
  * Input is an image (cv::Mat).
  *
- * Output is struct MultiTaskResult include segmentation results, detection
+ * Output is struct MultiTaskResult includes segmentation results, detection
  results and vehicle towards; The result cv::Mat type is CV_8UC1
  *
  * Sample code:
@@ -227,7 +226,7 @@ class MultiTask8UC1 {
    * @brief Function to get the number of images processed by the DPU at one
    *time.
    *
-   * @note Different DPU core the batch size may be differnt. This depends on
+   * @note For different DPU core the batch size may be differnt. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -237,7 +236,7 @@ class MultiTask8UC1 {
   }
 
   /**
-   * @brief Function of get running result from the MultiTask network.
+   * @brief Function to get running result from the MultiTask network.
    * @note The type is CV_8UC1 of the MultiTaskResult.segmentation.
    *
    * @param image Input image
@@ -249,7 +248,7 @@ class MultiTask8UC1 {
   /**
    * @brief Function to get running results of the MultiTask neural network in
    * batch mode.
-   * @note The type is CV_8UC1 of the MultiTaskResult.segmentation.
+   * @note The type of the MultiTaskResult.segmentation is CV_8UC1 .
    *
    * @param images Input data of input images (std:vector<cv::Mat>). The size of
    * input images equals batch size obtained by get_input_batch.
@@ -275,7 +274,7 @@ class MultiTask8UC1 {
  *
  * Input is an image (cv::Mat).
  *
- * Output is struct MultiTaskResult include segmentation results, detection
+ * Output is struct MultiTaskResult includes segmentation results, detection
  results and vehicle orientation; The result cv::Mat type is CV_8UC3
  *
  * Sample code:
@@ -334,7 +333,7 @@ class MultiTask8UC3 {
   /**
    * @brief Function to get the number of images processed by the DPU at one
    *time.
-   * @note Different DPU core the batch size may be different. This depends on
+   * @note For different DPU core the batch size may be different. This depends on
    *the IP used.
    *
    * @return Batch size.
@@ -344,7 +343,7 @@ class MultiTask8UC3 {
   }
 
   /**
-   * @brief Function of get running result from the MultiTask network.
+   * @brief Function to get running result from the MultiTask network.
    * @note The type is CV_8UC3 of the MultiTaskResult.segmentation.
    *
    * @param image Input image

@@ -75,7 +75,7 @@ struct OFAYOLOResult {
  *@param config The dpu model configuration information.
  *@param w The width of origin image.
  *@param h The height of origin image.
- *@return The struct of OFAYOLOResult.
+ *@return Struct of OFAYOLOResult.
  */
 OFAYOLOResult ofa_yolo_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

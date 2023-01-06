@@ -80,7 +80,7 @@ struct YOLOv3Result {
  *@param config The dpu model configuration information.
  *@param w The width of origin image.
  *@param h The height of origin image.
- *@return The struct of YOLOv3Result.
+ *@return Struct of YOLOv3Result.
  */
 YOLOv3Result yolov3_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

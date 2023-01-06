@@ -32,20 +32,19 @@
 namespace vitis {
 namespace ai {
 
-/**
- *@brief Multitaskv3 Network Type , declaration multitask Network
- */
-/// number of classes
-/// label: 0 name: "car"
-/// label: 1 name: "sign"
-/// label: 2 name: "person"
+#if 0
+ class and corresponding name
+ label: 0 name: "car"
+ label: 1 name: "sign"
+ label: 2 name: "person"
+#endif
 
 /**
  * @brief Base class for ADAS MuiltTask from an image (cv::Mat).
  *
  * Input an image (cv::Mat).
  *
- * Output is a struct of MultiTaskv3Result include segmentation results, 
+ * Output is a struct of MultiTaskv3Result including segmentation results, 
  detection results and vehicle towards;
  *
  * Sample code:
@@ -161,7 +160,7 @@ class MultiTaskv3 {
  *
  * Input is an image (cv::Mat).
  *
- * Output is struct MultiTaskv3Result include segmentation results, detection
+ * Output is struct MultiTaskv3Result including segmentation results, detection
  results and vehicle towards; The result cv::Mat type is CV_8UC1
  *
  * Sample code:
@@ -271,7 +270,7 @@ class MultiTaskv38UC1 {
  *
  * Input is an image (cv::Mat).
  *
- * Output is struct MultiTaskv3Result include segmentation results, detection
+ * Output is struct MultiTaskv3Result including segmentation results, detection
  results and vehicle orientation; The result cv::Mat type is CV_8UC3(except depth estimation)
  *
  * Sample code:

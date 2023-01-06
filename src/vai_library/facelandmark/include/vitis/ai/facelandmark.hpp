@@ -46,7 +46,7 @@ namespace ai {
  * Output score, five key points of the face.
  *
  * @note Usually the input image contains only one face. When it contains
- multiple faces, the functions returns the highest score.
+ multiple faces, the function returns the highest score.
  *
  * Sample code:
  * @code

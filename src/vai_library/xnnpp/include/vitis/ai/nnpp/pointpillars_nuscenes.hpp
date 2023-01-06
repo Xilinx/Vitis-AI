@@ -25,7 +25,7 @@ namespace ai {
 
 /**
  *@struct PPBbox
- *@brief Struct of an object coordinate, confidence and classification. .
+ *@brief Struct of an object coordinate, confidence and classification.
  */
 struct PPBbox {
   /// Confidence
@@ -55,7 +55,7 @@ class PointPillarsNuscenesPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return An unique printer of PointPillarsNuscenesPostProcess.
+   * @return An unique pointer of PointPillarsNuscenesPostProcess.
    */
   static std::unique_ptr<PointPillarsNuscenesPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

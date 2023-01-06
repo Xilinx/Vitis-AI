@@ -19,7 +19,7 @@ CXX_FLAGS += -I/usr/include/xrt
 CXX_FLAGS += -I=/install/Release/include
 CXX_FLAGS += -DENABLE_NEON=1
 #CXX_FLAGS += -DENABLE_AIE=1
-#CXX_FLAGS += -DPSMNET_FINAL
+#CXX_FLAGS += -DPSMNET_OLD
 CXX_FLAGS += -std=c++17
 CXX_FLAGS += -O3
 CXX_FLAGS += -Wall
@@ -40,7 +40,7 @@ LD_FLAGS += -lxrt_coreutil
 LD_FLAGS += -lxrt_core
 LD_FLAGS += -pthread
 
-all: $(OUTPUT_DIR) $(OUTPUT_DIR)/demo_psmnet $(OUTPUT_DIR)/test_performance_psmnet $(OUTPUT_DIR)/demo_psmnet_aie $(OUTPUT_DIR)/test_performance_psmnet_aie
+all: $(OUTPUT_DIR) demo_psmnet test_performance_psmnet
 
 $(OUTPUT_DIR):
 	mkdir -p $@
@@ -66,24 +66,22 @@ $(OUTPUT_DIR)/dpu_resize.o:  dpu_resize.cpp dpu_resize.hpp vai_aie_task_handler.
 $(OUTPUT_DIR)/my_xrt_bo.o:  my_xrt_bo.cpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I.  $<
 
-$(OUTPUT_DIR)/demo_psmnet_aie: $(OUTPUT_DIR)/demo_psmnet.o $(OUTPUT_DIR)/dpu_sfm.o $(OUTPUT_DIR)/psmnet_aie.o $(OUTPUT_DIR)/dpu_resize.o $(OUTPUT_DIR)/my_xrt_bo.o
+demo_psmnet_aie: $(OUTPUT_DIR)/demo_psmnet.o $(OUTPUT_DIR)/dpu_sfm.o $(OUTPUT_DIR)/psmnet_aie.o $(OUTPUT_DIR)/dpu_resize.o $(OUTPUT_DIR)/my_xrt_bo.o 
 	$(CXX) -std=c++17 $(CXX_FLAGS) -DENABLE_AIE=1 -I.  -o $@ $+ $(LD_FLAGS)
 
-$(OUTPUT_DIR)/demo_psmnet: $(OUTPUT_DIR)/demo_psmnet.o $(OUTPUT_DIR)/psmnet.o $(OUTPUT_DIR)/cpu_op.o
+demo_psmnet: $(OUTPUT_DIR)/demo_psmnet.o $(OUTPUT_DIR)/psmnet.o $(OUTPUT_DIR)/cpu_op.o 
 	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS) -lvitis_ai_library-math
 
 $(OUTPUT_DIR)/test_performance_psmnet.o: test_performance_psmnet.cpp  psmnet_benchmark.hpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
 
-$(OUTPUT_DIR)/test_performance_psmnet: $(OUTPUT_DIR)/test_performance_psmnet.o $(OUTPUT_DIR)/psmnet.o $(OUTPUT_DIR)/cpu_op.o
+test_performance_psmnet: $(OUTPUT_DIR)/test_performance_psmnet.o $(OUTPUT_DIR)/psmnet.o $(OUTPUT_DIR)/cpu_op.o
 	$(CXX)  $(CXX_FLAGS) -std=c++17 -I. -o $@ $+ $(LD_FLAGS) -lvart-util -lvitis_ai_library-math
 
-$(OUTPUT_DIR)/test_performance_psmnet_aie: $(OUTPUT_DIR)/test_performance_psmnet.o $(OUTPUT_DIR)/psmnet_aie.o $(OUTPUT_DIR)/dpu_sfm.o $(OUTPUT_DIR)/dpu_resize.o $(OUTPUT_DIR)/my_xrt_bo.o
+test_performance_psmnet_aie: $(OUTPUT_DIR)/test_performance_psmnet.o $(OUTPUT_DIR)/psmnet_aie.o $(OUTPUT_DIR)/dpu_sfm.o $(OUTPUT_DIR)/dpu_resize.o $(OUTPUT_DIR)/my_xrt_bo.o
 	$(CXX)  $(CXX_FLAGS) -std=c++17 -I. -o $@ $+ $(LD_FLAGS) -lvart-util
 
 clean:
 	rm -rf $(OUTPUT_DIR)/*.o
-	rm -rf $(OUTPUT_DIR)/demo_psmnet
-	rm -rf $(OUTPUT_DIR)/test_performance_psmnet
-	rm -rf $(OUTPUT_DIR)/demo_psmnet_aie
-	rm -rf $(OUTPUT_DIR)/test_performance_psmnet_aie
+	rm -rf demo_psmnet
+	rm -rf test_performance_psmnet

@@ -81,7 +81,7 @@ class MultiTaskPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    *  Usage: output_tensors[kernel_index][output_index].
    * @param config The dpu model configuration information.
-   * @return The struct of MultiTaskResult.
+   * @return Struct of MultiTaskResult.
    */
   static std::unique_ptr<MultiTaskPostProcess> create(
       const std::vector<std::vector<vitis::ai::library::InputTensor>>&
@@ -105,13 +105,13 @@ class MultiTaskPostProcess {
   /**
    * @brief The post-processing function of the multitask which stored the
    * original segmentation classes.
-   * @return The struct of SegmentationResult.
+   * @return Struct of SegmentationResult.
    */
   virtual std::vector<MultiTaskResult> post_process_seg(size_t batch_size) = 0;
   /**
    * @brief The post-processing function of the multitask which return a result
    * include segmentation image mapped to color.
-   * @return The struct of SegmentationResult.
+   * @return Struct of SegmentationResult.
    */
   virtual std::vector<MultiTaskResult> post_process_seg_visualization(
       size_t batch_size) = 0;

@@ -32,7 +32,7 @@ struct PoseDetectResult {
   using Point = cv::Point2f;
   /**
    * @struct Pose14Pt
-   * @brief A pose. Represented by 14 coordinate points.
+   * @brief Data structure for a pose. Represented by 14 coordinate points.
    */
   struct Pose14Pt {
     /// R_shoulder coordinate

@@ -42,7 +42,9 @@ struct SoloResult {
   int height;
   /// Double size of input image
   Ndarray<int> seg_masks;
+  /// the labels
   Ndarray<int> cate_labels;
+  /// the scores
   Ndarray<float> cate_scores;
 };
 
@@ -52,7 +54,7 @@ struct SoloResult {
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
  *  Usage: output_tensors[output_index].
- * @return The struct of SoloResult.
+ * @return Struct of SoloResult.
  */
 std::vector<SoloResult> solo_post_process_batch(
     const std::vector<vitis::ai::library::InputTensor>&

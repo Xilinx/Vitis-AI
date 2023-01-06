@@ -14,8 +14,7 @@
 # limitations under the License.
 #
 
-make all
-#make demo_psmnet_aie
-#mv demo_psmnet_aie demo_psmnet
-#make test_performance_psmnet_aie
-#mv test_performance_psmnet_aie test_performance_psmnet
+make demo_psmnet_aie
+mv demo_psmnet_aie demo_psmnet
+make test_performance_psmnet_aie
+mv test_performance_psmnet_aie test_performance_psmnet

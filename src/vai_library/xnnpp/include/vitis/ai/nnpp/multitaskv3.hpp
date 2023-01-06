@@ -82,7 +82,7 @@ class MultiTaskv3PostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    *  Usage: output_tensors[kernel_index][output_index].
    * @param config The dpu model configuration information.
-   * @return The struct of MultiTaskv3Result.
+   * @return Struct of MultiTaskv3Result.
    */
   static std::unique_ptr<MultiTaskv3PostProcess> create(
       const std::vector<std::vector<vitis::ai::library::InputTensor>>&
@@ -106,13 +106,13 @@ class MultiTaskv3PostProcess {
   /**
    * @brief The post-processing function of the multitask which stored the
    * original multitaskv3 classes.
-   * @return The struct of Multitaskv3Result.
+   * @return Struct of Multitaskv3Result.
    */
   virtual std::vector<MultiTaskv3Result> post_process(size_t batch_size) = 0;
   /**
    * @brief The post-processing function of the multitask which return a result
    * include multitaskv3 image mapped to color.
-   * @return The struct of Multitaskv3Result.
+   * @return Struct of Multitaskv3Result.
    */
   virtual std::vector<MultiTaskv3Result> post_process_visualization(
       size_t batch_size) = 0;

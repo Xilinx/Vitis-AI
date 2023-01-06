@@ -102,25 +102,25 @@ class SSDdetector {
 
   std::map<int, std::vector<float>> decoded_bboxes_;
 
-  const unsigned int num_classes_;
+  const unsigned int num_classes_=0;
   // int background_label_id_;
-  CodeType code_type_;
-  bool variance_encoded_in_target_;
-  unsigned int keep_top_k_;
+  CodeType code_type_=CORNER;
+  bool variance_encoded_in_target_=false;
+  unsigned int keep_top_k_=0;
   std::vector<float> confidence_threshold_;
-  float nms_confidence_;
-  unsigned int nms_top_k_;
-  float nms_threshold_;
-  float eta_;
+  float nms_confidence_=0.0;
+  unsigned int nms_top_k_=0;
+  float nms_threshold_=0.0;
+  float eta_=0.0;
 
   const std::vector<std::shared_ptr<std::vector<float>>>& priors_;
-  bool if_tfmodel_;
-  bool is_mlperf_;
-  float scale_;
+  bool if_tfmodel_=false;
+  bool is_mlperf_=false;
+  float scale_=0.0;
 
-  bool clip_;
+  bool clip_=false;
 
-  int num_priors_;
+  int num_priors_=0;
 };
 
 std::unique_ptr<SSDdetector> CreateSSDUniform(

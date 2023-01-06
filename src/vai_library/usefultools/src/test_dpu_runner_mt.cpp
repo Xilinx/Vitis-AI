@@ -222,6 +222,9 @@ inline void run(vart::Runner* runner,
                 const vector<vector<vector<char>>>& inputs, size_t idx,
                 vector<vector<char>>& output_buffers) {
   auto r = dynamic_cast<vart::RunnerExt*>(runner);
+  if (r == nullptr) {
+     return;
+  }
   auto dpu_inputs = r->get_inputs();
   auto dpu_outputs = r->get_outputs();
   if (ENV_PARAM(COPY_INPUT)) {

@@ -75,21 +75,21 @@ struct Covid19SegmentationResult {
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
  *   Usage: output_tensors[output_index].
- * @return The struct of SegmentationResult.
+ * @return Struct of SegmentationResult.
  */
 std::vector<SegmentationResult> segmentation_post_process_8UC1(
     const vitis::ai::library::InputTensor& input_tensors,
     const vitis::ai::library::OutputTensor& output_tensors);
 
 /**
- * @brief The post-processing function of the segmentation which return an image
+ * @brief The post-processing function of the segmentation which returns an image
  *mapped to color.
  * @param input_tensors A vector of all input-tensors in the network.
  * Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
  *  Usage: output_tensors[output_index].
  * @param config The dpu model configuration information ().
- * @return The struct of SegmentationResult.
+ * @return Struct of SegmentationResult.
  */
 std::vector<SegmentationResult> segmentation_post_process_8UC3(
     const vitis::ai::library::InputTensor& input_tensors,

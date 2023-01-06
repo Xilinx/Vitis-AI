@@ -82,7 +82,7 @@ class MedicalDetectionPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The dpu model configuration information.
-   * @return An unique printer of MedicalDetectionPostProcess.
+   * @return An unique pointer of MedicalDetectionPostProcess.
    */
   static std::unique_ptr<MedicalDetectionPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,
@@ -91,7 +91,7 @@ class MedicalDetectionPostProcess {
 
   /**
    * @brief The post-processing function of the MedicalDetection network.
-   * @return The struct of MedicalDetectionResult.
+   * @return Struct of MedicalDetectionResult.
    */
   virtual MedicalDetectionResult medicaldetection_post_process(
       unsigned int idx) = 0;

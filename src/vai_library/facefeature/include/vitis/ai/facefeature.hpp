@@ -124,7 +124,7 @@ class FaceFeature {
    *FaceFeature.
    * @param model_name  Model name
    *
-   * @param need_preprocess  Normalize with mean/scale or not, default value is
+   * @param need_preprocess  Normalize with mean/scale or not. Default value is
    *true.
    *
    * @return An instance of FaceFeature class.

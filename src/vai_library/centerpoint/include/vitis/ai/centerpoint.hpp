@@ -83,8 +83,24 @@ class CenterPoint{
    */
   virtual size_t get_input_batch() const = 0;
 
+  /**
+   * @brief Function to get result of the centerpoint network.
+   *
+   * @param input Input data of float vector.
+   *
+   * @return vector of CenterPointResult.
+   *
+   */
   virtual std::vector<CenterPointResult> run(const std::vector<float> &input) = 0;
 
+  /**
+   * @brief Function to get result of the centerpoint network in batch mode.
+   *
+   * @param inputs vector of Input data of float vector.
+   *
+   * @return vector of vector of CenterPointResult.
+   *
+   */
   virtual std::vector<std::vector<CenterPointResult>> run(
       const std::vector<std::vector<float>> &inputs) = 0;
 };

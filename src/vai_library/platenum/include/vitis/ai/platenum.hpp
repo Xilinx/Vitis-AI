@@ -60,6 +60,8 @@ class PlateNum {
    * @brief Factory function to get an instance of derived classes of class
    * PlateNum.
    *
+   * @param model_name the model name of the created model
+   *
    * @param need_mean_scale_process normalize with mean/scale or not, true by
    * default.
    *
@@ -67,10 +69,25 @@ class PlateNum {
    */
   static std::unique_ptr<PlateNum> create(const std::string &model_name,
                                           bool need_mean_scale_process = true);
+  /**
+   * @brief Factory function to get an instance of derived classes of class
+   * PlateNum.
+   *
+   * @param model_name the model name of the created model
+   *
+   * @param attrs xir::Attrs pointer points to the provided attributes 
+   * 
+   * @param need_mean_scale_process normalize with mean/scale or not, true by
+   * default.
+   *
+   * @return An instance of PlateNum class.
+   */
   static std::unique_ptr<PlateNum> create(const std::string &model_name,
                                           xir::Attrs *attrs,
                                           bool need_mean_scale_process = true);
-
+  /**
+   * @cond NOCOMMENTS
+   */
  protected:
   explicit PlateNum();
   PlateNum(const PlateNum &) = delete;
@@ -78,6 +95,9 @@ class PlateNum {
 
  public:
   virtual ~PlateNum();
+  /**
+   * @endcond
+   */
 
  public:
   /**

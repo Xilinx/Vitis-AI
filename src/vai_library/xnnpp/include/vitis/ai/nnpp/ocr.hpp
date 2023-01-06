@@ -52,7 +52,7 @@ class OCRPost {
    * @param ratioh inner data structure for height ratio
    * @param ratiow inner data structure for width ratio
    * @param oriimg original image
-   * @return An unique printer of OCRPostProcess.
+   * @return An unique pointer of OCRPostProcess.
    */
   static std::unique_ptr<OCRPost> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

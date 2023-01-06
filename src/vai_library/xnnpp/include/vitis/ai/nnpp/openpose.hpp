@@ -66,7 +66,7 @@ struct OpenPoseResult {
  *@param config The dpu model configuration information.
  *@param w The width of origin image.
  *@param h The height of origin image.
- *@return The struct of OpenPoseResult.
+ *@return Struct of OpenPoseResult.
  */
 OpenPoseResult open_pose_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

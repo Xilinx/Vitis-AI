@@ -130,7 +130,7 @@ PsmNetImp::PsmNetImp() : tasks_{}, vai_res_{}, dpu_sfm_{} {
                              {0.017429, 0.017507, 0.01712475});
   tasks_[1]->setMeanScaleBGR({103.53, 116.28, 123.675},
                              {0.017429, 0.017507, 0.01712475});
-#ifndef PSMNET_FINAL
+#ifdef PSMNET_OLD
   // ### kernel 0 part ###
   vector<size_t> kernel0_concat_channel = {64, 128};
   vector<string> kernel0_task0_outs = {"input_152", "input_148", "input_144", "input_140"};

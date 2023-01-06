@@ -57,7 +57,7 @@ class UltraFastPost {
    * @param batch_size the model batch information
    * @param real_batch_size the real batch information of the model
    * @param pic_size vector holding the size information of input pics
-   * @return A unique printer of UltraFastPost.
+   * @return A unique pointer of UltraFastPost.
    */
   static std::unique_ptr<UltraFastPost> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

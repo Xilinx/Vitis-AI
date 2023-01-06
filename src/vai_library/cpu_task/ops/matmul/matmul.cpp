@@ -75,18 +75,20 @@ class MyMatmulOp {
      return ret;
   }
  public:
-  const xir::Op* const op;
-  bool transpose_a;
-  bool transpose_b;
+  const xir::Op* const op=nullptr;
+  bool transpose_a=false;
+  bool transpose_b=false;
   // 1st matrix is MxK
   // 2nd matrix is KxN
   // result is MxN
   // M, K, N are all transposed value.
-  int M_, K_, N_;
+  int M_=0;
+  int K_=0;
+  int N_=0;
   // because  input a and input b support broadcast,
   // so batch_a_ and batch_b_ are different.
-  int batch_a_;
-  int batch_b_;
+  int batch_a_=0;
+  int batch_b_=0;
 
 };
 

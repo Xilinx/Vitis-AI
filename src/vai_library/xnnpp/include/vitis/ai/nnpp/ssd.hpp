@@ -79,7 +79,7 @@ class SSDPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return An unique printer of SSDPostProcess.
+   * @return An unique pointer of SSDPostProcess.
    */
   static std::unique_ptr<SSDPostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

@@ -35,12 +35,12 @@ namespace ai {
  *
  */
 struct CenterPointResult {
-  std::vector<float> bbox;
   /// Bounding box 3d: {x, y, z, x_size, y_size, z_size, yaw}
-  float score;
+  std::vector<float> bbox;
   /// Score
-  int label;
+  float score;
   /// Classification
+  int label;
 };
 
 std::vector<CenterPointResult> post_process(

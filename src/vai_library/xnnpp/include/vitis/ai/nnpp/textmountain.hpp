@@ -28,9 +28,9 @@ typedef cv::Point2d arr4_point2d[4];
 struct TextMountainResult{
   /// width of network input.
   int width=0;
-  /// Height of network input.
+  /// height of network input.
   int height=0;
-  /// structure to hold each textmountain detected result 
+  /// Struct to hold each textmountain detected result 
   struct tmitem{
     /// construct function;
     tmitem(arr4_point2d& inbox, float inscore): box(inbox), score(inscore){}
@@ -55,7 +55,7 @@ class TextMountainPost {
    * @param real_batch_size the real batch information of the model
    * @param scale_h: the array to hold the height scale for each input img
    * @param scale_w: the array to hold the width scale for each input img
-   * @return An unique printer of TextMountainPost
+   * @return An unique pointer of TextMountainPost
    */
   static std::unique_ptr<TextMountainPost> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

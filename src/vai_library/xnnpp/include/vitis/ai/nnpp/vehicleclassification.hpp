@@ -30,7 +30,7 @@ namespace ai {
 struct VehicleClassificationResult {
   /**
    *@struct Score
-   *@brief The struct of index and confidence for an object.
+   *@brief Struct of index and confidence for an object.
    */
   struct Score {
     ///  The index of the result in the ImageNet.
@@ -64,7 +64,7 @@ struct VehicleClassificationResult {
  *@param output_tensors A vector of all output-tensors in the network.
  *Usage: output_tensors[output_tensor_index].
  *@param config The dpu model configuration information.
- *@return The struct of VehicleClassificationResult.
+ *@return Struct of VehicleClassificationResult.
  */
 std::vector<VehicleClassificationResult> vehicleclassification_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

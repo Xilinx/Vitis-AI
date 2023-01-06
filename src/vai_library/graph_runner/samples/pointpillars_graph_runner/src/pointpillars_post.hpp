@@ -29,7 +29,7 @@ class PointPillarsPost {
    * Usage: input_tensors[input_tensor_index].
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
-   * @return An unique printer of PointPillarsPostProcess.
+   * @return An unique pointer of PointPillarsPostProcess.
    */
   static std::unique_ptr<PointPillarsPost> create(
       const std::vector<vart::TensorBuffer*>& output_tensors,

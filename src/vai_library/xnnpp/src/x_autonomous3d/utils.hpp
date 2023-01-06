@@ -80,7 +80,8 @@ void exp_n(std::vector<float>& src);
 void atan2_n(std::vector<float>& dst, const std::vector<float>& src);
 
 struct Point {
-  float x, y;
+  float x=0.0;
+  float y=0.0;
   Point() {}
   Point(double _x, double _y) { x = _x, y = _y; }
 

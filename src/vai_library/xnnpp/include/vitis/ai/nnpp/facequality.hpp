@@ -41,7 +41,7 @@ struct FaceQualityResult {
  *@param output_tensors A vector of all output-tensors in the network.
  *Usage: output_tensors[output_index].
  *@param config The dpu model configuration information.
- *@return The struct of face quality.
+ *@return Struct of face quality.
  */
 FaceQualityResult face_quality_post_process(
     const std::vector<std::vector<xilinx::ai::library::InputTensor>>&

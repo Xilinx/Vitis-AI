@@ -23,7 +23,7 @@ namespace ai {
 
 /**
  * @struct FaceQuality5ptResult
- * @brief The struct of result returned by the facequality5pt network.
+ * @brief Struct of result returned by the facequality5pt network.
  */
 struct FaceQuality5ptResult {
   /// Width of a input image

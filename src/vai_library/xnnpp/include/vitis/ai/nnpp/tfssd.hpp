@@ -80,7 +80,7 @@ class TFSSDPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return A unique printer of TFSSDPostProcess.
+   * @return A unique pointer of TFSSDPostProcess.
    */
   static std::unique_ptr<TFSSDPostProcess> create(
       const std::string& model_name,
@@ -91,7 +91,7 @@ class TFSSDPostProcess {
 
   /**
    * @brief The post-processing function of the TFSSD network.
-   * @return The struct of TFSSDResult.
+   * @return Struct of TFSSDResult.
    */
   virtual TFSSDResult ssd_post_process(unsigned int idx) = 0;
   /**

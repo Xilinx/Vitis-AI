@@ -83,7 +83,7 @@ class EfficientDetD2PostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return An unique printer of EfficientDetD2PostProcess.
+   * @return An unique pointer of EfficientDetD2PostProcess.
    */
   static std::unique_ptr<EfficientDetD2PostProcess> create(
       const std::vector<vitis::ai::library::InputTensor>& input_tensors,

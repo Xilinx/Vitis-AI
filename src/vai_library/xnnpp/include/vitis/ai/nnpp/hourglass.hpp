@@ -66,7 +66,7 @@ struct HourglassResult {
  *@param config The dpu model configuration information.
  *@param w The width of origin image.
  *@param h The height of origin image.
- *@return The struct of HourglassResult.
+ *@return Struct of HourglassResult.
  */
 HourglassResult hourglass_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,

@@ -267,8 +267,8 @@ def main(arg):
     if arg.perf:
         cnt = arg.cycle
     else:
-        #cnt = len(listimage)
-        cnt = 1
+        cnt = len(listimage)
+        #cnt = 1
     print("total test images: ", cnt)
     """run with batch """
     time_start = time.time()

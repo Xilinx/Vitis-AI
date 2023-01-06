@@ -58,7 +58,7 @@ class X_Autonomous3DPostProcess {
    * @param output_tensors A vector of all output-tensors in the network.
    * Usage: output_tensors[output_index].
    * @param config The DPU model configuration information.
-   * @return An unique printer of X_Autonomous3DPostProcess.
+   * @return An unique pointer of X_Autonomous3DPostProcess.
    */
 
   static std::unique_ptr<X_Autonomous3DPostProcess> create(

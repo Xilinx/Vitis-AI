@@ -49,7 +49,7 @@ struct RcanResult {
  *   Usage: input_tensors[input_tensor_index].
  * @param output_tensors A vector of all output-tensors in the network.
  *  Usage: output_tensors[output_index].
- * @return The struct of RcanResult.
+ * @return Struct of RcanResult.
  */
 RcanResult rcan_post_process(
     const std::vector<std::vector<vitis::ai::library::InputTensor>>&

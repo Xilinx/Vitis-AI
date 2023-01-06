@@ -42,7 +42,7 @@ struct Batch {
 class ImageCache {
  private:
   std::mutex lock_;
-  unsigned int batchIdx_;
+  unsigned int batchIdx_=0;
   std::vector<Batch> inputBatches_;
 
  public:
