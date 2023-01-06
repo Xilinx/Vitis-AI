@@ -77,13 +77,13 @@ Supported Evaluation Targets
      - `VCK190 <https://www.xilinx.com/vck190>`__ / `VCK5000 <https://www.xilinx.com/vck5000>`__
 	 
    * - Versal AI Edge
-     - `VEK280 <https://www.xilinx.com/member/dpu-vek280.html>`__ 
+     - `VEK280 <https://www.xilinx.com/member/vitis-ai-vek280.html>`__ 
 
    * - Zynq Ultrascale+ Embedded
      - `ZCU102 <https://www.xilinx.com/zcu102>`__ / `ZCU104 <https://www.xilinx.com/zcu104>`__ / `Kria K26 SOM <https://www.xilinx.com/kria>`__
 
    * - Alveo Data Center Acceleration Cards
-     - `U200 16nm DDR <https://www.xilinx.com/U200>`__ / `U250 16 nm DDR <https://www.xilinx.com/U250>`__ / `U280 16 nm HBM <https://www.xilinx.com/U280>`__ / `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__ / `U50 16 nm HBM <https://www.xilinx.com/U50>`__ / `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ / `V70 <https://www.xilinx.com/member/dpu-v70.html>`__
+     - `U200 16nm DDR <https://www.xilinx.com/U200>`__ / `U250 16 nm DDR <https://www.xilinx.com/U250>`__ / `U280 16 nm HBM <https://www.xilinx.com/U280>`__ / `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__ / `U50 16 nm HBM <https://www.xilinx.com/U50>`__ / `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ / `V70 <https://www.xilinx.com/member/vitis-ai-v70.html>`__
 
 .. note:: See the `Alveo Product Selection Guide <https://www.xilinx.com/content/dam/xilinx/support/documents/selection-guides/alveo-product-selection-guide.pdf>`__ for more information on device selection.
 
@@ -92,7 +92,7 @@ These instructions walk you as a user through the process of downloading a pre-b
 
 In addition, developers having access to suitable available hardware platforms can experience pre-built demonstrations that are made are available for download via the `Vitis AI Developer page <https://www.xilinx.com/developer/products/vitis-ai.html#demos>`__. You can also contact your local FAE to arrange a live demonstration of the same.
 
-Last but not least, embedded in the Vitis AI Github repo, there are a few new demonstrations for NLP and Vision Transformer models and RNN DPU implementations. You can access the `transformer demos here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/demos/transformer>`__ and the `RNN demos here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/demos/rnn>`__
+Last but not least, embedded in the Vitis AI Github repo, there is a folder that is provided in which we may publish demonstrations from time-to-time. You can access the `demos here <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/demos>`__.
 
 Once your “test drive” of the hardware platform is complete, we would recommend that you review the remainder of this documentation in its entirety in order to become more familiar with the components of Vitis AI.
 

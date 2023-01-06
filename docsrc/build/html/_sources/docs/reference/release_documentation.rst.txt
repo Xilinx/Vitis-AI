@@ -30,13 +30,13 @@ Release Documentation
      - `DPUCZDX8G (PG338) <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
 
    * - Versal Edge VEK280
-     - `Early access <https://www.xilinx.com/member/dpu-vek280.html>`__
+     - `Early access <https://www.xilinx.com/member/vitis-ai-vek280.html>`__
 	 
    * - Versal Embedded VCK190
      - `DPUCVDX8G (PG389) <https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g>`__
 
    * - Alveo V70
-     - `Early access <https://www.xilinx.com/member/dpu-v70.html>`__
+     - `Early access <https://www.xilinx.com/member/vitis-ai-v70.html>`__
 
    * - 16nm DDR U200,U250
      - `DPUCADF8H (PG400) <https://docs.xilinx.com/r/en-US/pg400-dpucadf8h>`__

@@ -207,7 +207,6 @@ PyTorch models have the following directory structure:
 .. note:: For more information on Vitis-AI Quantizer executables ``vai_q_tensorflow`` and ``vai_q_pytorch``, please see the `Vitis AI User Guide <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai>`__.
 .. note:: Due to licensing restrictions, some model archives include instructions as to how the user can leverage that model architecture with Vitis AI, but do not include the pretrained model.  In these cases, the user must leverage the documentation provided to build and train their own version of the model.  
 .. note:: For more information about the various Xilinx DPUs, see the :doc:`DPU IP Product Guides <reference/release_documentation>`
-.. note:: Note that Vitis AI support for Recurrent Neural Networks (NLP) and Transformer models (ViT and BERT-base) is currently released in the ``/demos/rnn`` and ``/demos/transformer`` subdirectories within the Vitis AI repository.
 
 .. raw:: html
 

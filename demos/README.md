@@ -7,4 +7,4 @@
 
 # Demos folder
 
-The purpose of this folder is to distribute design efforts that are provided as technology demonstrators.  These demos may be of alpha quality and not ready for prime-time production.  Enjoy!
+The purpose of this folder is to distribute design efforts that are provided as technology demonstrators.  These demos may be of alpha quality and not ready for prime-time production.  New demos will be added to this repository as they are made available (check the master branch for updates). Enjoy!

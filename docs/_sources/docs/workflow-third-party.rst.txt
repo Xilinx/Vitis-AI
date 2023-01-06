@@ -26,14 +26,24 @@ provides the benefit of runtime-interpretation of models represented as an ONNX 
 
 The `ONNX Runtime Execution Provider <https://onnxruntime.ai/docs/execution-providers/>`__ framework enables the integration of proprietary or customized tensor accelerator cores from any “execution provider”. Such “execution providers” are typically tensor acceleration IP blocks, integrated into an SoC by the semiconductor vendor. The ability of a given accelerator to offload operations is presented as a listing of capabilities to the ONNX Runtime. Specific subgraphs or operations within the ONNX graph may then be offloaded to that core based on the advertised capabilities of that execution provider.
 
-Vitis AI Execution Provider support has been integrated as an `experimental flow <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/onnxruntime>`__ in recent releases.
-
 Additional details of the Vitis AI Execution Provider can be found `here <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>`__.
 
+As of Vitis AI 3.0, we have enhanced our support for ONNX Runtime in order to on Xilinx targets.  In this context, the Vitis AI Quantizer can be leveraged to export a quantized ONNX model to the runtime where it is compiled.  Users should refer to the section "Programming with VOE" in :doc:`UG1414 <../docs/reference/release_documentation>` for additional information on this new workflow.
+
+.. figure:: reference/images/VAI_3rd_party_ONNXRuntime_Edge.PNG
+   :width: 1300
+   
+   Vitis-AI Integration With ONNX Runtime (Edge)
+   
 .. figure:: reference/images/VAI_3rd_party_ONNXRuntime.PNG
    :width: 1300
    
-   Vitis-AI Integration With ONNX Runtime (Data Center)
+   Vitis-AI Integration With ONNX Runtime (Edge)
+
+
+For Xilinx Data Center targets, Vitis AI Execution Provider support has also been published as a `workflow reference <https://gitenterprise.xilinx.com/vitis/vitis-ai-staging/tree/vai3.0_update/third_party/onnxruntime>`__ in recent releases.
+   
+
 
 TensorFlow Lite
 ----------------
@@ -42,7 +52,7 @@ TensorFlow Lite has been used as the preferred inference solution for TensorFlow
 
 With the addition of `TensorFlow Delegates <https://www.tensorflow.org/lite/performance/delegates>`__, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.
 
-Vitis AI Delegate support has been integrated as an `experimental flow <https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/tflite>`__ in recent releases.
+Vitis AI Delegate support has been integrated as an `experimental flow <https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/third_party/tflite>`__ in recent releases.
 
 .. figure:: reference/images/VAI_3rd_party_TFLite.PNG
    :width: 1300

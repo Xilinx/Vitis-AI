@@ -126,16 +126,16 @@ Step 3: Run the Vitis AI Examples
 ---------------------------------
 
 1. Download the
-   `vitis_ai_runtime_r2.5.x_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.5.0_image_video.tar.gz>`__ from host to the target using scp with the following command.
+   `vitis_ai_runtime_r3.0.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz>`__ from host to the target using scp with the following command.
 
-   ``[Host]$scp vitis_ai_runtime_r2.5.*_image_video.tar.gz root@[IP_OF_BOARD]:~/``
+   ``[Host]$scp vitis_ai_runtime_r3.0.*_image_video.tar.gz root@[IP_OF_BOARD]:~/``
 
-2. Unzip the ``vitis_ai_runtime_r2.5.x_image_video.tar.gz`` package on the target.
+2. Unzip the ``vitis_ai_runtime_r3.0.0_image_video.tar.gz`` package on the target.
 
       ::
 
          cd ~     
-         tar -xzvf vitis_ai_runtime_r*2.5*_image_video.tar.gz -C Vitis-AI/examples/vai_runtime
+         tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
 
 3. Enter the directory of samples in the target board. Take ``resnet50`` as an example. 
 
@@ -177,4 +177,4 @@ Launching Commands for VART Samples on Edge
 References
 ----------
 
-`Vitis AI User Guide <https://www.xilinx.com/html_docs/vitis_ai/2_5/index.html>`__
+`Vitis AI User Guide <https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html>`__

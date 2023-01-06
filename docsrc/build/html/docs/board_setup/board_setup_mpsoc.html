@@ -57,7 +57,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -67,15 +67,15 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -87,7 +87,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -255,13 +255,13 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu
 <h2>Step 3: Run the Vitis AI Examples<a class="headerlink" href="#step-3-run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p>Download the
-<a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r2.5.0_image_video.tar.gz">vitis_ai_runtime_r2.5.x_image_video.tar.gz</a> from host to the target using scp with the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">[Host]$scp</span> <span class="pre">vitis_ai_runtime_r2.5.*_image_video.tar.gz</span> <span class="pre">root&#64;[IP_OF_BOARD]:~/</span></code></p>
+<a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz">vitis_ai_runtime_r3.0.0_image_video.tar.gz</a> from host to the target using scp with the following command.</p>
+<p><code class="docutils literal notranslate"><span class="pre">[Host]$scp</span> <span class="pre">vitis_ai_runtime_r3.0.*_image_video.tar.gz</span> <span class="pre">root&#64;[IP_OF_BOARD]:~/</span></code></p>
 </li>
-<li><p>Unzip the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r2.5.x_image_video.tar.gz</span></code> package on the target.</p>
+<li><p>Unzip the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r3.0.0_image_video.tar.gz</span></code> package on the target.</p>
 <blockquote>
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
-<span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis_ai_runtime_r</span><span class="o">*</span><span class="mf">2.5</span><span class="o">*</span><span class="n">_image_video</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">C</span> <span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">vai_runtime</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">vitis_ai_runtime_r</span><span class="o">*</span><span class="mf">3.0</span><span class="o">.</span><span class="n">_image_video</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">-</span><span class="n">C</span> <span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">vai_runtime</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -330,7 +330,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/2_5/index.html">Vitis AI User Guide</a></p>
+<p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html">Vitis AI User Guide</a></p>
 </section>
 </section>
 

@@ -59,7 +59,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -69,15 +69,15 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN model with Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
 <ul>
@@ -94,7 +94,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -161,24 +161,31 @@ function OptanonWrapper() { }
 <p><a class="reference external" href="https://onnxruntime.ai/">ONNX Runtime</a> was devised as a cross-platform inference deployment runtime for ONNX models. ONNX Runtime
 provides the benefit of runtime-interpretation of models represented as an ONNX intermediate representation (IR).</p>
 <p>The <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/">ONNX Runtime Execution Provider</a> framework enables the integration of proprietary or customized tensor accelerator cores from any “execution provider”. Such “execution providers” are typically tensor acceleration IP blocks, integrated into an SoC by the semiconductor vendor. The ability of a given accelerator to offload operations is presented as a listing of capabilities to the ONNX Runtime. Specific subgraphs or operations within the ONNX graph may then be offloaded to that core based on the advertised capabilities of that execution provider.</p>
-<p>Vitis AI Execution Provider support has been integrated as an <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/onnxruntime">experimental flow</a> in recent releases.</p>
 <p>Additional details of the Vitis AI Execution Provider can be found <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.</p>
+<p>As of Vitis AI 3.0, we have enhanced our support for ONNX Runtime in order to on Xilinx targets.  In this context, the Vitis AI Quantizer can be leveraged to export a quantized ONNX model to the runtime where it is compiled.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this new workflow.</p>
 <figure class="align-default" id="id2">
-<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime.PNG" src="../_images/VAI_3rd_party_ONNXRuntime.PNG" style="width: 1300px;" /></a>
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" src="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" style="width: 1300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Data Center)</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Edge)</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime.PNG" src="../_images/VAI_3rd_party_ONNXRuntime.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Edge)</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>For Xilinx Data Center targets, Vitis AI Execution Provider support has also been published as a <a class="reference external" href="https://gitenterprise.xilinx.com/vitis/vitis-ai-staging/tree/vai3.0_update/third_party/onnxruntime">workflow reference</a> in recent releases.</p>
 </section>
 <section id="tensorflow-lite">
 <h2>TensorFlow Lite<a class="headerlink" href="#tensorflow-lite" title="Permalink to this heading">¶</a></h2>
 <p>TensorFlow Lite has been used as the preferred inference solution for TensorFlow users in the embedded space for many years. TensorFlow Lite provides the benefit of runtime-interpretation of models trained in TensorFlow Lite, with the implication that no compilation is required in order to execute the model on-target. TensorFlow Lite provides support for embedded Arm® processors, as well as NEON tensor acceleration. This has made TensorFlow Lite a convenient solution for embedded and mobile MCU targets which did not incorporate purpose-built tensor acceleration cores.</p>
 <p>With the addition of <a class="reference external" href="https://www.tensorflow.org/lite/performance/delegates">TensorFlow Delegates</a>, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.</p>
-<p>Vitis AI Delegate support has been integrated as an <a class="reference external" href="https://gitenterprise.xilinx.com/quentonh/vitis-ai-staging/tree/master/third_party/tflite">experimental flow</a> in recent releases.</p>
-<figure class="align-default" id="id3">
+<p>Vitis AI Delegate support has been integrated as an <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/third_party/tflite">experimental flow</a> in recent releases.</p>
+<figure class="align-default" id="id4">
 <a class="reference internal image-reference" href="../_images/VAI_3rd_party_TFLite.PNG"><img alt="../_images/VAI_3rd_party_TFLite.PNG" src="../_images/VAI_3rd_party_TFLite.PNG" style="width: 1300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Vitis-AI Integration With TensorFlow Lite</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Vitis-AI Integration With TensorFlow Lite</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>

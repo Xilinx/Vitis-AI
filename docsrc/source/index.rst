@@ -55,7 +55,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Notes
    :hidden:
 
-   This release <docs/reference/release_notes_3.0>
+   This Release <docs/reference/release_notes_3.0>
 
 .. toctree::
    :maxdepth: 3
@@ -71,21 +71,21 @@ Vitis AI is composed of the following key components:
    :caption: Model Zoo
    :hidden:
 
-   Pre-trained, Optimized models <docs/workflow-model-zoo>
+   Pre-trained, Optimized Models <docs/workflow-model-zoo>
 
 .. toctree::
    :maxdepth: 3
    :caption: Model Development 
    :hidden:
 
-   Developing a NN model for Vitis AI <docs/workflow-model-development>
+   Developing a NN Model for Vitis AI <docs/workflow-model-development>
 
 .. toctree::
    :maxdepth: 3
    :caption: Model Deployment 
    :hidden:
 
-   Deploying a NN model with Vitis AI <docs/workflow-model-deployment>
+   Deploying a NN Model with Vitis AI <docs/workflow-model-deployment>
 
 .. toctree::
    :maxdepth: 3
@@ -106,7 +106,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Documentation
    :hidden:
 
-   Links to formal Vitis AI Documents <docs/reference/release_documentation>
+   Links to Formal Vitis AI Documents <docs/reference/release_documentation>
 
 .. toctree::
    :maxdepth: 3

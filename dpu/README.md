@@ -65,7 +65,7 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <td align="center">DPUCV2DX8G</td>
     <td align="center">VEK280</td>
     <td align="center"> AIE-ML centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal AI Edge targets leveraging the AIE-ML architecture.</td> 
-    <td align="center"><a href="">Early Access</a></td>
+    <td align="center"><a href="https://www.xilinx.com/member/vitis-ai-vek280.html">Early Access</a></td>
     <td align="center"><b>---</b></td>
    <td align="center"><b>---</b></td>
    <td align="center"><b>---</b></td>
@@ -73,7 +73,7 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
 </tbody>
 </table>
 
-### Cloud IP
+### Data Center IP
 
 <table>
 <thead>
@@ -104,10 +104,10 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
-    <td align="center">DPUxxx</td>
+    <td align="center">DPUCV2DX8G</td>
     <td align="center">V70</td>
     <td align="center"><b>---</b></td> 
-    <td align="center"><a href="https://www.xilinx.com/member/dpu-v70.html">Early Access</a></td>
+    <td align="center"><a href="https://www.xilinx.com/member/vitis-ai-v70.html">Early Access</a></td>
     <td align="center"><b>---</b></td>
     <td align="center"><b>---</b></td>
   </tr>
