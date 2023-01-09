@@ -146,7 +146,7 @@ cd ~/Vitis-AI/examples/vai_library/samples_onnx/resnet50_pt
 
 4. Run the example.
 ```
-env DEBUG_USE_NEW_SCHEDULE=0 ./test_resnet50_pt_onnx /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx sample_classification.jpg
+./test_resnet50_pt_onnx /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx sample_classification.jpg
 ```
 Note: if there is no executable file `test_resnet50_pt_onnx`, run the `sh build.sh` to build the program.
 
