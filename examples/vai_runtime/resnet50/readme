@@ -29,7 +29,29 @@ Take ZCU102/ZCU104 as an example, execute the following commands to download and
 	tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 	cp resnet50 /usr/share/vitis_ai_library/models -r
 
+VDX8H_4pe_miscdwc DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+        sudo mkdir -p /usr/share/vitis_ai_library/models
+        tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+
+For DPUCVDX8H_6pe_dwc DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+        sudo mkdir -p /usr/share/vitis_ai_library/models
+        tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+
+For DPUCVDX8H_6pe_misc DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+        sudo mkdir -p /usr/share/vitis_ai_library/models
+        tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+
 For DPUCVDX8H_8pe_normal DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+        sudo mkdir -p /usr/share/vitis_ai_library/models
+        tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
 	sudo mkdir -p /usr/share/vitis_ai_library/models
 	tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
