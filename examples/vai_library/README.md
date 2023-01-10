@@ -168,7 +168,7 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with Vi
 For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst#setting-up-a-versal-accelerator-card) to set up the host.
 
 ### Running Vitis AI Library Examples
-For `VCK5000-PROD` Versal Card, refer to `Running Vitis AI Library Examples on VCK5000` section of [README](../../src/vai_library/README.md#idu50).
+Follow [Running Vitis AI Library Examples on VCK5000](../../src/vai_library/README.md#idu50) section to run Vitis AI Library examples.
 
 ## Reference
 For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/2_5/ug1354-xilinx-ai-sdk.pdf).
