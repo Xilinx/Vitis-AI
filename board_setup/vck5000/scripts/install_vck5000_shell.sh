@@ -43,7 +43,7 @@ else
 fi
 
 ##############################
-# Install Gen3x4 Platform
+# Install Gen4x8 Platform
 ##############################
 mkdir ./temp
 cd ./temp
@@ -61,6 +61,10 @@ fi
 cd ..
 rm -rf ./temp
 ##############################
-# Flash alveo
+# Flash Device
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt program --device --base --image /lib/firmware/xilinx/aed3e95a48cf64bb247522fac4f92ddc/partition.xsabin
+sudo /opt/xilinx/xrt/bin/xbmgmt program --device --base --image xilinx_vck5000_gen4x8_qdma_base_2
+
+##############################
+# Warm reboot is required to recognize new SC image on the device.
+##############################
