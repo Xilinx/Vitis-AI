@@ -107,7 +107,8 @@ For cloud DPU, you need run `conda deactivate` to exit conda vitis-ai-tensorflow
 #### Register custom OP in C++
 ```
 cd <path of Vitis-AI>/examples/custom_operator/pytorch_example/op_registration/cpp/
-bash op_registration.sh
+bash op_registration.sh          # For edge DPU
+bash op_registration_cloud.sh    # For cloud DPU
 ```
 #### Register custom OP in Python
 ```
