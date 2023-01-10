@@ -18,18 +18,18 @@ No. Accelerator Card DPU IP
 
 We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
 
-   .. note:: You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
+.. note:: You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
 
-   ::
+::
 
-      source ./install.sh
+   source ./install.sh
 
 The following installation steps were performed in this script.
 
-   - Install XRT.
-   - Install XRM. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on a machine. It is used by the runtime.
-   - Install the VCK5000-PROD Card Target Platform.
-   - Install DPU V4E xclbin for VCK5000-PROD.
+- Install XRT.
+- Install XRM. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on a machine. It is used by the runtime.
+- Install the VCK5000-PROD Card Target Platform.
+- Install DPU V4E xclbin for VCK5000-PROD.
 
 After the script is executed successfully, use the XRT command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.
 
