@@ -18,7 +18,9 @@ The model required by this sample is: resnet50
 You can find the detailed informantion of this model under
    Vitis-AI/models/AI-Model-Zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_1.3/model.yaml
 
-In the model.yaml, you will find the model's download links for different platforms.
+For ZCU102/ZCU104/KV260, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
+For VCK190, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.0.0.tar.gz
+
 Please choose the corresponding model and download it.
 
 Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.

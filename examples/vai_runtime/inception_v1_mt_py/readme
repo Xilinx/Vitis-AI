@@ -16,9 +16,11 @@
 Before running the program, please download the corresponding model and install it.
 The model required by this sample is: inception_v1_tf
 You can find the detailed informantion of this model under 
-   Vitis-AI/models/AI-Model-Zoo/model-list/tf_inceptionv1_imagenet_224_224_3G_1.3/model.yaml
+   Vitis-AI/model_zoo/model-list/tf_inceptionv1_imagenet_224_224_3G_3.0/model.yaml
 
-In the model.yaml, you will find the model's download links for different platforms. 
+For ZCU102/ZCU104/KV260, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+For VCK190, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck190-r3.0.0.tar.gz
+
 Please choose the corresponding model and download it.
 
 Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
