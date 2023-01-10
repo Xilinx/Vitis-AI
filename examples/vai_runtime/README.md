@@ -93,10 +93,10 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with VA
 | 3 | VCK5000-PROD | DPUCVDX8H_6pe_misc    |
 | 4 | VCK5000-PROD | DPUCVDX8H_8pe_normal  |
 
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../docs/docs/vck5000/README.md) to set up the host.
+For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst#setting-up-a-versal-accelerator-card) to set up the host.
 
 ### Running Vitis AI Examples
-In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample.
+In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take `resnet50` as an example.
 
 1. Download the [vitis_ai_runtime_r3.0.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz) package and unzip it.
 	```
@@ -104,9 +104,7 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
 	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
 	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
 	```
-2. Download the model.  	
-	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [resnet50  yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_2.5/model.yaml) as an example.
+2. Download the model.
 
 	* If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
@@ -140,7 +138,7 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
           tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
           sudo cp resnet50 /usr/share/vitis_ai_library/models -r
         ```
-3. Compile the sample, take `resnet50` as an example.
+3. Compile the example.
 	```
 	cd /workspace/examples/vai_runtime/resnet50
 	bash -x build.sh
@@ -149,7 +147,7 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
 	```
 	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
 	```
-	**Note that different alveo/Versal cards correspond to different model files, which cannot be used alternately.** 
+	**Note that different Versal cards DPU IP correspond to different model files, which cannot be used alternately.** 
 
 
  <summary><b>Launching Commands for VART Samples on VCK5000-PROD </b></summary>
