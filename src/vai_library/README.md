@@ -111,20 +111,20 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst) to set up the host.
+For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst#1-vck5000-prod-card-setup-in-host) to set up the host.
 
 ### <div id="idu50"></div>Running Vitis AI Library Examples on VCK5000
 
-Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker. 
+Suppose you have downloaded `Vitis-AI`, entered `Vitis-AI` directory, and then started Docker image. 
 Thus, `vai_libray` examples are located in the path of `/workspace/examples/vai_library/` in the docker system. 
 
 **`/workspace/examples/vai_library/` is the path for the following example.**
  
 If you encounter any path errors in running examples, check to see if you follow the steps above.
 
-1. Select the model for your platform.  
+1. Select the model for your platforms.
 	For each model, there will be a yaml file which is used for describe all the details about the model. 
-	In the yaml, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [resnet50 yaml file](../../model_zoo/model-list/cf_resnet50_imagenet_224_224_7.7G_3.0/model.yaml) as an example.
+	In the yaml file, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](../../model_zoo/model-list) to view all the models. Take [pytorch resnet50 yaml file](../../model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.0/model.yaml) as an example.
 
 	* If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first.
 	```
@@ -133,33 +133,33 @@ If you encounter any path errors in running examples, check to see if you follow
 
 	* For DPUCVDX8H_4pe_miscdwc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+	  tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+	  sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_6pe_dwc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+	  tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+	  sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_6pe_misc DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+	  tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+	  sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
 	```
 
 	* For DPUCVDX8H_8pe_normal DPU IP of VCK5000-PROD card, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+	  tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+	  sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
 	```
 
-**Note that different alveo cards correspond to different model files, which cannot be used alternately.** 
+**Note that different Versal cards DPU IP correspond to different model files, which cannot be used alternately.** 
 
 2. Download the [vitis_ai_library_r3.0.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_images.tar.gz) and [vitis_ai_library_r3.0.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_video.tar.gz) packages and untar them.
 ```
@@ -176,18 +176,18 @@ bash -x build.sh
 ```
 4. Run the image test example.
 ```
-./test_jpeg_classification resnet50 sample_classification.jpg
+./test_jpeg_classification resnet50_pt sample_classification.jpg
 ```
 5. Run the video test example.
 ```
-./test_video_classification resnet50 <video_input.mp4> -t 8
+./test_video_classification resnet50_pt <video_input.mp4> -t 8
 
 Video_input.mp4: The video file's name for input. The user needs to prepare the video file by themselves.
 -t: <num_of_threads>
 ```
 6. To test the performance of model, run the following command:
 ```
-./test_performance_classification resnet50 test_performance_classification.list -t 8 -s 60
+./test_performance_classification resnet50_pt test_performance_classification.list -t 8 -s 60
 
 -t: <num_of_threads>
 -s: <num_of_seconds>
