@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: d6401b274caa0685225691badf58c28a
+  checksum: 9e30b16b7083491397fbed1a0063da4d
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 556f96973108dbe5dd1a4c46ea80f7de
+  checksum: 670df0cc604eb2334aa68bbc46143381
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 26f83f0298bff4c403fb834fac8d237b
+  checksum: 57d9cc0417c7239bd7666b2bfea8bc4a
 - name: ofa_rcan_latency_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 9e5283d3104747cfff04ff99eca1f8ae
+  checksum: 043a9004d65a90940c37492027e9ce6a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

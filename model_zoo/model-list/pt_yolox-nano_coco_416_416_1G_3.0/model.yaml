@@ -41,5 +41,5 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolox_nano_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: a8500e8f131c6b08aaf87426060c9477
+  checksum: 3269e19a095c601facac9ac947ea6f58
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

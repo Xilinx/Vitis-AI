@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: d6e6daec320e5d0ee1e4968b077b231d
+  checksum: caf5b9ebd7e4d761f4a81a7fc02210f0
 - name: SESR_S_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 587ef31920d88dfe9e21dfb8e788d208
+  checksum: 7b8ef799f1ad946e55d70525d4701b3b
 - name: SESR_S_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 46a15039592f30c65944450d6083c6d1
+  checksum: 49eacad503155dbf8ec96c2e910b046a
 - name: SESR_S_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SESR_S_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: ef598c8a93a7dda222026c60bfe95630
+  checksum: d67d4e16d7a2df9842eed9063cc142fe
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

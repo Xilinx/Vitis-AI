@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 834194091050bb33cd5e3be278a0a2d1
+  checksum: 29b6477ba9fe1a7ab5bdaba00f28c83c
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: c28c6b4209ec28bb0d5caf1c826b0423
+  checksum: 2faa542f5dbca3131acab32d45708940
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: f73bade4dd16b9450a14fb0dee48501e
+  checksum: ef41d4166eb00218b2e77ddfa4b034e1
 - name: medical_seg_cell_tf2
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: c305ac102931d2f20eaecda82cd4bcf5
+  checksum: ce015568efe7b8e6fccc64ea791eb80d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

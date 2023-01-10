@@ -77,44 +77,44 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck190-r3.0.0.tar.gz
   checksum: e5c38897a172043a2215d6270f0979da
-- name: clocs_yolox_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 3b486d63a2bf02b34972e8fddeb37163
-- name: clocs_fusion_cnn_pt
-  type: xmodel
-  board: vck5000-DPUCVDX8H-4pe
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 6ccc997cf724b95367eddc670b30cbb3
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 1f0678ccfb761bfd169c51863ea3bd0d
+  checksum: c71f5c9b58ba42c75cd1efcbc58c91c9
 - name: clocs_pointpillars_kitti_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: f00fe3fedab155d3471054e770481653
+  checksum: 6d77ec0e714783e1bdacede364ad5c69
 - name: clocs_yolox_pt
   type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 74c86c82c9ebab0c6b36fd4e203a2a84
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 9ecc991af4e8185244956b774624cede
 - name: clocs_fusion_cnn_pt
   type: xmodel
-  board: vck5000-DPUCVDX8H-6pe-aieMISC
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 0a96ee1837363b8d6cbf1d25a4833b13
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 6ecedd880cc667df2eeb44ae03810049
 - name: clocs_pointpillars_kitti_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: dd170b2738d62da33c4a27bf6dda54ca
+  checksum: d2b7691a2e9807d3e37c6b587b983ff2
 - name: clocs_pointpillars_kitti_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: a188ac9ff089c2b7e936f2c1b0cc7a70
+  checksum: ba00726fbf769a3867ea9f9e37dc41c0
+- name: clocs_yolox_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 7a5a9bda7026ec68a96576ab0c7aa13b
+- name: clocs_fusion_cnn_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 9d124f1b795de5af1fdc9cccc41d5c71
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: e2d745ecc558aa918aaaa7d001f955bc
+  checksum: e7dd0f3011e2fb2012396973d2ee2d81
 - name: rcan_pruned_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: bd0ea7756f05b47b516fb7e48f1e61a9
+  checksum: 339892d609a3cbdd7ae9326992b9478c
 - name: rcan_pruned_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 072766cf1d54d905dec563228a2e288c
+  checksum: 77f09035f42eed900c5f271d362f16f0
 - name: rcan_pruned_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 5876dfb7d17485038ae93b9b9b054274
+  checksum: 0b496854b1d7d1895ba37597ba213e7a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

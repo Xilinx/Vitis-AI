@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=solo_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 97eca19a28cb7f18cd1f9d8121ed2783
+  checksum: 5fc77030079f68c9b86bb7b8cc645849
 - name: solo_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=solo_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 15564c029554c3992df80a713b573910
+  checksum: c0af740c1c15b70deb0c617588b4c513
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

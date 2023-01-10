@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 9079a7b83bf8218c5dd451b26c65b0fb
+  checksum: b9fcbe2ad17bc95af51ee212914e98d2
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: cc8183cd3d8b6634149e25227464cdc5
+  checksum: c12ff228e5bb95ca9b769202e110fe36
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: c43e7bfefff8bf2633d07341ae572684
+  checksum: f70364b0e177e91a794081e54b6f5e0e
 - name: refinedet_VOC_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: af73175ad5c4f44aa7bc81eddeb6da85
+  checksum: 2b6a5bfa03dd8d50d1cadf8b5831d7e6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

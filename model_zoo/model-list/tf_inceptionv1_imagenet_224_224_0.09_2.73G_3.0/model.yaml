@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_pruned_0_087_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 1ebc83f6c2c8581736ad58551f4d981d
+  checksum: 21242656d09ae0f991da83e5fe8dc559
 - name: inception_v1_pruned_0_087_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_pruned_0_087_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: eb324156affb1a2eb875c3c45a7b1923
+  checksum: 9f4b9f599782364d1f33b44ea6fdae18
 - name: inception_v1_pruned_0_087_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_pruned_0_087_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: e84b4a41afee73068ee0dae629a9790d
+  checksum: 57888317fac689ea369b232a92619530
 - name: inception_v1_pruned_0_087_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_pruned_0_087_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: f77a0c7a1974e1f274e1b57300d2d099
+  checksum: 900b32250291c372d5bccb7b1c8d8b6d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

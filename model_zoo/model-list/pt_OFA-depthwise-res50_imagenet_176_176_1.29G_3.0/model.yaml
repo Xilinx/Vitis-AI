@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 42621cfb7077f03719bac857e7f78d3f
+  checksum: 50cb48cd8907ed388e2e51c45e5a735f
 - name: ofa_depthwise_res50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_depthwise_res50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: a51c764badaffc18baf533234f58df8d
+  checksum: 4bb153bf59e00883f4c77aec4f7c4722
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

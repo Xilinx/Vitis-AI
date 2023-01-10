@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_mask_detection_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 413dc94b5c7569a6576f9f39d8243b8b
+  checksum: 65bde09368cbcb0c0222b89c36e4ff6b
 - name: face_mask_detection_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_mask_detection_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: f8aeb458e0f9b7a7b155d99750a4fcc5
+  checksum: fc2e1fd1563f35b62a2744dfc472e2d2
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

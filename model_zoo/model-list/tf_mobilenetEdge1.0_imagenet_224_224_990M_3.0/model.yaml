@@ -46,10 +46,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: a172fd7598d5a6297a334b3833e512ab
+  checksum: e5db1628648f07af9d51abbe30b6a2a3
 - name: mobilenet_edge_1_0_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 16c8337c1aade7dd0ab920aecce6b5a9
+  checksum: b139f8b1b010e8ffc13baa9459ea84a9
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

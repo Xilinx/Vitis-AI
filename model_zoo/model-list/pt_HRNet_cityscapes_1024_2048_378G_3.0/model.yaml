@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: cd53090103e4f49061380e3b45c9d416
+  checksum: d2e4b306ca6447a5fe40553f1f28388f
 - name: HRNet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HRNet_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 848f24e33aa836511c82400e1997ef4c
+  checksum: ba5736433af4bb3a478dfdca669ef297
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

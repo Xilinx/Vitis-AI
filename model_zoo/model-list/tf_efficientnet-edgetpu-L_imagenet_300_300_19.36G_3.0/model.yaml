@@ -41,5 +41,5 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 2aafea4614e80ba08b12b45bfa5e5946
+  checksum: 476bcaf3d0aa25be16d56177caa4bd91
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
