@@ -116,15 +116,15 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
            --rm \
 
       ```
-      - This step is only required for Alveo devices working in docker environment   
+      - This step is only required for Versal devices working in docker environment   
         - For Zynq MPSoC devices, vaitrace does not interact with docker, therefore modification for the docker_run.sh is __not required__    
-        - For Alveo devices running in docker environment, there are some limitations for an in-depth profiling. Because some tools require superuser permission that cannot work well with docker in default setting. So we need this modification to get more permissions
+        - For Versal devices running in docker environment, there are some limitations for an in-depth profiling. Because some tools require superuser permission that cannot work well with docker in default setting. So we need this modification to get more permissions
 
       - Due to an issue of overlay-fs, to support all the features of Vitis-AI Profiler in docker environment, it's recommended to use Linux kernel 4.8 or above on your host machine, see [here](https://lore.kernel.org/patchwork/patch/890633/)
 
 
 ### Starting A Simple Trace with vaitrace  
-We use VART resnet50 sample  
+We use vai_runtime resnet50 sample  
   - Download and setup Vitis AI
   - Start testing and tracing
     - vaitrace requires root permission
@@ -133,12 +133,12 @@ We use VART resnet50 sample
     ```
     - For C++ programs, add vaitrace in front of the test command, the test command is:
     ```bash
-      # cd ~/Vitis_AI/demo/VART/resnet50
+      # cd ~/Vitis_AI/examples/vai_runtime/resnet50
       # vaitrace ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
     - For Python programs, add -m vaitrace_py to the python interpreter command
     ``` bash
-      # cd ~/Vitis_AI/demo/VART/samples/resnet50_mt_py
+      # cd ~/Vitis_AI/examples/vai_runtime/resnet50_mt_py
       # python3 -m vaitrace_py ./resnet50.py 2 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
   -	vaitrace and XRT generates some files in the working directory  
