@@ -50,6 +50,8 @@ Running on cloud DPU:
 
 2. run
 
+   Download the test image and copy it to the sample folder.
+
    run the executable file with parameters like below sample.
 
    sample:

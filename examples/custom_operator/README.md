@@ -152,13 +152,13 @@ Download the test image from [here](https://www.xilinx.com/bin/public/openDownlo
 
 For C++ sample:
 ```
-cd deployment/cpp
+cd <path of Vitis-AI>/examples/custom_operator/tensorflow2_example/deployment/cpp/
 bash build.sh
 ./tf2_custom_op_graph_runner tf2_custom_op.xmodel sample.jpg
 ```
 For python sample:
 ```
-cd deployment/python
+cd <path of Vitis-AI>/examples/custom_operator/tensorflow2_example/deployment/cpp/
 /usr/bin/python3 tf2_custom_op_graph_runner.py tf2_custom_op.xmodel ./
 ```
 
@@ -174,14 +174,14 @@ bash build.sh
 
 For c++ sample:
 ```
-cd deployment/cpp/pointpillars_graph_runner
-bash build.sh
-./build/sample_pointpillars_graph_runner pointpillars_custom_op.xmodel data/sample_pointpillars.bin
+cd <path of Vitis-AI>/examples/custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner
+bash build_cloud.sh
+./sample_pointpillars_graph_runner pointpillars_custom_op.xmodel data/sample_pointpillars.bin
 ```
 
 For python sample:
 ```
-cd deployment/python
+cd <path of Vitis-AI>/examples/custom_operator/pytorch_example/deployment/python
 /usr/bin/python3 pointpillars_main.py pointpillars_customer_op.xmodel ../cpp/pointpillars_graph_runner/data/sample_pointpillars.bin
 ```
 

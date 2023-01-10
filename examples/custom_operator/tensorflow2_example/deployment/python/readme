@@ -36,6 +36,8 @@ Running on edge DPU:
 
 Running on cloud DPU:
 
+   Download the test image and copy it to the sample folder.
+
    run the executable file with parameters like below sample.
 
    sample:
