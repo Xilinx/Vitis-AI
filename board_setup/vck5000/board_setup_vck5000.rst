@@ -18,7 +18,7 @@ No. Accelerator Card DPU IP
 
 We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
 
-.. note:: You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
+   .. note:: You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
 
    ::
 
@@ -38,7 +38,7 @@ After the script is executed successfully, use the XRT command to check that the
       /opt/xilinx/xrt/bin/xbutil examine
 
 
-.. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
+   .. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
 
 2. Environment Variable Setup in Docker Container
 -------------------------------------------------
