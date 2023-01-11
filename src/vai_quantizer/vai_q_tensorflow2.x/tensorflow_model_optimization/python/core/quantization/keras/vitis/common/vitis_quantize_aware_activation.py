@@ -87,7 +87,8 @@ class QuantizeAwareActivation(object):
   })
 
   # These activations should be quantized after the activation has been applied.
-  _POST_QUANT_ACTIVATIONS = frozenset({'linear', 'relu'})
+  _POST_QUANT_ACTIVATIONS = frozenset(
+      {'linear', 'relu', 'ReLU', 'relu6', 'LeakyReLU', 'PReLU'})
 
   # Don't take any quantize operations for these activations.
   _NO_QUANT_ACTIVATIONS = frozenset({'NoQuantizeActivation'})

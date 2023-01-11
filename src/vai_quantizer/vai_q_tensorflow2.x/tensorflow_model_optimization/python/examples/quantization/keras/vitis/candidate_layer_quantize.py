@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
->>>>>>> master
 import os, sys
 import json
 import numpy as np
 import tensorflow as tf
 
 from tensorflow import keras
+
 print(tf.__version__)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -34,6 +32,7 @@ mnist = keras.datasets.mnist
 # Normalize the input image so that each pixel value is between 0 to 1.
 train_images = train_images / 255.0
 test_images = test_images / 255.0
+
 
 def build_model():
   inputs = tf.keras.Input((28, 28, 1))
@@ -55,6 +54,7 @@ def build_model():
   model = tf.keras.Model(inputs=inputs, outputs=x)
   return model
 
+
 def main():
   #################################
   ##### build model
@@ -64,7 +64,10 @@ def main():
   #################################
   ##### compile train
   #################################
-  model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+  model.compile(
+      optimizer="adam",
+      loss="sparse_categorical_crossentropy",
+      metrics=["accuracy"])
   model.fit(train_images, train_labels, epochs=2, shuffle=True)
   model.evaluate(test_images, test_labels)
   model.save("./float.h5")
@@ -82,23 +85,27 @@ def main():
   output_layers = ["flatten"]
   ignore_layers = ["max_pooling2d"]
 
-  quant_model = vitis_quantize.VitisQuantizer(loaded_model, 'pof2s').quantize_model(
-		  calib_dataset=test_images,
-                  input_layers=input_layers,
-                  output_layers=output_layers,
-                  ignore_layers=ignore_layers)
+  quantizer = vitis_quantize.VitisQuantizer(loaded_model, 'pof2s')
+  quant_model = quantizer.quantize_model(
+      calib_dataset=test_images,
+      input_layers=input_layers,
+      output_layers=output_layers,
+      ignore_layers=ignore_layers)
   quant_model.summary()
   quant_model.save('quantized.h5')
 
   with vitis_quantize.quantize_scope():
     quantized_model = tf.keras.models.load_model("quantized.h5")
-    quantized_model.compile(optimizer="adam",
-            loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+    quantized_model.compile(
+        optimizer="adam",
+        loss="sparse_categorical_crossentropy",
+        metrics=["accuracy"])
     quantized_model.evaluate(test_images, test_labels)
 
-
   # Dump Quantized Model
-  vitis_quantize.VitisQuantizer.dump_model(quant_model, test_images[0:1],
-        "./dump_results", dump_float=True)
+  vitis_quantize.VitisQuantizer.dump_model(
+      quant_model, test_images[0:1], "./dump_results", dump_float=True)
+
+
 if __name__ == '__main__':
   main()

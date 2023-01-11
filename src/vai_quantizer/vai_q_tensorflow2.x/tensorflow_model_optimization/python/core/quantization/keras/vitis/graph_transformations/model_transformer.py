@@ -58,6 +58,7 @@ class ModelTransformer(object):
     """
     if not self._is_sequential_or_functional_model(model):
       raise ValueError(
+          '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
           'Only tf.keras sequential or functional models can be transformed.')
 
     if layer_metadata is None:
@@ -101,11 +102,21 @@ class ModelTransformer(object):
 
   def _get_output_consumers(self, check_layer):
     """Returns if any tensors from the layer are outputs of the model."""
-    output_consumers = []
-    for output_layer in self._config['output_layers']:
-      if output_layer[0] == self._get_layer_name(check_layer):
-        output_consumers.append(output_layer)
-    return output_consumers
+    if isinstance(self._config['output_layers'], dict):
+      output_consumers = {}
+      for output_layer_key, output_layer_value in self._config[
+          'output_layers'].items():
+        if output_layer_value[0] == self._get_layer_name(check_layer):
+          output_consumers[output_layer_key] = output_layer_value
+      return output_consumers
+    elif isinstance(self._config['output_layers'], list):
+      output_consumers = []
+      for output_layer in self._config['output_layers']:
+        if output_layer[0] == self._get_layer_name(check_layer):
+          output_consumers.append(output_layer)
+      return output_consumers
+    else:
+      logger.error('output_layer format is not dict or list.')
 
   @staticmethod
   def _get_layer_name(layer):
@@ -156,13 +167,17 @@ class ModelTransformer(object):
 
     return True
 
-  def _is_match_supported(self, layer, is_head_node):
+  def _is_match_supported(self, layer, is_head_node, allow_multi_consumers):
     """Check if ModelTransformer supports transformations given number of inputs and outputs at a layer.
 
     Args:
       layer: layer for pattern matching. Must come from a Functional model.
       is_head_node: whether this is the head node (e.g. in A -> B , B is the
         head node).
+      allow_multi_consumers: whether to allow matching for intermediate nodes
+        with multiple consumers. Since replacing intermedieate nodes with multiple
+        consumers may lead to dangling nodes, this is disabled by default. It is
+        useful to match some complicated patterns.
 
     Returns:
       whether match is supported.
@@ -194,7 +209,7 @@ class ModelTransformer(object):
       # Note that theoretically, intermediate layers can supported, as a part
       # of a general layer transform tool. This is not supported given no
       # motivating use case.
-      if not is_head_node:
+      if not is_head_node and not allow_multi_consumers:
         return False
 
     return True
@@ -221,14 +236,15 @@ class ModelTransformer(object):
       else:
         return [layers[i - 1]['config']['name']]
 
-  def _match_layer_with_inputs(self, layer, pattern, is_head_node):
+  def _match_layer_with_inputs(self, layer, pattern, is_head_node,
+                               allow_multi_consumers):
     """Match pattern at this layer, and continue to match at its inputs."""
 
     if not self._match_layer(layer, pattern):
       return None
 
-    if self._is_functional_model(
-        self.model) and not self._is_match_supported(layer, is_head_node):
+    if self._is_functional_model(self.model) and not self._is_match_supported(
+        layer, is_head_node, allow_multi_consumers):
       return None
 
     if len(pattern.inputs) == 0:
@@ -257,7 +273,10 @@ class ModelTransformer(object):
     input_match_layer_nodes = []
     for input_layer, pattern_ in zip(input_layers, pattern.inputs):
       match_layer_node = self._match_layer_with_inputs(
-          input_layer, pattern_, is_head_node=False)
+          input_layer,
+          pattern_,
+          is_head_node=False,
+          allow_multi_consumers=allow_multi_consumers)
       if not match_layer_node:
         return None
       input_match_layer_nodes.append(match_layer_node)
@@ -266,12 +285,18 @@ class ModelTransformer(object):
                      input_match_layer_nodes,
                      self._get_layer_metadata(self._get_layer_name(layer)))
 
-  def _find_pattern(self, pattern, matched_layers=None):
+  def _find_pattern(self,
+                    pattern,
+                    matched_layers=None,
+                    allow_multi_consumers=False):
     for layer in self._config['layers']:
       if matched_layers and self._get_layer_name(layer) in matched_layers:
         continue
       match_layer = self._match_layer_with_inputs(
-          layer, pattern, is_head_node=True)
+          layer,
+          pattern,
+          is_head_node=True,
+          allow_multi_consumers=allow_multi_consumers)
       if match_layer:
         return match_layer
 
@@ -347,8 +372,17 @@ class ModelTransformer(object):
                   replacement_layer_node.layer)
 
     output_consumers = self._get_output_consumers(match_layer_node.layer)
-    for output_consumer in output_consumers:
-      output_consumer[0] = self._get_layer_name(replacement_layer_node.layer)
+    if isinstance(output_consumers, dict):
+      for output_consumer_key, output_consumer_value in output_consumers.items(
+      ):
+        output_consumer_value[0] = self._get_layer_name(
+            replacement_layer_node.layer)
+        output_consumers[output_consumer_key] = output_consumer_value
+    elif isinstance(output_consumers, list):
+      for output_consumer in output_consumers:
+        output_consumer[0] = self._get_layer_name(replacement_layer_node.layer)
+    else:
+      logger.error('output_layer format is not dict or list.')
 
     # 2. Create inbound nodes for the replacement layers. This connects all
     # the replacement layers.
@@ -662,7 +696,8 @@ class ModelTransformer(object):
         # Keep finding and replacing till done.
         while True:
           match_layer_node = self._find_pattern(
-              transform.pattern(), self._get_matched_layers(transform))
+              transform.pattern(), self._get_matched_layers(transform),
+              transform.allow_multi_consumers)
 
           # Pattern did not match any layer. Move to next transform.
           if not match_layer_node:

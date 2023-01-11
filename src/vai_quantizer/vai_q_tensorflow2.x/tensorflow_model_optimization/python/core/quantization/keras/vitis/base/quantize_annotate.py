@@ -58,6 +58,7 @@ class QuantizeAnnotate(tf.keras.layers.Wrapper):
     if not isinstance(layer, tf.keras.layers.Layer) or isinstance(
         layer, tf.keras.Model):
       raise ValueError(
+          '[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
           '`layer` can only be a `tf.keras.layers.Layer` instance. '
           'You passed an instance of type: {input}.'.format(
               input=layer.__class__.__name__))

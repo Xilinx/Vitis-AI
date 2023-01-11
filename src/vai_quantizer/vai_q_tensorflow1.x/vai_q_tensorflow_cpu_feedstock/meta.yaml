@@ -10,7 +10,7 @@ source:
 build:
   number: 1
   entry_points:
-    - vai_q_tensorflow = tensorflow.contrib.decent_q.python.decent_q:run_main
+    - vai_q_tensorflow = vai_q_tensorflow.python.decent_q:run_main
 
 # [u'absl-py (>=0.1.6)', u'astor (>=0.6.0)', u'gast (>=0.2.0)', u'keras-applications (>=1.0.6)', u'keras-preprocessing (>=1.0.5)', u'numpy (>=1.13.3)', u'six (>=1.10.0)', u'protobuf (>=3.6.1)', u'tensorboard (@M@<1.13.0,>=1.12.0)', u'termcolor (>=1.1.0)', u'grpcio (>=1.8.6)', u'wheel (>=0.26)']
 
@@ -18,7 +18,8 @@ requirements:
   build:
     # - {{ compiler('c') }}
     # - {{ compiler('cxx') }}
-    - bazel ==0.24.1
+    - cmake  >=3.1
+    - make  # [unix]
 
   host:
     - python
@@ -32,6 +33,7 @@ requirements:
     - future >=0.17.1
     - keras-applications >=1.0.6
     - keras-preprocessing >=1.0.5
+    - tensorflow ==1.15
     - progressbar2
     - swig
     - zlib                     # [linux]

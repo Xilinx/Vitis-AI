@@ -18,6 +18,7 @@ import numpy as np
 import tensorflow as tf
 
 from tensorflow import keras
+
 print(tf.__version__)
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -32,47 +33,59 @@ mnist = keras.datasets.mnist
 train_images = train_images / 255.0
 test_images = test_images / 255.0
 
+
 def load_json(json_file):
   """Load json file."""
   with open(json_file, 'r') as f:
     try:
       data = json.loads(f.read())
     except Exception as e:
-      raise(
+      raise (
           'Fail to load the json file `{}`, please check the format. \nError: {}'
           .format(json_file, e))
   return data
+
 
 class PRelu(tf.keras.layers.Layer):
   """
   single input and single output custom op with weights
   """
+
   def __init__(self, name="param_relu", **kwargs):
     super().__init__(name=name, **kwargs)
 
   def build(self, input_shape):
-    self.alpha = self.add_weight(shape=input_shape[1:], name='alpha', initializer="zeros", trainable=True,)
+    self.alpha = self.add_weight(
+        shape=input_shape[1:],
+        name='alpha',
+        initializer="zeros",
+        trainable=True,
+    )
 
   def call(self, inputs, training=None, mask=None):
     pos = tf.nn.relu(inputs)
     neg = -self.alpha * tf.nn.relu(-inputs)
     return pos + neg
 
+
 class TimeTwo(tf.keras.layers.Layer):
   """
   single input and single output custom op without weights
   """
+
   def __init__(self, name="time_two", **kwargs):
     super().__init__(name=name, **kwargs)
 
   def call(self, inputs, training=None, mask=None):
-    return 2*inputs
+    return 2 * inputs
+
 
 class MultiInput(tf.keras.layers.Layer):
   """
   multi input and single output custom op without weights
   wieh param in __init__
   """
+
   def __init__(self, name="multi_input", scale=2, **kwargs):
     super().__init__(name=name, **kwargs)
     self.scale = scale
@@ -85,7 +98,9 @@ class MultiInput(tf.keras.layers.Layer):
   def get_config(self):
     return {"name": self.name, "scale": self.scale}
 
+
 custom_objects = {"PRelu": PRelu, "TimeTwo": TimeTwo, "MultiInput": MultiInput}
+
 
 def build_model():
   inputs = tf.keras.Input((28, 28, 1))
@@ -112,6 +127,7 @@ def build_model():
   model = tf.keras.Model(inputs=inputs, outputs=x)
   return model
 
+
 def main():
   #################################
   ##### build model
@@ -121,7 +137,10 @@ def main():
   #################################
   ##### compile train
   #################################
-  model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+  model.compile(
+      optimizer="adam",
+      loss="sparse_categorical_crossentropy",
+      metrics=["accuracy"])
   model.fit(train_images, train_labels, epochs=2, shuffle=True)
   model.evaluate(test_images, test_labels)
   model.save("./float.h5")
@@ -136,29 +155,34 @@ def main():
   #################################
   ##### quantize model
   #################################
-  loaded_model = tf.keras.models.load_model("./float.h5",
-	  custom_objects=custom_objects)
+  loaded_model = tf.keras.models.load_model(
+      "./float.h5", custom_objects=custom_objects)
   loaded_model.summary()
 
   # custom layer will be quantized according to custom_quantize_strategy
   # first, and then wrapped by custom layer wrapper
-  quant_model = vitis_quantize.VitisQuantizer(loaded_model, 'pof2s',
-	  custom_objects=custom_objects,
-          custom_quantize_strategy=my_quantize_strategy).quantize_model(
-		  calib_dataset=test_images)
+  quantizer = vitis_quantize.VitisQuantizer(
+      loaded_model,
+      'pof2s',
+      custom_objects=custom_objects,
+      custom_quantize_strategy=my_quantize_strategy)
+  quant_model = quantizer.quantize_model(calib_dataset=test_images)
   quant_model.summary()
   quant_model.save('quantized.h5')
 
   with vitis_quantize.quantize_scope():
-    quantized_model = tf.keras.models.load_model("quantized.h5",
-            custom_objects=custom_objects)
-    quantized_model.compile(optimizer="adam",
-            loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+    quantized_model = tf.keras.models.load_model(
+        "quantized.h5", custom_objects=custom_objects)
+    quantized_model.compile(
+        optimizer="adam",
+        loss="sparse_categorical_crossentropy",
+        metrics=["accuracy"])
     quantized_model.evaluate(test_images, test_labels)
 
-
   # Dump Quantized Model
-  vitis_quantize.VitisQuantizer.dump_model(quant_model, test_images[0:1],
-        "./dump_results", dump_float=True)
+  vitis_quantize.VitisQuantizer.dump_model(
+      quant_model, test_images[0:1], "./dump_results", dump_float=True)
+
+
 if __name__ == '__main__':
   main()

@@ -31,6 +31,7 @@ def _make_quantizer(quantizer_type_name, quantizer_params):
     quantizer = quantizer_cls(**quantizer_params)
   except Exception as e:
     logger.error(
+        '[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
         'Fail to make quantizer `{}` with params `{}`, error: {}'.format(
             quantizer_type_name, quantizer_params, e))
   return quantizer
@@ -209,7 +210,7 @@ class VitisQuantizeConfig(QuantizeConfig):
 @register_keras_serializable(package='Vitis', name='NoQuantizeConfig')
 class NoQuantizeConfig(QuantizeConfig):
   """QuantizeConfig which does not quantize any part of the layer.
-  
+
   This is used in vitis_transforms.py to ensure no quantization inside
   some patterns.
   """

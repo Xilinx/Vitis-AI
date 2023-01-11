@@ -22,6 +22,7 @@ import abc
 import collections
 import six
 
+import tensorflow as tf
 from tensorflow.keras import layers
 
 
@@ -229,6 +230,20 @@ class Transform(object):
   `LayerNode` which contains the set of layers which replaced the matched
   layers.
   """
+
+  def __init__(self):
+    """Mark the properties of this transform. They will be used in the matching
+    and replacing functions in the ModelTransformer."""
+    # Disallow multi_consumers by default.
+    self._allow_multi_consumers = False
+
+  @property
+  def allow_multi_consumers(self):
+    return self._allow_multi_consumers
+
+  @allow_multi_consumers.setter
+  def allow_multi_consumers(self, value):
+    self._allow_multi_consumers = value
 
   @abc.abstractmethod
   def pattern(self):

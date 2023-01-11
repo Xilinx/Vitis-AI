@@ -41,6 +41,7 @@ class FSQuantizer(Quantizer):
                per_channel=False,
                channel_axis=-1,
                use_framework_quant=True,
+               unsigned=False,
                narrow_range=False,
                method_percentile=99.99):
     """Construct a FSQuantizer.
@@ -56,6 +57,7 @@ class FSQuantizer(Quantizer):
         regarded as channel axis and other dimension will be reduces by default.
       use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
         quantize kernel will be used.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
     """
@@ -66,6 +68,7 @@ class FSQuantizer(Quantizer):
     self.per_channel = per_channel
     self.channel_axis = channel_axis
     self.use_framework_quant = use_framework_quant
+    self.unsigned = unsigned
     self.narrow_range = narrow_range
     self.method_percentile = method_percentile
     #self.histogram = calibrator_numpy.HistogramCalibrator(bit_width, None, False)
@@ -162,6 +165,7 @@ class FSQuantizer(Quantizer):
         per_channel=self.per_channel,
         channel_axis=self.channel_axis,
         use_framework_quant=self.use_framework_quant,
+        unsigned=self.unsigned,
         narrow_range=self.narrow_range)
     return quantize_res
 
@@ -174,6 +178,7 @@ class FSQuantizer(Quantizer):
         'per_channel': self.per_channel,
         'channel_axis': self.channel_axis,
         'use_framework_quant': self.use_framework_quant,
+        'unsigned': self.unsigned,
         'narrow_range': self.narrow_range,
         'method_percentile': self.method_percentile
     }
@@ -189,6 +194,7 @@ class FSQuantizer(Quantizer):
             self.per_channel == other.per_channel and
             self.channel_axis == other.channel_axis and
             self.use_framework_quant == other.use_framework_quant and
+            self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
   def __ne__(self, other):
@@ -207,6 +213,7 @@ class MAFSQuantizer(Quantizer):
                channel_axis=-1,
                ema_decay=0.999,
                use_framework_quant=True,
+               unsigned=False,
                narrow_range=False):
     """Construct a MAFSQuantizer.
 
@@ -222,6 +229,7 @@ class MAFSQuantizer(Quantizer):
       ema_decay: EMA decay parameter.
       use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
         quantize kernel will be used.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
     """
@@ -232,6 +240,7 @@ class MAFSQuantizer(Quantizer):
     self.channel_axis = channel_axis
     self.ema_decay = ema_decay
     self.use_framework_quant = use_framework_quant
+    self.unsigned = unsigned
     self.narrow_range = narrow_range
 
   def build(self, tensor_shape, name, layer):
@@ -305,6 +314,7 @@ class MAFSQuantizer(Quantizer):
         channel_axis=self.channel_axis,
         ema_decay=self.ema_decay,
         use_framework_quant=self.use_framework_quant,
+        unsigned=self.unsigned,
         narrow_range=self.narrow_range)
 
   def get_config(self):
@@ -316,7 +326,8 @@ class MAFSQuantizer(Quantizer):
         'channel_axis': self.channel_axis,
         'ema_decay': self.ema_decay,
         'use_framework_quant': self.use_framework_quant,
-        'narrow_range': self.narrow_range,
+        'unsigned': self.unsigned,
+        'narrow_range': self.narrow_range
     }
 
   def __eq__(self, other):
@@ -330,6 +341,7 @@ class MAFSQuantizer(Quantizer):
             self.channel_axis == other.channel_axis and
             self.ema_decay == other.ema_decay and
             self.use_framework_quant == other.use_framework_quant and
+            self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
   def __ne__(self, other):
@@ -347,6 +359,7 @@ class Pof2SQuantizer(Quantizer):
                symmetry=True,
                per_channel=False,
                channel_axis=-1,
+               unsigned=False,
                narrow_range=False):
     """Construct a Posf2SQuantizer.
 
@@ -360,6 +373,7 @@ class Pof2SQuantizer(Quantizer):
       per_channel: Whether to apply per_channel quantization. The last dimension is regarded as channel.
       channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
         regarded as channel axis and other dimension will be reduces by default.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
     """
@@ -369,6 +383,7 @@ class Pof2SQuantizer(Quantizer):
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.channel_axis = channel_axis
+    self.unsigned = unsigned
     self.narrow_range = narrow_range
 
   def build(self, tensor_shape, name, layer):
@@ -449,6 +464,7 @@ class Pof2SQuantizer(Quantizer):
         symmetry=self.symmetry,
         per_channel=self.per_channel,
         channel_axis=self.channel_axis,
+        unsigned=self.unsigned,
         narrow_range=self.narrow_range)
 
   def get_config(self):
@@ -459,13 +475,16 @@ class Pof2SQuantizer(Quantizer):
         'symmetry': self.symmetry,
         'per_channel': self.per_channel,
         'channel_axis': self.channel_axis,
+        'unsigned': self.unsigned,
         'narrow_range': self.narrow_range,
     }
 
   def convert_to_fs_quantizer(self, use_framework_quant=True):
     config = self.get_config()
-    #config.pop('method')
     config['use_framework_quant'] = use_framework_quant
+    # Set round_mode to 1 as tf.fake only support HALF_UP rounding
+    if use_framework_quant and config['round_mode'] != 1:
+      config['round_mode'] = 1
     return FSQuantizer.from_config(config)
 
   def __eq__(self, other):
@@ -478,6 +497,7 @@ class Pof2SQuantizer(Quantizer):
             self.symmetry == other.symmetry and
             self.per_channel == other.per_channel and
             self.channel_axis == other.channel_axis and
+            self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
   def __ne__(self, other):
@@ -495,6 +515,7 @@ class TQTQuantizer(Quantizer):
                symmetry=True,
                per_channel=False,
                channel_axis=-1,
+               unsigned=False,
                narrow_range=False):
     """Construct a TQTQuantizer.
 
@@ -508,6 +529,7 @@ class TQTQuantizer(Quantizer):
       per_channel: Whether to apply per_channel quantization. The last dimension is regarded as channel.
       channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
         regarded as channel axis and other dimension will be reduces by default.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
     """
@@ -517,6 +539,7 @@ class TQTQuantizer(Quantizer):
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.channel_axis = channel_axis
+    self.unsigned = unsigned
     self.narrow_range = narrow_range
 
   def build(self, tensor_shape, name, layer):
@@ -597,6 +620,7 @@ class TQTQuantizer(Quantizer):
         symmetry=self.symmetry,
         per_channel=self.per_channel,
         channel_axis=self.channel_axis,
+        unsigned=self.unsigned,
         narrow_range=self.narrow_range)
 
   def get_config(self):
@@ -607,6 +631,7 @@ class TQTQuantizer(Quantizer):
         'symmetry': self.symmetry,
         'per_channel': self.per_channel,
         'channel_axis': self.channel_axis,
+        'unsigned': self.unsigned,
         'narrow_range': self.narrow_range,
     }
 
@@ -624,6 +649,7 @@ class TQTQuantizer(Quantizer):
             self.symmetry == other.symmetry and
             self.per_channel == other.per_channel and
             self.channel_axis == other.channel_axis and
+            self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
   def __ne__(self, other):

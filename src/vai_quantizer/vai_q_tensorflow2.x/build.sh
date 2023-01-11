@@ -16,4 +16,4 @@
 set -e
 set -x
 
-sh ./pip_pkg.sh ./pkgs/ --release
+bash ./pip_pkg.sh ./pkgs/ --release

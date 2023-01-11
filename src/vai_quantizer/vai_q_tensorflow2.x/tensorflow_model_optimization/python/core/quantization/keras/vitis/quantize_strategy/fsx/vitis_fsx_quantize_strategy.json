@@ -48,22 +48,26 @@
       "input_symmetry": null,
       "input_per_channel": null,
       "input_round_mode": null,
+      "input_unsigned": null,
       "weight_bit": null,
       "weight_method": null,
       "weight_symmetry": null,
       "weight_per_channel": null,
       "weight_round_mode": null,
+      "weight_unsigned": null,
       "bias_bit": null,
       "bias_method": null,
       "bias_symmetry": null,
       "bias_per_channel": null,
       "bias_round_mode": null,
+      "bias_unsigned": null,
       "activation_bit": null,
       "activation_method": null,
       "activation_method_percentile": null,
       "activation_symmetry": null,
       "activation_per_channel": null,
       "activation_round_mode": null,
+      "activation_unsigned": null,
       "use_framework_quant": null,
       "input_layers": [],
       "output_layers": [],
@@ -76,7 +80,7 @@
       "input_quantizer":
       {
         "quantizer_type": "FSQuantizer",
-        "quantizer_params": {"bit_width": 8,"method":2, "method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+        "quantizer_params": {"bit_width": 8,"method":2, "method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
       }
     },
 
@@ -88,21 +92,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -113,21 +117,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": 2, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": 2, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -138,21 +142,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":0,"round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":0,"round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -163,21 +167,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":0,"round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":0,"round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -188,7 +192,25 @@
         "output_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
+          }
+        ]
+      },
+
+      {
+        "layer_type": "tensorflow.keras.layers.PReLU",
+        "quantizable_weights": ["alpha"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "FSQuantizer",
+            "quantizer_params": {"bit_width": 8, "method":0,"round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
+          }
+        ],
+        "quantizable_outputs": [0],
+        "output_quantizers": [
+          {
+            "quantizer_type": "FSQuantizer",
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -199,7 +221,7 @@
         "activation_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -210,7 +232,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -221,7 +243,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -232,7 +254,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -243,7 +265,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "FSQuantizer",
-            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method":2,"method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_framework_quant": true, "unsigned": false, "narrow_range": false}
           }
         ]
       }

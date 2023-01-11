@@ -354,7 +354,6 @@ class PruneIntegrationTest(tf.test.TestCase, parameterized.TestCase,
             keras.layers.RNN([
                 layers.LSTMCell(10),
                 layers.GRUCell(10),
-                tf.keras.experimental.PeepholeLSTMCell(10),
                 layers.SimpleRNNCell(10)
             ]),
             input_shape=(3, 4),

@@ -34,6 +34,7 @@ def _make_quantizer(quantizer_type_name, quantizer_params):
     quantizer = quantizer_cls(**quantizer_params)
   except Exception as e:
     logger.error(
+        '[Quantizer_TF2_Unsupported_Layer][Unsupported layer type] '
         'Fail to make quantizer `{}` with params `{}`, error: {}'.format(
             quantizer_type_name, quantizer_params, e))
   return quantizer

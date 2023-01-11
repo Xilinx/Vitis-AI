@@ -1,4 +1,0 @@
-op {
-  graph_op_name: "StatsAggregatorHandleV2"
-  visibility: HIDDEN
-}

@@ -132,8 +132,10 @@ class LayersQuantize(transforms.Transform):
         logger.debug(
             info_msg.format(_get_act_type(layer_node), layer_node['name']))
         return match_layer
-
-    layer = self.input_model.get_layer(layer_node['config']['name'])
+    if layer_node['class_name'] == 'TensorFlowOpLayer':
+      layer = self.input_model.get_layer(layer_node['name'])
+    else:
+      layer = self.input_model.get_layer(layer_node['config']['name'])
     if not quantize_config and self.quantize_registry.supports(layer):
       quantize_config = self.quantize_registry.get_quantize_config(layer)
 
@@ -391,6 +393,7 @@ class NoQuantInConvAct(transforms.Transform):
   """Ensure FQ does not get placed between Conv-like and Activation."""
 
   def __init__(self, input_model, quantize_registry):
+    super(NoQuantInConvAct, self).__init__()
     self.input_model = input_model
     self.quantize_registry = quantize_registry
 
@@ -475,6 +478,7 @@ class NoQuantInAddAct(transforms.Transform):
   """Ensure FQ does not get placed between Add and Activation."""
 
   def __init__(self, input_model, quantize_registry):
+    super(NoQuantInAddAct, self).__init__()
     self.input_model = input_model
     self.quantize_registry = quantize_registry
 

@@ -64,8 +64,7 @@ model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=['sparse_categorical_accuracy'])
 
-log_dir = "logs/float_fit/" + datetime.datetime.now().strftime(
-    "%Y%m%d-%H%M%S")
+log_dir = "logs/float_fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(
     log_dir=log_dir, histogram_freq=1)
 model.fit(

@@ -19,22 +19,10 @@ export PYTHON_BIN_PATH=${PYTHON}
 export PYTHON_LIB_PATH=${SP_DIR}
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
-yes "" | ./configure
+pip install tensorflow==1.15.2
 
-bazel build \
-  --verbose_failures \
-  --config=opt \
-  --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" \
-  --copt="-march=x86-64" \
-  --copt="-mno-sse3" \
-  --copt="-mno-sse4.1" \
-  --copt="-mno-sse4.2" \
-  --copt="-mno-avx" \
-  --copt="-mno-avx2" \
-  --copt="-mno-avx512f" \
-  --copt="-mno-fma" \
-  //tensorflow/tools/pip_package:build_pip_package
+python -c "import tensorflow as tf; print(tf)"
 
-bazel-bin/tensorflow/tools/pip_package/build_pip_package "$SRC_DIR/tensorflow_pkg"
+bash build.sh cpu 1
 
-pip install --no-deps $SRC_DIR/tensorflow_pkg/*.whl
+pip install --no-deps $SRC_DIR/pkgs/*.whl

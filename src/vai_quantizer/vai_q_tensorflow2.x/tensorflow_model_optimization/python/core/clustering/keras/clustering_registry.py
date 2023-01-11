@@ -303,12 +303,6 @@ class ClusteringRegistry(object):
       tf.compat.v2.keras.layers.GRUCell: ['kernel', 'recurrent_kernel'],
       tf.compat.v1.keras.layers.LSTMCell: ['kernel', 'recurrent_kernel'],
       tf.compat.v2.keras.layers.LSTMCell: ['kernel', 'recurrent_kernel'],
-      tf.compat.v1.keras.experimental.PeepholeLSTMCell: [
-          'kernel', 'recurrent_kernel'
-      ],
-      tf.compat.v2.keras.experimental.PeepholeLSTMCell: [
-          'kernel', 'recurrent_kernel'
-      ],
       tf.compat.v1.keras.layers.SimpleRNNCell: ['kernel', 'recurrent_kernel'],
       tf.compat.v2.keras.layers.SimpleRNNCell: ['kernel', 'recurrent_kernel'],
   }

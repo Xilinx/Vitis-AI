@@ -120,6 +120,7 @@ def get_min_max(inputs,
                 method=0,
                 symmetry=True,
                 per_channel=False,
+                unsigned=False,
                 narrow_range=False,
                 reduce_dims=None,
                 hist=None,
@@ -141,7 +142,18 @@ def get_min_max(inputs,
     batch_max = tf.math.reduce_max(inputs, name='batch_max')
 
   if symmetry:
-    if narrow_range:
+    if unsigned:
+      input_min = tf.math.reduce_min(inputs)  # may be NaN tensor
+      input_min = tf.cond(
+          tf.math.is_nan(input_min), lambda: tf.constant(0.), lambda: input_min)
+      tf.Assert(
+          tf.greater_equal(input_min, 0.), [
+              "Input tensor values should be non-negative in symmetric unsigned quantization",
+              inputs, "and the minimum is", input_min
+          ])
+      range_min = tf.math.minimum(batch_min, 0.0, name='range_min')
+      range_max = tf.math.maximum(batch_max, 0.0, name='range_max')
+    elif narrow_range:
       range_min = tf.minimum(batch_min, -batch_max)
       range_max = tf.maximum(batch_max, -batch_min)
     else:
@@ -163,7 +175,8 @@ class FSFakeQuantize(object):
                round_mode,
                symmetry,
                per_channel,
-               use_framework_quant,
+               use_framework_quant=True,
+               unsigned=False,
                narrow_range=False,
                reduce_dims=None):
     """Initialize the fake quantize with float scale operation kernel.
@@ -175,22 +188,34 @@ class FSFakeQuantize(object):
       per_channel: Bool, whether to use per-channel quantization.
       use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
         quantize kernel will be used.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
       reduce_dims: List(Int) containing the dimensions to reduce, only take effect when per_channel=True.
     """
     self.bit_width = bit_width
-    self.narrow_range = narrow_range
-    bound = float(2**(self.bit_width - 1))
-    self.q_min, self.q_max = -bound, bound - 1
-    if self.narrow_range:
-      self.q_min += 1
+    self.unsigned = unsigned
+    self.narrow_range = False if self.unsigned else narrow_range
+    if self.unsigned:
+      bound = float(2**self.bit_width)
+      self.q_min, self.q_max = 0., bound - 1
+    else:
+      bound = float(2**(self.bit_width - 1))
+      self.q_min, self.q_max = -bound, bound - 1
+      if self.narrow_range:
+        self.q_min += 1
 
     self.round_mode = vitis_round.RoundMode(round_mode)
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.reduce_dims = reduce_dims
     self.use_framework_quant = use_framework_quant
+
+    # tf.fake_quant_with_min_max_vars donot support unsigned input setting
+    if self.use_framework_quant and self.unsigned:
+      logger.debug(
+          'Use framework_fs_fake_quant_v2 for quantization when unsigned enabled.'
+      )
 
     # tf.fake_quant_with_min_max_vars only support HALF_UP rounding
     if self.use_framework_quant and self.round_mode != vitis_round.RoundMode.HALF_UP:
@@ -268,7 +293,7 @@ class FSFakeQuantize(object):
           inputs,
           f_min,
           f_max,
-          signed_input=True,
+          signed_input=(self.unsigned == False),
           num_bits=self.bit_width,
           range_given=True,
           round_mode='HALF_UP',
@@ -279,7 +304,7 @@ class FSFakeQuantize(object):
           inputs,
           f_min,
           f_max,
-          signed_input=True,
+          signed_input=(self.unsigned == False),
           num_bits=self.bit_width,
           range_given=True,
           round_mode='HALF_UP',
@@ -351,7 +376,10 @@ class FSFakeQuantize(object):
     """
     with tf.name_scope("FSFakeQuantize"):
       if self.use_framework_quant:
-        return self.framework_fs_fake_quant(inputs, f_min, f_max)
+        if self.unsigned:
+          return self.framework_fs_fake_quant_v2(inputs, f_min, f_max)
+        else:
+          return self.framework_fs_fake_quant(inputs, f_min, f_max)
       else:
         return self.custom_fs_fake_quant(inputs, f_min, f_max)
 
@@ -365,6 +393,7 @@ class Pof2SFakeQuantize(object):
                round_mode,
                symmetry,
                per_channel,
+               unsigned=False,
                narrow_range=False,
                reduce_dims=None):
     """Initialize the fake quantize with power-of-2 scale operation kernel.
@@ -375,16 +404,22 @@ class Pof2SFakeQuantize(object):
       round_mode: Int Enum value of the rounding mode. 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
       symmetry: Bool, whether to use symmetry quantization.
       per_channel: Bool, whether to use per-channel quantization.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
       reduce_dims: List(Int) containing the dimensions to reduce, only take effect when per_channel=True.
     """
     self.bit_width = bit_width
-    self.narrow_range = narrow_range
-    bound = float(2**(self.bit_width - 1))
-    self.q_min, self.q_max = -bound, bound - 1
-    if self.narrow_range:
-      self.q_min += 1
+    self.unsigned = unsigned
+    self.narrow_range = False if self.unsigned else narrow_range
+    if self.unsigned:
+      bound = float(2**self.bit_width)
+      self.q_min, self.q_max = 0., bound - 1
+    else:
+      bound = float(2**(self.bit_width - 1))
+      self.q_min, self.q_max = -bound, bound - 1
+      if self.narrow_range:
+        self.q_min += 1
 
     self.method = QuantizeMethod(method)
     self.round_mode = vitis_round.RoundMode(round_mode)
@@ -427,9 +462,12 @@ class Pof2SFakeQuantize(object):
     """Get quantize pos which makes no value overflows."""
     with tf.name_scope("GetQuantizePosNonOverflow"):
       if self.symmetry:
-        min_scale_inv = f_min / self.q_min
-        max_scale_inv = f_max / self.q_max
-        float_scale_inv = tf.math.maximum(min_scale_inv, max_scale_inv)
+        if self.unsigned:  # this condition will have f_min==self.q_min==0
+          float_scale_inv = f_max / self.q_max
+        else:
+          min_scale_inv = f_min / self.q_min
+          max_scale_inv = f_max / self.q_max
+          float_scale_inv = tf.math.maximum(min_scale_inv, max_scale_inv)
       else:
         float_scale_inv = (f_max - f_min) / (self.q_max - self.q_min)
       # Avoid inf, using sys.float_info.epsilon, log2(epsilon) ~= 52
@@ -499,6 +537,7 @@ class TQTFakeQuantize(object):
                round_mode,
                symmetry,
                per_channel,
+               unsigned=False,
                narrow_range=False,
                reduce_dims=None):
     """Initialize the fake quantize with thrained quantization threshold operation kernel.
@@ -509,16 +548,22 @@ class TQTFakeQuantize(object):
       round_mode: Int Enum value of the rounding mode. 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
       symmetry: Bool, whether to use symmetry quantization.
       per_channel: Bool, whether to use per-channel quantization.
+      unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
       reduce_dims: List(Int) containing the dimensions to reduce, only take effect when per_channel=True.
     """
     self.bit_width = bit_width
-    self.narrow_range = narrow_range
-    bound = float(2**(self.bit_width - 1))
-    self.q_min, self.q_max = -bound, bound - 1
-    if self.narrow_range:
-      self.q_min += 1
+    self.unsigned = unsigned
+    self.narrow_range = False if self.unsigned else narrow_range
+    if self.unsigned:
+      bound = float(2**self.bit_width)
+      self.q_min, self.q_max = 0., bound - 1
+    else:
+      bound = float(2**(self.bit_width - 1))
+      self.q_min, self.q_max = -bound, bound - 1
+      if self.narrow_range:
+        self.q_min += 1
 
     self.method = QuantizeMethod(method)
     self.round_mode = vitis_round.RoundMode(round_mode)
@@ -640,6 +685,7 @@ def FSQuantize(
     per_channel,
     channel_axis,
     use_framework_quant=True,
+    unsigned=False,
     narrow_range=False,
     name_scope="FSQuantize",
 ):
@@ -662,6 +708,7 @@ def FSQuantize(
       regarded as channel axis and other dimension will be reduces by default.
     use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
       quantize kernel will be used.
+    unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
 
@@ -681,6 +728,7 @@ def FSQuantize(
         symmetry=symmetry,
         per_channel=per_channel,
         use_framework_quant=use_framework_quant,
+        unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
 
@@ -692,6 +740,7 @@ def FSQuantize(
           method,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = tf_compat.assign(min_var, batch_min, name='assign_min')
@@ -710,6 +759,7 @@ def FSQuantize(
             method,
             symmetry=symmetry,
             per_channel=per_channel,
+            unsigned=unsigned,
             narrow_range=narrow_range,
             reduce_dims=reduce_dims)
         #if not per_channel:
@@ -757,6 +807,7 @@ def MAFSQuantize(inputs,
                  channel_axis,
                  ema_decay=0.999,
                  use_framework_quant=True,
+                 unsigned=False,
                  narrow_range=False,
                  name_scope="MAFSQuantize"):
   """Moving average float scale quantize op.
@@ -776,6 +827,7 @@ def MAFSQuantize(inputs,
     ema_decay: Float, EMA decay parameter.
     use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
       quantize kernel will be used.
+    unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
 
@@ -795,6 +847,7 @@ def MAFSQuantize(inputs,
         symmetry=symmetry,
         per_channel=per_channel,
         use_framework_quant=use_framework_quant,
+        unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
 
@@ -805,6 +858,7 @@ def MAFSQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = moving_averages.assign_moving_average(
@@ -828,6 +882,7 @@ def MAFSQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = moving_averages.assign_moving_average(
@@ -860,6 +915,7 @@ def Pof2SQuantize(inputs,
                   symmetry,
                   per_channel,
                   channel_axis,
+                  unsigned=False,
                   narrow_range=False,
                   name_scope="Pof2SQuantize"):
   """Power-of-2 quantize op with quantize position. 
@@ -879,6 +935,7 @@ def Pof2SQuantize(inputs,
     per_channel: Bool, whether to apply per_channel quantization.
     channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
       regarded as channel axis and other dimension will be reduces by default.
+    unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
 
@@ -898,6 +955,7 @@ def Pof2SQuantize(inputs,
         round_mode=round_mode,
         symmetry=symmetry,
         per_channel=per_channel,
+        unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
 
@@ -908,6 +966,7 @@ def Pof2SQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = tf_compat.assign(min_var, batch_min, name='assign_min')
@@ -921,6 +980,7 @@ def Pof2SQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = tf_compat.assign(min_var, batch_min, name='assign_min')
@@ -950,6 +1010,7 @@ def TQTQuantize(inputs,
                 symmetry,
                 per_channel,
                 channel_axis,
+                unsigned=False,
                 narrow_range=False,
                 name_scope="TQTQuantize"):
   """Power-of-2 quantize op with log threshold.
@@ -968,6 +1029,7 @@ def TQTQuantize(inputs,
     per_channel: Bool, whether to apply per_channel quantization.
     channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
       regarded as channel axis and other dimension will be reduces by default.
+    unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
 
@@ -987,6 +1049,7 @@ def TQTQuantize(inputs,
         round_mode=round_mode,
         symmetry=symmetry,
         per_channel=per_channel,
+        unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
 
@@ -997,6 +1060,7 @@ def TQTQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = tf_compat.assign(min_var, batch_min, name='assign_min')
@@ -1010,6 +1074,7 @@ def TQTQuantize(inputs,
           bit_width,
           symmetry=symmetry,
           per_channel=per_channel,
+          unsigned=unsigned,
           narrow_range=narrow_range,
           reduce_dims=reduce_dims)
       assign_min = tf_compat.assign(min_var, batch_min, name='assign_min')

@@ -217,8 +217,11 @@ class LayersQuantize(transforms.Transform):
               'Standalone activation `{}` is not supported.'.format(
                   _get_act_type(layer_node)))
         return match_layer
+    if layer_node['class_name'] == 'TensorFlowOpLayer':
+      layer = self.input_model.get_layer(layer_node['name'])
+    else:
+      layer = self.input_model.get_layer(layer_node['config']['name'])
 
-    layer = self.input_model.get_layer(layer_node['config']['name'])
     if not quantize_config and self.quantize_registry.supports(layer):
       quantize_config = self.quantize_registry.get_quantize_config(layer)
 
@@ -307,6 +310,8 @@ class LayersInputQuantize(transforms.Transform):
       return match_layer
 
     input_layer_name = input_layer_node.layer['config']['name']
+
+    match_layer_name = match_layer.layer['config']['name']
     quant_layer = vitis_quantize.VitisQuantize(
         self.input_quantizer,
         self.mode,
@@ -477,6 +482,7 @@ class AnnotateConvAct(transforms.Transform):
   """Ensure FQ does not get placed between Conv-like and Activation."""
 
   def __init__(self, input_model, quantize_registry):
+    super(AnnotateConvAct, self).__init__()
     self.input_model = input_model
     self.quantize_registry = quantize_registry
 
@@ -592,6 +598,7 @@ class AnnotateAddAct(transforms.Transform):
   """Ensure FQ does not get placed between Add and Activation."""
 
   def __init__(self, input_model, quantize_registry):
+    super(AnnotateAddAct, self).__init__()
     self.input_model = input_model
     self.quantize_registry = quantize_registry
 
@@ -667,6 +674,7 @@ class AnnotatePoolAct(transforms.Transform):
   """Check dpu limits and annotate Pool and Activation."""
 
   def __init__(self, input_model, quantize_registry):
+    super(AnnotatePoolAct, self).__init__()
     self.input_model = input_model
     self.quantize_registry = quantize_registry
 

@@ -25,7 +25,7 @@ import tensorflow as tf
 import numpy as np
 
 try:
-  from vai_utf.python import target_factory
+  import target_factory
 except:
   target_factory = None
 
@@ -43,6 +43,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers i
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_pooling
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy import vitis_quantize_strategy_factory
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_quantize_strategy
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_transforms_pipeline
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.fs import vitis_fs_quantize_strategy
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.fsx import vitis_fsx_quantize_strategy
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.vai_utf import vai_utf_parser
@@ -55,7 +56,7 @@ keras = tf.keras
 
 Usage = (
     '\nVitisQuantizer introduce a new feature to quantize model for specific DPU `target` '
-    'since Vitis-AI 2.5. Without `target` we can only give some general, target-independent '
+    'since Vitis-AI 3.0. Without `target` we can only give some general, target-independent '
     'quantize results. Please assign `target` to get more accurate partition and quantization '
     'results. This feature in only available for default pof2s quantize strategy due to DPU '
     'limitation. See user guide for more information. This feature is experimental, please '
@@ -65,7 +66,7 @@ Usage = (
     '\n[1] Quantize a model with target:'
     '\n    VitisQuantizer(my_model, target=my_target).quantize_model(calib_dataset)'
     '\n'
-    '\n[Note] `my_target` is the target DPU to deploy this model, it can be a name(e.g. "DPUCAHX8L_ISA0"), '
+    '\n[Note] `my_target` is the target DPU to deploy this model, it can be a name(e.g. "DPUCZDX8G_ISA1_B4096"), '
     'a arch json(e.g. "./U50/arch.json") or a fingerprint.\n')
 
 
@@ -274,8 +275,7 @@ class VitisQuantizer(object):
       custom_objects: dict, mapping names(strings) to custom classes or functions.
         Default to {}.
       target: string, file path of the arch.json. Default to None.
-      target_type: string, type of target, choices are ['json', 'proto', 'target_def',
-        'fingerprint', 'name'].
+      target_type: string, type of target, choices are ['json', 'fingerprint', 'name'].
 
     Return:
       The created VitisQuantizer instance.
@@ -288,6 +288,26 @@ class VitisQuantizer(object):
     self._optimized_model = None
     self._layer_metadata = None
     self._candidate_layers = None
+    self._check_near_dropout = None
+
+    # Check float model
+    if float_model is None:
+      logger.error('`float_model` cannot be None')
+
+    if not isinstance(float_model, keras.Model):
+      logger.error('[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+                   '`float_model` can only be a `tf.keras.Model` instance. '
+                   'You passed an instance of type: {input}.'.format(
+                       input=float_model.__class__.__name__))
+
+    if not isinstance(float_model, keras.Sequential) \
+        and not float_model._is_graph_network:  # pylint: disable=protected-access
+      logger.error(
+          '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+          '`float_model` can only either be a tf.keras Sequential or '
+          'Functional model. Subclassing model is not supported now, '
+          'please convert it to Functional model and try again. See '
+          'https://www.tensorflow.org/guide/keras/functional for more details.')
 
     # Custom objects
     self.custom_objects = custom_objects
@@ -318,13 +338,44 @@ class VitisQuantizer(object):
     if target:
       if target_factory is None:
         logger.error(
-            'Please install `vai_utf` package to quantize with targets.')
-      self._target = target_factory.VAI_UTF().create_legacy_dpu_target(
-          target, file_type=target_type)
-      layer_limits_map = vai_utf_parser.VAIUTFParser().parse_legacy_dpu_target(
-          self._target)
-      self._quantize_strategy.get_quantize_registry().update_layer_limits(
-          layer_limits_map)
+            'Please install `target_factory` package to quantize with targets.')
+
+      if not target_type:
+        if isinstance(target, str):
+          if target.endswith('.json'):
+            target_type = 'json'
+          elif target.startswith('DPU'):
+            target_type = 'name'
+          else:
+            target_type = 'fingerprint'
+        else:
+          logger.error(
+              "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}"
+              .format(Usage))
+
+      if target_type == 'json':
+        self._target = common_utils.load_json(target)['target']
+      elif target_type == 'name':
+        self._target = target
+      elif target_type == 'fingerprint':
+        self._target = target
+      else:
+        logger.error(
+            "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}"
+            .format(Usage))
+
+      if target_type in ['json', 'name']:
+        if not target_factory.is_registered_target(self._target):
+          logger.error(
+              '[Quantizer_TF2_Invalid_Target][Invalid Target] {} not in target_factory.'
+              .format(self._target))
+      elif target_type in ['fingerprint']:
+        try:
+          target_factory.get_target_by_fingerprint(eval(self._target))
+        except:
+          logger.error(
+              '[Quantizer_TF2_Invalid_Target][Invalid Target] {} not in target_factory.'
+              .format(self._target))
 
     #  if not self._target and type(
     #      self._quantize_strategy
@@ -340,7 +391,8 @@ class VitisQuantizer(object):
         candidate_layers=self._candidate_layers,
         layer_metadata=self._layer_metadata,
         quantize_strategy=self._quantize_strategy,
-        mode='QAT')
+        mode='QAT',
+        target=self._target)
 
   def _run_model_with_collector(self, model, dataset, batch_size, steps):
     """Run model with quantize info collector."""
@@ -368,7 +420,8 @@ class VitisQuantizer(object):
         candidate_layers=self._candidate_layers,
         layer_metadata=self._layer_metadata,
         quantize_strategy=self._quantize_strategy,
-        mode='ANALYSE')
+        mode='ANALYSE',
+        target=self._target)
 
     logger.info("Start Model Analyse...")
     collector = self._run_model_with_collector(self._analysed_model, dataset,
@@ -434,7 +487,8 @@ class VitisQuantizer(object):
         candidate_layers=self._candidate_layers,
         layer_metadata=self._layer_metadata,
         quantize_strategy=self._quantize_strategy,
-        mode='QCB')
+        mode='QCB',
+        target=self._target)
 
     logger.info("Start Quantize Calibration...")
     collector = self._run_model_with_collector(self._qcb_model, calib_dataset,
@@ -611,7 +665,6 @@ class VitisQuantizer(object):
       import tensorflow.python.keras.layers.serialization as serialization
     serialization.populate_deserializable_objects()
     for layer in self._float_model.layers:
-      # print(len(serialization.LOCAL.ALL_OBJECTS))
       class_name = layer.__class__.__name__
       cls = tf.keras.utils.get_registered_object(
           class_name, {}, module_objects=serialization.LOCAL.ALL_OBJECTS)
@@ -646,7 +699,35 @@ class VitisQuantizer(object):
       self._quantize_strategy.get_optimize_pipeline().print_configs()
 
       self._create_optimized_model()
+      if self._check_near_dropout:
+        self._optimized_model = model_utils.remove_layer(
+            self._optimized_model, 'Dropout')
     return self._optimized_model
+
+  def convert_model(self, target_dtype="float32"):
+    """Convert model data type to target type.
+
+    args:
+       target_dtype: string value, specify target data type, available choices
+       ["float32", "float16", "float64"]
+    """
+    ## need fold BN firstly as BN not support float16
+    available_type = ["float32", "float16", "float64"]
+    if target_dtype not in available_type:
+      logger.error('Unknown target data type: {}, expecte one of supported ' \
+             'data type {}.'.format(target_dtype, available_type))
+    self.optimize_model(remove_dropout=False, include_cle=False)
+
+    model_config = self._optimized_model.get_config()
+    for l in model_config["layers"]:
+      l["config"]["dtype"] = target_dtype
+    converted_model = keras.Model.from_config(
+        model_config, custom_objects=self.custom_objects)
+    weights = self._optimized_model.get_weights()
+    weights = [w.astype(target_dtype) for w in weights]
+    converted_model.set_weights(weights)
+    logger.info("Convert model data type to {}".format(target_dtype))
+    return converted_model
 
   def get_analysed_model(self, dataset):
     """Get analysed model."""
@@ -682,6 +763,12 @@ class VitisQuantizer(object):
       self._parse_configs(configs, kwargs)
       configs = self._quantize_strategy.get_configs()
 
+      if not self._target and type(
+          self._quantize_strategy
+      ) == vitis_pof2s_quantize_strategy.VitisPof2SQuantizeStrategy:
+        configs['quantize_pipeline_config']['quantize_with_xcompiler'] = False
+        logger.info('Quantizing without specific `target`.')
+
       # Handle user-defined partition
       if not self._candidate_layers:
         input_layers = configs["quantize_registry_config"][
@@ -698,6 +785,9 @@ class VitisQuantizer(object):
               {"input_quantize_config": input_quantize_config})
           self._candidate_layers = model_utils.get_candidate_layers(
               self._float_model, input_layers, output_layers, ignore_layers)
+          if configs["optimize_pipeline_config"]["remove_dropout"]:
+            self._check_near_dropout = model_utils.check_near_dropout(
+                self._float_model, ignore_layers)
 
       self.optimize_model()
 
@@ -799,8 +889,24 @@ class VitisQuantizer(object):
     Return:
       A tf.keras.Model instance, the quantized model.
     """
+    # Configure the quantize strategy
+    self._parse_configs(configs, kwargs)
+    configs = self._quantize_strategy.get_configs()
+
+    if not self._target and type(
+        self._quantize_strategy
+    ) == vitis_pof2s_quantize_strategy.VitisPof2SQuantizeStrategy:
+      configs['quantize_pipeline_config']['quantize_with_xcompiler'] = False
+      logger.info('Quantizing without specific `target`.')
+
+    if "convert_datatype" in configs["quantize_pipeline_config"] and configs[
+        "quantize_pipeline_config"]["convert_datatype"]:
+      return self.convert_model(
+          target_dtype=configs["quantize_pipeline_config"]["convert_datatype"])
+
     if calib_dataset is None:
       logger.error(
+          '[Quantizer_TF2_Invalid_Calib_Dataset][Invalid calibration dataset]'
           'Need to assign `calib_dataset` for when calling quantize_model().')
 
     if loss and not eval_dataset:
@@ -809,10 +915,26 @@ class VitisQuantizer(object):
       )
 
     add_shape_info = (bool(self.custom_objects) or add_shape_info)
-
-    # Configure the quantize strategy
-    self._parse_configs(configs, kwargs)
-    configs = self._quantize_strategy.get_configs()
+    if input_shape is not None and isinstance(input_shape, dict):
+      if len(input_shape) == 1:
+        for k, v in input_shape.items():
+          if len(v) != len(self._float_model.input_shape):
+            logger.error(
+              "[Quantizer_TF2_Invalid_Input_Shape][Invalid input shape]"
+              "The input_shape {} ndim does not match the model input_shape {} ndim"
+              .format(input_shape, self._float_model.input_shape))
+      elif len(input_shape) != len(self._float_model.input_shape):
+        logger.error(
+          "[Quantizer_TF2_Invalid_Input_Shape][Invalid input shape]"
+          "The input_shape {} ndim does not match the model input_shape {} ndim"
+          .format(input_shape, self._float_model.input_shape))
+        
+    if input_shape is not None and (isinstance(input_shape, list) or isinstance(input_shape, tuple)):
+      if len(input_shape) != len(self._float_model.input_shape):
+        logger.error(
+            "[Quantizer_TF2_Invalid_Input_Shape][Invalid input shape]"
+            "The input_shape {} ndim does not match the model input_shape {} ndim"
+            .format(input_shape, self._float_model.input_shape))
 
     # Handle user-defined partition
     if not self._candidate_layers:
@@ -830,6 +952,9 @@ class VitisQuantizer(object):
             {"input_quantize_config": input_quantize_config})
         self._candidate_layers = model_utils.get_candidate_layers(
             self._float_model, input_layers, output_layers, ignore_layers)
+        if configs["optimize_pipeline_config"]["remove_dropout"]:
+          self._check_near_dropout = model_utils.check_near_dropout(
+              self._float_model, ignore_layers)
 
     # Disable tf.logging warnings during quantization
     log_level = tf.get_logger().level
@@ -899,7 +1024,9 @@ class VitisQuantizer(object):
         adjust_vitis_sigmoid=True,
         adjust_shift_cut=True,
         adjust_shift_bias=True,
-        adjust_shift_read=True)
+        adjust_shift_read=True,
+        adjust_shift_write=True,
+        adjust_shift_swish=True)
     model_utils.set_quantize_info(deploy_model, adjusted_quantize_info)
 
     if add_shape_info:
@@ -944,6 +1071,7 @@ class VitisQuantizer(object):
     Returns:
       dumped string of quantize strategy configs.
     """
+
     qs_configs = copy.deepcopy(self._quantize_strategy._qs_configs)
     if verbose < 2:
       qs_configs['quantize_registry_config'].pop('input_quantize_config')
@@ -990,14 +1118,19 @@ def create_optimize_model(model, candidate_layers, layer_metadata,
     logger.error('`model` cannot be None')
 
   if not isinstance(model, keras.Model):
-    logger.error('`model` can only be a `tf.keras.Model` instance. '
+    logger.error('[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+                 '`model` can only be a `tf.keras.Model` instance.'
                  'You passed an instance of type: {input}.'.format(
                      input=model.__class__.__name__))
 
   if not isinstance(model, keras.Sequential) \
       and not model._is_graph_network:  # pylint: disable=protected-access
-    logger.error('`model` can only either be a tf.keras Sequential or '
-                 'Functional model.')
+    logger.error(
+        '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+        '`model` can only either be a tf.keras Sequential or '
+        'Functional model. Subclassing model is not supported now, '
+        'please convert it to Functional model and try again. See '
+        'https://www.tensorflow.org/guide/keras/functional for more details.')
 
   optimize_pipeline = quantize_strategy.get_optimize_pipeline()
   optimized_model, layer_metadata = optimize_pipeline.apply(
@@ -1030,15 +1163,19 @@ def create_refine_model(quantized_model, candidate_layers, layer_metadata,
     logger.error('`quantized_model` cannot be None')
 
   if not isinstance(quantized_model, keras.Model):
-    logger.error('`quantized_model` can only be a `tf.keras.Model` instance. '
+    logger.error('[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+                 '`quantized_model` can only be a `tf.keras.Model` instance. '
                  'You passed an instance of type: {input}.'.format(
                      input=quantized_model.__class__.__name__))
 
   if not isinstance(quantized_model, keras.Sequential) \
       and not quantized_model._is_graph_network:  # pylint: disable=protected-access
     logger.error(
-        '`quantized_model` can only either be a tf.keras Sequential or '
-        'Functional model.')
+        '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+        '`model` can only either be a tf.keras Sequential or '
+        'Functional model. Subclassing model is not supported now, '
+        'please convert it to Functional model and try again. See '
+        'https://www.tensorflow.org/guide/keras/functional for more details.')
 
   refine_pipeline = quantize_strategy.get_refine_pipeline()
   refined_model, layer_metadata = refine_pipeline.apply(
@@ -1049,9 +1186,9 @@ def create_refine_model(quantized_model, candidate_layers, layer_metadata,
 
 def create_finalize_model(refined_model, candidate_layers, layer_metadata,
                           quantize_strategy):
-  """Refine a quantize calibrated model
+  """Finalize a quantize refined model.
 
-  Will do post-quantize adjustments and perform some finetuning algorithms.
+  Will do model format conversions.
 
     Args:
       refined_model: the refined model to be finalized.
@@ -1069,8 +1206,12 @@ def create_finalize_model(refined_model, candidate_layers, layer_metadata,
 
   if not isinstance(refined_model, keras.Sequential) \
       and not refined_model._is_graph_network:  # pylint: disable=protected-access
-    logger.error('`refined_model` can only either be a tf.keras Sequential or '
-                 'Functional model.')
+    logger.error(
+        '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+        '`refined_model` can only either be a tf.keras Sequential or '
+        'Functional model. Subclassing model is not supported now, '
+        'please convert it to Functional model and try again. See '
+        'https://www.tensorflow.org/guide/keras/functional for more details.')
 
   finalize_pipeline = quantize_strategy.get_finalize_pipeline()
   finalized_model, layer_metadata = finalize_pipeline.apply(
@@ -1079,7 +1220,7 @@ def create_finalize_model(refined_model, candidate_layers, layer_metadata,
 
 
 def create_quantize_model(model, candidate_layers, layer_metadata,
-                          quantize_strategy, mode):
+                          quantize_strategy, mode, target):
   """Quantize a `tf.keras` model with the default quantization implementation.
 
   Quantization constructs a model which emulates quantization during training.
@@ -1102,15 +1243,6 @@ def create_quantize_model(model, candidate_layers, layer_metadata,
   """
   if model is None:
     logger.error('`model` cannot be None')
-
-  if not isinstance(model, keras.Model):
-    logger.error('`model` can only be a `tf.keras.Model` instance.'
-                 'You passed an instance of type: {input}.'.format(
-                     input=model.__class__.__name__))
-
-  if not isinstance(model, keras.Sequential) \
-      and not model._is_graph_network:  # pylint: disable=protected-access
-    logger.error('Only tf.keras Sequential or Functional models are supported.')
 
   if not model.built:
     logger.error('`model` must be a built model. '
@@ -1135,8 +1267,15 @@ def create_quantize_model(model, candidate_layers, layer_metadata,
   # 2. Run the pipeline of quantize transforms.
   # Quantizable layers will be wrapped with QuantizeWrapper while others ramain float.
   quantize_pipeline = quantize_strategy.get_quantize_pipeline()
-  quantized_model, layer_metadata = quantize_pipeline.apply(
-      model_copy, candidate_layers, layer_metadata,
-      quantize_strategy.get_quantize_registry(), mode)
+  if isinstance(
+      quantize_pipeline,
+      vitis_pof2s_transforms_pipeline.VitisPof2SQuantizeTransformsPipeline):
+    quantized_model, layer_metadata = quantize_pipeline.apply(
+        model_copy, candidate_layers, layer_metadata,
+        quantize_strategy.get_quantize_registry(), mode, target)
+  else:
+    quantized_model, layer_metadata = quantize_pipeline.apply(
+        model_copy, candidate_layers, layer_metadata,
+        quantize_strategy.get_quantize_registry(), mode)
 
   return quantized_model, layer_metadata
