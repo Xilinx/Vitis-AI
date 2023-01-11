@@ -1,6 +1,6 @@
-# Setup Conda Environment for WeGO-Tensorflow2
+# Setup Conda Environment for WeGO-TensorFlow2.x
 
-Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-Tensorflow2.
+Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-TensorFlow2.x.
 
 ```bash
 $ conda activate vitis-ai-tensorflow2
