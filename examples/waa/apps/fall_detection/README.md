@@ -2,6 +2,9 @@
 
 :pushpin: **Note:** This application can be run only on Alveo-U200 platform.
 
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
+
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -12,7 +15,7 @@
 - [Performance](#performance)
 
 ## Introduction
-This application demonstrates the acceleration of Lucas-Kanade Dense Non-Pyramidal Optical Flow algorithm and modified VGG16 network which takes 20 channel input. Every consecutive pair of frames are resized and fed to Optical Flow kernel which generates a 2 dimensional Optical Flow vector. 10 of such consecutive vectors are stacked together and passed to the inference model, which is trained to classify fall from no-fall.
+This application demonstrates the acceleration of TVL1 Optical Flow algorithm and modified VGG16 network which takes 20 channel input. Every consecutive pair of frames are resized and fed to Optical Flow kernel which generates a 2 dimensional Optical Flow vector. 10 of such consecutive vectors are stacked together and passed to the inference model, which is trained to classify fall from no-fall.
 
 ## Setting Up the Target Alveo U200
 **Refer to [Setup Alveo Accelerator Card](../../../setup/alveo) to set up the Alveo Card.**
@@ -65,9 +68,8 @@ cd ${VAI_HOME}/examples/Whole-App-Acceleration/apps/fall_detection
 
 ### Graph Zoo
 
-#### `graph_optical_flow_fpga.json` contains the dense non-pyramidal Lucas–Kanade OpticalFlow graph that runs on FPGA.
-* **optical_flow_preproc**: Apply letterbox resizing and convert BGR image to Grayscale
-* **dense_non_pyr_lk_of**: Run Dense Non-pyramidal Lucas-Kanade Optical Flow; out flowx and flowy vectors
+#### `graph_optical_flow_fpga.json` contains the TVL1 OpticalFlow graph that runs on FPGA.
+* **DualTVL1OpticalFlow**: Run TVL1 Optical Flow; out flowx and flowy vectors
 * **optical_flow_postproc**: Resize and bound the pixel values of flow vectors to `[-bound, bound]`, normalize to [0, 255] and perform mean subtraction (mean=127)
 
 
@@ -143,7 +145,7 @@ python convert_csv_to_gt_file.py
 
 Performance metrics observed on urfd_dataset (70 streams):
 
-* Accuracy: 0.923339
+* Accuracy: 0.973339
 * Sensitivity/Recall: 0.163494
 * Specificity: 0.989558
 * FAR/FPR: 0.0104421
@@ -157,13 +159,13 @@ Performance metrics observed on urfd_dataset (70 streams):
 
 URFD dataset has 70 streams, each containing 170 frames on average.
 
-Following table shows the comparison of end-to-end application's throughput with OpenCV Farneback algorithm (dense) on CPU against accelerated Dense Non-pyramidal Optical Flow on FPGA on `70 streams`.
+Following table shows the comparison of end-to-end application's throughput with OpenCV DualTVL1 algorithm on CPU against accelerated TVL1 Optical Flow on FPGA on `70 streams`.
 
-| Fall detection | E2E Throughput (FPS) on 70 streams | Improvement in throughput with accelerated<br>Dense Non-Pyramidal Lucas Kanade |
+| Fall detection | E2E Throughput (FPS) on 70 streams | Improvement in throughput with accelerated<br>TVL1 |
 |:-:|:-:|:-:|
-| with hardware accelerated<br>Dense Non-Pyramidal<br>Lucas-Kanade | 175.25 | - |
-| with OpenCV's Farneback<br>(1 thread) | 26.55 | 560.07 % |
-| with OpenCV's Farneback<br>(12 threads) | 137.98 | 27.01 % |
+| with hardware accelerated<br>TVL1 | 175.25 | - |
+| with OpenCV's TVL1<br>(1 thread) | 26.55 | 560.07 % |
+| with OpenCV's TVL1<br>(12 threads) | 137.98 | 27.01 % |
 
 
 ## Write prediction probabilities to video

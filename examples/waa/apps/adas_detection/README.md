@@ -9,6 +9,9 @@ ADAS detection application is supported on the following devices.
 
 VCK190 ES1 is supported with the [Known Issue](#Known-Issue).
 
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
+
+
 # Table of Contents
 - [Introduction](#introduction)
 - [Run ADAS detection example](#run-adas-detection-example)
