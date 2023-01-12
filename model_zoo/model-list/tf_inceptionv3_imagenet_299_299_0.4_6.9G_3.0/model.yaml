@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: inception_v3 classifier on ImageNet.
+input size: 299*299
+float ops: 6.9G
+task: classification
+framework: tensorflow
+prune: '0.4'
+version: 3.0
+files:
+- name: tf_inceptionv3_imagenet_299_299_0.4_6.9G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_inceptionv3_imagenet_299_299_0.4_6.9G_3.0.zip
+  checksum: 45220563ce12ac8ad91f3ea553025e51
+- name: inception_v3_pruned_0_4_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 027ad4b29060be8e9b2d76938ebf2827
+- name: inception_v3_pruned_0_4_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_tf-vck190-r3.0.0.tar.gz
+  checksum: 4085e6fe077e06b5187ae4e1bb0251c3
+- name: inception_v3_pruned_0_4_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: fbcd7ca5d43a3577ebd651914ef5ac0e
+- name: inception_v3_pruned_0_4_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: fc18d35eb8c0155ae2bd855380515f34
+- name: inception_v3_pruned_0_4_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3_pruned_0_4_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 339322c77f1792e09e7e1571c57e1375
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
