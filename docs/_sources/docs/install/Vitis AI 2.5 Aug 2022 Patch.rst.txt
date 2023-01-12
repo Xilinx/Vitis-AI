@@ -4,11 +4,9 @@ August 2022 Patch
 New Features/Highlights
 ~~~~~~~~~~~~~~~~~~~~~~~
 
--  Supported correlation 1d and correlation 2d operators with DPUCZDX8G
-   and DPUCVDX8G
+-  Supported correlation 1d and correlation 2d operators with DPUCZDX8G and DPUCVDX8G
 -  Supported concatenate operator with multiple identical input tensors
--  Fixed a compiler bug to support concatenate operator cascaded with
-   multiple reshape operators
+-  Fixed a compiler bug to support concatenate operator cascaded with multiple reshape operators
 
 New Packages
 ~~~~~~~~~~~~
@@ -25,21 +23,17 @@ New Packages
 Installation
 ------------
 
-Download the packages from the link above.
+Download the packages from the link above. Apply the conda patch to the conda environment (Machine Learning
+framework) that you wish to update in this format.
 
-Apply the conda patch to the conda environment (Machine Learning
-framework) that you wish to update in this format
-
-::
+.. code-block::
 
    sudo conda install -n <CONDA_ENVIRONMENT> <URL or PATH to conda package>
 
 For example, to update the ``vitis-ai-pytorch`` conda environment:
 
-::
+.. code-block::
 
    sudo conda install -n vitis-ai-pytorch https://www.xilinx.com/bin/public/openDownload?filename=target_factory-2.5.0-py36h680af44_202.tar.bz2
 
-Make sure you install them in the order of unilog, target_factory, xir,
-xcompiler, xnnc, and use the proper version according to the python
-version installed in your current conda env.
+Make sure you install them in the order of unilog, target_factory, xir, xcompiler, xnnc, and use the proper version according to the Python version installed in your current conda env.

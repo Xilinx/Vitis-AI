@@ -18,7 +18,7 @@
 Vitis AI
 ############################################################
 
-Xilinx Vitis AI is an integrated development environment that can be leveraged to accelerate AI inference on Xilinx platforms. This toolchain provides optimized IP, tools, libraries, models, as well as resources, such as example designs and tutorials that aid the user throughout the development process.  It is designed with high efficiency and ease-of-use in mind, unleashing the full potential of AI acceleration on Xilinx SoCs and Alveo Data Center accelerator cards.  
+Xilinx® Vitis™ AI is an integrated development environment that can be leveraged to accelerate AI inference on Xilinx platforms. This toolchain provides optimized IP, tools, libraries, models, as well as resources, such as example designs and tutorials that aid the user throughout the development process.  It is designed with high efficiency and ease-of-use in mind, unleashing the full potential of AI acceleration on Xilinx SoCs and Alveo™ Data Center accelerator cards.
 
 .. figure:: docs/reference/images/VAI_IDE.png
    :width: 1300
@@ -32,15 +32,15 @@ Vitis AI Key Components
 Vitis AI is composed of the following key components:
 
 
-* **DPUs** - Configurable computation engines optimized for convolution neural networks. Efficient and scalable IP cores that can be customized to meet the needs of many different applications and devices
-* **Model Zoo**  - A comprehensive set of pre-trained and pre-optimized models that are ready to deploy on Xilinx devices
-* **Model Inspector**  - A tool and methodology through which developers can verify model architecture support
-* **Optimizer** - An optional, commercially licensed tool that enables users to prune a model by up to 90%
-* **Quantizer** - A powerful quantizer that supports model quantization, calibration, and fine tuning
-* **Compiler** - Compiles the quantized model for execution on the target DPU accelerator
-* **Runtime (VART)** - An inference runtime for Embedded applications
-* **Profiler** - Performs an in-depth analysis of the efficiency and utilization of AI inference implementations on the DPU
-* **Library** - Offers high-level C++ APIs for AI applications for embedded and data center use-cases
+* **DPUs** - Configurable computation engines optimized for convolution neural networks. Efficient and scalable IP cores that can be customized to meet the needs of many different applications and devices.
+* **Model Zoo**  - A comprehensive set of pre-trained and pre-optimized models that are ready to deploy on Xilinx devices.
+* **Model Inspector**  - A tool and methodology through which developers can verify model architecture support.
+* **Optimizer** - An optional, commercially licensed tool that enables users to prune a model by up to 90%.
+* **Quantizer** - A powerful quantizer that supports model quantization, calibration, and fine tuning.
+* **Compiler** - Compiles the quantized model for execution on the target DPU accelerator.
+* **Runtime (VART)** - An inference runtime for Embedded applications.
+* **Profiler** - Performs an in-depth analysis of the efficiency and utilization of AI inference implementations on the DPU.
+* **Library** - Offers high-level C++ APIs for AI applications for embedded and data center use-cases.
 
 
 .. toctree::
@@ -55,7 +55,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Notes
    :hidden:
 
-   This Release <docs/reference/release_notes_3.0>
+   Current Release <docs/reference/release_notes_3.0>
 
 .. toctree::
    :maxdepth: 3
@@ -65,7 +65,7 @@ Vitis AI is composed of the following key components:
    System Requirements <docs/reference/system_requirements>
    Host Install Instructions <docs/install/install>
    Target Setup Instructions <docs/board_setup/board_setup>
-   
+
 .. toctree::
    :maxdepth: 3
    :caption: Model Zoo
@@ -75,14 +75,14 @@ Vitis AI is composed of the following key components:
 
 .. toctree::
    :maxdepth: 3
-   :caption: Model Development 
+   :caption: Model Development
    :hidden:
 
    Developing a NN Model for Vitis AI <docs/workflow-model-development>
 
 .. toctree::
    :maxdepth: 3
-   :caption: Model Deployment 
+   :caption: Model Deployment
    :hidden:
 
    Deploying a NN Model with Vitis AI <docs/workflow-model-deployment>
@@ -106,7 +106,7 @@ Vitis AI is composed of the following key components:
    :caption: Release Documentation
    :hidden:
 
-   Links to Formal Vitis AI Documents <docs/reference/release_documentation>
+   Formal Vitis AI Documents <docs/reference/release_documentation>
 
 .. toctree::
    :maxdepth: 3
@@ -119,7 +119,7 @@ Vitis AI is composed of the following key components:
    :maxdepth: 3
    :caption: Related Solutions
    :hidden:
-   
+
    AMD Inference Server <https://xilinx.github.io/inference-server/>
    Vitis Video Analytics SDK <https://xilinx.github.io/VVAS/>
    FINN & Brevitas <https://xilinx.github.io/finn/>
@@ -129,13 +129,12 @@ Vitis AI is composed of the following key components:
    :maxdepth: 3
    :caption: Resources and Support
    :hidden:
-   
+
    Resources and Support <docs/reference/additional_resources>
-    
+
 .. toctree::
    :maxdepth: 3
    :caption: FAQ
    :hidden:
 
    Frequenty Asked Questions <docs/reference/faq>
-

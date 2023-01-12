@@ -9,12 +9,10 @@ New Features/Highlights
 -  Updated target description to support pool kernel=1 in DPUCZDX8G
 -  Updated parser to support integrated activation in tf2 dense
 -  Updated parser to fix a bug when using fine-tuned tf2 model
--  Removed some unnecessary assertions in parser to support unquantized
-   leakyrelu
+-  Removed some unnecessary assertions in parser to support unquantized leakyrelu
 -  Updated parser to support customized tf2 UpsampleLike operator
 -  Updated compiler to support depth-wise engine in DPUCVDX8G
--  Updated XIR to raise compilation warnings for using legacy APIs other
-   than runtime warnings
+-  Updated XIR to raise compilation warnings for using legacy APIs other than runtime warnings
 
 New Packages
 ~~~~~~~~~~~~
@@ -33,7 +31,7 @@ Installation
 
 Download the packages from the link above.
 
-::
+.. code-block::
 
    sudo env PATH=/opt/vitis_ai/conda/bin:$PATH CONDA_PREFIX=/opt/vitis_ai/conda/envs/YOUR_ENV_NAME conda install PATCH_PACKAGE.tar.bz2
 

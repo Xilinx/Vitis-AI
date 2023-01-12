@@ -1,143 +1,133 @@
-==========================================
 Setting up a Zynq UltraScale+ MPSoC Target
 ==========================================
 
 Introduction
 --------------
 
-This directory contains instructions for running DPUCZDX8G on Zynq Ultrascale+ MPSoC platforms. **DPUCZDX8G** is a configurable computation engine dedicated for convolutional neural networks. It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and
-others. With Vitis-AI, Xilinx has integrated all the edge and cloud solutions under a unified API and toolset.
+This directory contains instructions for running DPUCZDX8G on Zynq® Ultrascale+™ MPSoC platforms. **DPUCZDX8G** is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.
 
-Step 1: Setup cross-compiler
------------------------------
+Step 1: Setup Cross-compiler
+----------------------------
 
-1. Run the following command to install cross-compilation system environment.
+.. note:: Perform these steps this on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in ``~/petalinux_sdk_2022.2``.
 
-   .. note:: Install it on your local host linux system, not in the docker system.
+1. Run the following commands to install the cross-compilation system environment:
 
-   ::
+   .. code-block:: Bash
 
+      cd Vitis-AI/board_setup/mpsoc
       ./host_cross_compiler_setup.sh
 
-   Note that the Cross Compiler will be installed in ``~/petalinux_sdk_2022.2`` by default.
 
-2. When the installation is complete, follow the prompts and execute the following command.
+2. When the installation is complete, follow the prompts and execute the following command:
 
-   ::
+   .. code-block:: Bash
 
       source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 
-.. note:: If you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+   .. note:: If you close the current terminal, you must re-execute the above instructions in the new terminal interface.
 
 Step 2: Setup the Target
--------------------------
+------------------------
 
-To improve the user experience, the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and models have been built into the board image. Therefore, user does not need to install Vitis AI Runtime packages and model package on the board separately. However, users can still install the model or Vitis AI Runtime on their own image or on the official image by following these steps.
+The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and models are built into the board image, enhancing the user experience. Therefore, the user need not install Vitis AI Runtime packages and model packages on the board separately. However, following these steps, the users can still install the model or Vitis AI Runtime on their image or on the official image.
 
 1. Installing a Board Image.
 
-   -  Download the SD card system image files from the following links:
+   a.  Download the SD card system image files from the following links:
 
-      `ZCU102 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.2-v3.0.0.img.gz>`__
+      - `ZCU102 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.2-v3.0.0.img.gz>`__
+      - `ZCU104 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.2-v3.0.0.img.gz>`__
+      - `KV260 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz>`__
 
-      `ZCU104 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.2-v3.0.0.img.gz>`__
+	.. note:: For ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.
 
-      `KV260 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz>`__
+   b.  Use Etcher software to burn the image file onto the SD card.
 
-      .. note:: For ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.
+   c.  Insert the SD card with the image into the destination board.
 
-   -  Use Etcher software to burn the image file onto the SD card.
+   d.  Plug in the power adapter and boot the board using the serial port to interact with the target.
 
-   -  Insert the SD card with the image into the destination board.
+   e.  Configure the IP address and related settings for the board using the serial port.
 
-   -  Plug in the power and boot the board using the serial port to operate on the system.
+   For the details, refer to `Setting Up the Evaluation Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__.
 
-   -  Set up the IP information of the board using the serial port.
-
-   For the details, refer to `Setting Up the Evaluation
-   Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__
-
-2. (Optional) Running ``zynqmp_dpu_optimize.sh`` to optimize the board setting.
+2. (Optional) Run ``zynqmp_dpu_optimize.sh`` to optimize board settings.
 
    The script runs automatically after the board boots up with the official image. But you can also find the ``dpu_sw_optimize.tar.gz`` in `DPUCZDX8G.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz>`__.
-   
-   ::
-   
-      cd ~/dpu_sw_optimize/zynqmp/  
-      ./zynqmp_dpu_optimize.sh
+
+   .. code-block:: Bash
+
+       cd ~/dpu_sw_optimize/zynqmp/
+       ./zynqmp_dpu_optimize.sh
 
 3. (Optional) How to leverage Vitis AI with PetaLinux 2022.2
 
-   There are two ways to install the dependent libraries of Vitis AI.
+   You can install the Vitis AI libraries on the target either at build-time or at run-time:
 
-   One is to rebuild the system by configuring PetaLinux and the other is to install Vitis AI online via ``dnf``.
+   		- Build-Time: Rebuild the system by configuring PetaLinux. For ``VAI3.0 Recipes``, refer to `Vitis-AI-Recipes <../petalinux-recipes.html>`__
+   		- Run-Time: Install Vitis AI online via `dnf`. Execute ``dnf install packagegroup-petalinux-vitisai`` to complete the installation on the target. For more details, refer `VAI3.0 Online Install <../petalinux-recipes.html>`__
+   
+4. (Optional) How to update Vitis AI Runtime on the target
 
-   -  Build-Time
+   If you have an updated version of the Vitis AI Runtime and wish to install the update to your target, follow these steps.
 
-      For ``VAI3.0 Recipes``, refer to
-      `Vitis-AI-Recipes <../petalinux-recipes.html>`__.
-   -  Run-Time
-      
-      Execute ``dnf install packagegroup-petalinux-vitisai`` to complete
-      the installation on the target. For more details, refer to `VAI3.0
-      Online Install <../petalinux-recipes.html>`__
+   -  Copy the board_setup/mpsoc folder to the board using scp:
 
-4. (Optional) How to update Vitis AI Runtime and install them separately.
-   If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.
-
-   -  Copy the following folder to the board using scp.
-
-      ::
+      .. code-block:: Bash
 
          scp -r board_setup/mpsoc root@IP_OF_BOARD:~/
 
    -  Log in to the board using ssh. You can also use the serial port to login.
-   -  Now, you should install the Vitis AI Runtime. Execute the following commands:
+   -  Now, install the Vitis AI Runtime. Execute the following commands:
 
       ::
 		
 		cd ~/mpsoc
 		bash target_vart_setup.sh
-
+		
+		
 5. (Optional) Download the model.
-   For each model, there will be a yaml file which is used for describe all the details about the model. In the yaml, you will find the model’s download links for different platforms. Choose the corresponding model and download it. Click `Xilinx AI Model Zoo <../../model_zoo/model-list>`__ to view all the models.
+   
+   Click `Xilinx AI Model Zoo <../../model_zoo/model-list>`__ to view all the models. For each model, a YAML file is used to describe all the details about the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
 
-   -  Take ``resnet50`` of ZCU102 as an example.
+   a. Take the ZCU102 ``resnet50`` model as an example.
 
-      ::
+      .. code-block:: Bash
 
-        cd /workspace
-        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
-		   
-   -  Copy the downloaded file to the board using scp with the following command:
+          cd /workspace
+          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 
-      ::
+   b. Copy the downloaded file to the board using scp with the following command:
 
-         scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
+      .. code-block:: Bash
 
-   -  Log in to the board (using ssh or serial port) and install the model package:
+          scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 
-      ::
+   c. Log in to the board (using ssh or serial port) and install the model package:
 
-         tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
-         cp resnet50 /usr/share/vitis_ai_library/models -r
+      .. code-block:: Bash
+
+          tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
+          cp resnet50 /usr/share/vitis_ai_library/models -r
+
+.. _mpsoc-run-vitis-ai-examples:
 
 Step 3: Run the Vitis AI Examples
 ---------------------------------
 
-1. Download the
-   `vitis_ai_runtime_r3.0.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz>`__ from host to the target using scp with the following command.
+1. Download the `vitis_ai_runtime_r3.0.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz>`__ from host to the target using scp with the following command:
 
    ``[Host]$scp vitis_ai_runtime_r3.0.*_image_video.tar.gz root@[IP_OF_BOARD]:~/``
 
 2. Unzip the ``vitis_ai_runtime_r3.0.0_image_video.tar.gz`` package on the target.
 
-      ::
+      .. code-block:: Bash
 
-         cd ~     
-         tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
+       cd ~
+       tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
 
-3. Enter the directory of samples in the target board. Take ``resnet50`` as an example. 
+3. Enter the directory of samples in the target board. Take ``resnet50`` as an example.
 
    ``cd ~/Vitis-AI/examples/vai_runtime/resnet50``
 
@@ -148,8 +138,8 @@ Step 3: Run the Vitis AI Examples
    For examples with video input, only ``webm`` and ``raw`` format are supported by default with the official system image. If you want to support video data in other formats, you need to install the relevant packages on the system.
 
 Launching Commands for VART Samples on Edge
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+-------------------------------------------
+
 +-----+--------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | No. | Example Name       | Command                                                                                                                                                                                  |
 +=====+====================+==========================================================================================================================================================================================+

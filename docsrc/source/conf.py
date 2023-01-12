@@ -25,16 +25,16 @@ sys.path.insert(0, os.path.abspath('docs'))
 # -- Project information -----------------------------------------------------
 
 # Enter project name in next line, replacing example text
-project = 'Vitis AI'
+project = 'Vitis™ AI'
 # Enter copyright date range in next line. All years that your project has been released should be included.
-copyright = '2021-2022, Advanced Micro Devices, Inc'
+copyright = '2022-2023, Advanced Micro Devices, Inc'
 author = 'Advanced Micro Devices, Inc'
 
 # The short X.Y version
 version = '3.0'
 # The full version, including alpha/beta/rc tags
 release = '3.0'
-html_last_updated_fmt = 'July 20, 2022'
+html_last_updated_fmt = 'January 10, 2023'
 
 # -- General configuration ---------------------------------------------------
 
@@ -57,7 +57,6 @@ extensions = [
     'sphinx.ext.githubpages',
 	'recommonmark',
 	'sphinx_markdown_tables',
-    'sphinxcontrib.contentui',
 	#'edit_on_github',
     # Auto-generate section labels.
     'sphinx.ext.autosectionlabel',	
@@ -247,7 +246,7 @@ epub_exclude_files = ['search.html']
 # -- Options for rinoh ------------------------------------------
 
 
-rinoh_documents = [dict(doc='README.md',        # top-level file (index.rst)
+rinoh_documents = [dict(doc='index',        # top-level file (index.rst)
                         target='manual')]   # output file (manual.pdf)
 
 

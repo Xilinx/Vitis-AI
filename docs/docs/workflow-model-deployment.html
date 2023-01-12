@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Deploying a Model &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Deploying a Model &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
@@ -26,7 +32,6 @@ function OptanonWrapper() { }
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/contentui.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,12 +39,16 @@ function OptanonWrapper() { }
     <link rel="prev" title="Developing a Model" href="workflow-model-development.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../index.html" class="icon icon-home"> Vitis AI
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -59,7 +68,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -95,7 +104,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -124,7 +133,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Vitis AI</a>
+          <a href="../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -147,12 +156,13 @@ function OptanonWrapper() { }
 <section id="workflow-for-deploying-a-model">
 <h2>Workflow for Deploying a Model<a class="headerlink" href="#workflow-for-deploying-a-model" title="Permalink to this heading">¶</a></h2>
 <p>Once you have successfully quantized and compiled your model for a specific DPU, the next task is to deploy that model on the target. Follow these steps in this process:</p>
-<p><strong>[Step 1]</strong> Test your model and application software on one of the Xilinx platforms for which a pre-built DPU image is provided. Ideally this would be the platform and DPU which most closely matches your final production deployment.</p>
-<p><strong>[Step 2]</strong> Customize the Xilinx platform design with any substantive changes required to the DPU IP, and if possible to incorporate the pre/post processing pipeline acceleration components of your final pipeline. Retest your model.</p>
-<p><strong>[Step 3]</strong> Port the Xilinx platform design to your final target hardware platform. Retest your model.</p>
-<p>The motivation for this multi-step process is to minimize the number of variables involved in the initial deployment. This process enables the developer to perform verification at each stage. This has been found to save users many hours of frustration and troubleshooting.</p>
-<p>In general, the workflow illustrated on the right-hand side of the following diagram is all that is required for the first two steps of deployment. Generally, the platform development component on the left-hand side of the diagram is only required for the third and final step. Part of the convenience of this is that the work can be partitioned between hardware developers and data science teams, enabling the hardware and data science teams to work in parallel, converging at the final step for the deployment on a custom hardware platform. The following image is representative for Vitis designs, but the ability to partition the effort is similar for Vivado designs. refer to the user
-documentation for the <a class="reference internal" href="workflow-system-integration.html#vivado-integration"><span class="std std-ref">Vivado</span></a> and <a class="reference internal" href="workflow-system-integration.html#vitis-integration"><span class="std std-ref">Vitis</span></a> workflows for additional details of the hardware platform development workflow.</p>
+<ol class="arabic simple">
+<li><p>Test your model and application software on one of the Xilinx® platforms for which a pre-built DPU image is provided. Ideally, this would be the platform and DPU that closely matches your final production deployment.</p></li>
+<li><p>Customize the Xilinx platform design with any substantive changes required to the DPU IP. Incorporate your final pipeline’s pre- or post-processing pipeline acceleration components. Retest your model.</p></li>
+<li><p>Port the Xilinx platform design to your final target hardware platform. Retest your model.</p></li>
+</ol>
+<p>The motivation for this multi-step process is to minimize the number of variables involved in the initial deployment. The process enables the developer to perform verification at each stage. This saves users many hours of frustration and troubleshooting.</p>
+<p>In general, the workflow illustrated on the right-hand side of the following diagram is all that is required for the first two steps of deployment. Generally, the platform development component on the left-hand side of the diagram is only required for the third and final step. Part of the convenience of this is that the work can be partitioned between hardware developers and data science teams, enabling the hardware and data science teams to work in parallel, converging at the final step for the deployment on a custom hardware platform. The following image is representative for Vitis designs, but the ability to partition the effort is similar for Vivado designs. Refer to the user documentation for the <a class="reference internal" href="workflow-system-integration.html#vivado-integration"><span class="std std-ref">Vivado</span></a> and <a class="reference internal" href="workflow-system-integration.html#vitis-integration"><span class="std std-ref">Vitis</span></a> workflows for additional details of the hardware platform development workflow.</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/deployment_workflow.PNG"><img alt="../_images/deployment_workflow.PNG" src="../_images/deployment_workflow.PNG" style="width: 1300px;" /></a>
 <figcaption>
@@ -161,15 +171,14 @@ documentation for the <a class="reference internal" href="workflow-system-integr
 </figure>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Not captured in this image is the PetaLinux workflow. In the context of Xilinx™ pre-built target board images, the goal is to enable the developer without requiring that they modify Linux. An important exception to this is for developers who are customizing hardware IP and peripherals that reside within the memory space of the target CPU/APU and who wish to customize Linux. Also, in some circumstances, it is possible to directly install Vitis AI on the target without rebuilding the kernel image. Refer to <a class="reference internal" href="workflow-system-integration.html#linux-dpu-recipes"><span class="std std-ref">Linux DPU Recipes</span></a> for additional information.</p>
+<p>Not captured in this image is the PetaLinux workflow. In the context of Xilinx pre-built target board images, the goal is to enable the developer without requiring that they modify Linux. An important exception to this is for developers who are customizing hardware IPs and peripherals that reside within the memory space of the target CPU/APU and who wish to customize Linux. Also, in some circumstances, it is possible to directly install Vitis AI on the target without rebuilding the kernel image. Refer to <a class="reference internal" href="workflow-system-integration.html#linux-dpu-recipes"><span class="std std-ref">Linux DPU Recipes</span></a> for additional information.</p>
 </div>
-<p>An example that illustrates how to quantize, compile, and deploy models on the Alveo™ U200 and U250 Data Center Accelerator Cards, is available <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/alveo">here</a>.</p>
 </section>
 <section id="embedded-versus-data-center-workflows">
 <h2>Embedded versus Data Center Workflows<a class="headerlink" href="#embedded-versus-data-center-workflows" title="Permalink to this heading">¶</a></h2>
 <p>The Vitis AI workflow is largely unified for Embedded and Data Center applications but diverges at the deployment stage. There are various reasons for this divergence, including the following:</p>
 <ul class="simple">
-<li><p>Zynq® Ultrascale+™, Kria™, and Versal® SoC applications leverage the on-chip processor subsystem (APU) as the host control node for model deployment. It is important to consider optimization and <a class="reference external" href="#whole-application-acceleration">acceleration</a> of subgraphs that are deployed on the SoC APU.</p></li>
+<li><p>Zynq® Ultrascale+™, Kria™, and Versal® SoC applications leverage the on-chip processor subsystem (APU) as the host control node for model deployment. Considering optimization and <a class="reference internal" href="workflow-system-integration.html#whole-application-acceleration"><span class="std std-ref">Whole Application Acceleration</span></a> of subgraphs deployed on the SoC APU is crucial.</p></li>
 <li><p>Alveo data center card deployments leverage the AMD64 architecture host for execution of subgraphs that cannot be deployed on the DPU.</p></li>
 <li><p>Zynq Ultrascale+ and Kria designs can leverage the DPU with either the Vivado workflow or the Vitis workflow.</p></li>
 <li><p>Zynq Ultrascale+ and Kria designs built in Vivado do not use XRT.</p></li>
@@ -180,38 +189,36 @@ documentation for the <a class="reference internal" href="workflow-system-integr
 <h2>Vitis AI Library<a class="headerlink" href="#vitis-ai-library" title="Permalink to this heading">¶</a></h2>
 <p>The Vitis AI Library provides you with a head-start on model deployment. While it is possible for developers to directly leverage the Vitis AI Runtime APIs to deploy a model on Xilinx platforms, it is often more beneficial to start with a ready-made example that incorporates the various elements of a typical application, including:</p>
 <ul class="simple">
-<li><p>Simplified CPU-based pre- and post-processing implementations</p></li>
-<li><p>Vitis AI Runtime integration at an application level</p></li>
+<li><p>Simplified CPU-based pre and post-processing implementations.</p></li>
+<li><p>Vitis AI Runtime integration at an application level.</p></li>
 </ul>
 <p>Ultimately most developers will choose one of two paths for production:</p>
 <ul class="simple">
-<li><p>Directly leverage the VART APIs in their application code</p></li>
-<li><p>Leverage the VAI Library as a starting point to code their application</p></li>
+<li><p>Directly leverage the VART APIs in their application code.</p></li>
+<li><p>Leverage the VAI Library as a starting point to code their application.</p></li>
 </ul>
 <p>An advantage of leveraging the Vitis AI Library is ease-of-use, while the potential downsides include losing yourself in code that wasn’t intended for your specific use case, and also a lack of recognition on the part of the developer that the pre- and post-processing implementations provided by the Vitis AI Library will not be optimized for <a class="reference internal" href="workflow-system-integration.html#whole-application-acceleration"><span class="std std-ref">Whole Application Acceleration</span></a>.</p>
-<p>If you prefer to use the Vitis AI Runtime APIs directly, many of the code examples provided in the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI
+<p>If you prefer to use the Vitis AI Runtime APIs directly, the code examples provided in the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI
 Tutorials</a> will offer an excellent starting point.</p>
 <ul class="simple">
-<li><p>For more information on Vitis AI Libraries, refer to the <em>Vitis AI Library User Guide</em>
-(<a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1354-xilinx-ai-sdk">UG1354</a>).</p></li>
-<li><p>The Vitis AI Library quick start guide as well as open-source can be found
-<a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">here</a>.</p></li>
+<li><p>For more information on Vitis AI Libraries, refer to <em>Vitis AI Library User Guide</em> (<a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1354-xilinx-ai-sdk">UG1354</a>).</p></li>
+<li><p>The Vitis AI Library quick start guide and open-source is <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_library">here</a>.</p></li>
 </ul>
 </section>
 <section id="vitis-ai-runtime">
 <h2>Vitis AI Runtime<a class="headerlink" href="#vitis-ai-runtime" title="Permalink to this heading">¶</a></h2>
-<p>The Vitis AI Runtime (VART) is a set of API functions that support integration of the DPU into software applications. VART provides a unified high-level runtime for both Data Center and Embedded targets. Key features of the Vitis AI Runtime API are:</p>
+<p>The Vitis AI Runtime (VART) is a set of API functions that support the integration of the DPU into software applications. VART provides a unified high-level runtime for both Data Center and Embedded targets. Key features of the Vitis AI Runtime API are:</p>
 <ul class="simple">
-<li><p>Asynchronous submission of jobs to the DPU</p></li>
-<li><p>Asynchronous collection of jobs from the DPU</p></li>
-<li><p>C++ and Python API implementations</p></li>
-<li><p>Support for multi-threading and multi-process execution</p></li>
+<li><p>Asynchronous submission of jobs to the DPU.</p></li>
+<li><p>Asynchronous collection of jobs from the DPU.</p></li>
+<li><p>C++ and Python API implementations.</p></li>
+<li><p>Support for multi-threading and multi-process execution.</p></li>
 </ul>
 <p>For more information on Vitis AI Runtime, refer to the following documentation:</p>
 <ul class="simple">
 <li><p>For the Vitis AI Runtime API reference, see <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=erl1576053489624.html">VART Programming APIs</a> and <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=zgy1576168058789.html">Deploying and Running the Model</a> in the Vitis AI User Guide.</p></li>
-<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
-<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">open-source</a>.</p></li>
+<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
+<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src">open-source</a>.</p></li>
 </ul>
 </section>
 </section>
@@ -237,8 +244,8 @@ Tutorials</a> will offer an excellent starting point.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -250,7 +257,7 @@ Tutorials</a> will offer an excellent starting point.</p>
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>
