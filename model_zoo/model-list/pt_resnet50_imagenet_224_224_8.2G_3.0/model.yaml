@@ -116,4 +116,24 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r3.0.0.tar.gz
   checksum: 8523f252b3480f5f0ffd46aa116cbf05
+- name: resnet50_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 67ca8b9aa4e11b7ba71cacdc24da960d
+- name: resnet50_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 15c8e7084731a24e8ef588f19543b257
+- name: resnet50_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 2756acf939b10ba2b01b102a48ae1014
+- name: resnet50_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 58738d484d1846079acd952b805299ce
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
