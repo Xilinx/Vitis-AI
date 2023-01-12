@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_416_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 74d0baf63e5070e6d8165d646ede8b14
+  checksum: b2a6fd44a1a17e8016465df39cd360b1
 - name: yolov4_leaky_416_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_416_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 4efcd179a095852e3dca1e388c67dfee
+  checksum: f32819ce8f4aeae89c271d6f10a2664e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

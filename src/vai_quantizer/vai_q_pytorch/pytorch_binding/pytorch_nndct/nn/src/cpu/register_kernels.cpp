@@ -41,6 +41,7 @@ TORCH_LIBRARY(vai, m) {
   m.def("ExpApprAIE2", ExpApprAIE2);
   m.def("LogSoftmaxFastLn", LogSoftmaxFastLn);
   m.def("LogSoftmaxSub", LogSoftmaxSub);
+  m.def("LayernormISqrt", LayernormISqrt);
   m.def("LayernormInvSqrt", LayernormInvSqrt);
   m.def("InverseAIE2", InverseAIE2);
   m.def("to_bfp", to_bfp);
@@ -67,6 +68,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("InverseAIE2",        &InverseAIE2,        "InverseAIE2(cpu)");
   m.def("to_bfp", &to_bfp, "to_bfp(cpu)");
   m.def("to_bfp_v2", &to_bfp, "to_bfp_v2(cpu)");
+  m.def("LayernormISqrt", &LayernormISqrt, "LayernormISqrt(cpu)");
 }
 #endif
 

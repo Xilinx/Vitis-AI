@@ -47,7 +47,16 @@ class torch_quantizer():
                target: Optional[str] = None):
 
     vaiq_system_info(device)
+
+    if NndctOption.nndct_target.value:
+      target = NndctOption.nndct_target.value
     
+    if NndctOption.nndct_inspect_test.value and target:
+      from pytorch_nndct.apis import Inspector
+      inspector = Inspector(target)
+      inspector.inspect(module, input_args, device, output_dir)
+
+
     if bitwidth is None and quant_config_file is None:
       bitwidth = 8
     
@@ -154,7 +163,7 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, app_deploy="CV
 
 
 class Inspector(object):
-  def __init__(self, name: str):
+  def __init__(self, name_or_fingerprint: str):
     """The inspector is design to diagnoise neural network(NN) model under different architecure of DPU. 
         It's very useful to find which type of device will be assigned to the operator in NN model.
         It can provide hardware constraints messages for user to optimize NN model for deployment.
@@ -168,15 +177,14 @@ class Inspector(object):
       NndctScreenLogger().info("Inspector is on.")
 
     in_type = "name"
-    if name.startswith("0x"):
+    if name_or_fingerprint.startswith("0x"):
       in_type = "fingerprint"
-      NndctScreenLogger().check2user(QError.INSPECTOR_INPUT_FORMAT, f"The inspector no longer support fingerprint.Please provide architecture name instead.")
       
     self._inspector_impl = None
     if in_type == "name":
-      self._inspector_impl = InspectorImpl.create_by_DPU_arch_name(name)
+      self._inspector_impl = InspectorImpl.create_by_DPU_arch_name(name_or_fingerprint)
     else:
-      self._inspector_impl = InspectorImpl.create_by_DPU_fingerprint(name)
+      self._inspector_impl = InspectorImpl.create_by_DPU_fingerprint(name_or_fingerprint)
 
   def inspect(self, module: torch.nn.Module, 
               input_args: Union[torch.Tensor, Tuple[Any]], 

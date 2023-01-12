@@ -113,7 +113,7 @@ class deephi_Input(_PrimModule):
     # check input shape
     if self.node.out_tensors[0].is_complete_tensor() and self.node.out_tensors[0].ndim == 4:
       # py_utils.blob_to_torch_format(self.node.out_tensors[0])
-      if not (self.node.out_tensors[0].shape[1:] == list(input.size())[1:]):
+      if not (list(self.node.out_tensors[0].shape[1:]) == list(input.size())[1:]):
         NndctScreenLogger().warning_once(f"The shape of input ({input.shape[1:]}) should be the same with that of dummy input ({self.node.out_tensors[0].shape[1:]})")
       # py_utils.blob_to_nndct_format(self.node.out_tensors[0])
     output = qinput

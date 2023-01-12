@@ -28,6 +28,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimiza
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_equalization_transforms
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_fast_finetune
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_bias_correction
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_quantize_transforms_with_xcompiler
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_quantize_transforms
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_refine_transforms
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
@@ -76,6 +77,8 @@ class VitisPof2SOptimizeTransformsPipeline(TransformsPipeline):
             vitis_optimize_transforms.ConvertReLU6ToReLU(),
         'convert_tf_op_to_keras':
             vitis_optimize_transforms.ConvertTFOpToKeras(),
+        'separable_conv':
+            vitis_optimize_transforms.SeparableConv(),
     })
 
     transformed_model, layer_metadata = _apply_availables(
@@ -139,7 +142,7 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
   """Vitis pof2s model quantize transformations pipeline."""
 
   def apply(self, model, candidate_layers, layer_metadata, quantize_registry,
-            mode):
+            mode, target):
     """Implement vitis 8-bit quantize transforms.
 
     Args:
@@ -203,12 +206,21 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
             quantize_registry, mode),
         vitis_pof2s_quantize_transforms.ConvBNQuantize(
             quantize_registry, mode, configs['freeze_bn_delay']),
-        vitis_pof2s_quantize_transforms.LayersQuantize(annotated_model,
-                                                       quantize_registry, mode),
+    ]
+    if "quantize_with_xcompiler" in configs and configs["quantize_with_xcompiler"]:
+      for _, LayerQuantize in vitis_pof2s_quantize_transforms_with_xcompiler.quantize_pattern_dict.items(
+      ):
+        quantize_transforms.append(LayerQuantize(annotated_model, mode, target))
+    else:
+      quantize_transforms.append(
+          vitis_pof2s_quantize_transforms.LayersQuantize(
+              annotated_model, quantize_registry, mode))
+    quantize_transforms.extend([
         vitis_pof2s_quantize_transforms.LayersInputQuantize(
             quantize_registry, mode),
-        vitis_pof2s_quantize_transforms.CustomLayerWrapper(quantize_registry),
-    ]
+        vitis_pof2s_quantize_transforms.CustomLayerWrapper(quantize_registry)
+    ])
+
     quantized_model, layer_metadata = model_transformer.ModelTransformer(
         annotated_model, quantize_transforms, candidate_layers,
         layer_metadata).recursive_transform()
@@ -246,10 +258,16 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
     adjust_sc = configs['adjust_dpu_shift_cut']
     adjust_sb = configs['adjust_dpu_shift_bias']
     adjust_sr = configs['adjust_dpu_shift_read']
+    adjust_sw = configs['adjust_dpu_shift_write']
+    adjust_sh = configs['adjust_dpu_shift_swish']
+    align_concat = configs['align_concat']
+    align_pool = configs['align_pool']
+    adjust_sb_leakyrelu = configs['adjust_dpu_shift_bias_leakyrelu']
     quantize_info = model_utils.get_quantize_info(refined_model)
     adjusted_quantize_info = vitis_pof2s_refine_transforms.adjust_quantize_info(
         refined_model, quantize_info, adjust_vs, adjust_sc, adjust_sb,
-        adjust_sr)
+        adjust_sr, adjust_sw, adjust_sh, align_concat, align_pool,
+        adjust_sb_leakyrelu)
     model_utils.set_quantize_info(refined_model, adjusted_quantize_info)
     logger.info("Quantize Position Ajustment Done.")
 
@@ -262,16 +280,15 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
                                         batch_size, steps, fast_ft_epochs)
       logger.info("Fast Finetuning Done.")
 
-    #  # Bias correction
-    #  include_bias_corr = configs['quantize_pipeline_config'][
-    #      'include_bias_corr']
-    #  if include_bias_corr:
-    #    logger.info("Start Bias Correction...")
-    #    vitis_bias_correction.bias_correction(self._qcbev_model,
-    #                                          self._optimized_model,
-    #                                          calib_dataset, calib_batch_size,
-    #                                          calib_steps)
-    #    logger.info("Bias Correction Done.")
+    # Bias correction
+    #include_bias_corr = configs['include_bias_corr']
+    #if include_bias_corr:
+    #logger.info("Start Bias Correction...")
+    #vitis_bias_correction.bias_correction(refined_model,
+    #                                      optimized_model,
+    #                                      dataset, batch_size,
+    #                                      steps)
+    #logger.info("Bias Correction Done.")
 
     # Convert Pof2SQuantizer to FSQuantizer
     if configs['convert_to_fs_quantize_strategy']:
@@ -282,6 +299,13 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
       refined_model, _ = model_transformer.ModelTransformer(
           refined_model, transforms, None, None).recursive_transform()
       logger.info("Converting To FS Quantize Strategy Done.")
+    # Make sure model is built
+
+    if input_shape:
+      refined_model, input_tensor_list = model_utils.modify_input_shape(
+          refined_model, input_shape, calib_dataset=dataset)
+      input_tensor_list = dataset
+      refined_model.predict(input_tensor_list, batch_size=1, steps=1);
 
     if add_shape_info:
       logger.info("Start Getting Shape Information...")
@@ -292,6 +316,23 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
         model_utils.save_model(refined_model, 'calibrated_model_add_shape.h5',
                                './debug/')
       logger.info("Getting Shape Information Done.")
+    if input_shape:
+      if isinstance(input_shape, list) or isinstance(input_shape,tuple):
+        input_shape_slice = input_shape[1:]
+      elif isinstance(input_shape, dict):
+        for k,v in input_shape.items():
+          input_shape_slice = v[1:]
+          input_shape = v
+
+      if input_shape[0] not in (None, 1):
+        logger.warning(
+            'the model is quantized, but compiler does not support batch_num not in [None, 1]. the input_shape is: ({})'
+            .format(input_shape))
+
+      if input_shape_slice.count(None) > 0 or input_shape_slice.count(-1) > 0:
+        logger.warning(
+            'the model is quantized, but compiler does not support input_shape ({}) with None.'
+            .format(input_shape))
 
     return refined_model, layer_metadata
 

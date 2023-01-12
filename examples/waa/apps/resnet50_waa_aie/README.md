@@ -4,6 +4,9 @@ Supported Devices
 
 VCK190 ES1 is supported with the [Known Issue](#Known-Issue).
 
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
+
+
 ## Table of Contents
 
 - [Introduction](#Introduction)
@@ -172,12 +175,12 @@ Once the sd card is flashed with sd_card.img file, either by using pre-built xcl
 
            Running Application with Hardware Preprocessing 
 
-           E2E Performance: 396.67 fps
-           Pre-process Latency: 1.67 ms
+           E2E Performance: 441.52 fps
+           Pre-process Latency: 1.23 ms
            Execution Latency: 0.77 ms
            Post-process Latency: 0.08 ms
 
-           The percentage improvement in throughput is 54.98 %  
+           The percentage improvement in throughput is 72.50 %  
     ```
     The performance_diff numbers are obtained for img directory containing 984 full-HD images randomly picked from ImageNet dataset.
 
@@ -266,8 +269,8 @@ The performance numbers are obtained by running the app for 984 full-HD images r
   <tr>
     <td>VCK190 </td>
     <td>255.95 </td>
-    <td>396.67 </td>
-    <td>54.98 %</td>
+    <td>441.52 </td>
+    <td>72.50 %</td>
   </tr>
 
 </table>

@@ -1,5 +1,7 @@
 ## Tensorflow SSD-Mobilenet Model
-:pushpin: **Note:** This application can be run only on Alveo-U280 platform.
+:pushpin: **Note:** This application can be run only on Alveo-U280 platform. 
+
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
 
 ## Table of Contents
 

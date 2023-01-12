@@ -21,7 +21,7 @@ import torch
 import numpy as np
 
 from nndct_shared.quantization import maybe_get_quantizer
-from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors, kernel_need_quant
 from nndct_shared.utils import NndctOption
 from .fix_ops import NndctSoftmaxExpApproximate, NndctSoftmaxLOD, NndctSoftmaxSimulationPart1, NndctSoftmaxSimulationPart2, NndctExpApprAIE2, NndctInverseAIE2
 import pytorch_nndct.utils as py_utils
@@ -38,15 +38,13 @@ class deephi_Softmax(torch.nn.modules.Softmax):
     self.node = None
 
   def forward(self, input):
-    if self.quant_mode == 0 or (not self.node.in_quant_part):
-      return super().forward(input)
-
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
 
-    if (NndctOption.nndct_quant_off.value or
+    if (not kernel_need_quant(self.quantizer, self.node) or
         self.quantizer.exporting):
       # Method 0: quant input and output 
       output = super().forward(qinput)
+      output = quantize_tensors([output], self.node)[0]
 
     else:
       input_name = self.node.in_nodes[0]
@@ -80,6 +78,7 @@ class deephi_Softmax(torch.nn.modules.Softmax):
         NndctSoftmaxExpApproximate(uvi, exp_appr)
         exp_appr = torch.round(exp_appr*10**5)/10**5
         output = exp_appr
+        output = quantize_tensors([output], self.node)[0]
 
       # Method 2: Liyi Softmax with any bw
       elif NndctOption.nndct_op_softmax_mode.value == "liyi":
@@ -93,6 +92,7 @@ class deephi_Softmax(torch.nn.modules.Softmax):
         sum1 = torch.empty_like(sum)
         NndctSoftmaxSimulationPart2(sum, sum1)
         output = (exp_appr*sum1).bfloat16().float()
+        output = quantize_tensors([output], self.node)[0]
       
       # Method 3: Table Look up for AIE2 Softmax with 8 bw and 16 bw(based on LUT)
       elif NndctOption.nndct_op_softmax_mode.value == "aie2_lut_16bw":
@@ -116,6 +116,7 @@ class deephi_Softmax(torch.nn.modules.Softmax):
         sum_inv = torch.empty_like(sum)
         NndctInverseAIE2(sum, sum_inv)
         output = (exp_appr*sum_inv).bfloat16().float()
+        output = quantize_tensors([output], self.node)[0]
       
       # Method 4: Bert with 8 bw
       elif NndctOption.nndct_op_softmax_mode.value == "bert_8bw" or NndctOption.nndct_ip_v70_bert.value:
@@ -165,7 +166,13 @@ class deephi_Softmax(torch.nn.modules.Softmax):
           inv_x = inv_x_val.view(np.float32)
           return inv_x
         
+        if self.quant_mode <= 1:
+          output = super().forward(qinput)
+          output = quantize_tensors([output], self.node, method=4)[0]
+          return output
         exp_appr = torch.exp(qinput).bfloat16().float()
+        exp_appr = torch.where(exp_appr > -128/(2 ** fragpos), exp_appr, 0)
+
 
         # # Code for Golden Verification
         # exp_table = generate_exp_table(bw, fragpos, self.node.name)
@@ -191,9 +198,9 @@ class deephi_Softmax(torch.nn.modules.Softmax):
 
       # Method 0: Quant input and output of Softmax
       else:
-        output = super().forward(input)
+        output = super().forward(qinput)
+        output = quantize_tensors([output], self.node)[0]
     
-    output = quantize_tensors([output], self.node)[0]
     return output
 
 

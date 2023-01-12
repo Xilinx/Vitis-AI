@@ -117,6 +117,7 @@ class CLEBase(transforms.Transform):
   """Base class for Cross layer equalization."""
 
   def __init__(self, cle_to_relu6, balance_method, weight_threshold):
+    super(CLEBase, self).__init__()
     self._cle_to_relu6 = cle_to_relu6
     self._balance_method = balance_method
     self._weight_threshold = weight_threshold
@@ -184,7 +185,7 @@ class ConvReLUConvCLE(CLEBase):
   """Cross layer equalization for Conv + ReLU + Conv."""
 
   def pattern(self):
-    relu_config = {} if self._cle_to_relu6 else {'max_value': 0}
+    relu_config = {} if self._cle_to_relu6 else {'max_value': None}
     return LayerPattern('Conv2D|DepthwiseConv2D', {}, [
         LayerPattern('ReLU', relu_config, [
             LayerPattern('Conv2D|DepthwiseConv2D', {'activation': 'linear'}, [])

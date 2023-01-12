@@ -37,6 +37,7 @@ We provide 4 types of built-in quantizers now and, including:
     "symmetry": true,
     "per_channel": false,
     "channel_axis": -1,
+    "unsigned": false,
     "narrow_range": false,
     "epsilon": 1e-7,
     "min_quantize_pos": -52,
@@ -58,6 +59,7 @@ We provide 4 types of built-in quantizers now and, including:
     "per_channel": true,
     "channel_axis": -1,
     "epsilon": 1e-7,
+    "unsigned": false,
     "narrow_range": false,
     "use_framework_quantizer": true
   }
@@ -77,6 +79,7 @@ We provide 4 types of built-in quantizers now and, including:
     "symmetry": true,
     "per_channel": false,
     "channel_axis": -1,
+    "unsigned": false,
     "narrow_range": false,
     "epsilon": 1e-7
   }
@@ -95,6 +98,7 @@ We provide 4 types of built-in quantizers now and, including:
     "symmetry": true,
     "per_channel": false,
     "channel_axis": -1,
+    "unsigned": false,
     "narrow_range": false,
     "epsilon": 1e-7
   }

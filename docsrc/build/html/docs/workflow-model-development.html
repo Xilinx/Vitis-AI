@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Developing a Model &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Developing a Model &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
@@ -26,7 +32,6 @@ function OptanonWrapper() { }
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/contentui.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,12 +39,16 @@ function OptanonWrapper() { }
     <link rel="prev" title="Vitis AI Model Zoo" href="workflow-model-zoo.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../index.html" class="icon icon-home"> Vitis AI
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -59,7 +68,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -112,7 +121,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -141,7 +150,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Vitis AI</a>
+          <a href="../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -165,10 +174,10 @@ function OptanonWrapper() { }
 <h2>Model Inspector<a class="headerlink" href="#model-inspector" title="Permalink to this heading">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The early release of Model Inspector included with Vitis™ AI 3.0 should be considered to be of “beta” quality. Submit Github issues if you encounter problems with this initial release.</p>
+<p>The early release of Model Inspector included with Vitis™ AI 3.0 is “beta” quality. Submit Github issues if you encounter problems with this initial release.</p>
 </div>
-<p>The Vitis AI quantizer and compiler are designed to parse and compile operators within a frozen FP32 graph for acceleration in hardware. However, novel neural networks architectures, operators, and activation types are constantly being developed and optimized for prediction accuracy and performance. In this context, it is important to understand that while Xilinx strives to provide support for a wide variety of neural network architectures and provide these graphs for user reference, not every operator is supported for acceleration on the DPU. Furthermore, there are specific layer ordering requirements that enable Vitis AI model deployment.</p>
-<p>In the early phases of development, it is highly recommended that the developer leverage the Vitis AI Model Inspector as an initial sanity check to confirm that the operators, and sequence of operators in the graph is compatible with Vitis AI.</p>
+<p>The Vitis AI quantizer and compiler are designed to parse and compile operators within a frozen FP32 graph for acceleration in hardware. However, novel neural network architectures, operators, and activation types are constantly being developed and optimized for prediction accuracy and performance. In this context, it is important to understand that while Xilinx® strives to provide support for a wide variety of neural network architectures and provide these graphs for user reference, only some operators are supported for acceleration on the DPU. Furthermore, specific layer ordering requirements enable Vitis AI model deployment.</p>
+<p>In the early phases of development, it is highly recommended that the developer leverage the Vitis AI Model Inspector as an initial sanity check to confirm that the operators and sequence of operators in the graph is compatible with Vitis AI.</p>
 <figure class="align-default" id="id3">
 <a class="reference internal image-reference" href="../_images/Model_Inspector_Flow.PNG"><img alt="../_images/Model_Inspector_Flow.PNG" src="../_images/Model_Inspector_Flow.PNG" style="width: 1300px;" /></a>
 <figcaption>
@@ -177,37 +186,36 @@ function OptanonWrapper() { }
 </figure>
 <p>For more information on the Model Inspector, see the following resources:</p>
 <ul class="simple">
-<li><p>When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/inspector_tutorial.ipynb">PyTorch</a> and <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2">TensorFlow</a>.</p></li>
-<li><p>If you determine that your graph uses operators that are not natively supported by your specific DPU target, there are several paths that you can explore as discussed in the <a class="reference internal" href="#operator-support"><span class="std std-ref">Operator Support</span></a> section.</p></li>
+<li><p>When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb">PyTorch</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2">TensorFlow</a>.</p></li>
+<li><p>If your graph uses operators that are not natively supported by your specific DPU target, see the <a class="reference internal" href="#operator-support"><span class="std std-ref">Operator Support</span></a> section.</p></li>
 </ul>
 <section id="operator-support">
 <span id="id1"></span><h3>Operator Support<a class="headerlink" href="#operator-support" title="Permalink to this heading">¶</a></h3>
-<p>If you want to leverage an operator that is not supported for acceleration on the DPU, there are several obvious paths available, including C/C++ code, or even custom HLS or RTL kernels. However, these DIY paths pose specific challenges related to the partitioning of a trained model. For most developers, a workflow that supports automated partitioning is preferred.</p>
+<p>Several paths are available to leverage an operator not supported for acceleration on the DPU, including C/C++ code or custom HLS or RTL kernels. However, these DIY paths pose specific challenges related to the partitioning of a trained model. For most developers, a workflow that supports automated partitioning is preferred.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>A high-level list of the supported operators is provided in the <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Release Documentation</span></a>. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result of this is that the ordering of layers in the graph can be as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -&gt; ReLU -&gt; Batchnorm, the outcome is quite different from* <a class="reference external" href="https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US">CONV -&gt; Batchnorm -&gt; ReLU</a>. In this context, it is always a very good idea to review the structure of similar Xilinx <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Model Zoo</span></a> models to understand how to design your graph for optimum results.</p>
+<p>A high-level list of the supported operators is provided in the <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Release Documentation</span></a>. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result is the ordering of layers in the graph is as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -&gt; ReLU -&gt; Batchnorm, the outcome is quite different from <a class="reference external" href="https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US">CONV -&gt; Batchnorm -&gt; ReLU</a>. In this context, it is always an excellent idea to review the structure of similar Xilinx <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Model Zoo</span></a> models to understand how to design your graph for optimum results.</p>
 </div>
-<p>For Zynq® UltraScale+™ MPSoC and Versal ACAP embedded applications, Xilinx supports an official flow which you can use to add support for these custom operators. More details can be found
-<a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/custom_operator">here</a>.</p>
-<p>For Alveo™ cards, the <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/wego">Whole Graph Optimizer</a> (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.</p>
-<p>In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only) <a class="reference internal" href="workflow-third-party.html"><span class="doc">solutions</span></a> may also be used to enable support for operations that cannot be accelerated by the DPU. It is important to note that these third party solutions should be considered to be of “beta” quality and offer more limited support than the standard Vitis AI workflow.</p>
+<p>For Zynq® UltraScale+™ MPSoC and Versal ACAP™ embedded applications, Xilinx supports an official flow which you can use to add support for these custom operators. More details can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/custom_operator">here</a>.</p>
+<p>For Alveo™ cards, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/wego">Whole Graph Optimizer</a> (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.</p>
+<p>In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only). <a class="reference internal" href="workflow-third-party.html"><span class="doc">Third-party Inference Stack Integration</span></a> may also be used to enable support for operations that cannot be accelerated by the DPU. These third party solutions are of “beta” quality and offer limited support than the standard Vitis AI workflow.</p>
 </section>
 </section>
 <section id="model-optimization">
 <span id="id2"></span><h2>Model Optimization<a class="headerlink" href="#model-optimization" title="Permalink to this heading">¶</a></h2>
-<p>The Vitis AI Optimizer exploits the notion of sparsity in order to reduce the overall computational complexity for inference. Many deep neural networks topologies employ significant levels of redundancy. This is particularly true when the network backbone was optimized for prediction accuracy with training datasets supporting a large number of classes. In many cases, this redundancy can be reduced by “pruning” some of the operations out of the graph. In general, there are two major forms of pruning - channel (kernel) pruning and sparse pruning.</p>
+<p>The Vitis AI Optimizer exploits the notion of sparsity to reduce the overall computational complexity for inference. Many deep neural network topologies employ significant levels of redundancy. This is particularly true when the network backbone is optimized for prediction accuracy with training datasets supporting many classes. In many cases, this redundancy can be reduced by “pruning” some of the operations out of the graph. There are two forms of pruning - channel (kernel) pruning and sparse pruning.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The Vitis AI Optimizer is an optional tool which can provide considerable uplift in performance in many applications. However, if your application is not hitting the wall on performance or logic density, or if your model is already well optimized for your dataset and application, you will likely not require the AI Optimizer.</p>
+<p>The Vitis AI Optimizer is an optional tool that can significantly enhance performance in many applications. However, if your application is not hitting the wall on performance or logic density, or if your model is already well optimized for your dataset and application, you will likely not require the AI Optimizer.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The use of the Vitis AI Optimizer requires that the developer purchase a license for the tool. You can request a quotation for either the node-locked (part# EF-AI-OPTIMIZER-NL) or floating license (part# EF-AI-OPTIMIZER-FL) by contacting your local <a class="reference external" href="https://www.xilinx.com/about/contact.html">Xilinx Distributor or Sales Office</a>.</p>
+<p>Using the Vitis AI Optimizer requires the developer to purchase a license for the tool. You can request a quotation for either the node-locked (part# EF-AI-OPTIMIZER-NL) or floating license (part# EF-AI-OPTIMIZER-FL) by contacting your local <a class="reference external" href="https://www.xilinx.com/about/contact.html">Xilinx Distributor or Sales Office</a>.</p>
 <p>This is a perpetual license with no annual maintenance or renewal costs.</p>
-<p>Should you wish to evaluate the AI Optimizer prior to considering purchase, you can request access by emailing <a class="reference external" href="mailto:xilinx_ai_optimizer&#37;&#52;&#48;amd&#46;com">xilinx_ai_optimizer<span>&#64;</span>amd<span>&#46;</span>com</a>, or request access to the <a class="reference external" href="https://www.xilinx.com/member/ai_optimizer.html">AI Optimizer Lounge</a>.</p>
+<p>If you wish to evaluate the AI Optimizer before considering a purchase, you can request access by emailing <a class="reference external" href="mailto:xilinx_ai_optimizer&#37;&#52;&#48;amd&#46;com">xilinx_ai_optimizer<span>&#64;</span>amd<span>&#46;</span>com</a> or request access to the <a class="reference external" href="https://www.xilinx.com/member/ai_optimizer.html">AI Optimizer Lounge</a>.</p>
 </div>
-<p>The Vitis AI Optimizer leverages the native framework in which the model was trained, and both the input and output of the pruning process are a frozen FP32 graph. At a high-level, the workflow of the AI Optimizer consists of several steps. The optimizer first performs a sensitivity analysis designed to determine the degree to which each of the convolution kernels (channels) at each layer have an impact on the predictions of the network. Following this, the kernel weights for channels that are to be pruned are zeroed, permitting accuracy evaluation of the “proposed” pruned model. The remaining weights are then optimized (fine-tuned) for several training epochs in order to recover accuracy. Multiple iterations of pruning are typically employed, and after each iteration the state can be captured, permitting the developer to backtrack by one or more pruning iterations. This ability enables the developer to prune for multiple iterations and then select the iteration with the preferred result. As necessary, pruning can be restarted from a previous iteration with different hyperparameters in order to address accuracy “cliffs” that may present at a specific iteration.</p>
-<p>The final phase of pruning, the transform step, removes the channels that were selected for pruning (previously zeroed weights), resulting in a reduction of the number of channels at each pruned layer in the final computational graph. For instance, a layer that previously required the computation of 128 channels (128 convolution kernels) may now only require the computation of output activations for 87 channels, (i.e., 41 channels were pruned). Following the transform step, the model is now in a form that can be ingested by the Vitis AI Quantizer and deployed on the target.</p>
+<p>The Vitis AI Optimizer leverages the native framework in which the model was trained, and the input and output of the pruning process are a frozen FP32 graph. At a high level, the workflow of the AI Optimizer consists of several steps. The optimizer first performs a sensitivity analysis designed to determine the degree to which each of the convolution kernels (channels) at each layer impacts the predictions of the network. Following this, the kernel weights for channels to be pruned are zeroed, permitting an accurate evaluation of the “proposed” pruned model. The remaining weights are then optimized (fine-tuned) for several training epochs to recover accuracy. Multiple iterations of pruning are typically employed, and after each iteration, the state can be captured, permitting the developer to backtrack by one or more pruning iterations. This ability enables the developer to prune for multiple iterations and then select the iteration with the preferred result. As necessary, pruning can be restarted from a previous iteration with different hyperparameters to address accuracy “cliffs” that may present at a specific iteration.</p>
+<p>The final phase of pruning, the transform step, removes the channels selected for pruning (previously zeroed weights), resulting in a reduction of the number of channels at each pruned layer in the final computational graph. For instance, a layer that previously required the computation of 128 channels (128 convolution kernels) may now only require the computation of output activations for 87 channels (i.e., 41 channels were pruned). Following the transform step, the model is now in a form that can be ingested by the Vitis AI Quantizer and deployed on the target.</p>
 <p>The following diagram illustrates the high-level pruning workflow:</p>
 <figure class="align-default" id="id4">
 <a class="reference internal image-reference" href="../_images/optimizer_workflow.PNG"><img alt="../_images/optimizer_workflow.PNG" src="../_images/optimizer_workflow.PNG" style="width: 1300px;" /></a>
@@ -217,36 +225,34 @@ function OptanonWrapper() { }
 </figure>
 <section id="channel-pruning">
 <h3>Channel Pruning<a class="headerlink" href="#channel-pruning" title="Permalink to this heading">¶</a></h3>
-<p>Current Vitis AI DPUs can take advantage of channel pruning in order to greatly reduce the computational cost for inference, often with very little or no loss in prediction accuracy. In constrast to sparse pruning which requires that the the computation of specific activations within a channel or layer be “skipped” at inference time, channel pruning requires no special hardware to address the problem of these “skipped” computations.</p>
+<p>Current Vitis AI DPUs can take advantage of channel pruning to significantly reduce the computational cost for inference, often with little or no prediction accuracy loss. In contrast to sparse pruning, which requires that the computation of specific activations within a channel or layer be “skipped” at inference time, channel pruning requires no special hardware to address the problem of these “skipped” computations.</p>
 <p>The Vitis AI Optimizer is an optional component of the Vitis AI flow. In general it is possible to reduce the overall computational cost by a factor of more than 2x, and in some cases by a factor of 10x, with minimal losses in prediction accuracy. In many cases, there is actually an improvement in prediction accuracy during the first few iterations of pruning. While the fine-tuning step is in part responsible for this improvement, it is not the only explanation. Such accuracy improvements will not come as a surprise to developers who are familiar with the concept of overfitting, a phenomena that can occur when a large, deep, network is trained on a dataset that has a limited number of classes.</p>
-<p>Many of the pre-trained networks available in the Xilinx <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Model Zoo</span></a> were pruned using this technique.</p>
+<p>Many pre-trained networks available in Xilinx <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Model Zoo</span></a> are pruned using this technique.</p>
 </section>
 <section id="neural-architecture-search">
 <h3>Neural Architecture Search<a class="headerlink" href="#neural-architecture-search" title="Permalink to this heading">¶</a></h3>
-<p>In addition to channel pruning, a technique coined “Once-for-All” training is supported in Vitis-AI. The concept of Neural Architecture Search (NAS) is that for any given inference task and dataset, there exist in the potential design space a number of network architectures that are both efficient and which have high prediction scores. Often, a developer starts with a standard backbone that is familiar to them, such as ResNet50, and trains that network for the best accuracy. However, there are many cases when a network topology with a much lower computational cost may have offered similar or better performance. For the developer, the effort to train multiple networks with the same dataset (sometimes going so far as to make this a training hyperparameter) is not an efficient method to select the best network topology. “Once-for-All” addresses this challenge by employing a single training pass and novel selection techniques.</p>
+<p>In addition to channel pruning, a technique coined “Once-for-All” training is supported in Vitis AI. The concept of Neural Architecture Search (NAS) is that for any given inference task and dataset, there exist in the potential design space a number of network architectures that are both efficient and have high prediction scores. A developer often starts with a standard backbone familiar to them, such as ResNet50, and trains that network for the best accuracy. However, there are many cases when a network topology with a much lower computational cost may have offered similar or better performance. For the developer, the effort to train multiple networks with the same dataset (sometimes going so far as to make this a training hyperparameter) is not an efficient method to select the best network topology. “Once-for-All” addresses this challenge by employing a single training pass and novel selection techniques.</p>
 </section>
 <section id="nas-and-ai-optimizer-related-resources">
 <h3>NAS and AI Optimizer Related Resources<a class="headerlink" href="#nas-and-ai-optimizer-related-resources" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Sample scripts for channel pruning can be found in <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/vai_optimizer">examples</a></p></li>
+<li><p>Sample scripts for channel pruning can be found in <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_optimizer">examples</a></p></li>
 <li><p>For additional details on channel pruning leveraging the Vitis AI Optimizer, refer to <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1333-ai-optimizer">Vitis AI Optimizer User Guide</a>.</p></li>
 <li><p>For information on Xilinx NAS / Once-for-All, refer to the Once-for-All (OFA) section in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1333-ai-optimizer">Vitis AI Optimizer User Guide</a> .</p></li>
-<li><p>Once-for-All examples can be found <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/examples/ofa">here</a></p></li>
+<li><p>Once-for-All examples can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/ofa">here</a>.</p></li>
 </ul>
-<p>An excellent overview of the advantages of OFA is available on the <a class="reference external" href="https://www.xilinx.com/developer/articles/advantages-of-using-ofa.html">Xilinx Developer website</a></p>
+<p>An excellent overview of the advantages of OFA is available on the <a class="reference external" href="https://www.xilinx.com/developer/articles/advantages-of-using-ofa.html">Xilinx Developer website</a>.</p>
 </section>
 </section>
 <section id="model-quantization">
 <h2>Model Quantization<a class="headerlink" href="#model-quantization" title="Permalink to this heading">¶</a></h2>
 <p>Deployment of neural networks on Xilinx DPUs is made more efficient through the use of integer quantization to reduce the energy cost,
 memory footprint, and data path bandwidth required for inference.</p>
-<p>Xilinx general-purpose CNN-focused DPUs leverage INT8 (8-bit integer) quantization of a trained network. In many real-world datasets, the distribution of both the weights and activations at a given layer in the network typically spans a much narrower range than can be represented by a 32-bit floating point number. It is thus possible to accurately represent the distribution of weights and activations at a given layer as integer values by simply applying a scaling factor. The impact on prediction accuracy of INT8 quantization is typically low, often less than 1%. This has been found to be true in many applications in which the input data consists of images and video, point-cloud data, as well as input data from a variety of sampled-data systems, including certain audio and RF applications.</p>
+<p>Xilinx general-purpose CNN-focused DPUs leverage INT8 (8-bit integer) quantization of a trained network. In many real-world datasets, the distribution of weights and activations at a given layer in the network typically spans a much narrower range than can be represented by a 32-bit floating point number. It is thus possible to accurately represent the distribution of weights and activations at a given layer as integer values by simply applying a scaling factor. The impact on prediction accuracy of INT8 quantization is typically low, often less than 1%. This is true in many applications in which the input data consists of images and video, point-cloud data, and input data from various sampled-data systems, including specific audio and RF applications.</p>
 <section id="quantization-process">
 <h3>Quantization Process<a class="headerlink" href="#quantization-process" title="Permalink to this heading">¶</a></h3>
-<p>The Vitis AI Quantizer, integrated as a component of either TensorFlow or PyTorch, performs a calibration step in which a subset of the
-original training data (typically 100-1000 samples, no labels required) are forward propagated through the network in order to analyze the distribution of the activations at each layer. The weights and activations are then quantized as 8-bit integer values. This process is referred to as Post-Training Quantization. Following quantization, the prediction accuracy of the network is re-tested using data from the validation set. If the accuracy is found to be acceptable, the quantization process is complete.</p>
-<p>With certain network topologies, the developer may experience excessive accuracy loss. In these cases a technique referred to as QAT
-(Quantization Aware Training) can be used with the source training data to execute several back propagation passes with the objective of optimizing (fine-tuning) the quantized weights.</p>
+<p>The Vitis AI Quantizer, integrated as a component of either TensorFlow or PyTorch, performs a calibration step in which a subset of the original training data (typically 100-1000 samples, no labels required) is forward propagated through the network to analyze the distribution of the activations at each layer. The weights and activations are then quantized as 8-bit integer values. This process is referred to as Post-Training Quantization. Following quantization, the prediction accuracy of the network is re-tested using data from the validation set. If the accuracy is acceptable, the quantization process is complete.</p>
+<p>With certain network topologies, the developer may experience excessive accuracy loss. In these cases, a technique referred to as QAT (Quantization Aware Training) can be used with the source training data to execute several back propagation passes to optimize (fine-tune) the quantized weights.</p>
 <figure class="align-default" id="id5">
 <a class="reference internal image-reference" href="../_images/quant_workflow.PNG"><img alt="../_images/quant_workflow.PNG" src="../_images/quant_workflow.PNG" style="width: 1300px;" /></a>
 <figcaption>
@@ -254,23 +260,23 @@ original training data (typically 100-1000 samples, no labels required) are forw
 </figcaption>
 </figure>
 <p>The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
-<a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src">open-source</a>.</p>
+<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer">open-source</a>.</p>
 <section id="quantization-related-resources">
 <h4>Quantization Related Resources<a class="headerlink" href="#quantization-related-resources" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
-<li><p>For additional details on the Vitis AI Quantizer,refer to Chapter 3 “Quantizing the Model” in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
+<li><p>For additional details on the Vitis AI Quantizer, refer to Chapter 3 “Quantizing the Model” in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
 <li><dl class="simple">
 <dt>TensorFlow 2.x examples are available as follows:</dt><dd><ul>
-<li><p><a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md">TF2 Post-Training Quantization</a></p></li>
-<li><p><a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md">TF2 Quantization Aware Training</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md">TF2 Post-Training Quantization</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md">TF2 Quantization Aware Training</a></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>PyTorch examples are available as follows:</dt><dd><ul>
-<li><p><a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py">PT Post-Training Quantization</a></p></li>
-<li><p><a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py">PT Quantization Aware Training</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py">PT Post-Training Quantization</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py">PT Quantization Aware Training</a></p></li>
 </ul>
 </dd>
 </dl>
@@ -281,10 +287,14 @@ original training data (typically 100-1000 samples, no labels required) are forw
 </section>
 <section id="model-compilation">
 <h2>Model Compilation<a class="headerlink" href="#model-compilation" title="Permalink to this heading">¶</a></h2>
-<p>Once the model has been quantized, the Vitis AI Compiler is used to construct an internal computation graph as an intermediate representation (IR). This internal graph consists of independent control and data flow representations. The compiler then performs multiple optimizations, for example, batch normalization operations are fused with convolution when the convolution operator preceeds the normalization operator. As the DPU supports multiple dimensions of parallelism, efficient instruction scheduling is key to exploiting the inherent parallelism and potential for data reuse in the graph. Such optimizations are addressed by the Vitis AI Compiler.</p>
-<p>The intermediate representation leveraged by Vitis-AI is “XIR” (Xilinx Intermediate Representation). The XIR-based compiler takes the quantized TensorFlow or PyTorch model as input. First, the compiler transforms the input model into the XIR format. Most of the variations between different frameworks are eliminated at this stage. The compiler then applies optimizations to the graph, and as necessary will partition it into several subgraphs on the basis of whether the subgraph operators can be executed on the DPU. Architecture-aware optimizations are applied for each subgraph. For the DPU subgraph, the compiler generates the instruction stream. Finally, the optimized graph is serialized into a compiled .xmodel file.</p>
-<p>The compilation process leverages an additional input in the form of a DPU arch.json file. The purpose of this file is to communicate to the compiler the target architecture and hence, capabilities, of the specific DPU for which the graph will be compiled. If the correct <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file is not used, the compiled model will not run on the target. The implication of this is also that models that were compiled for a specific target DPU must be recompiled if they are to be deployed on a different DPU architecture. Runtime errors will occur if the model was not compiled for the correct DPU architecture.</p>
-<p>Once you have compiled the .xmodel file, you can leverage <a class="reference external" href="https://github.com/lutzroeder/netron">Netron</a> to review the final graph structure. Note that as part of the compilation process the weights are formatted as INT8, concatenated and shuffled in for efficient execution. Thus, it is not possible to review the weights post-compilation.</p>
+<p>Once the model has been quantized, the Vitis AI Compiler is used to construct an internal computation graph as an intermediate representation (IR). This internal graph consists of independent control and data flow representations. The compiler then performs multiple optimizations; for example, batch normalization operations are fused with convolution when the convolution operator precedes the normalization operator. As the DPU supports multiple dimensions of parallelism, efficient instruction scheduling is key to exploiting the inherent parallelism and potential for data reuse in the graph. The Vitis AI Compiler addresses such optimizations.</p>
+<p>The intermediate representation leveraged by Vitis AI is “XIR” (Xilinx Intermediate Representation). The XIR-based compiler takes the quantized TensorFlow or PyTorch model as input. First, the compiler transforms the input model into the XIR format. Most of the variations between different frameworks are eliminated at this stage. The compiler then applies optimizations to the graph and, as necessary, will partition it into several subgraphs based on whether the subgraph operators can be executed on the DPU. Architecture-aware optimizations are applied for each subgraph. For the DPU subgraph, the compiler generates the instruction stream. Finally, the optimized graph is serialized into a compiled .xmodel file.</p>
+<p>The compilation process leverages an additional input as a DPU arch.json file. This file communicates the target architecture to the compiler, hence, the capabilities of the specific DPU for which the graph will be compiled. The compiled model will not run on the target if the correct <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file is not used. Runtime errors will occur if the model is not compiled for the correct DPU architecture. The implication is that models compiled for a specific target DPU must be recompiled if they are to be deployed on a different DPU architecture.</p>
+<p>Once you have compiled the .xmodel file, you can leverage <a class="reference external" href="https://github.com/lutzroeder/netron">Netron</a> to review the final graph structure.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As part of the compilation process, the weights are formatted as INT8, concatenated, and shuffled for efficient execution. Thus, it is not possible to review the weights post-compilation.</p>
+</div>
 <p>The following diagram illustrates a high-level overview of the Vitis AI Compiler workflow:</p>
 <figure class="align-default" id="id6">
 <a class="reference internal image-reference" href="../_images/compiler_workflow.PNG"><img alt="../_images/compiler_workflow.PNG" src="../_images/compiler_workflow.PNG" style="width: 1300px;" /></a>
@@ -296,9 +306,9 @@ original training data (typically 100-1000 samples, no labels required) are forw
 <section id="compiler-related-resources">
 <h3>Compiler Related Resources<a class="headerlink" href="#compiler-related-resources" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>For more information on Vitis AI Compiler and XIR refer to Chapter 4 in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a></p></li>
-<li><p>PyXIR, which supports TVM and ONNXRuntime integration is available as <a class="reference external" href="https://github.com/Xilinx/pyxir">open source</a></p></li>
-<li><p>XIR source code is released as a <a class="reference external" href="https://gitenterprise.xilinx.com/Vitis/vitis-ai-staging/tree/vai3.0_update/src/vai_runtime/xir">component of VART</a></p></li>
+<li><p>For more information on Vitis AI Compiler and XIR refer to Chapter 4 in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
+<li><p>PyXIR, which supports TVM and ONNXRuntime integration is available as <a class="reference external" href="https://github.com/Xilinx/pyxir">open source</a>.</p></li>
+<li><p>XIR source code is released as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/xir">component of VART</a>.</p></li>
 </ul>
 </section>
 </section>
@@ -325,8 +335,8 @@ original training data (typically 100-1000 samples, no labels required) are forw
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -338,7 +348,7 @@ original training data (typically 100-1000 samples, no labels required) are forw
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

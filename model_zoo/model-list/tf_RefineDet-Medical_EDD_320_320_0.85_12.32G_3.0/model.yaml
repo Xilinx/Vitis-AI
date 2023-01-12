@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_85_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: d7fbe70e9f1e6395c3a0acf573bc0f6a
+  checksum: c11441e856a9808fb05a2b38889e4532
 - name: RefineDet-Medical_EDD_pruned_0_85_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_85_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 50302c998f721d64e60f192837b35c5d
+  checksum: 980714294ea3dc25d75a4db9e1ffe400
 - name: RefineDet-Medical_EDD_pruned_0_85_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_85_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 78194d376533e207d856bb4760af1b01
+  checksum: adf5c670039ee106113f2e6edeee36ac
 - name: RefineDet-Medical_EDD_pruned_0_85_tf
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_85_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: accec87971fbcc3c8d9e5ca164520b4c
+  checksum: fe35b46119d0ed7e13e7d9bbd6825795
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

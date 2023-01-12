@@ -28,7 +28,7 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 
 If you work in Vitis-AI 3.0 version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
 In this conda environment, python version is 3.7, pytorch version is 1.12 and torchvision version is 0.13. You can directly start our "resnet18" example without installation steps.
-A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the /opt/vitis_ai/scripts/replace_pytorch.sh script. This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
+A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
@@ -117,6 +117,7 @@ For a well-defined model, user only need to add 2-3 lines to get a quantize mode
 These functions usually work as pre-processing and post-processing. If they are not moved outside, 
 our API will remove them in our quantized module, which will cause unexpected behavior when forwarding quantized module. <br>
 - The float model should pass "jit trace test". First set the float module to evaluation status, then use “torch.jit.trace” function to test the float model. Make sure the float module can pass the trace test.For more details, please refer to example/jupyter_notebook/jit_trace_test/jit_trace_test.ipynb.<br>
+- The most common operators in pytorch are supported in quantizer, please refer to [support_op.md](doc/support_op.md) for details.
 ##### Inspect float model before quantization
 Vai_q_pytorch provides a function called inspector to help users diagnose neural network (NN) models under different device architectures. The inspector can predict target device assignments based on hardware constraints.The generated inspection report can be used to guide  users to modify or optimize the NN model, greatly reducing the difficulty and time of deployment. It is recommended to inspect float models before quantization.
 
@@ -127,7 +128,7 @@ Take resnet18_quant.py to demonstrate how to apply this feature.
    ```
 2. Create a inspector with target name or fingerprint. <br>
    ```py
-    inspector = Inspector(target) # by target name
+    inspector = Inspector(target) 
    ```
 3. Inspect float model. <br>
    ```py
@@ -466,9 +467,9 @@ class torch_quantizer():
 ##### Create a inspector
 ```py
 class Inspector():
-  def __init__(self, name: str):
+  def __init__(self, name_or_fingerprint: str):
 ```
-    name: Specify the hardware target name 
+    name_or_fingerprint: Specify the hardware target name or fingerprint
 ##### Inspect float model
 ```py
   def inspect(self, 

@@ -475,15 +475,15 @@ class QConfigBase(metaclass=ABCMeta):
                     exit(2)
             elif scale_type == "poweroftwo":
                 if method not in ['diffs', 'maxmin']:
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_channel poweroftwo quantization")
                     exit(2)
                 symmetric_mode = quant_param.get("symmetric_mode")
                 if symmetric_mode == "asymmetric":
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_channel poweroftwo quantization")
                     exit(2)
                 signed = quant_param.get("signed")
                 if not signed:
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_channel power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_channel poweroftwo quantization")
                     exit(2)
                 
         if granularity == "per_tensor":
@@ -505,20 +505,20 @@ class QConfigBase(metaclass=ABCMeta):
                         exit(2)
             elif scale_type == "poweroftwo":
                 if method not in ['diffs', 'maxmin']:
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in per_tensor poweroftwo quantization")
                     exit(2)
                 symmetric_mode = quant_param.get("symmetric_mode")
                 if symmetric_mode == "asymmetric":
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support asymmetric quantization in per_tensor poweroftwo quantization")
                     exit(2)
                 signed = quant_param.get("signed")
                 if not signed:
-                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_tensor power_of_two quantization")
+                    NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Not support unsigned quantization in per_tensor poweroftwo quantization")
                     exit(2)
                 if quant_param.get("calib_statistic_method", None):
                     calib_statistic_method = quant_param.get("calib_statistic_method")
                     if calib_statistic_method != "modal":
-                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support modal scale activation statistic method in per_tensor power_of_two quantization")
+                        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support modal scale activation statistic method in per_tensor poweroftwo quantization")
                         exit(2)
         
     @staticmethod
@@ -530,8 +530,8 @@ class QConfigBase(metaclass=ABCMeta):
             NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support symmetric quantization in DPU device")
             exit(2)
         method = quant_param.get("method")
-        if method != "diffs":
-            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs calibration method in DPU device")
+        if method not in ["diffs", "maxmin"]:
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support diffs and maxmin calibration method in DPU device")
             exit(2)
         granularity = quant_param.get("granularity")
         if granularity != "per_tensor":
@@ -539,7 +539,7 @@ class QConfigBase(metaclass=ABCMeta):
             exit(2)
         scale_type = quant_param.get("scale_type")
         if scale_type != "poweroftwo":
-            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support power_of_two scale type in DPU device")
+            NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support poweroftwo scale type in DPU device")
             exit(2)
         narrow_range = quant_param.get("narrow_range")
         if narrow_range:
@@ -557,7 +557,7 @@ class QConfigBase(metaclass=ABCMeta):
                 exit(2)
         else:
             if round_method != "std_round":
-                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support half_up round method in weights, bias and input quantization of DPU device")
+                NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"Only support std_round round method in weights, bias and input quantization of DPU device")
                 exit(2)
 
     @staticmethod

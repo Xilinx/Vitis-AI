@@ -447,4 +447,9 @@ void cpu_diff_S(const int N,
                 int range, 
                 int method);
 
+template<typename Dtype>
+void cpu_layernorm_isqrt(const int N,
+                         const Dtype* src,
+                         Dtype* dst);
+
 #endif //_NNDCT_FIX_KERNELS_CPU_H_

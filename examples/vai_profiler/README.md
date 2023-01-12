@@ -58,11 +58,13 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
 
 - DPU Summary  
   A table of the number of runs and min/avg/max times for each kernel 
-  <p align="center"><img src="img/dpu_dma_profiling.png"></p>
+  <p align="center"><img src="img/dpu_summary.png"></p>
 
 - DDR Transfer Rates  
-  Line graphs of achieved FPS and read/write transfer rates (in MB/s) as sampled during the application
-  <p align="center"><img src="img/dpu_summary.png"></p>
+  Line graphs of achieved FPS and read/write transfer rates (in MB/s) as sampled during the application, Only available for edge platforms
+  - For Zynq MPSoC devices, DDRC_PORT_S[n] in the report represent the traffic pass throught S[n] port of DDR Memory Controller. [ref.](https://docs.xilinx.com/r/en-US/ug1085-zynq-ultrascale-trm/Block-Diagram?tocId=ycliZesl_R3fScaJ2DWc3w)
+  - For Versal devices, DDRC_PORT_S[n] in the report represent the traffic pass throught Versal DDRMC[n]. [ref.1](https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/DDR4-Memory-Controller), [ref.2](https://docs.xilinx.com/r/en-US/pg313-network-on-chip/NoC-Architecture)
+  <p align="center"><img src="img/dpu_dma_profiling.png"></p>
 - Timeline Trace   
   This will include timed events from VART, HAL APIs, and the DPUs
       <p align="center"><img src="img/timeline_trace.png"></p>
@@ -114,15 +116,15 @@ From Vitis-AI v1.3, [Vitis Analyzer](https://www.xilinx.com/html_docs/xilinx2020
            --rm \
 
       ```
-      - This step is only required for Alveo devices working in docker environment   
+      - This step is only required for Versal devices working in docker environment   
         - For Zynq MPSoC devices, vaitrace does not interact with docker, therefore modification for the docker_run.sh is __not required__    
-        - For Alveo devices running in docker environment, there are some limitations for an in-depth profiling. Because some tools require superuser permission that cannot work well with docker in default setting. So we need this modification to get more permissions
+        - For Versal devices running in docker environment, there are some limitations for an in-depth profiling. Because some tools require superuser permission that cannot work well with docker in default setting. So we need this modification to get more permissions
 
       - Due to an issue of overlay-fs, to support all the features of Vitis-AI Profiler in docker environment, it's recommended to use Linux kernel 4.8 or above on your host machine, see [here](https://lore.kernel.org/patchwork/patch/890633/)
 
 
 ### Starting A Simple Trace with vaitrace  
-We use VART resnet50 sample  
+We use vai_runtime resnet50 sample  
   - Download and setup Vitis AI
   - Start testing and tracing
     - vaitrace requires root permission
@@ -131,12 +133,12 @@ We use VART resnet50 sample
     ```
     - For C++ programs, add vaitrace in front of the test command, the test command is:
     ```bash
-      # cd ~/Vitis_AI/demo/VART/resnet50
+      # cd ~/Vitis_AI/examples/vai_runtime/resnet50
       # vaitrace ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
     - For Python programs, add -m vaitrace_py to the python interpreter command
     ``` bash
-      # cd ~/Vitis_AI/demo/VART/samples/resnet50_mt_py
+      # cd ~/Vitis_AI/examples/vai_runtime/resnet50_mt_py
       # python3 -m vaitrace_py ./resnet50.py 2 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
   -	vaitrace and XRT generates some files in the working directory  

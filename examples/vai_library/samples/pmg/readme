@@ -30,7 +30,7 @@ Important:
    run the executable file.
     
     sample : ./test_jpeg_pmg pmg_pt sample_pmg.jpg
-    output : 133
+    output : 13
 
     sample : ./test_performance_pmg pmg_pt -t 4 -s 20 test_performance_pmg.list
 

@@ -29,7 +29,7 @@ Running on edge DPU:
    run the executable file with parameters like below sample.
 
    sample:
-           ./tf2_custom_op_graph_runner /usr/share/vitis_ai_library/models/tf2_custom_op/tf2_custom_op.xmodel ./sample.jpg
+           ./tf2_custom_op_graph_runner ../../model/compiled/<platform>/tf2_custom_op.xmodel ./sample.jpg
    result:
            score[0]    =  0
            score[1]    =  0
@@ -49,6 +49,8 @@ Running on cloud DPU:
        bash build.sh
 
 2. run
+
+   Download the test image and copy it to the sample folder.
 
    run the executable file with parameters like below sample.
 

@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 5ea0a7f3250d35a0388a52ff2702b909
+  checksum: ba03d5bbabede49c6168467acf352192
 - name: salsanext_v2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: be620032d21a6c22e2da1079db233f1b
+  checksum: 052274e0f391a2db08d9dc14ea3c0999
 - name: salsanext_v2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: e7859e2a6301e31d4bbbe9e061a540ad
+  checksum: a130f709add78a23e31c5fc31ad37985
 - name: salsanext_v2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_v2_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 009c88ef9f04a13f7a16ddcda87f1b5c
+  checksum: 810c2cd7e87f0dfe51db0d5119319960
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Setting up the Versal VCK190 &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Setting up the Versal VCK190 &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -26,18 +32,21 @@ function OptanonWrapper() { }
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -57,7 +66,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -87,7 +96,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -116,7 +125,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Vitis AI</a>
+          <a href="../../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -138,44 +147,39 @@ function OptanonWrapper() { }
 <h1>Setting up the Versal VCK190<a class="headerlink" href="#setting-up-the-versal-vck190" title="Permalink to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
-<p>This directory contains instructions for running DPUCVDX8G on Versal® AI Core platforms. <strong>DPUCVDX8G</strong> is a configurable computation engine dedicated for convolutional neural networks. It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis AI, Xilinx has integrated all the edge and cloud solutions under a unified API and toolset.</p>
+<p>This directory contains instructions for running DPUCVDX8G on Versal® AI Core platforms. <strong>DPUCVDX8G</strong> is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.</p>
 </section>
 <section id="step-1-setup-cross-compiler">
-<h2>Step 1: Setup cross-compiler<a class="headerlink" href="#step-1-setup-cross-compiler" title="Permalink to this heading">¶</a></h2>
+<h2>Step 1: Setup Cross-compiler<a class="headerlink" href="#step-1-setup-cross-compiler" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic">
-<li><p>Run the following command to install cross-compilation system environment.</p>
+<li><p>Run the following command to install cross-compilation system environment:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Install it on your local host linux system, not in the docker system.</p>
+<p>Install it on your local host Linux system, not in the docker system. By default, the Cross Compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code> by default. For the <code class="docutils literal notranslate"><span class="pre">VCK190</span> <span class="pre">Production</span></code> board, use <code class="docutils literal notranslate"><span class="pre">host_cross_compiler_setup</span> <span class="pre">sh</span></code>.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">host_cross_compiler_setup</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The Cross Compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code> by default. For the <code class="docutils literal notranslate"><span class="pre">VCK190</span> <span class="pre">Production</span></code> board, use <code class="docutils literal notranslate"><span class="pre">host_cross_compiler_setup</span> <span class="pre">sh</span></code> to install the cross-compiler.</p>
-</div>
 </li>
-<li><p>When the installation is complete, follow the prompts and execute the following command.</p>
+<li><p>When the installation is complete, follow the prompts and execute the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">~/</span><span class="n">petalinux_sdk_2022</span><span class="mf">.2</span><span class="o">/</span><span class="n">environment</span><span class="o">-</span><span class="n">setup</span><span class="o">-</span><span class="n">cortexa72</span><span class="o">-</span><span class="n">cortexa53</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
 </pre></div>
 </div>
-</li>
-</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you close the current terminal, you need to re-execute the above instructions in the new terminal interface.</p>
 </div>
+</li>
+</ol>
 </section>
 <section id="step-2-setup-the-target">
 <h2>Step 2: Setup the Target<a class="headerlink" href="#step-2-setup-the-target" title="Permalink to this heading">¶</a></h2>
-<p>To improve the user experience, the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and models have been built into the board image. Therefore, user does not need to install Vitis AI Runtime packages and model package on the board separately. However, users can still install the model or Vitis AI Runtime on their own image or on the official image by following these steps.</p>
+<p>The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and models are built into the board image, enhancing the user experience. Therefore, the user need not install Vitis AI Runtime packages and model packages on the board separately. However, following these steps, the users can still install the model or Vitis AI Runtime on their image or on the official image.</p>
 <ol class="arabic">
 <li><p>Installing a Board Image.</p>
-<ul>
+<ol class="loweralpha">
 <li><p>Download the SD card system image files from the following links:</p>
-<p><a class="reference external" href="https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.2-v3.0.0.img.gz">VCK190 Production
-board</a></p>
+<p><a class="reference external" href="https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.2-v3.0.0.img.gz">VCK190 Production Board</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The version of the VCK190 production board image is 2022.2.</p>
@@ -183,28 +187,21 @@ board</a></p>
 </li>
 <li><p>Use Etcher software to burn the image file onto the SD card.</p></li>
 <li><p>Insert the SD card with the image into the destination board.</p></li>
-<li><p>Plug in the power and boot the board using the serial port to
-operate on the system.</p></li>
+<li><p>Plug in power and boot the board using the serial port to perate on the system.</p></li>
 <li><p>Set up the IP information of the board using the serial port.</p></li>
-</ul>
-<p><strong>For the details, please refer to</strong> <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation
-Board</a></p>
+</ol>
+<p>For the details, refer <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation Board</a></p>
 </li>
 <li><p>(Optional) How to install Vitis AI for PetaLinux 2022.2.</p>
-<p>There are two ways to install the dependent libraries of Vitis AI.</p>
-<p>One is to rebuild the system by configuring PetaLinux and the other is to install the Vitis-AI online via <code class="docutils literal notranslate"><span class="pre">dnf</span></code>.</p>
+<p>There are two ways to install the dependent libraries of Vitis AI:</p>
 <ul class="simple">
-<li><p>Build-Time For <code class="docutils literal notranslate"><span class="pre">VAI3.0</span> <span class="pre">Recipes</span></code>, refer to
-<a class="reference external" href="../petalinux-recipes.html">Vitis-AI-Recipes</a>.</p></li>
-<li><p>Run-Time Execute <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">install</span> <span class="pre">packagegroup-petalinux-vitisai</span></code> to
-complete the installation on the target. For more details, refer
-to <a class="reference external" href="../petalinux-recipes.html">VAI3.0 Online
-Install</a></p></li>
+<li><p><strong>Build-Time</strong>: Rebuild the system by configuring PetaLinux. For <code class="docutils literal notranslate"><span class="pre">VAI3.0</span> <span class="pre">Recipes</span></code>, refer to <a class="reference external" href="../petalinux-recipes.html">Vitis-AI-Recipes</a>.</p></li>
+<li><p><strong>Run-Time</strong>: Install the Vitis AI online via <code class="docutils literal notranslate"><span class="pre">dnf</span></code>. Execute <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">install</span> <span class="pre">packagegroup-petalinux-vitisai</span></code> to complete the installation on the target. For more details, refer <a class="reference external" href="../petalinux-recipes.html">VAI3.0 Online Install</a>.</p></li>
 </ul>
 </li>
 <li><p>(Optional) How to update Vitis AI Runtime and install them separately.</p>
-<p>If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps.</p>
-<ul>
+<p>If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps:</p>
+<ol class="loweralpha">
 <li><p>Copy the following folder to the board using scp.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="o">-</span><span class="n">r</span> <span class="n">board_setup</span><span class="o">/</span><span class="n">vck190</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
 </pre></div>
@@ -217,18 +214,18 @@ Install</a></p></li>
 </pre></div>
 </div>
 </li>
-</ul>
+</ol>
 </li>
 <li><p>(Optional) Download the model.</p>
-<p>For each model in the Model Zoo, there is a yaml file which is used to describe all the details about the model. In this file, you will find download links for the various pre-built Xilinx platforms. Choose the corresponding model and download it. Click <a class="reference external" href="../../../../model_zoo/model-list">Xilinx AI Model Zoo</a> to view all the models.</p>
-<ul>
+<p>Click <a class="reference external" href="../../../../model_zoo/model-list">Xilinx AI Model Zoo</a> to view all the models. For each model, a YAML file is used to describe all the details about the model. You will find download links for the various pre-built Xilinx platforms in the YAML. Choose the corresponding model and download it.</p>
+<ol class="loweralpha">
 <li><p>Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> of VCK190 as an example.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /workspace
 wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.0.0.tar.gz -O resnet50-vck190-r3.0.0.tar.gz
 </pre></div>
 </div>
 </li>
-<li><p>Copy the downloaded file to the board using scp with the following command.</p>
+<li><p>Copy the downloaded file to the board using scp with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">vck190</span><span class="o">-</span><span class="n">r3</span><span class="mf">.0.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
 </pre></div>
 </div>
@@ -239,19 +236,18 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.
 </pre></div>
 </div>
 </li>
-</ul>
+</ol>
 </li>
 </ol>
 </section>
 <section id="step-3-run-the-vitis-ai-examples">
 <h2>Step 3: Run the Vitis AI Examples<a class="headerlink" href="#step-3-run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h2>
-<p>Follow <a class="reference external" href="../board_setup/board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples">Running Vitis AI Examples</a> to run Vitis AI examples.</p>
+<p>Follow <a class="reference internal" href="board_setup_mpsoc.html#mpsoc-run-vitis-ai-examples"><span class="std std-ref">Step 3: Run the Vitis AI Examples</span></a> to run Vitis AI examples.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html">Vitis AI User
-Guide</a></p></li>
+<li><p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html">Vitis AI User Guide</a></p></li>
 </ul>
 </section>
 </section>
@@ -274,8 +270,8 @@ Guide</a></p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -287,7 +283,7 @@ Guide</a></p></li>
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

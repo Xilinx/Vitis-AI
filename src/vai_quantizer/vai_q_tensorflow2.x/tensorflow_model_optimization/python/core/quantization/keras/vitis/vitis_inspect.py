@@ -23,7 +23,7 @@ import pprint
 import copy
 
 try:
-  from vai_utf.python import target_factory
+  import target_factory
 except:
   target_factory = None
 
@@ -41,7 +41,7 @@ logger = common_utils.VAILogger
 keras = tf.keras
 
 Usage = (
-    '\nVitisInspector is an experimental new feature introduced since Vitis-AI 2.5 '
+    '\nVitisInspector is an experimental new feature introduced since Vitis-AI 3.0 '
     'to inspect a float model and show partition results for given DPU target architecture, together '
     'with some hints why layers are not mapped to DPU. Without `target` we can only show some '
     'general, target-independent inspect results. Please assign `target` to get more detailed '
@@ -57,7 +57,7 @@ Usage = (
     '\n[3] Inspect a model and save verbose results to text:'
     '\n    VitisInspector(target=my_target).inspect_model(my_model, dump_results=True, dump_results_file="results.txt")'
     '\n'
-    '\n[Note] `my_target` is the target DPU to deploy this model, it can be a name(e.g. "DPUCAHX8L_ISA0"), '
+    '\n[Note] `my_target` is the target DPU to deploy this model, it can be a name(e.g. "DPUCZDX8G_ISA1_B4096"), '
     'a json(e.g. "./U50/arch.json") or a fingerprint.\n')
 
 
@@ -130,8 +130,7 @@ class VitisInspector(object):
       custom_objects: dict, mapping names(strings) to custom classes or functions.
         Default to {}.
       target: string, file path of the arch.json. Default to None.
-      target_type: string, type of target, choices are ['json', 'proto', 'target_def',
-        'fingerprint', 'name'].
+      target_type: string, type of target, choices are ['json', 'fingerprint', 'name'].
 
     Return:
       The created VitisInspector instance.
@@ -155,13 +154,45 @@ class VitisInspector(object):
     if target:
       if target_factory is None:
         logger.error(
-            'Please install `vai_utf` package to quantize with targets.')
-      self._target = target_factory.VAI_UTF().create_legacy_dpu_target(
-          target, file_type=target_type)
-      layer_limits_map = vai_utf_parser.VAIUTFParser().parse_legacy_dpu_target(
-          self._target)
-      self._quantize_strategy.get_quantize_registry().update_layer_limits(
-          layer_limits_map)
+            'Please install `target_factory` package to quantize with targets.')
+
+      if not target_type:
+        if isinstance(target, str):
+          if target.endswith('.json'):
+            target_type = 'json'
+          elif target.startswith('DPU'):
+            target_type = 'name'
+          else:
+            target_type = 'fingerprint'
+        else:
+          logger.error(
+              "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}".format(Usage))
+
+      if target_type == 'json':
+        self._target = common_utils.load_json(target)['target']
+      elif target_type == 'name':
+        self._target = target
+      elif target_type == 'fingerprint':
+        self._target = target
+      else:
+        logger.error(
+            "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}".format(Usage))
+
+
+      if target_type in ['json', 'name']:
+        if not target_factory.is_registered_target(self._target):
+
+          logger.error(
+              '[Quantizer_TF2_Invalid_Target][Invalid Target] {} not in target_factory.'
+              .format(self._target))
+      elif target_type in ['fingerprint']:
+        try:
+          target_factory.get_target_by_fingerprint(eval(self._target))
+        except:
+          logger.error(
+              '[Quantizer_TF2_Invalid_Target][Invalid Target] {} not in target_factory.'
+              .format(self._target))
+
 
   def _parse_configs(self, configs, kwargs):
     """Parse configs from arguments and update the quantize strategy."""
@@ -295,10 +326,7 @@ class VitisInspector(object):
     lines.append('[MODEL INFO]:')
     lines.append('_' * line_length)
     lines.append('Model Name: {}'.format(float_model.name))
-    dpu_target = self._target.devices[
-        0].legacy_dpu_target if self._target else None
-    dpu_target_name = dpu_target.name if dpu_target else None
-    dpu_target_type = dpu_target.type if dpu_target else None
+    dpu_target_name = self._target if self._target else None
     lines.append('_' * line_length)
 
     # Layer list
@@ -339,7 +367,6 @@ class VitisInspector(object):
       if device not in ['INPUT', 'DPU']:
         has_unsupported = True
     lines.append('- [Target Name]: {}'.format(dpu_target_name))
-    lines.append('- [Target Type]: {}'.format(dpu_target_type))
     lines.append('- [Total Layers]: {}'.format(total_num))
     detail_layers = '- [Layer Types]: '
     for tp, num in type_num.items():
@@ -494,6 +521,25 @@ class VitisInspector(object):
     Return:
       Dict of the inspect results.
     """
+    # Check float model
+    if float_model is None:
+      logger.error('`float_model` cannot be None')
+
+    if not isinstance(float_model, keras.Model):
+      logger.error('[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+                   '`float_model` can only be a `tf.keras.Model` instance. '
+                   'You passed an instance of type: {input}.'.format(
+                       input=float_model.__class__.__name__))
+
+    if not isinstance(float_model, keras.Sequential) \
+        and not float_model._is_graph_network:  # pylint: disable=protected-access
+      logger.error(
+          '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+          '`float_model` can only either be a tf.keras Sequential or '
+          'Functional model. Subclassing model is not supported now, '
+          'please convert it to Functional model and try again. See '
+          'https://www.tensorflow.org/guide/keras/functional for more details.')
+
     # Disable unnecessary optimizations
     configs.update({
         "include_cle": False,
@@ -503,6 +549,12 @@ class VitisInspector(object):
     # Configure the quantize strategy
     self._parse_configs(configs, kwargs)
     configs = self._quantize_strategy.get_configs()
+
+    if not self._target:
+      if configs['quantize_pipeline_config']['quantize_with_xcompiler']:
+        logger.error(
+            '[Quantizer_TF2_Invalid_Target][Invalid Target] Inspecting without specific `target`. \n{}'
+            .format(Usage))
 
     # Handle user-defined partition
     input_layers = configs["quantize_registry_config"]['user_quantize_config'][
@@ -528,28 +580,41 @@ class VitisInspector(object):
 
     # Make sure model is built
     if input_shape:
-      float_model = model_utils.modify_input_shape(float_model, input_shape)
+      float_model, _ = model_utils.modify_input_shape(float_model, input_shape)
 
     if not float_model.built:
       logger.error(
           '`float_model` is not built yet. Please build model with concrete input shape '
           'before inspecting your model or call inspect_model with `input_shape` arg. Use list '
-          'of shapes for multiple inputs.e.g. inspect_model(model, input_shape=[224, 224, 3]) '
-          'or inspect_model(model, input_shape=[[224, 224, 3], [64, 1]]). All dimension should '
-          'have concrete value, batch_size dimension should be ommited.')
+          'of shapes for multiple inputs.e.g. inspect_model(model, input_shape=[1, 224, 224, 3]) '
+          'or inspect_model(model, input_shape=[[None, 224, 224, 3], [None, 64]]). All dimension should '
+          'have concrete value, batch_size dimension should be None or int.')
 
     input_shape = float_model.input_shape
     if isinstance(input_shape, tuple):
       if None in input_shape[1:]:
         logger.error(
+            '[Quantizer_TF2_Invalid_Input_Shape][Invalid input shape] '
             'Variable input shape {} is not supported yet. Please build model with concrete input shape '
             'before inspecting your model or call inspect_model with `input_shape` arg. Use list '
-            'of shapes for multiple inputs.e.g. inspect_model(model, input_shape=[224, 224, 3]) '
-            'or inspect_model(model, input_shape=[[224, 224, 3], [64, 1]]). All dimension should '
-            'have concrete value, batch_size dimension should be ommited.'
+            'of shapes for multiple inputs.e.g. inspect_model(model, input_shape=[1, 224, 224, 3]) '
+            'or inspect_model(model, input_shape=[[None, 224, 224, 3], [None, 64]]). All dimension should '
+            'have concrete value, batch_size dimension should be None or int.'
             .format(input_shape[1:]))
+    elif isinstance(input_shape, list):
+      for per_input_shape in input_shape:
+        if None in per_input_shape[1:]:
+          logger.error(
+              'Variable input shape {} is not supported yet. Please build model with concrete input shape '
+              'before inspecting your model or call inspect_model with `input_shape` arg. Use list '
+              'of shapes for multiple inputs.e.g. inspect_model(model, input_shape=[1, 224, 224, 3]) '
+              'or inspect_model(model, input_shape=[[None, 224, 224, 3], [None, 64]]). All dimension should '
+              'have concrete value, batch_size dimension should be None or int.'
+              .format(per_input_shape[1:]))
     else:
-      logger.error('Unsupported input shape.'.format(input_shape))
+      logger.error(
+          '[Quantizer_TF2_Invalid_Input_Shape][Invalid input shape] Unsupported input shape.'
+          .format(input_shape))
 
     with self._custom_object_scope:
       layer_metadata = self._init_inspect_results(float_model)
@@ -575,7 +640,8 @@ class VitisInspector(object):
           optimized_model,
           candidate_layers=self._candidate_layers,
           layer_metadata=layer_metadata,
-          quantize_strategy=self._quantize_strategy)
+          quantize_strategy=self._quantize_strategy,
+          target=self._target)
 
       if logger.debug_enabled():
         model_utils.save_model(inspect_model, 'inspect_model.h5', './debug/')
@@ -618,7 +684,7 @@ class VitisInspector(object):
 
     logger.info("Inspect Finished.")
     tf.get_logger().setLevel(log_level)
-    return
+    return inspect_results
 
   def dump_quantize_strategy(self,
                              dump_file='quantize_strategy.json',
@@ -667,7 +733,7 @@ class VitisInspector(object):
 
 
 def create_inspect_model(model, candidate_layers, layer_metadata,
-                         quantize_strategy):
+                         quantize_strategy, target):
   """Inspect a `tf.keras` model with the default quantization implementation.
 
   Inspected model will have inspect information inside, including placement
@@ -691,13 +757,19 @@ def create_inspect_model(model, candidate_layers, layer_metadata,
     logger.error('`model` cannot be None')
 
   if not isinstance(model, keras.Model):
-    logger.error('`model` can only be a `tf.keras.Model` instance.'
+    logger.error('[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+                 '`model` can only be a `tf.keras.Model` instance.'
                  'You passed an instance of type: {input}.'.format(
                      input=model.__class__.__name__))
 
   if not isinstance(model, keras.Sequential) \
       and not model._is_graph_network:  # pylint: disable=protected-access
-    logger.error('Only tf.keras Sequential or Functional models are supported.')
+    logger.error(
+        '[Quantizer_TF2_Unsupported_Model][Unsupported model type] '
+        '`model` can only either be a tf.keras Sequential or '
+        'Functional model. Subclassing model is not supported now, '
+        'please convert it to Functional model and try again. See '
+        'https://www.tensorflow.org/guide/keras/functional for more details.')
 
   if not model.built:
     logger.error('`model` must be a built model. '
@@ -722,6 +794,7 @@ def create_inspect_model(model, candidate_layers, layer_metadata,
       candidate_layers,
       layer_metadata,
       quantize_strategy.get_quantize_registry(),
-      mode='INSPECT')
+      mode='INSPECT',
+      target=target)
 
   return quantized_model, layer_metadata

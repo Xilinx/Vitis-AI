@@ -20,22 +20,22 @@ The first part is global quantizer settings, which are listed as follows.
 convert_relu6_to_relu: whether to convert relu6 to relu, options: true, false.
 include_cle: whether to use cross layer equalization, options: true, false.
 include_bias_corr: whether to use bias correction, options: true, false.
-keep_first_last_layer_accuracy: whether to keep the accuracy of first and last layer, options: true, false. 
-keep_add_layer_accuracy: whether to keep the accuracy of the "add" layer, options: true, false.
+keep_first_last_layer_accuracy: whether to skip quantization of the first and last layers. Reserved word, options: true, false, default: false. Not used currently, . 
+keep_add_layer_accuracy: whether to skip quantization of "add" layers. Reserved word, options: true, false, default: False. Not used currently.
 target_device: device to deploy quantized model, options: DPU, CPU, GPU.
 quantizable_data_type: tensor types to be quantized in model.
 ```
 The second part is the quantization parameters used by the quantizer, which are listed as follows.
 ```shell
 bit_width: bit width used in quantization.
-method: method used in calibration process, options: maxmin, percentile, entropy, mse, diffs.
+method: method used to calibrate the quantization “scale”, options: maxmin, percentile, entropy, mse, diffs.
 round_mode: rounding method in quantization process, options: half_even, half_up, half_down, std_round.
 symmetry: whether to use symmetric quantization, options: true, false.
 per_channel: whether to use per_channel quantization, options: true, false.
 signed: whether to use signed quantization, options: true, false.
 narrow_range: whether to use symmetric integer range for signed quantization, options: true, false.
-scale_type: scale type used in quantization process, options: float, power_of_two.
-calib_statistic_method: activation data statistic method in calibration process, option: modal, max, mean, median.
+scale_type: scale type used in quantization process, options: float, poweroftwo.
+calib_statistic_method: method to choose one optimal “scale” if got different scales using multiple batch data, option: modal, max, mean, median.
 ```
 
 ### Example
@@ -50,7 +50,7 @@ python resnet18_quant.py --quant_mode test --config_file pytorch_quantize_config
 ### Hierarchical Configuration
 
 Quantization configurations is in hierarchical structure. 
-- If configuration file is not provided in the torch_quantizer API, the default configuration will be used, which is adapted to DPU device and uses power_of_two quantization method.
+- If configuration file is not provided in the torch_quantizer API, the default configuration will be used, which is adapted to DPU device and uses poweroftwo quantization method.
 - If configuration file is provided, model configuration, including global quantizer settings and global quantization parameters are required. If only model configuration is provided in the configuration file, all tensors in the model will use the same configuration.
 - Layer configuration could be used to set some layers to specific configuration parameters.
 
@@ -65,7 +65,7 @@ Details of default configuration are shown below.
 "include_bias_corr": true,
 "target_device": "DPU",
 "quantizable_data_type": ["input", "weights", "bias", "activation"],
-"bit_width": 8, "method": "diffs", "round_mode": "std_round", "symmetry": true, "per_channel": false, "signed": true, "narrow_range": false, "scale_type": "power_of_two", "calib_statistic_method": "modal"
+"bit_width": 8, "method": "diffs", "round_mode": "std_round", "symmetry": true, "per_channel": false, "signed": true, "narrow_range": false, "scale_type": "poweroftwo", "calib_statistic_method": "modal"
 ```
 
 #### Model Configurations
@@ -189,3 +189,17 @@ class ResNet(torch.nn.Module):
     self.module_0 = py_nndct.nn.Input() #ResNet::input_0
     self.module_1 = py_nndct.nn.Conv2d(in_channels=3, out_channels=64, kernel_size=[7, 7], stride=[2, 2], padding=[3, 3], dilation=[1, 1], groups= 1, bias=True) #ResNet::ResNet/Conv2d[conv1]/input.2
 ```
+
+#### Configuration Restrictions
+Due to the restrict of DPU device, if quantized models need to be deployed in DPU device, the quantization configuration should meet the restrictions as below.
+```shell
+method: diffs or maxmin
+round_mode: std_round for weights, bias, and input; half_up for activation.
+symmetry: true
+per_channel: false
+signed: true
+narrow_range: true
+scale_type: poweroftwo
+calib_statistic_method: modal.
+```
+And for CPU and GPU device, there is no restriction as DPU device. However, there are some conflicts when using different configurations. For example, if calibration method is ‘maxmin’, ‘percentile’, ‘mse’ or ‘entropy’,  the calibration statistic method ‘modal’ is not supported. If symmetry mode is asymmetry, the calibration method ‘mse’ and ‘entropy’ are not supported. Quantization tool will give error message if there exist configuration conflicts.

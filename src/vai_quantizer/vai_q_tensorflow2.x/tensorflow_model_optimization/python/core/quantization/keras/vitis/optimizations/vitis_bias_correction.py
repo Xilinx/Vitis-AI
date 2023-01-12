@@ -66,10 +66,6 @@ def bias_correction(quant_model, float_model, calib_dataset, calib_batch_size,
     f_means = f_outputs.reshape(-1, n_ch).mean(0)
     q_means = q_outputs.reshape(-1, n_ch).mean(0)
     diff_means = q_means - f_means
-    if diff_means.mean() > 10:
-      import pdb
-      pdb.set_trace()
-
     q_weights = layer.get_weights()
     q_weights[1] += diff_means
 

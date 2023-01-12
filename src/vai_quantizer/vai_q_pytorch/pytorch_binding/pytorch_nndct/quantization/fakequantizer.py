@@ -75,11 +75,20 @@ Please check calibration with bias correction is done or not.")
     self.inferenced = False
     #self._fast_finetuned = False
     self.output_dir = output_dir
+    self._scripts = []
     
     if NndctOption.nndct_tensorrt_strategy.value:
-      self.quant_strategy = TensorRTCGQStrategy(quant_config)
+      self.quant_strategy = TensorRTCGQStrategy(quant_config, is_lstm)
     else:
-      self.quant_strategy = NndctCGQstrategy(quant_config)
+      self.quant_strategy = NndctCGQstrategy(quant_config, is_lstm)
+      
+  def add_script(self, script):
+    if script not in self._scripts:
+      self._scripts.append(script)
+  
+  @property
+  def scripts(self):
+    return self._scripts
   
   def get_model_type(self):
     return FrameworkType.TORCH

@@ -158,7 +158,7 @@ void TanhSimulation(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _SoftmaxExpApproximate(Tensor Tuvi_input, 
+void _SoftmaxExpApproximate(Tensor Tinput, 
                       Tensor Toutput, 
                       int64_t device_id)
 {
@@ -179,7 +179,7 @@ void SoftmaxExpApproximate(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _SoftmaxLOD(Tensor Tuvi_input, 
+void _SoftmaxLOD(Tensor Tinput, 
                       Tensor Toutput, 
                       int64_t device_id)
 {
@@ -317,7 +317,7 @@ void ExpApprAIE2(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _LogSoftmaxFastLn(Tensor Tuvi_input, 
+void _LogSoftmaxFastLn(Tensor Tinput, 
                       Tensor Toutput, 
                       int64_t device_id)
 {
@@ -338,7 +338,7 @@ void LogSoftmaxFastLn(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _LogSoftmaxSub(Tensor Tuvi_input, 
+void _LogSoftmaxSub(Tensor Tinput, 
                       Tensor Toutput, 
                       Tensor Tsum,
                       int64_t device_id)
@@ -363,7 +363,32 @@ void LogSoftmaxSub(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _LayernormInvSqrt(Tensor Tuvi_input, 
+void _LayernormISqrt(Tensor Tinput, 
+                      Tensor Toutput, 
+                      int64_t device_id)
+{
+  auto input  = Tinput.data<Dtype>();
+  auto output  = Toutput.data<Dtype>();
+  int64_t num_ele = Tinput.numel();
+  
+  cpu_layernorm_isqrt(num_ele, input, output);
+}
+
+void LayernormISqrt(Tensor Tinput, 
+                    Tensor Toutput, 
+                    int64_t device_id) {
+  if (Tinput.dtype() == at::kFloat)
+    _LayernormISqrt<float>(Tinput, 
+                            Toutput, 
+                            device_id);
+  else if (Tinput.dtype() == at::kDouble)
+    _LayernormISqrt<double>(Tinput, 
+                            Toutput, 
+                            device_id);
+}
+
+template <typename Dtype>
+void _LayernormInvSqrt(Tensor Tinput, 
                       Tensor Toutput, 
                       int64_t device_id)
 {

@@ -421,21 +421,6 @@ class OpCreator(object):
     else:
       return self.default(self.cur_node, 'aten::add', *args)
 
-    # if (isinstance(input, Tensor) and input.is_real_tensor()) \
-    #  or (isinstance(other, Tensor) and other.is_real_tensor()):
-    #   op = TorchAdd()
-    # elif (isinstance(input, Tensor) and input.is_list_type()) or (isinstance(other, Tensor) and other.is_list_type()):
-    #   op = TorchBaseOperation(
-    #       NNDCT_OP.LIST_ADD, NNDCT_OP.LIST_ADD, force_to_primitive=False)
-    # else:
-    #   op = TorchBinaryOp(NNDCT_OP.SCALAR_ADD, "add")
-
-    # op.set_config('input', input)
-    # op.set_config('other', other)
-    # if alpha is not None:
-    #   op.set_config('alpha', alpha)
-    # return op
-
   def size(self, input, dim=None):
     op = TorchSize()
     if dim is not None:
@@ -1193,6 +1178,7 @@ class OpCreator(object):
     return op
 
   def eq(self, input, other):
+    # TODO:
     #op = TorchBaseOperation(NNDCT_OP.EQUAL, "eq")
     if (isinstance(input, Tensor) and input.is_real_tensor()) \
     or (isinstance(other, Tensor) and other.is_real_tensor()):
@@ -1366,13 +1352,18 @@ class OpCreator(object):
   def new_zeros(self, input, *args):
     return self.zeros(*args)
 
-  def neg(self, input):
-    if python_dtype(input) in ["int", "float"]:
-      op = TorchUnaryOp(NNDCT_OP.NEG, "-")
-    else:
+  def neg(self, *args):
+    supported_schemas = [
+      'aten::neg(Tensor self) -> Tensor',
+      'aten::neg(Tensor self, Tensor out) -> Tensor',
+    ]
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
       op = TorchUnaryOp(NNDCT_OP.NEG, "neg")
-    op.set_config("input", input)
-    return op
+      op.set_config("input", args[0])
+      return op
+    else:
+      return self.default(self.cur_node, 'aten::neg', *args)
 
   def grid_sampler(self, input, grid, mode, padding_mode, align_corners):
     mode_map = {
@@ -1428,21 +1419,13 @@ class OpCreator(object):
     op.set_config("input", input)
     return op
  
-  # def slice(self, input, dim, start, end, step):
-  #   op = TorchBaseOperation(NNDCT_OP.SLICE, NNDCT_OP.SLICE, force_to_primitive=False)
-  #   op.set_config("input", input)
-  #   op.set_config("dim", dim)
-  #   op.set_config("start", start)
-  #   op.set_config("end", end)
-  #   op.set_config("step", step)
-  #   return op
-
   def len(self, input):
     op = TorchBaseOperation(NNDCT_OP.LENGTH, NNDCT_OP.LENGTH, force_to_primitive=False)
     op.set_config("input", input)
     return op
 
   def lt(self, input, other):
+    # TODO:
     op = TorchBaseOperation(NNDCT_OP.SCALAR_LESS_THAN, NNDCT_OP.SCALAR_LESS_THAN, force_to_primitive=False)
     op.set_config("input", input)
     op.set_config("other", other)
@@ -1704,16 +1687,6 @@ class OpCreator(object):
     op.set_config("input", input)
     return op
 
-  # def remainder(self, input, other):
-  #   if (isinstance(input, Tensor) and input.is_real_tensor()) \
-  #    or (isinstance(other, Tensor) and other.is_real_tensor()):
-  #     op = TorchBinaryOp(NNDCT_OP.REMAINDER, "remainder")
-  #   else:
-  #     op = TorchBinaryOp(NNDCT_OP.SCALAR_REMAINDER, "%")
-
-  #   op.set_config("input", input)
-  #   op.set_config("other", other)
-  #   return op
 
   def argmax(self, input, dim, keepdim = False):
     if dim is not None and keepdim == True:

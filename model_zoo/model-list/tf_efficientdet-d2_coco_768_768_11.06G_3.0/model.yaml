@@ -41,5 +41,5 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 8cc1325f787387df233253c8ddd840e8
+  checksum: 93b31ca35ee226d9bd73b2edb95021e5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

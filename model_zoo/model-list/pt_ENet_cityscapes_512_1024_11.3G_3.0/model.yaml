@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 6172d9b1d4ed3a35fa1d224052cb20df
+  checksum: 558920b0aa82926fa39b3b7edafd54a2
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 0089f700bcd77a9d95cca1df6a2a8c48
+  checksum: f89541e3ac4ffdbcfc72beb6cbaf4935
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 1b17a59843db6bce3253916a9736c646
+  checksum: 39ab50f006236376b3b80b3450986c7c
 - name: ENet_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: d3357c2a1a8c5bd9d8b2e4f90ebd3726
+  checksum: d6862e1246257a6ec6b5ec2c0d2041ea
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -2,6 +2,9 @@
 
 :pushpin: **Note:** This application can be run only on VCK190 platform.
 
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
+
+
 ## Table of Contents
 
 - [Introduction](#Introduction)

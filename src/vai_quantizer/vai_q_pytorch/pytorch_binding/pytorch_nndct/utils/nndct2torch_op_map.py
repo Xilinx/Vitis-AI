@@ -18,6 +18,7 @@
 
 from glob import glob
 from nndct_shared.base import NNDCT_OP
+from nndct_shared.utils import NndctScreenLogger
 
 _NNDCT_OP_2_TORCH_OP = {}  # Dict[str, str]
 _TORCH_OP_2_NNDCT_OP = {}  # Dict[str, str]
@@ -55,6 +56,9 @@ def get_torch_op_type(nndct_op_type):
 def get_nndct_op_type(torch_op_type):
   
   if get_torch_op_2_nndct_op_map().get(torch_op_type, None) is None:
-    raise Exception('please register the operator:"{}"'.format(torch_op_type))
+    #raise Exception('please register the operator:"{}"'.format(torch_op_type))
+    NndctScreenLogger().warning('There is no "{}" layer in this model, please remove "{}" \
+configuration in config file'.format(torch_op_type, torch_op_type))
+    return
   else:
     return get_torch_op_2_nndct_op_map()[torch_op_type]

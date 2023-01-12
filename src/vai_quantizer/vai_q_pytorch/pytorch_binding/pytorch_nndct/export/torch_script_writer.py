@@ -25,6 +25,7 @@ from nndct_shared.nndct_graph import Graph, Node, Tensor
 from pytorch_nndct.utils import TorchOpClassType, TorchSymbol
 
 from .op_descriptor import MISC_OP_DISCR_MAP
+from nndct_shared.utils import  NndctOption
 
 class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
   def __init__(self):
@@ -77,7 +78,8 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
     _write_module_init(graph)
         
   def _collect_reuse_output(self, graph: Graph):
-    def dfs(node, visited):
+        
+    def dfs_recursion(node, visited):
       visited.append(node)
       if len(node.out_tensors) == 1 \
       and graph.parents(node) \
@@ -87,7 +89,31 @@ class TorchBaseScriptWriter(metaclass=abc.ABCMeta):
              
       for cn in graph.children(node):
         if cn not in visited:
-          dfs(cn, visited)
+          dfs_recursion(cn, visited)
+        
+    def dfs_iteration(node_in, visited_in):
+      task_stack = [[node_in, visited_in]]
+      while len(task_stack) > 0:
+          node, visited = task_stack.pop()
+          visited.append(node)
+          if len(node.out_tensors) == 1 \
+          and graph.parents(node) \
+          and len(graph.parents(node)[0].out_nodes) == 1 \
+          and graph.parents(node)[0].out_tensors[0] not in graph.end_tensors:
+            self._reuse_node_output_map[node.name] = graph.parents(node)[0].out_tensors[0].name
+          task_list = []
+          for cn in graph.children(node):
+            if cn not in visited:
+                task_list.append([cn, visited])
+          task_list.reverse()
+          for k in task_list:
+            task_stack.append(k)
+    def dfs():
+        pass
+    if NndctOption.nndct_traversal_graph_mode.value == 1:
+        dfs = dfs_recursion
+    else:
+        dfs = dfs_iteration    
           
     if len(graph.all_blocks()) > 1:
       return

@@ -1,6 +1,6 @@
 # **VAI_Q_TENSORFLOW2**
 
-The Xilinx Vitis AI Quantizer for Tensorflow 2.x. 
+The Xilinx Vitis AI Quantizer for Tensorflow 2.x.
 
 It is customized based on [tensorflow-model-optimization](https://github.com/tensorflow/model-optimization).
 The TensorFlow Model Optimization Toolkit is a suite of tools that users, both novice and advanced, can use to optimize machine learning models for deployment and execution.
@@ -45,9 +45,9 @@ $ conda install --use-local ./conda_pkg/linux-64/*.tar.bz2
 
 ## Test Environment
 
-* Python 3.6, 3.7 
-* Tensorflow 2.8.0
-* Keras 2.8.0
+* Python 3.6, 3.7
+* Tensorflow 2.10.0
+* Keras 2.10.0
 
 ## Quick Start
 
@@ -62,7 +62,7 @@ quantizer = vitis_quantize.VitisQuantizer(float_model, quantize_strategy='pof2s'
 # 2. Call quantizer.quantize_model to do post training quantization.
 # Here calib_dataset is a representative dataset for calibration, you can use full or subset of eval_dataset or train_dataset.
 # See 'quantize_model method' section below for detailed options.
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset)     
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset)
 ```
 
 * #### Quantize-Aware Training(QAT)
@@ -83,20 +83,20 @@ qat_model.fit(train_dataset)
 quantized_model.save('quantized_model.h5')
 ```
 
-* #### Load the saved quantized model: 
+* #### Load the saved quantized model:
 
 ```python
 model = keras.models.load_model('./quantized_model.h5')
 ```
 
-* #### Evaluate the quantized model 
+* #### Evaluate the quantized model
 
 ```python
 quantized_model.compile(loss=your_loss, metrics=your_metrics)
 quantized_model.evaluate(eval_dataset)
 ```
 
-* #### Dump the quantized weights and activation for DPU debug: 
+* #### Dump the quantized weights and activation for DPU debug:
 
 ```python
 vitis_quantize.VitisQuantizer.dump_model(quantized_model, dataset=dump_dataset)
@@ -106,7 +106,7 @@ Note that the batch_size of the dump_dataset should be set to 1 for DPU debuggin
 
 ## Inspecting vai_q_tensorflow2
 
-VitisInspector is an experimental new feature introduced in Vitis AI 2.5 to inspect a float model and show partition results for a given DPU target architecture, together with some indications on why the layers are not mapped to DPU. Without target, we can only show some general, target-independent inspection results. Assign target to get more detailed inspect results for it.
+Vitis Inspector is an experimental new feature introduced in Vitis AI 3.0 to inspect a float model and show partition results for a given DPU target architecture, together with some indications on why the layers are not mapped to DPU. Without target, we can only show some general, target-independent inspection results. Assign target to get more detailed inspect results for it.
 
 Note: This feature in only available for default pof2s quantize strategy due to DPU limitations. This feature is experimental, please contact us if you encounter any bugs or problems.
 
@@ -115,29 +115,36 @@ The following codes show how to inspect a model.
 ```python
 model = tf.keras.models.load_model(‘float_model.h5’)
 from tensorflow_model_optimization.quantization.keras import vitis_inspect
-inspector = vitis_inspect.VitisInspector(target="DPUCADF8H_ISA0")
-inspector.inspect_model(model, 
-                        plot_model=True, 
-                        plot_file="model.svg", 
-                        dump_results=True, 
-                        dump_results_file="inspect_results.txt", 
+inspector = vitis_inspect.VitisInspector(target="DPUCZDX8G_ISA1_B4096")
+inspector.inspect_model(model,
+                        input_shape=[1, 224, 224, 3],
+                        dump_model=True,
+                        dump_model_file="inspect_model.h5",
+                        plot=True,
+                        plot_file="model.svg",
+                        dump_results=True,
+                        dump_results_file="inspect_results.txt",
                         verbose=0)
 ```
 
-Arguments:
-*  **target**: string or None, the target DPU to deploy this model. It can be a name string (for example, DPUCAHX8L_ISA0), a JSON file path (for example, ./U50/arch.json) or a fingerprint. If set to None, no target will be applied and only some general, target-independent inspect results will be shown. The default value is None. 
+**Arguments**:
+*  **target**: string, the target DPU to deploy this model. It can be a name string (for example, DPUCZDX8G_ISA1_B4096), a JSON file path (for example, ./U50/arch.json) or a fingerprint. The default value is None, if the target DPU is not specified, an error will be reported.
 *  **model**: tf.keras.Model instance, the float model to be inspected. Float model should have concrete input shapes. Build the float model with concrete input shapes or call inspect_model with the input_shape argument.
-*  **input_shape**: list(int) or list(list(int)),  contains the input shape for each input layer. Use default shape info in the input layers if not set. Use list of shapes for multiple inputs, for example inspect_model(model, input_shape=[224, 224, 3]) or inspect_model(model, input_shape=[[224, 224, 3], [64, 1]]). All dimensions should have concrete values, and batch_size dimension should be omitted. The default value is None.
+*  **input_shape**: list(int) or list(list(int)) or tuple(int) or dictionary(int),  contains the input shape for each input layer. Use default shape info in the input layers if not set. Use list of shapes for multiple inputs, for example inspect_model(model, input_shape=[1, 224, 224, 3]) or inspect_model(model, input_shape=\[[None, 224, 224, 3], [None, 64]]). All dimensions should have concrete values, and batch_size dimension should be None or int.  If the input shape of the model is variable like [None, None, None, 3], you need to specify a shape like [None, 224, 224, 3] to generate the final quantized model. The default value is None.
+*  **dump_model**: bool, whether to dump the inspected model and save model to disk. The default value is False.
+*  **dump_model_file**: string, path of inspected model file. The default value is inspect_model.h5.
 *  **plot**: bool, whether to plot the model inspect results by graphviz and save image to disk. It is helpful when you need to visualize the model inspection results together with some modification hints. Note that only part of output file types can show the hints, such as .svg.The default value is False.
-* **plot_file**: string, file path of model image file when plotting the model. The default value is model.svg.
-* **dump_results**: bool, whether to dump the inspect results and save text to disk. More detailed layer-by-layer results than screen logging will be dumped to the text file. The default value is False.
-* **dump_results_file**: string, file path of inspect results text file. The default value is inspect_results.txt.
-* **verbose**: int, the logging verbosity level. More detailed logging results will be shown for higher verbose value. The default value is 0.
+*  **plot_file**: string, file path of model image file when plotting the model. The default value is model.svg.
+*  **dump_results**: bool, whether to dump the inspect results and save text to disk. More detailed layer-by-layer results than screen logging will be dumped to the text file. The default value is True.
+*  **dump_results_file**: string, file path of inspect results text file. The default value is inspect_results.txt.
+*  **verbose**: int, the logging verbosity level. More detailed logging results will be shown for higher verbose value. The default value is 0.
 
+**Known issue**
+* **multi-outputs pattern issue**: 1) Due to Xcompiler's pattern matching problem, when the convolution or add layer has multiple output layers and one of which is a relu activation layer, the result of relu layer may be incorrect. 2) When the relu-like activation layer is followed by multiple convolutional layers, the result of convolutional layer may be incorrect. This issue will be fixed in a later version.
 
 ## Running vai_q_tensorflow2
 
-Vai_q_tensorflow supports two different approaches to quantizing a deep learning model. 
+Vai_q_tensorflow supports two different approaches to quantizing a deep learning model.
 Post-training quantization(PTQ) is a technique to convert a pretrained float model into a quantized model with little degradation in model accuracy.
 A representative dataset is needed to run a few batches of inference on the float model to abtain the distributions of the activations, which is also called quantize calibration.
 Another approach is quantize-aware training(QAT), which models the quantization errors in both the forward and backward passes during model quantization.
@@ -162,41 +169,45 @@ Table 1. Input Files for vai_q_tensorflow2
 
 2.  #### Quantizing Using the vai_q_tensorflow2 API
 
-Below codes shows how to do post-training quantization with vai_q_tensorflow2 API. 
-You can find a full example in [example](https://github.com/Xilinx/Vitis-AI/blob/master/tools/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/examples/quantization/keras/vitis/mnist_cnn_ptq.py).
+Below codes shows how to do post-training quantization with vai_q_tensorflow2 API.
+You can find a full example in [here](https://github.com/Xilinx/Vitis-AI/blob/master/src/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/examples/quantization/keras/vitis/mnist_cnn_ptq.py).
 
 ```python
 float_model = tf.keras.models.load_model(‘float_model.h5’)
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
 quantizer = vitis_quantize.VitisQuantizer(float_model)
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=100, calib_batch_size=10)   
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, 
+                                           calib_steps=100, 
+					   calib_batch_size=10, 
+					   input_shape=[None, 224, 224, 3])
 ```
 
 Arguments:
-*  **calib_dataset** is used as a representative calibration dataset for calibration as an example. 
-You can use full or part of eval_dataset, train_dataset or other datasets. You can also use train_dataset or other datasets. 
-*  **calib_steps** is the total number of steps for calibration. Ignored with the default value of None. 
-If "calib_dataset" is a tf.data dataset, generator or keras.utils.Sequence instance and steps is None, calibration will run until the dataset is exhausted. 
+*  **calib_dataset** is used as a representative calibration dataset for calibration as an example.
+You can use full or part of eval_dataset, train_dataset or other datasets. You can also use train_dataset or other datasets.
+*  **calib_steps** is the total number of steps for calibration. Ignored with the default value of None.
+If "calib_dataset" is a tf.data dataset, generator or keras.utils.Sequence instance and steps is None, calibration will run until the dataset is exhausted.
 This argument is not supported with array inputs.
 *  **calib_batch_size** is the number of samples per batch for calibration.
 If the "calib_dataset" is in the form of a dataset, generator or keras.utils.Sequence instances, the batch size is controlled by the dataset itself.
 If the "calib_dataset" is in the form of a numpy.array object, the default batch size is 32.
+*  **input_shape**: list(int) or list(list(int)) or tuple(int) or dictionary(int),  contains the input shape for each input layer. Use default shape info in the input layers if not set. Use list of shapes for multiple inputs, for example input_shape=[1, 224, 224, 3] or input_shape=\[[None, 224, 224, 3], [None, 64, 1]]. All dimensions should have concrete values, and batch_size dimension should be None or int. If the input shape of the model is variable like [None, None, None, 3], you need to specify a shape like [None, 224, 224, 3] to generate the final quantized model.
 
 3.  #### vai_q_tensorflow2 Fast Finetuning
 
-Generally, there is a small accuracy loss after quantization, but for some networks such as MobileNets, the accuracy loss can be large. 
+Generally, there is a small accuracy loss after quantization, but for some networks such as MobileNets, the accuracy loss can be large.
 Fast finetuning uses the AdaQuant algorithm to adjust the weights and quantize params layer by layer with the unlabeld calibration dataset and can get better accuracy for some models.
-It will take longer time than normal PTQ (still shorter than QAT as calib_dataset is much smaller than train dataset) and is disabled by default to save time, 
+It will take longer time than normal PTQ (still shorter than QAT as calib_dataset is much smaller than train dataset) and is disabled by default to save time,
 and can be turned on to try to improve the performance if you see accuracy issues. A recommanded workflow is to first try PTQ without fast finetuning and try quantization with fast finetuning
 if the accuracy is not acceptable. QAT is another method to improve the accuracy but may takes longer time and need the train dataset. You can do fast finetuning by setting 'include_fast_ft' to True when
 doing the post-training quantization.
 
 ```python
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=None, calib_batch_size=None, include_fast_ft=True, fast_ft_epochs=10)   
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_steps=None, calib_batch_size=None, include_fast_ft=True, fast_ft_epochs=10)
 ```
 
 Arguments:
-*  **include_fast_ft** indicates wether to do fast finetuning or not. 
+*  **include_fast_ft** indicates wether to do fast finetuning or not.
 *  **fast_ft_epochs** indicates the number of finetuning epochs for each layer.
 
 4.  #### Saving the Quantized Model
@@ -208,8 +219,27 @@ quantized_model.save('quantized_model.h5')
 
 The generated quantized_model.h5 file can be fed to the vai_c_tensorflow compiler and then deployed on the DPU.
 
-5.  #### (Optional) Evaluating the Quantized Model
-If you have scripts to evaluate float models, like the models in Xilinx Model Zoo, you can replace the float model file with the quantized model for evaluation. 
+5.  #### (Optional) Exporting the Quantized Model to ONNX
+The following codes show how to perform post-training quantization and export the quantized model to onnx with vai_q_tensorflow2 API.
+
+```python
+model = tf.keras.models.load_model(‘float_model.h5’)
+from tensorflow_model_optimization.quantization.keras import vitis_quantize
+quantizer = vitis_quantize.VitisQuantizer(model)
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, 
+                                           output_format='onnx',
+                                           onnx_opset_version=11,
+                                           output_dir='./quantize_results',
+                                           **kwargs) 
+```
+
+Arguments:
+*  **output_format**: A string object, indicates what format to save the quantized model. Options are: '' for skip saving, 'h5' for saving .h5 file, 'tf' for saving saved_model file, 'onnx' for saving .onnx file. Default to ''.
+*  **onnx_opset_version**: An int object, the ONNX opset version. Take effect only when output_format is 'onnx'. Default to 11.
+*  **output_dir**: A string object, indicates the directory to save the quantized model in. Default to './quantize_results'.
+
+6.  #### (Optional) Evaluating the Quantized Model
+If you have scripts to evaluate float models, like the models in Xilinx Model Zoo, you can replace the float model file with the quantized model for evaluation.
 To support the customized quantize layers, the vitis_quantize module should be imported, for example:
 
 ```python
@@ -225,8 +255,8 @@ quantized_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),
 quantized_model.evaluate(eval_dataset)
 ```
 
-6.  #### (Optional) Dumping the Simulation Results
-Sometimes after deploying the quantized model, it is necessary to compare the simulation results on the CPU/GPU and the output values on the DPU. 
+7.  #### (Optional) Dumping the Simulation Results
+Sometimes after deploying the quantized model, it is necessary to compare the simulation results on the CPU/GPU and the output values on the DPU.
 You can use the VitisQuantizer.dump_model API of vai_q_tensorflow2 to dump the simulation results with the quantized_model.
 
 ```python
@@ -237,9 +267,9 @@ vitis_quantize.VitisQuantizer.dump_model(quantized_model, dump_dataset, output_d
 
 Note: The batch_size of the dump_dataset should be set to 1 for DPU debugging.
 
-Dump results are generated in ${dump_output_dir} after the command has successfully executed. 
-Results for weights and activation of each layer are saved separately in the folder. 
-For each quantized layer, results are saved in *.bin and *.txt formats. 
+Dump results are generated in ${dump_output_dir} after the command has successfully executed.
+Results for weights and activation of each layer are saved separately in the folder.
+For each quantized layer, results are saved in *.bin and *.txt formats.
 If the output of the layer is not quantized (such as for the softmax layer), the float activation results are saved in *_float.bin and *_float.txt if "save_float" is set True.
 The / symbol is replaced by _ for simplicity. Examples for dumping results are shown in the following table.
 
@@ -269,7 +299,7 @@ Table 3. Input Files for vai_q_tensorflow2 Quantize Finetuning
 | 3 | Training Scripts | The Python scripts to run float train/finetuning of the model. |
 
 2.  #### (Optional) Evaluate the Float Model
-It is suggested to evaluate the float model first before doing quantize finetuning, which can check the correctness of the scripts and dataset. 
+It is suggested to evaluate the float model first before doing quantize finetuning, which can check the correctness of the scripts and dataset.
 The accuracy and loss values of the float checkpoint can also be a baseline for the quantize finetuning.
 
 3.  #### Modify the Training Scripts And Run Training/Finetuning
@@ -284,11 +314,11 @@ quantizer = vitis_quantize.VitisQuantizer(model, quantize_strategy='pof2s_tqt')
 qat_model = quantizer.get_qat_model(
     init_quant=True, # Do init PTQ quantization will help us to get a better initial state for the quantizers, especially for `pof2s_tqt` strategy. Must be used together with calib_dataset
     calib_dataset=calib_dataset)
-    
+
 # Then run the training process with this qat_model to get the quantize finetuned model.
 # Compile the model
 model.compile(
-	optimizer= RMSprop(learning_rate=lr_schedule),		
+	optimizer= RMSprop(learning_rate=lr_schedule),
 	loss=tf.keras.losses.SparseCategoricalCrossentropy(),
 	metrics=keras.metrics.SparseTopKCategoricalAccuracy())
 
@@ -297,7 +327,7 @@ model.fit(train_dataset)
 ```
 
 Note: In Vitis 1.4 we add a new strategy `pof2s_tqt` which uses Trained-Threshold in quantizers and may better results for QAT. By default, the Straight-Through-Estimator will be used.
-Please note that `pof2s_tqt` strategy should only be used in QAT and be used together with 'init_quant=True' to get best performance. 
+Please note that `pof2s_tqt` strategy should only be used in QAT and be used together with 'init_quant=True' to get best performance.
 Do init PTQ quantization will be helpful to get a better initial state for the quantizer parameters, especially for `pof2s_tqt` strategy, otherwise the training may not converge.
 
 4.  #### Save the Model
@@ -309,7 +339,7 @@ model.save(‘qat_model.h5’)
 
 # save the model periodically during fit using callbacks
 model.fit(
-	train_dataset, 
+	train_dataset,
 	callbacks = [
       		keras.callbacks.ModelCheckpoint(
           	filepath=’./quantize_train/’
@@ -320,7 +350,7 @@ model.fit(
 ```
 
 5.  #### Convert to deployable quantized model
-The trained/finetuned model need to be checked and slightly modified to meet the compiler requirements. 
+The trained/finetuned model need to be checked and slightly modified to meet the compiler requirements.
 For example, if "train_with_bn" is set True, the bn layers are not really folded during training and need to be folded before deployment, and so is the Dropout layers.
 Moreover, some of the quantizer params may vary during training and ran out of the compiler permitted ranges and need to be corrected before deployment.
 
@@ -343,7 +373,7 @@ quantized_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),
 quantized_model.evaluate(eval_dataset)
 ```
 
-Note: Quantize finetuning works like float finetuning, so it will be of great help to have some experience on float model training and finetuning. 
+Note: Quantize finetuning works like float finetuning, so it will be of great help to have some experience on float model training and finetuning.
 For example, how to choose hyper-parameters like optimizer type and learning rate.
 
 ## Configure the Quantize Strategy
@@ -367,26 +397,26 @@ Below is an example configuration for the Conv2D layers:
   "weight_quantizers": [
   {
     "quantizer_type": "Pof2SQuantizer",
-    "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "narrow_range": False}
-  ],
+    "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": true, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+  }],
   "quantizable_biases": ["bias"],
   "bias_quantizers": [
   {
     "quantizer_type": "Pof2SQuantizer",
-    "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "narrow_range": False}
-  ],
+    "quantizer_params": {"bit_width": 8,"method":0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+  }],
   "quantizable_activations": ["activation"],
   "activation_quantizers": [
   {
     "quantizer_type": "FSQuantizer",
-    "quantizer_params": {"bit_width": 8, "method":2, "method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1}
-  ]
+    "quantizer_params": {"bit_width": 8, "method":2, "method_percentile":99.9999, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+  }]
 }
 ```
 
 As you can see, by using this quantize configuration, we quantize the weight, bias and activations of the Conv2D layer. The weight and biasrs, all of them are using `Pof2SQuantizer`(power-of-2 scale quantizer) and the activation are using `FSQuantizer`(float scale quantizer). We can apply different quantizers for different objects in one layer.
 
-Note: The Quantizer here in configurations means the quantize operation applied to each object. It consumes a float tensor and output a quantized tensor. Please note that the quantization is 'fake', which means that the input is quantized to int and then de-quantized to float. 
+Note: The Quantizer here in configurations means the quantize operation applied to each object. It consumes a float tensor and output a quantized tensor. Please note that the quantization is 'fake', which means that the input is quantized to int and then de-quantized to float.
 
 #### 2. Using Built-in Quantize Strategy
 
@@ -409,8 +439,8 @@ from tensorflow_model_optimization.quantization.keras import vitis_quantize
 quantizer = vitis_quantize.VitisQuantizer(model)
 quantizer.quantize_model(calib_dataset,
                          input_layers=['conv2'],
-                         bias_bit=32, 
-                         activation_bit=32, 
+                         bias_bit=32,
+                         activation_bit=32,
                          weight_per_channel=True)
 ```
 
@@ -452,8 +482,8 @@ model = tf.keras.models.load_model(‘float_model.h5’)
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
 quantizer = vitis_quantize.VitisQuantizer(model, quantize_strategy='fs')
 quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset,
-                                           calib_step=100, 
-                                           calib_batch_size=10，
+                                           calib_steps=100,
+                                           calib_batch_size=10,
                                            **kwargs)
 ```
 
@@ -462,13 +492,26 @@ quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset,
 * **calib_batch_size**: calib_batch_size is the number of samples per batch for calibration. If the "calib_dataset" is in the form of a dataset, generator, or keras.utils.Sequence instances, the batch size is controlled by the dataset itself. If the calib_dataset is in the form of a numpy.array object, the default batch size is 32.
 * **kwargs**: dict of the user-defined configurations of quantize strategy. It will override the default built-in quantize strategy. For example, setting bias_bit=16 will let the tool to quantize all the biases with 16bit quantizers. See vai_q_tensorflow2 Usage section for more information of the user-defined configurations.
 
+## Converting to Float16 or BFloat16
+vai_q_tensorflow2 supports data type conversions for float models, including Float16, BFloat16, Float, and Double. The following codes show how to perform the data type conversions with vai_q_tensorflow2 API.
+
+```python
+model = tf.keras.models.load_model(‘float_model.h5’)
+from tensorflow_model_optimization.quantization.keras import vitis_quantize
+quantizer = vitis_quantize.VitisQuantizer(model)
+quantized_model = quantizer.quantize_model(convert_datatype='float16'
+                                           **kwargs)
+```
+
+*  **convert_datatype**: A string object, indicates the target data type for the float model. Options are 'float16', 'bfloat16', 'float32', and 'float64'. Default value is 'float16'.
+
 ## Quantizing with custom layers
 
-Tensorflow 2 provides a lot of common built-in layers to build the machine learning models, as well as easy ways to for you to write your own 
-application-specific layers either from scratch or as the composition of existing layers. `Layer` is one of the central abstractions in tf.keras, 
+Tensorflow 2 provides a lot of common built-in layers to build the machine learning models, as well as easy ways to for you to write your own
+application-specific layers either from scratch or as the composition of existing layers. `Layer` is one of the central abstractions in tf.keras,
 subclassing Layer is the recommended way to create custom layers. Please refer to tensorflow [user guide](https://www.tensorflow.org/guide/keras/custom_layers_and_models) for more information.
 
-Vai_q_tensorflow2 provides support for new custom layers via subclassing, including quantizing models with custom layers and an experimental 
+Vai_q_tensorflow2 provides support for new custom layers via subclassing, including quantizing models with custom layers and an experimental
 support for quantizing the custom layers with custom quantize strategies.
 
 Some models may have custom layers inside, vai_q_tensorflow2 provides interfaces to load them, for example:
@@ -503,29 +546,29 @@ float_model = tf.keras.models.load_model(‘float_model.h5’, custom_objects={'
 
 Here float model contains a custom layer named "MyCustomLayer". The `custom_objects` argument in tf.keras.model.load_model API is needed to load it.
 Similarly, VitisQuantizer class provide 'custom_objects' argument to handle the custom layers, below is an example and you can find a full example in [example](https://github.com/Xilinx/Vitis-AI/blob/master/tools/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/examples/quantization/keras/vitis/mnist_cnn_ptq_custom_layer.py).
-The argument `custom_objects` is a dict containing the `{"custom_layer_class_name":"custom_layer_class"}`, multiple custom layers should be separated by a comma. 
+The argument `custom_objects` is a dict containing the `{"custom_layer_class_name":"custom_layer_class"}`, multiple custom layers should be separated by a comma.
 Moreover, `add_shape_info` should also be set to True for the `quantize_model` API when quantizing models with custom layers to add shape inference information for them.
 
 ```python
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
 # Register the custom layer to VitisQuantizer by custom_objects argument.
 quantizer = vitis_quantize.VitisQuantizer(float_model, custom_objects={'MyCustomLayer': MyCustomLayer})
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=100, calib_batch_size=10, add_shape_info=True)
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_steps=100, calib_batch_size=10, add_shape_info=True)
 ```
 
 During the quantization, these custom layers will be wrapped by CustomLayerWrapper and kept unquantized.
 
 Notes:
-1. When calling the `dump_model` API to dump golden results for data checking during deployment, we need to set `dump_float=True` to dump float weights and activation for 
+1. When calling the `dump_model` API to dump golden results for data checking during deployment, we need to set `dump_float=True` to dump float weights and activation for
 the custom layers, since they are not quantized.
 
 ## (Experimental)Quantizing custom layers with custom quantize strategy
 
-With the default quantize strategy, the custom layers will not be quantized and remain float during quantization, as they are not in the list of supported APIs of vai_q_tensorflow2. 
+With the default quantize strategy, the custom layers will not be quantized and remain float during quantization, as they are not in the list of supported APIs of vai_q_tensorflow2.
 We provide an interface named 'custom_quantize_strategy' for advanced users to make custom quantize strategies to do quantize experiments on them. The custom quantize strategy is
-a Dict object containing the quantize strategy items or a json file of the Dict. 
+a Dict object containing the quantize strategy items or a json file of the Dict.
 
-The [default quantize strategy](https://github.com/Xilinx/Vitis-AI/blob/master/tools/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/core/quantization/keras/vitis/eight_bit/vitis_8bit_default_quantize_strategy.json) 
+The [default quantize strategy](https://github.com/Xilinx/Vitis-AI/blob/master/tools/Vitis-AI-Quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/python/core/quantization/keras/vitis/eight_bit/vitis_8bit_default_quantize_strategy.json)
 provides an example of the quantize strategy, the custom quantize strategy should follow the same format and act in override behaviour, which means the same item in the custom quantize strategy
 will override the one in default strategy, but new items will be added to the quantize strategy.
 
@@ -539,7 +582,7 @@ my_quantize_strategy = {
             "layer_type": "__main__.MyCustomLayer",
             "quantizable_weights": ["w", "b"],
             "weight_quantizers": [
-                "quantizer_type": "LastValueQuantPosQuantizer","quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0},     
+                "quantizer_type": "LastValueQuantPosQuantizer","quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0},
                 "quantizer_type": "LastValueQuantPosQuantizer", "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}
             ],
             "quantizable_outputs": ["0"],
@@ -552,7 +595,7 @@ my_quantize_strategy = {
 quantizer = vitis_quantize.VitisQuantizer(model, custom_objects={'MyLayer': MyLayer}, custom_quantize_strategy=my_quantize_strategy)
 
 # The following quantization process are all the same as before, here we do normal PTQ as an example
-quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_step=100, calib_batch_size=10)
+quantized_model = quantizer.quantize_model(calib_dataset=calib_dataset, calib_steps=100, calib_batch_size=10)
 ```
 
 ## vai_q_tensorflow2 Supported Operations and APIs
@@ -568,6 +611,7 @@ Table 4. vai_q_tensorflow2 Supported Layers
 | Core | tf.keras.layers.Activation | If 'activation' is 'relu' or 'linear', will be quantized.<br>If 'activation' is 'sigmoid' or 'swish', will be converted to hard-sigmoid or hard-swish and then be quantized by default.<br>Otherwise will not be quantized.|
 | Convolution | tf.keras.layers.Conv2D ||
 | Convolution | tf.keras.layers.DepthwiseConv2D ||
+| Convolution | tf.keras.layers.SeparableConv2D ||
 | Convolution | tf.keras.layers.Conv2DTranspose ||
 | Pooling | tf.keras.layers.AveragePooling2D ||
 | Pooling | tf.keras.layers.MaxPooling2D ||
@@ -583,8 +627,9 @@ Table 4. vai_q_tensorflow2 Supported Layers
 | Merging | tf.keras.layers.Muliply ||
 | Activation | tf.keras.layers.ReLU ||
 | Activation | tf.keras.layers.Softmax | Softmax layer's input will be quantized, can run on standalone Softmax IP to accelerate. |
-| Activation | tf.keras.layers.LeakyReLU | Only 'alpha'=0.1 is supported to run on DPU, otherwise will not be quantized and mapped to CPU. |
+| Activation | tf.keras.layers.LeakyReLU | Only 'alpha'=0.1 is supported to run on DPU (0.1 will be converted to 26/256 by the quantizer), otherwise will not be quantized and mapped to CPU. |
 | Hard_sigmoid | tf.keras.layers.ReLU(6.)(x+3.)*(1./6.) | The supported hard_sigmoid is from [Mobilenet_v3](https://github.com/tensorflow/tensorflow/blob/v2.4.0/tensorflow/python/keras/applications/mobilenet_v3.py#L440). <br>`tf.keras.Activation.hard_sigmoid` is not supported now and will not be quantized. |
+| Activation | tf.keras.layers.PReLU | The quantization of PReLU is not supported to run on DPU currently, it will be quantized and mapped to CPU. |
 
 ## vai_q_tensorflow2 APIs
 
@@ -598,37 +643,42 @@ vitis_inspect.VitisInspector(
 The construction function of class VitisInspector.
 
 **Arguments**
-* **target**: A string object or None, the target DPU to deploy this model. It can be a name string (e.g. "DPUCAHX8L_ISA0"), a JSON file path (e.g. "./U50/arch.json") or a fingerprint. If set None, only show some general, target-independent inspect results. Default to None.
+* **target**: string or None, the target DPU to deploy this model. It can be a name string (for example, DPUCZDX8G_ISA1_B4096), a JSON file path (for example, ./U50/arch.json) or a fingerprint. The default value is None, if the target DPU is not specified, an error will be reported.
 
 #### inspect_model Method
 
 ```python
-VitisInspector.inspect_model(model, 
-                             plot=True, 
-                             plot_file="model.svg", 
-                             dump_results=True, 
-                             dump_results_file="inspect_results.txt", 
+VitisInspector.inspect_model(model,
+                             input_shape=None,
+                             dump_model=True,
+                             dump_model_file="inspect_model.h5",
+                             plot=True,
+                             plot_file="model.svg",
+                             dump_results=True,
+                             dump_results_file="inspect_results.txt",
                              verbose=0)
 ```
-                             
+
 This function performs float model inspection.
 
 **Arguments**
-* **model**: tf.keras.Model instance, the float model to be inspected. Float model should have concrete input shapes, please build the float model with concrete input shapes or call inspect_model with `input_shape` argument.
-* **input_shape**: list(int) or list(list(int)),  contains the input shape for each input layer. Use default shape info in input layers if not set. Use list of shapes for multiple inputs, e.g. inspect_model(model, input_shape=[224, 224, 3]) or inspect_model(model, input_shape=[[224, 224, 3], [64, 1]]). All dimensions should have concrete values, batch_size dimension should be omitted. Default to None.
-* **plot**: bool, whether to plot the model inspect results by graphviz and save image to disk. It is helpful when you need to visualize the model inspect results together with some modification hints. Note that only part of output file types can show the hints, such as .svg. Default to False.
-* **plot_file**: string, file path of model image file when plotting the model. Default to 'model.svg'.
-* **dump_results**: bool, whether to dump the inspect results and save text to disk. More detailed layer by layer results than screen logging will be dumped to the text file. Default to False.
-* **dump_results_file**: string, file path of inspect results text file. Default to 'inspect_results.txt'.
-* **verbose**: int, the logging verbosity level, more detailed logging results will be showed for higher verbose value. Default to 0.
+*  **model**: tf.keras.Model instance, the float model to be inspected. Float model should have concrete input shapes. Build the float model with concrete input shapes or call inspect_model with the input_shape argument.
+*  **input_shape**: list(int) or list(list(int)) or tuple(int) or dictionary(int),  contains the input shape for each input layer. Use default shape info in the input layers if not set. Use list of shapes for multiple inputs, for example inspect_model(model, input_shape=[1, 224, 224, 3]) or inspect_model(model, input_shape=\[[None, 224, 224, 3], [None, 64]]). All dimensions should have concrete values, and batch_size dimension should be None or int.  If the input shape of the model is variable like [None, None, None, 3], you need to specify a shape like [None, 224, 224, 3] to generate the final quantized model. The default value is None.
+*  **dump_model**: bool, whether to dump the inspected model and save model to disk. The default value is False.
+*  **dump_model_file**: string, path of inspected model file. The default value is 'inspect_model.h5'.
+*  **plot**: bool, whether to plot the model inspect results by graphviz and save image to disk. It is helpful when you need to visualize the model inspection results together with some modification hints. Note that only part of output file types can show the hints, such as .svg.The default value is False.
+*  **plot_file**: string, file path of model image file when plotting the model. The default value is model.svg.
+*  **dump_results**: bool, whether to dump the inspect results and save text to disk. More detailed layer-by-layer results than screen logging will be dumped to the text file. The default value is True.
+*  **dump_results_file**: string, file path of inspect results text file. The default value is inspect_results.txt.
+*  **verbose**: int, the logging verbosity level. More detailed logging results will be shown for higher verbose value. The default value is 0.
 
 #### vitis_quantize.VitisQuantizer Class
 
 ```python
 vitis_quantize.VitisQuantizer(
-    model, 
-    quantize_strategy='pof2s', 
-    custom_quantize_strategy=None, 
+    model,
+    quantize_strategy='pof2s',
+    custom_quantize_strategy=None,
     custom_objects={})
 ```
 The construction function of class VitisQuantizer.
@@ -640,9 +690,9 @@ The construction function of class VitisQuantizer.
 *  **custom_quantize_strategy**: A string object, file path of custom quantize strategy json file.
 *  **custom_objects**: A Dict object, mapping names(strings) to custom classes or functions.
 
-Note: 
+Note:
 1. pof2s_tqt strategy should only be used in QAT and be used together with init_quant=True to get the best performance.
-2. fs and fsx strategy are designed for target devices with floating-point supports. DPU does not have floating-point support now, so models quantized with these quantize strategies can not be deployed to them. 
+2. fs and fsx strategy are designed for target devices with floating-point supports. DPU does not have floating-point support now, so models quantized with these quantize strategies can not be deployed to them.
 
 #### quantize_model Method
 
@@ -671,41 +721,46 @@ This function to do post-training quantization(PTQ) of the float model, includin
 **kwargs in this API is a dict of the user-defined configurations of quantize strategy. It will override the default built-in quantize strategy. For example, setting "bias_bit=16" will let the tool to quantize all the biases with 16bit quantizers. Detailed user-defined configurations are listed below.
 
 * **separate_conv_act**: A bool object, whether to separate activation functions from the Conv2D/DepthwiseConv2D/TransposeConv2D/Dense layers. Default to True.
-* **fold_conv_bn**: A bool object, whether to fold the batch norm layers into previous Conv2D/DepthwiseConv2D/TransposeConv2D/Dense layers.
-* **convert_bn_to_dwconv**: Named fold_bn in Vitis-AI 2.0 and previous versions. A bool object, whether to convert the standalone BatchNormalization layer into DepthwiseConv2D layers.
-* **convert_sigmoid_to_hard_sigmoid**: Named replace_sigmoid in Vitis-AI 2.0 previous versions. A bool object, whether to replace the Activation(activation='sigmoid') and Sigmoid layers into hard sigmoid layers and do quantization. If not, the sigmoid layers will be left unquantized and will be scheduled on CPU.
-* **convert_relu_to_relu6**: Named replace_relu6 in Vitis-AI 2.0 and previous versions. A bool object, whether to replace the ReLU6 layers with ReLU layers.
-* **include_cle**: A bool object, whether to do Cross-Layer Equalization before quantization.
-* **cle_steps**: A int object, the iteration steps to do Cross-Layer Equalization.
-* **cle_to_relu6**: Named forced_cle in Vitis-AI 2.0 and previous versions. A bool object, whether to do forced Cross-Layer Equalization for ReLU6 layers.
-* **include_fast_ft**: A bool object, whether to do fast fine-tuning or not. Fast fine-tuning adjust the weights layer by layer with calibration dataset and may get better accuracy for some models. Fast fine-tuning is disabled by default. It takes longer than normal PTQ (still much shorter than QAT as calib_dataset is much smaller than the training dataset). Turn on to improve the performance if you meet accuracy issues.
-* **fast_ft_epochs**: An int object, the iteration epochs to do fast fine-tuning for each layer.
+* **fold_conv_bn**: A bool object, whether to fold the batch norm layers into previous Conv2D/DepthwiseConv2D/TransposeConv2D/Dense layers. Default to True.
+* **convert_bn_to_dwconv**: Named fold_bn in Vitis-AI 2.0 and previous versions. A bool object, whether to convert the standalone BatchNormalization layer into DepthwiseConv2D layers. Default to True.
+* **convert_sigmoid_to_hard_sigmoid**: Named replace_sigmoid in Vitis-AI 2.0 previous versions. A bool object, whether to replace the Activation(activation='sigmoid') and Sigmoid layers into hard sigmoid layers and do quantization. If not, the sigmoid layers will be left unquantized and will be scheduled on CPU. Default to True.
+* **convert_relu6_to_relu**: Named replace_relu6 in Vitis-AI 2.0 and previous versions. A bool object, whether to replace the ReLU6 layers with ReLU layers. Usually Cross-Layer Equalization algorithm can not be applied to ReLU6 layers, setting this option to True will make it available for those models. However, this conversion may lead to accuracy drop to the float model. Default to False.
+* **include_cle**: A bool object, whether to do Cross-Layer Equalization before quantization. Default to True.
+* **cle_steps**: A int object, the iteration steps to do Cross-Layer Equalization. Default to 10.
+* **cle_to_relu6**: Named forced_cle in Vitis-AI 2.0 and previous versions. A bool object, whether to do forced Cross-Layer Equalization for ReLU6 layers. Default to False.
+* **include_fast_ft**: A bool object, whether to do fast fine-tuning or not. Fast fine-tuning adjust the weights layer by layer with calibration dataset and may get better accuracy for some models. Fast fine-tuning is disabled by default. It takes longer than normal PTQ (still much shorter than QAT as calib_dataset is much smaller than the training dataset). Turn on to improve the performance if you meet accuracy issues. Default to False.
+* **fast_ft_epochs**: An int object, the iteration epochs to do fast fine-tuning for each layer. Default to 10.
 * **output_format**: A string object, indicates what format to save the quantized model. Options are: '' for skip saving, 'h5' for saving .h5 file, 'tf' for saving saved_model file, 'onnx' for saving .onnx file. Default to ''.
 * **onnx_opset_version**: An int object, the ONNX opset version. Take effect only when output_format is 'onnx'. Default to 11.
 * **output_dir**: A string object, indicates the directory to save the quantized model in. Default to './quantize_results'.
+* **convert_datatype**: A string object, indicates the target data type for the float model. Options are 'float16', 'bfloat16', 'float32', and 'float64'. Default value is 'float16'.
 * **input_layers**: A list(string) object, names of the start layers to be quantized. Layers before these layers in the model will not be optimized or quantized. For example, this argument can be used to skip some pre-processing layers or stop quantizing the first layer. Default to [].
 * **output_layers**: A list(string) object, names of the end layers to be quantized. Layers after these layers in the model will not be optimized or quantized. For example, this argument can be used to skip some post-processing layers or stop quantizing the last layer. Default to [].
 * **ignore_layers**: A List(string) object, names of the layers to be ignored during quantization. For example, this argument can be used to skip quantizing some sensitive layers to improve accuracy. Default to [].
 * **input_bit**: An int object, the bit width of all inputs. Default to 8.
-* **input_method**: An int object, the method to calculate scale factors in quantization of all inputs. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. Default to 0.
+* **input_method**: An int object, the method to calculate scale factors in quantization of all inputs. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. All methods are available for fs and fsx quatize strategies while only 0 and 1 methods are available for pof2s and pof2s_tqt quantize strategies now. Default to 0.
 * **input_symmetry**: A bool object, whether to do symmetry or asymmetry quantization for all inputs. Default to True.
 * **input_per_channel**: A bool object, whether to do per-channel or per-tensor quantization for all inputs. Default to False.
 * **input_round_mode**: An int object, the rounding mode used in quantization of all inputs. Options are: 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO. Default to 1.
+* **input_unsigned**: An bool object, whether to use unsigned integer quantization for all inputs. It is usually used for non-negative numeric inputs (such as range from 0 to 1) when input_unsigned is true. Default to False.
 * **weight_bit**: An int object, the bit width of all weights. Default to 8.
-* **weight_method**: An int object, the method to calculate scale factors in quantization of all weights. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. Default to 1.
+* **weight_method**: An int object, the method to calculate scale factors in quantization of all weights. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. All methods are available for fs and fsx quatize strategies while only 0 and 1 methods are available for pof2s and pof2s_tqt quantize strategies now. Default to 1.
 * **weight_symmetry**: A bool object, whether to do symmetry or asymmetry quantization for all weights. Default to True.
 * **weight_per_channel**: An bool object, whether to do per-channel or per-tensor quantization for all weights. Default to False.
 * **weight_round_mode**: An int object, the rounding mode used in quantization of all weights. Options are: 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO. Default to 0.
+* **weight_unsigned**: An bool object, whether to use unsigned integer quantization for all weights. It is usually used when weight_symmetry is false. Default to False.
 * **bias_bit**: An int object, the bit width of all biases. Default to 8.
-* **bias_method**: An int object, the method to calculate scale factors in quantization of all biases. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. Default to 0.
+* **bias_method**: An int object, the method to calculate scale factors in quantization of all biases. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. All methods are available for fs and fsx quatize strategies while only 0 and 1 methods are available for pof2s and pof2s_tqt quantize strategies now. Default to 0.
 * **bias_symmetry**: A bool object, whether to do symmetry or asymmetry quantization for all biases. Default to True.
 * **bias_per_channel**: An bool object, whether to do per-channel or per-tensor quantization for all biases. Default to False.
 * **bias_round_mode**: An int object, the rounding mode used in quantization of all biases. Options are: 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO. Default to 0.
+* **bias_unsigned**: An bool object, whether to use unsigned integer quantization for all bias. It is usually used when bias_symmetry is false. Default to False.
 * **activation_bit**: An int object, the bit width of all activations. Default to 8.
-* **activation_method**: An int object, the method to calculate scale factors in quantization of all activations. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. Default to 1.
+* **activation_method**: An int object, the method to calculate scale factors in quantization of all activations. Options are: 0 for Non_Overflow, 1 for Min_MSE, 2 for Min_KL, 3 for Percentile. All methods are available for fs and fsx quatize strategies while only 0 and 1 methods are available for pof2s and pof2s_tqt quantize strategies now. Default to 1.
 * **activation_symmetry**: A bool object, whether to do symmetry or asymmetry quantization for all activations. Default to True.
 * **activation_per_channel**: An bool object, whether to do per-channel or per-tensor quantization for all activations. Default to False.
 * **activation_round_mode**: An int object, the rounding mode used in quantization of all activations. Options are: 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO. Default to 1.
+* **activation_unsigned**: An bool object, whether to use unsigned integer quantization for all activations. It is usually used for non-negative numeric activations (such as ReLU or ReLU6) when activation_symmetry is true. Default to False.
 
 #### dump_model Method
 
@@ -725,8 +780,8 @@ This function dumps the simulation results of the quantized model, including wei
 *  **model**: A tf.keras.Model object, the quantized model to dump.
 *  **dataset**: A tf.data.Dataset, keras.utils.Sequence or np.numpy object, the dataset used to dump, not needed if weights_only is set to True.
 *  **output_dir**: A string object, the directory to save the dump results.
-*  **dump_float**: A bool object, whether to dump the float value of weights and activation results.
-*  **weights_only**: A bool object, set to True to only dump the weights, set to False will also dump the activation results.
+*  **dump_float**: A bool object, whether to dump the float value of weights and activation results. Default to False.
+*  **weights_only**: A bool object, set to True to only dump the weights, set to False will also dump the activation results. Default to False.
 
 #### get_qat_model Method
 
@@ -744,16 +799,16 @@ This function to quantize the float model for quantize-aware training(QAT).
 
 **Arguments**
 
-*  **init_quant**: A bool object, whether to do initial quantization before QAT. Do initial PTQ quantization will be helpful to get a better initial state for the quantizer parameters, especially for `pof2s_tqt` strategy, otherwise the training may not converge.
+*  **init_quant**: A bool object, whether to do initial quantization before QAT. Do initial PTQ quantization will be helpful to get a better initial state for the quantizer parameters, especially for `pof2s_tqt` strategy, otherwise the training may not converge. Default to False.
 *  **calib_dataset**: A tf.data.Dataset, keras.utils.Sequence or np.numpy object, the representative dataset for calibration. Must be set when "init_quant" is set True.
 You can use full or part of eval_dataset, train_dataset or other datasets as calib_dataset.
-*  **calib_steps**: An int object, the total number of steps for initial quantize calibration. Ignored with the default value of None. 
-If "calib_dataset" is a tf.data dataset, generator or keras.utils.Sequence instance and steps is None, calibration will run until the dataset is exhausted. 
+*  **calib_steps**: An int object, the total number of steps for initial quantize calibration. Ignored with the default value of None.
+If "calib_dataset" is a tf.data dataset, generator or keras.utils.Sequence instance and steps is None, calibration will run until the dataset is exhausted.
 This argument is not supported with array inputs.
 *  **calib_batch_size**: An int object, the number of samples per batch for initial quantize calibration.
 If the "calib_dataset" is in the form of a dataset, generator or keras.utils.Sequence instances, the batch size is controlled by the dataset itself.
 If the "calib_dataset" is in the form of a numpy.array object, the default batch size is 32.
-*  **train_with_bn**: A bool object, whether to keep bn layers during quantize-aware training.
+*  **train_with_bn**: A bool object, whether to keep bn layers during quantize-aware training. Default to False.
 *  **freeze_bn_delay**: An int object, the train steps before freezing the bn parameters. Default to -1, which means never do bn freezing.
 
 #### get_deploy_model Method
@@ -768,3 +823,14 @@ This function to convert the QAT models and generates the deployable model, resu
 **Arguments**
 
 *  **model**: A tf.keras.Model object, the QAT model to deploy.
+
+## Error Codes
+Table 5. vai_q_tensorflow2 error codes
+
+| Error Description | Error Types | Causes and Solutions |
+| ----- | ------ | ------ |
+| Quantizer_TF2_Unsupported_Layer | Unsupported layer type | Layer is not a `tf.keras.layers.Layer` or this layer is not yet supported. By default, this layer will not be quantized and will be mapped to run on CPU. You can use the experimental support for customizing quantize strategy to define the quantization behaviour of it. |
+| Quantizer_TF2_Unsupported_Model | Unsupported model type | Only tf.keras sequential or functional models can be supported. Subclassing model is not supported now, please convert it to sequential or functional model and try again. |
+| Quantizer_TF2_Invalid_Input_Shape | Invalid input shape | The input_shape parameter is not valid, please check and set correct value for it. |
+| Quantizer_TF2_Invalid_Calib_Dataset | Invalid calibration dataset | The calibration dataset is not valid, please check and set correct value for it. |
+| Quantizer_TF2_Invalid_Target | Invalid target | The target parameter is not valid, please check and set correct value for it. |

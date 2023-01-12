@@ -61,30 +61,30 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: e9080d57bce87f095eb83f282bd7e211
+  checksum: 72c457c54590bc7ce4cf0866096fc06f
 - name: FADNet_pruned_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: e3371ba703d5b8a4ba1a929225da32ba
+  checksum: cc308c8bbcbd14a71578a816dd73bec6
 - name: FADNet_pruned_2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 0b6cdd303034a995fcd5e0685e2c66a9
+  checksum: 4cab0157ba7475996793290eb73b89c8
 - name: FADNet_pruned_0_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 1aebfea8dd59a405594a8c409c37dfb2
+  checksum: ec2def1bd5aef5dd8c91a7152e56306d
 - name: FADNet_pruned_1_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: c45238d2361e73fe376ea8b7af24950a
+  checksum: 6a2dcfede4a1ae8e1fc97d09f82e406f
 - name: FADNet_pruned_2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 7b834e90326443ba0e97e79dc4ef89d8
+  checksum: ef3512bf4da106e351521a9e3f401d96
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

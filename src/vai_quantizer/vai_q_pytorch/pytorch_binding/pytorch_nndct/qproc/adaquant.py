@@ -189,6 +189,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     self._float_weights = defaultdict(list)
     
     self._last_quant_nodes = self.collect_last_quant_nodes(filter=lambda node: node.name in possible_last_quantized_nodes)
+
     self._torch_version = torch.__version__.split('.')
   
   def _setup_quantizer(self, quant_mode):
@@ -798,7 +799,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
         else:
           need_cache = True
         net_loss = self.optimize_layer_v2(qnode, fmod, layer_act_pair, net_inputs, net_outputs, net_loss, device, need_cache)
-      print(f"%%%%%%%%%%%%%%%%% final opt net loss:{net_loss.avg}")
+      #print(f"%%%%%%%%%%%%%%%%% final opt net loss:{net_loss.avg}")
 
         # print(f"{qnode.name}({need_cache}):{net_loss}")
             
@@ -834,6 +835,12 @@ class AdvancedQuantProcessor(torch.nn.Module):
     layer = qnode.module
     quantize_efficiency = self.quant_eff(layer.weight.data, float_layer.weight.data)
     
+    weight_grad = None
+    bias_grad = None
+    if layer.weight.requires_grad == False:
+      weight_grad = False
+      layer.weight.requires_grad_(requires_grad = True)
+    
     lr_factor = NndctOption.nndct_finetune_lr_factor.value
     lr_factor = lr_factor * batch_factor
     if quantize_efficiency > 4.5:
@@ -845,11 +852,24 @@ class AdvancedQuantProcessor(torch.nn.Module):
     opt_bias = None
     lr_b = 0
     if hasattr(layer, "bias") and layer.bias is not None:
+      if layer.bias.requires_grad == False:
+        bias_grad = False
+        layer.bias.requires_grad_(requires_grad = True)
       if layer.bias.flatten().shape[0] == 1: lr_b = 0.0
       else: lr_b = lr_factor * layer.bias.std().item()
       # lr_b = lr_factor * layer.bias.std().item()
       # lr_b=1e-3
       opt_bias = torch.optim.Adam([layer.bias], lr=lr_b)
+    
+    in_shape = layer.weight.shape
+    if layer.node.op.type == NNDCT_OP.DENSE:
+      fake_in = torch.rand(1, layer.in_features, device=layer.weight.device)
+    else:
+      fake_in = torch.rand(1, layer.in_channels, *in_shape[2:], device=layer.weight.device)
+    if layer(fake_in).grad_fn is None:
+      NndctScreenLogger().error(f'Layer to do fast finetune does not contain grad_fn attribute, \
+please remove it if there is "torch.no_grad()" in forward process')
+      exit(2)
       
     #print(f"learning rate: lr_w={lr_w}, lr_b={lr_b}")
     #print(f"pre quant efficiency:{quantize_efficiency}")
@@ -876,6 +896,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     prev_loss = AverageMeter("loss", size=len(net_loss))
     if not need_cache:
       for i in range(iters):
+        #print(f"--------iter={i}-----------------")
         stop_handlers = self.hook_cache_output([float_layer, self.graph.node(qnode.in_nodes[0]).module], hook_type='single', stop_forward=True)
         for input_args in zip(*net_inputs):
           new_input_args = []
@@ -930,7 +951,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
             #print(f'{layer.name} bias after backward: {layer.bias[0]}', flush=True)
             
         self.clean_hooks(stop_handlers)    
-        float_data = layer.weight.clone().detach()
+        float_data = float_layer.weight.clone().detach()
         layer.param_quantized = False
         eval_loss = self.calc_net_loss(net_inputs, net_outputs, device)
         ''' 
@@ -991,6 +1012,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
       torch.cuda.empty_cache()
       self.clean_hooks(handlers)
       for i in range(iters):
+        #print(f"--------iter={i}-----------------")
         for idx, layer_input in enumerate(self._cached_outputs[self.graph.parents(qnode)[0].module]):
           fout = self._cached_outputs[float_layer][idx].to(device)
           qout = layer(layer_input.to(device))
@@ -1022,10 +1044,10 @@ class AdvancedQuantProcessor(torch.nn.Module):
             #print('bias lr: {}'.format(opt_bias.param_groups[0]['lr']))
             opt_bias.step()
     
-        float_data = np.fabs(layer.weight.cpu().detach().numpy().flatten())
+        float_data = np.fabs(float_layer.weight.cpu().detach().numpy().flatten())
         layer.param_quantized = False
         eval_loss = self.calc_net_loss(net_inputs, net_outputs, device)
-        ''' 
+        '''
         print('----------------loss after backward-----------------')
         quant_data = np.fabs(layer.weight.cpu().detach().numpy().flatten())
         q_noise = np.square(float_data - quant_data).mean()
@@ -1066,7 +1088,12 @@ class AdvancedQuantProcessor(torch.nn.Module):
       del self.cached_outputs[float_layer]
       del self.cached_outputs[self.graph.parents(qnode)[0].module]
     #print(f"%%%%%%%%%%%%%%%%% final opt net loss:{net_loss}")
-
+    
+    if weight_grad is not None:
+      layer.weight.requires_grad_(requires_grad=weight_grad)
+    if bias_grad is not None:
+      layer.bias.requires_grad_(requires_grad=bias_grad)
+    
     torch.cuda.empty_cache()
     # print(f"iter:{i}")
     return net_loss 
@@ -1075,6 +1102,12 @@ class AdvancedQuantProcessor(torch.nn.Module):
     device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
     f_model, input_args = to_device(self._float_model, self._example_inputs, device)
     handlers = ModuleHooker.register_tensor_dtype_and_shape_hook(f_model)
+    f_model.eval()
+    with NoQuant():
+      if isinstance(input_args, tuple):
+        _ = f_model(*input_args)
+      else:
+        _ = f_model(input_args)
     possible_last_quantized_nodes = []
     for fmod in f_model.modules():
       if hasattr(fmod, "node"):

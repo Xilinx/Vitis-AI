@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: cf0eccec8089a3cf4c7dbd3630edc897
+  checksum: 72af66ffb457c05d9a2b06e1188b6fb5
 - name: movenet_ntd_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 018831ea383fb0615488a350f7c33a9a
+  checksum: 430abdee1db4e80c3f515c0b7d788c0b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -124,6 +124,11 @@ void cuda_log_softmax_sub(const int N,
                             const Dtype* sub);  
 
 template<typename Dtype>
+void cuda_layernorm_isqrt(const int N,
+                            const Dtype* input,
+                            Dtype* output); 
+
+template<typename Dtype>
 void cuda_layernorm_invsqrt(const int N,
                             const Dtype* input,
                             Dtype* output); 

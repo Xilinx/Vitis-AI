@@ -19,5 +19,5 @@ INSTALLER=tar
 INSTALL_PATH=/
 
 wget $XCLBIN_URL -O $XCLBIN_INSTALLER && sudo ${INSTALLER} -xzf $XCLBIN_INSTALLER --directory $INSTALL_PATH && rm $XCLBIN_INSTALLER
-sudo ln -sf DPUCVDX8H /opt/xilinx/overlaybins/dpuv4e
+sudo ln -sf /opt/xilinx/overlaybins/DPUCVDX8H /opt/xilinx/overlaybins/dpuv4e
 

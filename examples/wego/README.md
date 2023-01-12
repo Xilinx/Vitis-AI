@@ -7,7 +7,7 @@
 
 # Overview
 
-WeGO (<u>W</u>hol<u>e</u> <u>G</u>raph <u>O</u>ptimizer) is a Vitis AI new experimental feature and it aims to offer the smooth solution to deploy TensorFlow models on cloud DPU through integrating Vitis AI Development kit with TensorFlow 1.x, TensorFlow 2.x and PyTorch frameworks.
+WeGO (<u>W</u>hol<u>e</u> <u>G</u>raph <u>O</u>ptimizer) is a Vitis AI new experimental feature and it aims to offer the smooth solution to deploy various models on cloud DPU through integrating Vitis AI Development kit with TensorFlow 1.x, TensorFlow 2.x and PyTorch frameworks.
 
 WeGO automatically performs subgraph partitioning for the models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the cloud DPU compatible subgraphs.  And the DPU un-supported remaining parts of graph are dispatched to framework for CPU execution. WeGO takes care of the whole graph optimization, compilation and run-time subgraphs’ dispatch and execution. This whole process is completely transparent to the end users, which makes it very easy to use. 
 

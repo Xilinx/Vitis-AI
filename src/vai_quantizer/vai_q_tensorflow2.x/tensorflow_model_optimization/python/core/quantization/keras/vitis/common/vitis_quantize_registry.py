@@ -60,7 +60,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         layer_module = importlib.import_module(module_name)
         layer_type = getattr(layer_module, layer_name)
     except Exception as e:
-      logger.error('Fail to parse layer type `{}`, error: {}'.format(
+        logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
+                     'Fail to parse layer type `{}`, error: {}'.format(
           layer_type_str, e))
     return layer_type
 
@@ -92,7 +93,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
   def _apply_user_quantize_config(self,
                                   layer_type,
                                   layer_config,
-                                  layer_name=None):
+                                  layer_name=None,
+                                  layer_relulike=False):
     """Apply user quantize config to layer quantize config."""
     layer_config = copy.copy(layer_config)
     user_config = self.get_user_quantize_config()
@@ -111,6 +113,26 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         logger.debug('Override default {} of {}({})\'s {}: {} -> {}'.format(
             user_key, layer_name, layer_type, name, local_value, user_value))
 
+    def _override_activation_unsigned(quantizer,
+                                      user_config,
+                                      user_key,
+                                      local_key,
+                                      name='',
+                                      relu_like=False):
+      ''' Non relu-like layer cannot set unsigned when symmetry quantization'''
+      symmetry_value = quantizer['quantizer_params'].get('symmetry', None)
+      unsigned_value = user_config.get('activation_unsigned', None)
+      if None not in [
+          symmetry_value, unsigned_value
+      ] and symmetry_value and unsigned_value and relu_like == False:
+        logger.debug(
+            'Override ignored {} of {}({})\'s {}: symmetry {}, unsigned {}'
+            .format(user_key, layer_name, layer_type, name, symmetry_value,
+                    unsigned_value))
+      else:
+        _override_quantizer_params(quantizer, user_config, user_key, local_key,
+                                   name)
+
     quantizer = layer_config.get('input_quantizer')
     if quantizer:
       _override_quantizer_params(quantizer, user_config, 'input_bit',
@@ -118,14 +140,16 @@ class VitisQuantizeRegistry(QuantizeRegistry):
       _override_quantizer_params(quantizer, user_config, 'input_method',
                                  'method', 'input')
       _override_quantizer_params(quantizer, user_config,
-                                 'input_method_percentile',
-                                 'method_percentile', 'input')
+                                 'input_method_percentile', 'method_percentile',
+                                 'input')
       _override_quantizer_params(quantizer, user_config, 'input_per_channel',
                                  'per_channel', 'input')
       _override_quantizer_params(quantizer, user_config, 'input_symmetry',
                                  'symmetry', 'input')
       _override_quantizer_params(quantizer, user_config, 'input_round_mode',
                                  'round_mode', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_unsigned',
+                                 'unsigned', 'input')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'input')
 
@@ -140,6 +164,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                  'symmetry', 'weight')
       _override_quantizer_params(quantizer, user_config, 'weight_round_mode',
                                  'round_mode', 'weight')
+      _override_quantizer_params(quantizer, user_config, 'weight_unsigned',
+                                 'unsigned', 'weight')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'weight')
 
@@ -154,6 +180,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                  'symmetry', 'bias')
       _override_quantizer_params(quantizer, user_config, 'bias_round_mode',
                                  'round_mode', 'bias')
+      _override_quantizer_params(quantizer, user_config, 'bias_unsigned',
+                                 'unsigned', 'bias')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'bias')
 
@@ -173,6 +201,9 @@ class VitisQuantizeRegistry(QuantizeRegistry):
       _override_quantizer_params(quantizer, user_config,
                                  'activation_round_mode', 'round_mode',
                                  'activation')
+      _override_activation_unsigned(quantizer, user_config,
+                                    'activation_unsigned', 'unsigned',
+                                    'activation', layer_relulike)
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'activation')
 
@@ -192,19 +223,38 @@ class VitisQuantizeRegistry(QuantizeRegistry):
       _override_quantizer_params(quantizer, user_config,
                                  'activation_round_mode', 'round_mode',
                                  'output')
+      _override_activation_unsigned(quantizer, user_config,
+                                    'activation_unsigned', 'unsigned', 'output',
+                                    layer_relulike)
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'output')
 
     return layer_config
 
-  def _get_quantize_config(self, layer_type, layer_name=None):
+  def _get_quantize_config(self,
+                           layer_type,
+                           layer_name=None,
+                           layer_relulike=False):
     quantize_config = copy.deepcopy(self._layer_quantize_map.get(layer_type))
     config = quantize_config.get_config()
-    config = self._apply_user_quantize_config(layer_type, config, layer_name)
+    config = self._apply_user_quantize_config(layer_type, config, layer_name,
+                                              layer_relulike)
     return self._parse_layer_quantize_config(config)
 
   def _is_supported_layer(self, layer_type):
     return layer_type in self._layer_quantize_map
+
+  def _relu_like_layer(self, layer):
+    layer_relulike = False
+    if isinstance(layer, tf.keras.layers.ReLU):
+      layer_relulike = True
+    else:
+      layer_config = layer.get_config()
+      if 'activation' in layer_config and layer_config['activation'] in [
+          'relu', 'relu6'
+      ]:
+        layer_relulike = True
+    return layer_relulike
 
   # Interface functions.
 
@@ -301,16 +351,18 @@ class VitisQuantizeRegistry(QuantizeRegistry):
     """
     if not self.supports(layer):
       logger.error(
+          '[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
           '`get_quantize_config()` called on an unsupported layer {}. Check '
           'if layer is supported by calling `supports()`. Alternatively, you '
           'can use `QuantizeConfig` to specify a behavior for your layer.'
           .format(layer.__class__))
 
     if self._is_supported_layer(layer.__class__):
-      return self._get_quantize_config(layer.__class__, layer.name)
+      return self._get_quantize_config(layer.__class__, layer.name,
+                                       self._relu_like_layer(layer))
 
     # Should never come here.
-    logger.error('Invalid Layer type {}'.format(layer.__class__))
+    logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]''Invalid Layer type {}'.format(layer.__class__))
 
   def _get_layer_limits(self, layer_type):
     """Return the layer limits for the given layer_type."""

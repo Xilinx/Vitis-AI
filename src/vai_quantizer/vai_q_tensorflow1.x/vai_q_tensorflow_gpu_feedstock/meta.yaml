@@ -18,7 +18,8 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - bazel ==0.24.1
+    - cmake  >=3.1
+    - make  # [unix]
 
   host:
     - cudatoolkit {{ cudatoolkit }}
@@ -34,6 +35,7 @@ requirements:
     - future >=0.17.1
     - keras-applications >=1.0.6
     - keras-preprocessing >=1.0.5
+    - tensorflow-gpu ==1.15
     - progressbar2
     - wrapt
     - swig

@@ -76,5 +76,5 @@ class deephi_Embedding(torch.nn.modules.sparse.Embedding):
 def embedding(*args, **kwargs):
   quant_mode, _ = maybe_get_quantizer()
   if quant_mode == None:
-    return torch.nn.embedding(*args, **kwargs)
+    return torch.nn.Embedding(*args, **kwargs)
   return deephi_Embedding(*args, **kwargs)

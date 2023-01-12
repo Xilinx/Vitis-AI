@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: bf3f2b7e1cf61fc16e26380782f49e8f
+  checksum: 83f6bfe74bfb6d496e03527250ba4ceb
 - name: drunet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: da05908172ec8e9b8626ccb5e75b2d8b
+  checksum: f0b553f797dd82941c6cb9d49e7303a3
 - name: drunet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: 91ab3c49a9ce8ced21e13c6695f6df5e
+  checksum: c59833ac53d72f43705cf2369ff22e78
 - name: drunet_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: 6d2d0c9cefc8af4850dde1ab6d0bb4a8
+  checksum: 025f04ecab3fb49ffc2a858243748e5c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

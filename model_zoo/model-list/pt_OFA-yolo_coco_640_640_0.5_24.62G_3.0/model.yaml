@@ -41,15 +41,15 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 3de1099852145b76b0955a97275810b2
+  checksum: 80c8a101c3c2dfce4aa1df92c7f31a73
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: a8930b621a7c5aae5023d10dd554af1c
+  checksum: 9f45e2038fdc7b6b08119a62f5884b25
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: d8f312fa59fcf9b3d700584ec00b4790
+  checksum: 95b13a80ed0769f1f2e15b4180bfd7dd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

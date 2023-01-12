@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Access to Ubuntu Mirrors from within China &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Access to Ubuntu Mirrors from within China &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -26,18 +32,21 @@ function OptanonWrapper() { }
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -57,7 +66,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -87,7 +96,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -116,7 +125,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Vitis AI</a>
+          <a href="../../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -136,15 +145,12 @@ function OptanonWrapper() { }
              
   <section id="access-to-ubuntu-mirrors-from-within-china">
 <h1>Access to Ubuntu Mirrors from within China<a class="headerlink" href="#access-to-ubuntu-mirrors-from-within-china" title="Permalink to this heading">¶</a></h1>
-<p>Vitis AI Docker images leverage Ubuntu Bionic 18.04. In your Ubuntu installation, the file <strong>/etc/apt/sources.list</strong> specifies the default server location for Ubuntu packages. For example:</p>
+<p>Vitis™ AI Docker images leverage Ubuntu Bionic 18.04. In your Ubuntu installation, the file <strong>/etc/apt/sources.list</strong> specifies the default server location for Ubuntu packages. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">ubuntu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">bionic</span> <span class="n">universe</span>
 </pre></div>
 </div>
-<p>You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-cpu.Dockerfile">CPU-only</a>
-or <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-gpu.Dockerfile">GPU</a>
-applications Docker will attempt to pull from US servers. Users accessing from China will generally experience slow download speeds as a result.</p>
-<p>Prior to building the Vitis AI Docker image it is recommended that you modify <strong>/etc/apt/sources.list</strong> as well as the vitis-ai-gpu.Dockerfile.</p>
+<p>You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-cpu.Dockerfile">CPU-only</a> or <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-gpu.Dockerfile">GPU</a> applications Docker will attempt to pull from US servers. As a result, users accessing from China will generally experience slow download speeds.</p>
+<p>Prior to building the Vitis AI Docker image it is recommended that you modify <strong>/etc/apt/sources.list</strong> and the vitis-ai-gpu.Dockerfile.</p>
 <p>In the Vitis AI .DockerFile, change the first instances of apt-get update and apt-get install.</p>
 <p>From:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RUN</span> <span class="n">chmod</span> <span class="mi">1777</span> <span class="o">/</span><span class="n">tmp</span> \
@@ -161,7 +167,7 @@ applications Docker will attempt to pull from US servers. Users accessing from C
 <p>Next, modify your Ubuntu <strong>/etc/apt/sources.list</strong> to point to mirrors located in China. The following Tsinghua University (Beijing) mirrors are recommended:</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p>Please backup <strong>/etc/apt/sources.list</strong> prior to making this change.</p>
+<p>Backup <strong>/etc/apt/sources.list</strong> prior to making this change.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirrors</span><span class="o">.</span><span class="n">tuna</span><span class="o">.</span><span class="n">tsinghua</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">bionic</span> <span class="n">main</span> <span class="n">restricted</span> <span class="n">universe</span> <span class="n">multiverse</span>
 <span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirrors</span><span class="o">.</span><span class="n">tuna</span><span class="o">.</span><span class="n">tsinghua</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">bionic</span> <span class="n">main</span> <span class="n">restricted</span> <span class="n">universe</span> <span class="n">multiverse</span>
@@ -175,7 +181,7 @@ applications Docker will attempt to pull from US servers. Users accessing from C
 <span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">mirrors</span><span class="o">.</span><span class="n">tuna</span><span class="o">.</span><span class="n">tsinghua</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">bionic</span><span class="o">-</span><span class="n">proposed</span> <span class="n">main</span> <span class="n">restricted</span> <span class="n">universe</span> <span class="n">multiverse</span>
 </pre></div>
 </div>
-<p>In addition, you can fine multiple alternative mirrors <a class="reference external" href="https://momane.com/change-ubuntu-18-04-source-to-china-mirror">here</a>.</p>
+<p>In addition, multiple alternative mirrors are <a class="reference external" href="https://momane.com/change-ubuntu-18-04-source-to-china-mirror">here</a>.</p>
 </section>
 
 
@@ -196,8 +202,8 @@ applications Docker will attempt to pull from US servers. Users accessing from C
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -209,7 +215,7 @@ applications Docker will attempt to pull from US servers. Users accessing from C
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

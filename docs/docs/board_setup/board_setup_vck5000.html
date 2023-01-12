@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Setting up a Versal Accelerator Card &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Setting up a Versal Accelerator Card &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -26,18 +32,21 @@ function OptanonWrapper() { }
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -57,7 +66,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -87,7 +96,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -116,7 +125,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Vitis AI</a>
+          <a href="../../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -136,7 +145,7 @@ function OptanonWrapper() { }
              
   <section id="setting-up-a-versal-accelerator-card">
 <h1>Setting up a Versal Accelerator Card<a class="headerlink" href="#setting-up-a-versal-accelerator-card" title="Permalink to this heading">¶</a></h1>
-<p>The Xilinx® DPUs for VCK5000-PROD card is a High Performance CNN processing engine <strong>DPUCVDX8H</strong>. The detailed combination of VCK5000-PROD card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.</p>
+<p>The Xilinx® DPUs for VCK5000-PROD card is a High Performance CNN processing engine <strong>DPUCVDX8H</strong>. The detailed combination of VCK5000-PROD card and DPU IP is given in the following table:</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>No.</p></th>
@@ -163,46 +172,64 @@ function OptanonWrapper() { }
 </tr>
 </tbody>
 </table>
+<p>You can choose one of them according to your preferences.</p>
 <section id="vck5000-prod-card-setup">
-<h2>1. VCK5000-PROD Card Setup<a class="headerlink" href="#vck5000-prod-card-setup" title="Permalink to this heading">¶</a></h2>
-<p>We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.</p>
+<h2>VCK5000-PROD Card Setup<a class="headerlink" href="#vck5000-prod-card-setup" title="Permalink to this heading">¶</a></h2>
+<p>Some scripts are provided to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.</p>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-</div>
+<p>The command will detect the Operating System you are using, then download and install the appropriate packages.</p>
 <p>The following installation steps were performed in this script.</p>
 <ol class="arabic simple">
 <li><p>Install XRT.</p></li>
-<li><p>Install XRM. The <a class="reference external" href="https://github.com/Xilinx/XRM/">Xilinx Resource Manager (XRM)</a> manages and controls FPGA resources on a machine. It is used by the runtime.</p></li>
+<li><p>Install XRM. The <a class="reference external" href="https://github.com/Xilinx/XRM/">Xilinx Resource Manager (XRM)</a> manages and controls FPGA resources on a machine. It is used on runtime.</p></li>
 <li><p>Install the VCK5000-PROD Card Target Platform.</p></li>
 <li><p>Install DPU V4E xclbin for VCK5000-PROD.</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v1.4.1">Vitis AI 1.4.1</a>.</p>
+<p>This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0. If you want to use it, refer to <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v1.4.1">Vitis AI 1.4.1</a>.</p>
 </div>
 </section>
 <section id="docker-container-environment-variable-setup">
-<h2>2. Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h2>
-<p>Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then started Docker. In the docker container, execute the following steps. You can use the following command to set environment variables. It should be noted that the xclbin file should be in the
-<code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory. There are four xclbins to choose from depending on the parameters you use.</p>
-<ol class="arabic">
-<li><p>For 4PE 350 Hz, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_4pe_miscdwc</span></code></p>
+<h2>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h2>
+<p>Once you have downloaded Vitis AI, entered Vitis AI directory, and then started Docker, in the docker container, execute the following steps.</p>
+<p>You can use the following command to set environment variables. The xclbin file must be in the <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory. There are four xclbins to choose from depending on the parameters you use.</p>
+<ul>
+<li><p>For 4PE 350 Hz, you can select DPU IP using the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_4pe_miscdwc</span>
+</pre></div>
+</div>
+</div></blockquote>
 </li>
-<li><p>For 6PE 350 Hz with DWC, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6pe_dwc</span></code></p>
+<li><p>For 6PE 350 Hz with DWC, you can select DPU IP using the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6pe_dwc</span>
+</pre></div>
+</div>
+</div></blockquote>
 </li>
-<li><p>For 6PE 350 Hz with MISC, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_6PE_misc</span></code></p>
+<li><p>For 6PE 350 Hz with MISC, you can select DPU IP using the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6PE_misc</span>
+</pre></div>
+</div>
+</div></blockquote>
 </li>
-<li><p>For 8PE 350 Hz, you can select DPU IP via the following command.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/workspace/board_setup/vck5000/setup.sh</span> <span class="pre">DPUCVDX8H_8pe_normal</span></code></p>
+<li><p>For 8PE 350 Hz, you can select DPU IP using the following command:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_8pe_normal</span>
+</pre></div>
+</div>
+</div></blockquote>
 </li>
-</ol>
+</ul>
 </section>
 </section>
 
@@ -224,8 +251,8 @@ function OptanonWrapper() { }
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -237,7 +264,7 @@ function OptanonWrapper() { }
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

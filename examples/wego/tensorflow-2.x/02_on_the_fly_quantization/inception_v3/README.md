@@ -1,6 +1,6 @@
-# Setup Conda Environment for WeGO-Tensorflow2
+# Setup Conda Environment for WeGO-TensorFlow2.x
 
-Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-Tensorflow2.
+Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-TensorFlow2.x.
 
 ```bash
 $ conda activate vitis-ai-tensorflow2
@@ -36,11 +36,11 @@ We'll only be using the validation set here(imagenet/val/).
 
 ## Get pretained inception v3 model
 
-Download it from xilinx website:
+Download the float model from Xilinx website:
 
 ```bash
-wget https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
-unzip https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
+wget https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip -O tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
+unzip tf2_inceptionv3_imagenet_299_299_11.5G_3.0.zip
 cp ./tf2_inceptionv3_imagenet_299_299_11.5G_3.0/float/inception_v3_weights_tf.h5 ./
 ```
 

@@ -99,7 +99,7 @@ case $1 in
     echo "Please choose to use the following command:"
     echo "    source ./setup.sh DPUCVDX8H_4pe_miscdwc"
     echo "    source ./setup.sh DPUCVDX8H_6pe_dwc"
-    echo "    source ./setup.sh DPUCVDX8H_6PE_MISC"
+    echo "    source ./setup.sh DPUCVDX8H_6pe_misc"
     echo "    source ./setup.sh DPUCVDX8H_8pe_normal"
     ;;
 esac

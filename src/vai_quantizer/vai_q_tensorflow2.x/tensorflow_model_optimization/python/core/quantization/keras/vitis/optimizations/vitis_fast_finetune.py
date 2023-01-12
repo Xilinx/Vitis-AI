@@ -144,7 +144,6 @@ def fast_finetune(quant_model, float_model, calib_dataset, calib_batch_size,
 
       act = layer
       activation_stub = layer.layer.activation
-      #import pdb; pdb.set_trace()
       if isinstance(activation_stub,
                     vitis_quantize_aware_activation.QuantizeAwareActivation):
         activation = activation_stub.activation

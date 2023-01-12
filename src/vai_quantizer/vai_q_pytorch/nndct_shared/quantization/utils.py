@@ -16,18 +16,26 @@
 # limitations under the License.
 #
 
-import copy
 import numpy as np
 import math
-from nndct_shared.base import NNDCT_KEYS, GLOBAL_MAP, NNDCT_DEBUG_LVL, NNDCT_OP
+from nndct_shared.base import NNDCT_KEYS, GLOBAL_MAP
+from nndct_shared.utils import NndctOption
 from nndct_shared.algorithms import breadth_first_search_handler
-from nndct_shared.nndct_graph import NndctGraphHolder, Tensor
-from nndct_shared import utils as nndct_utils
 from .quant_ops import normal_quant_neuron
+
+
+def kernel_need_quant(quantizer, node):
+  if NndctOption.nndct_quant_off.value:
+    return False
+  elif quantizer is None:
+    return False
+  else:
+    return quantizer.configer.is_node_quantizable(node, lstm=quantizer.lstm)
 
 def quantize_data2int(data, bn, fp, method=2):
   return normal_quant_neuron(
       data, maxamps=[[2**(bn - 1)], [2**fp]], round_method=method, as_int=True)
+
 
 def maybe_get_quantizer(quantizer=None):
   quantizer = quantizer or GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
@@ -35,6 +43,7 @@ def maybe_get_quantizer(quantizer=None):
     return quantizer.quant_mode, quantizer
   else:
     return GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_MODE), None
+
 
 def is_quant_end_point(graph, node, quant_types):
   if len(graph.parents(node.name)) == 0:
@@ -55,6 +64,7 @@ def is_quant_end_point(graph, node, quant_types):
       node.name, generator=__children_names, handler=__check_end)
   return len(__QuantNodes) == 0
 
+
 def get_flows_and_info(quant_mode,
                        quantizer,
                        node_name=None,
@@ -63,6 +73,7 @@ def get_flows_and_info(quant_mode,
   node = quantizer.configer.get_Nndctnode(node_name, params, inputs)
   return None, quantizer.configer.quant_input_names(
       node, inputs, params), (quantizer.configer.quant_output(node).name, True)
+
 
 def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output', method=None):
   quant_mode, quantizer = maybe_get_quantizer()
@@ -99,6 +110,7 @@ def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output', met
 
   return qtensors
 
+
 def quant_reluk_params(node, channel_max):
     
   quant_mode, quantizer = maybe_get_quantizer()
@@ -118,6 +130,7 @@ def quant_reluk_params(node, channel_max):
 
   return channel_max
 
+
 def quant_channel_scale_params(node, channel_scale):
   quant_mode, quantizer = maybe_get_quantizer()
   # ignore parameters quantization if the node is not to be quantized
@@ -136,6 +149,7 @@ def quant_channel_scale_params(node, channel_scale):
 
   return channel_scale
 
+
 class QuantizeData(object):
   def __init__(self, name, data):
     self._num_bins = 2048
@@ -146,7 +160,6 @@ class QuantizeData(object):
     self._hist = self._load_data_into_bins(self._data.flatten()) 
     self._normalize_histogram()
     
-  
   def kl_div(self, bn, fp):
     threshold_bin = int((bn / fp) / self._hist_interval) + 1
     threshold_hist = self._build_threshold_dist(threshold_bin)
@@ -157,7 +170,6 @@ class QuantizeData(object):
     expand_q_dist = self._expand_quantize_dist(quant_dist, num_per_bin, threshold_bin)
     return self._compute_kl_div(threshold_hist, expand_q_dist)
     
-   
   def _load_data_into_bins(self, data):
     if (np.fabs(data).all() == 0) and (self._hist_interval == 0):
       abs_data = np.fabs(data).astype(np.int32)
@@ -166,7 +178,6 @@ class QuantizeData(object):
       abs_data = np.where(abs_data < 2048, abs_data, 2047)                                                    
     return np.bincount(abs_data)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 
-  
   def _normalize_histogram(self):
     self._hist = self._hist / self._hist.sum()
     
@@ -276,3 +287,4 @@ class QuantizeData(object):
     
   def all_close(self, quant_data):
     np.allclose(self._data, quant_data)
+

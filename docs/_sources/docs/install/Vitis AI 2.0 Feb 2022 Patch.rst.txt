@@ -1,4 +1,4 @@
-Feburary 2022 Patch
+February 2022 Patch
 -------------------
 
 New Features/Highlights
@@ -6,10 +6,8 @@ New Features/Highlights
 
 -  Fixed a compiler bug for pt_yolox_TT100K_640_640_73G_2.0 model
 -  Fixed a quantizer bug in QAT in tensorflow 1.15 models
--  Fixed a bug which gives low accuracy for TVM compiled inception_v3
-   model with DPUCADF8H(dpuv3int8)
--  Fixed a bug in AI optimizer to get the best accuracy in
-   run_evolutionary_search function
+-  Fixed a bug which gives low accuracy for TVM compiled inception_v3 model with DPUCADF8H(dpuv3int8)
+-  Fixed a bug in AI optimizer to get the best accuracy in run_evolutionary_search function
 
 New Packages
 ~~~~~~~~~~~~
@@ -33,12 +31,10 @@ New Packages
 Installation
 ------------
 
-Download the packages from the link above.
-
-Apply the conda patch to the conda environment (Machine Learning
+Download the packages from the link above. Apply the conda patch to the conda environment (Machine Learning
 framework) that you wish to update in this format
 
-::
+.. code-block::
 
    sudo conda install -n <CONDA_ENVIRONMENT> <URL or PATH to conda package>
 

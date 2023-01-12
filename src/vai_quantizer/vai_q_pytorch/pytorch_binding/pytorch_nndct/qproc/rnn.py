@@ -78,9 +78,16 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
     nndct_utils.create_work_dir(output_dir)
 
     # turn off weights equalization and bias correction
-    option_util.set_option_value("nndct_quant_opt", 0)
-    option_util.set_option_value("nndct_param_corr", False)
-    option_util.set_option_value("nndct_equalization", False)
+    if (hasattr(NndctOption.nndct_param_corr, '_value')):
+      option_util.set_option_value("nndct_param_corr", NndctOption.nndct_param_corr._value)
+    else:
+      option_util.set_option_value("nndct_param_corr", False)
+      
+    if (hasattr(NndctOption.nndct_equalization, '_value')):
+      option_util.set_option_value("nndct_equalization", NndctOption.nndct_equalization._value)
+    else:
+      option_util.set_option_value("nndct_equalization", False)
+    
     option_util.set_option_value("nndct_cv_app", False)
 
     # Parse the quant config file
@@ -392,9 +399,16 @@ class RNNQuantProcessor(TorchQuantProcessor):
     nndct_utils.create_work_dir(output_dir)
     
     # turn off weights equalization and bias correction
-    option_util.set_option_value("nndct_quant_opt", 0)
-    option_util.set_option_value("nndct_param_corr", False)
-    option_util.set_option_value("nndct_equalization", False)
+    if (hasattr(NndctOption.nndct_param_corr, '_value')):
+      option_util.set_option_value("nndct_param_corr", NndctOption.nndct_param_corr._value)
+    else:
+      option_util.set_option_value("nndct_param_corr", False)
+      
+    if (hasattr(NndctOption.nndct_equalization, '_value')):
+      option_util.set_option_value("nndct_equalization", NndctOption.nndct_equalization._value)
+    else:
+      option_util.set_option_value("nndct_equalization", False)
+    
     option_util.set_option_value("nndct_cv_app", False)
     
     # Parse the quant config file

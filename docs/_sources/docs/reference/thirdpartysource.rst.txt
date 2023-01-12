@@ -1,11 +1,10 @@
-==================
 Third Party Source
 ==================
 
 Ubuntu Packages
 ---------------
 
-Following is a list of Ubuntu Apt packages used by Vitis |trade| AI:
+Following is a list of Ubuntu Apt packages used by Vitis™ AI:
 
 1.  sudo
 2.  git
@@ -32,9 +31,9 @@ Following is a list of Ubuntu Apt packages used by Vitis |trade| AI:
 23. libunwind-dev
 24. libtool
 
-More detail, source code and licensing information can be found from Ubuntu `here <http://us.archive.ubuntu.com/ubuntu/dists/bionic/>`__
+More details, source code and licensing information can be found from Ubuntu `here <http://us.archive.ubuntu.com/ubuntu/dists/bionic/>`__.
 
-If you cannot access the internet pages for Ubuntu’s main source code repositories and obtain the source code for the Ubuntu Linux OS and base packages in this distribution, then Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
+If you cannot access the internet pages for Ubuntu’s main source code repositories and obtain the source code for the Ubuntu Linux OS and base packages in this distribution, then Xilinx® hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
 
 Conda Packages
 --------------
@@ -208,23 +207,22 @@ Following is a list of Conda packages used by Vitis AI:
 165. zlib
 166. zstd
 
-More detail, source code and licensing information can be found from Ubuntu `here <https://anaconda.org>`__
+More details, source code and licensing information can be found from Ubuntu `here <https://anaconda.org>`__
 
-If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software
-packages in this distribution, then you may obtain the source code `here <https://www.xilinx.com/products/design-tools/guest-resources.html>`__. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
+If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software packages in this distribution, then you may obtain the source code `here <https://www.xilinx.com/products/design-tools/guest-resources.html>`__. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.
 
 XRT
 ---
 
 XRT userspace code includes software developed by the following (Apache 2.0)
 
--  Copyright (C) 2019 Samsung Semiconductor, Inc
+-  Copyright (C) 2019 Samsung Semiconductor, Inc.
 
 -  (C) Copyright 2019 OSR Open Systems Resources, Inc.
 
--  Copyright (C) Michael Preston mipres@microsoft.com Microsoft
+-  Copyright (C) Michael Preston mipres@microsoft.com Microsoft.
 
--  Copyright (C) Jeff Baxter jeffb@microsoft.com Microsoft
+-  Copyright (C) Jeff Baxter jeffb@microsoft.com Microsoft.
 
 XRT xocl and xclmgmt Linux kernel drivers include software from Linux
 kernel (GPL 2.0) \* Copyright 2012 Kim Phillips, Freescale
@@ -284,7 +282,7 @@ by identifying the particular Xilinx Software you are inquiring about
 Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA
 U.S.A. 95124.
 
-.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+.. |trade|  unicode:: U+02223 .. TRADEMARK SIGN
    :ltrim:
 .. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
    :ltrim:

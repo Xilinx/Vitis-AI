@@ -86,6 +86,10 @@ void LogSoftmaxSub(Tensor Tinput,
                     Tensor Tsum,
                     int64_t device_id);
 
+void LayernormISqrt(Tensor Tinput, 
+                    Tensor Toutput,
+                    int64_t device_id);
+
 void LayernormInvSqrt(Tensor Tinput, 
                     Tensor Toutput,
                     int64_t device_id);

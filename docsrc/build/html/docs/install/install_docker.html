@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Installing Docker &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Installing Docker &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -26,18 +32,21 @@ function OptanonWrapper() { }
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -57,7 +66,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -87,7 +96,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -116,7 +125,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Vitis AI</a>
+          <a href="../../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -138,7 +147,7 @@ function OptanonWrapper() { }
 <h1>Installing Docker<a class="headerlink" href="#installing-docker" title="Permalink to this heading">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they provides support for accelerated quantization. Prior to installing Docker for CUDA-capable GPUs, please ensure that you understand the Nvidia driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
+<p>In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they support accelerated quantization. Before installing Docker for CUDA-capable GPUs, ensure that you understand the NVIDIA driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -146,15 +155,14 @@ function OptanonWrapper() { }
 </div>
 <section id="installing-nvidia-container-toolkit">
 <h2>Installing NVIDIA Container Toolkit<a class="headerlink" href="#installing-nvidia-container-toolkit" title="Permalink to this heading">¶</a></h2>
-<p>If you are building the Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a>
-for additional information.</p>
-<p>For Ubuntu distributions, Nvidia driver and Container Toolkit installation can generally be accomplished as shown in the following example (use sudo for non-root users):</p>
+<p>If you are building the Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit, which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a> for additional information.</p>
+<p>For Ubuntu distributions, NVIDIA driver and Container Toolkit installation can generally be accomplished as displayed in the following example (use sudo for non-root users):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">purge</span> <span class="n">nvidia</span><span class="o">*</span> <span class="n">libnvidia</span><span class="o">*</span>
 <span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">driver</span><span class="o">-</span><span class="n">xxx</span>
 <span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">toolkit</span>
 </pre></div>
 </div>
-<p>Where xxx is the version of driver that you are choosing to install (ie, <em>nvidia-driver-510</em>), and is a version that meets Vitis AI <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p>
+<p>Where xxx is the version of driver that you are choosing to install (i.e, <em>nvidia-driver-510</em>), and is a version that meets Vitis AI <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p>
 <p>A simple test to confirm driver installation is to run nvidia-smi:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
 </pre></div>
@@ -181,11 +189,11 @@ for additional information.</p>
 <span class="o">/+-----------------------------------------------------------------------------+</span>
 </pre></div>
 </div>
-<p>Users should reference <a class="reference external" href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">Nvidia driver installation</a> for further details of driver installation.</p>
+<p>Refer <a class="reference external" href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA driver installation</a> for further details of driver installation.</p>
 </section>
 <section id="docker-install">
 <h2>Docker Install<a class="headerlink" href="#docker-install" title="Permalink to this heading">¶</a></h2>
-<p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, please refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
+<p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
 </section>
 </section>
 
@@ -207,8 +215,8 @@ for additional information.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -220,7 +228,7 @@ for additional information.</p>
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

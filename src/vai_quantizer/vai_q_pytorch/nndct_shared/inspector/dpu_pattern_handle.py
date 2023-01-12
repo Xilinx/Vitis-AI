@@ -1,13 +1,19 @@
 import os
+import pwd
 import random
 import string
+
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.utils import NndctScreenLogger, DeviceInfo, DeviceType, DataXopError, QError, QWarning, QNote
-from nndct_shared.nndct_graph import GraphBase
 from nndct_shared.compile import CompilerFactory
 from nndct_shared.compile.xir_helper import XIRHelper
+from nndct_shared.nndct_graph import GraphBase
 from nndct_shared.nndct_graph import operator_definition as base_op
+from nndct_shared.utils import (DataXopError, DeviceInfo, DeviceType,
+                                NndctScreenLogger, QError, QNote, QWarning,
+                                create_work_dir, NndctOption)
+
 from .utils import QuantConfig, convert_quant_config_to_dict
+
 
 class PatternGraph(GraphBase):
   def __init__(self, graph_name):
@@ -52,6 +58,9 @@ class PatternGraph(GraphBase):
   @property
   def name(self):
     return self._name
+
+  def get_topological_graph_nodes_list(self):
+    return [node for node in self.nodes]
 
 
 class DPUPatternHandle(object):
@@ -172,7 +181,7 @@ class DPUPatternHandle(object):
     quant_node = expanded_heads + quant_node
     in_nodes = self._find_input_nodes_for_nodeset(nodeset)
     self.replace_pn_op_of_nodes_with_input_type(in_nodes)
-    random_suffix = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    random_suffix = ''.join(random.sample(string.ascii_letters + string.digits, 16))
     backup_shapes = {}
     if not any([node.op.type in [NNDCT_OP.RESHAPE, NNDCT_OP.CONCAT] for node in nodeset]):
       for node in expanded_heads:
@@ -187,11 +196,15 @@ class DPUPatternHandle(object):
     pattern = PatternGraph.create_pattern_graph_from_nodeset(f"{patter_name_str}_{random_suffix}", expanded_heads + nodeset)
     quant_config = self._init_quant_config(nodeset, quant_node)
     xir_convert = CompilerFactory.get_compiler("xmodel")
-    xmodel_file_name = os.path.join("/tmp", pattern.name)
+    user_name = pwd.getpwuid(os.getuid()).pw_name
+    xmodel_dir = os.path.join("/tmp", user_name)
+    create_work_dir(xmodel_dir)
+    xmodel_file_name = os.path.join(xmodel_dir, pattern.name)
     fake_quant_config = convert_quant_config_to_dict(quant_config)
     convert_xgraph_failed_msg = ""
+    output_file = xmodel_file_name if NndctOption.nndct_inspect_debug.value else ""
     try:
-      xgraph = xir_convert.do_compile(pattern, output_file_name=xmodel_file_name, quant_config_info=fake_quant_config)
+      xgraph = xir_convert.do_compile(pattern, output_file_name=output_file, quant_config_info=fake_quant_config)
     except Exception as e:
       convert_xgraph_failed_msg = f"Convert nndct graph to XIR failed.({str(e)})"
       self.assign_partition_msg(convert_xgraph_failed_msg, nodeset)
@@ -199,7 +212,7 @@ class DPUPatternHandle(object):
     if not convert_xgraph_failed_msg:
       xcompiler = CompilerFactory.get_compiler("xcompiler")
       #compiled_xpattern = xcompiler.compile_and_reload(xmodel_file_name, self._device_alloc.target)
-      compiled_xpattern = xcompiler.compile_xgraph(xmodel_file_name, xgraph, self._device_alloc.target)
+      compiled_xpattern = xcompiler.compile_xgraph(xmodel_file_name, xgraph, self._device_alloc.target, self._device_alloc.fingerprint)
       
       if XIRHelper.is_valid_compiled_pattern(compiled_xpattern) and XIRHelper.is_dpu_pattern(compiled_xpattern):
           self.assign_dpu_device(nodeset)
@@ -327,7 +340,3 @@ class CombOpHandle(SingleOpHandle):
       return 
 
     self.process_nndct_pattern(nodeset)
-
-
-
-    

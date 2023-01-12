@@ -88,10 +88,14 @@ class VitisTQTRefineTransformsPipeline(VitisPof2SRefineTransformsPipeline):
       adjust_sc = configs['adjust_dpu_shift_cut']
       adjust_sb = configs['adjust_dpu_shift_bias']
       adjust_sr = configs['adjust_dpu_shift_read']
+      adjust_sw = configs['adjust_dpu_shift_write']
+      adjust_sh = configs['adjust_dpu_shift_swish']
+      align_concat = configs['align_concat']
+      align_pool = configs['align_pool']
       quantize_info = model_utils.get_quantize_info(refined_model)
       adjusted_quantize_info = vitis_pof2s_refine_transforms.adjust_quantize_info(
           refined_model, quantize_info, adjust_vs, adjust_sc, adjust_sb,
-          adjust_sr)
+          adjust_sr, adjust_sw, adjust_sh, align_concat, align_pool)
       model_utils.set_quantize_info(refined_model, adjusted_quantize_info)
       logger.info("Quantize Position Ajustment Done.")
 

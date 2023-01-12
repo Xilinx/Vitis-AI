@@ -21,6 +21,7 @@ from tensorflow.python.framework import dtypes
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import array_ops
 from tensorflow.python.ops import nn
+import distutils
 
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.base import quantizer as quantizer_mod
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
@@ -241,8 +242,10 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
       self.conv_layer.build(input_shape)
       conv_out_shape = self.conv_layer.compute_output_shape(input_shape)
       self.bn_layer.build(conv_out_shape)
-
-    self._convolution_op = self.conv_layer._convolution_op
+    if distutils.version.LooseVersion(tf.__version__) >= "2.7":
+      self._convolution_op = self.conv_layer.convolution_op
+    else:
+      self._convolution_op = self.conv_layer._convolution_op
     # The folded conv always have bias
     self.use_bias = True
     self.built = True

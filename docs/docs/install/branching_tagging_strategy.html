@@ -12,10 +12,16 @@
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
-  <title>Branching / Tagging Strategy &mdash; Vitis AI 3.0 documentation</title>
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Branching / Tagging Strategy &mdash; Vitis™ AI 3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/contentui.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
@@ -26,18 +32,21 @@ function OptanonWrapper() { }
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/contentui.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-            <a href="../../index.html" class="icon icon-home"> Vitis AI
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
             <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
@@ -57,7 +66,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">This Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation</span></p>
 <ul>
@@ -87,7 +96,7 @@ function OptanonWrapper() { }
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Links to Formal Vitis AI Documents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
 <ul>
@@ -116,7 +125,7 @@ function OptanonWrapper() { }
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Vitis AI</a>
+          <a href="../../index.html">Vitis™ AI</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -136,12 +145,9 @@ function OptanonWrapper() { }
              
   <section id="branching-tagging-strategy">
 <h1>Branching / Tagging Strategy<a class="headerlink" href="#branching-tagging-strategy" title="Permalink to this heading">¶</a></h1>
-<p>Each updated release of Vitis AI is pushed directly to
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master">master</a> on the day of release. In addition, at that time, a tag is created for the repo, for example, see the tag for <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v2.5">v2.5</a>.</p>
-<p>Following release, the tagged version remains static, and additional inter-version updates are pushed to master. Thus, master is always the latest release and will have the latest fixes and documentation. The
-branch associated with a specific release (which will be “master” during the lifecycle of that release) will become a branch at the time of the next release.</p>
-<p>Similarly, if you are using a previous version of Vitis AI, the branch associated with that previous revision will contain updates that were applied to the tagged release for that same version. For instance, in
-the case of release 2.0, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/2.0">branch</a> contains updates that the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v2.0">tag</a> does not.</p>
+<p>Each updated release of Vitis™ AI is pushed directly to <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master">master</a> on the release day. In addition, at that time, a tag is created for the repository; for example, see the tag for <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0">v3.0</a>.</p>
+<p>Following the release, the tagged version remains static, and additional inter-version updates are pushed to the master branch. Thus, the master branch is always the latest release and will have the latest fixes and documentation. The branch associated with a specific release (which will be “master” during the lifecycle of that release) will become a branch at the time of the next release.</p>
+<p>Similarly, if you use a previous version of Vitis AI, the branch associated with that previous revision will contain updates to the tagged release for that same version. For instance, in the case of release 2.0, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/2.0">branch</a> contains updates that the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v2.0">tag</a> does not.</p>
 <p>The diagram below depicts the overall workflow:</p>
 <img alt="../../_images/branching_strategy.PNG" src="../../_images/branching_strategy.PNG" />
 </section>
@@ -164,8 +170,8 @@ the case of release 2.0, the <a class="reference external" href="https://github.
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021-2022, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 20, 2022.
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on January 10, 2023.
       </span></p>
   </div>
 
@@ -177,7 +183,7 @@ the case of release 2.0, the <a class="reference external" href="https://github.
 
 													                    <div class="row">
                         <div class="col-xs-24">
-                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="https://pages.gitenterprise.xilinx.com/techdocs/Test/vvas/build/html/index.html#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
                         </div>
                     </div>
 												</div>

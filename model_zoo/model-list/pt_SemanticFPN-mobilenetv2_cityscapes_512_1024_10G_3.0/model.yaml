@@ -41,10 +41,10 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: 7664aa554c9c63b0c3fa55d5dab8f85f
+  checksum: 57d385ffbcf1d297a6e3c52b0556b1f5
 - name: SemanticFPN_Mobilenetv2_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 14c82a75cd4fb538376869f3354c375e
+  checksum: f455a1f2697367090e44b60518752245
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

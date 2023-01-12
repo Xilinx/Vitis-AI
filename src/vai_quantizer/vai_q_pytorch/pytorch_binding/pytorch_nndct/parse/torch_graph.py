@@ -206,6 +206,9 @@ class TorchBlock(GraphBase):
     self._nodes[idx] = node
     self._graph.free_node(original_node)
 
+  def get_topological_graph_nodes_list(self):
+    return [node for node in self._nodes]
+
 
 class TorchValue(object): 
   

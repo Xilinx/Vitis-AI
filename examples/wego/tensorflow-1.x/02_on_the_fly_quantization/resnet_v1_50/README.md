@@ -1,6 +1,6 @@
-# Setup Conda Environment for WeGO-Tensorflow1.x
+# Setup Conda Environment for WeGO-TensorFlow1.x
 
-Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO TensorFlow1.
+Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO TensorFlow-1.x.
 
 ```bash
 $ conda activate vitis-ai-tensorflow
@@ -10,10 +10,7 @@ $ conda activate vitis-ai-tensorflow
 
 ## Prepare float model and dataset
 
-This example uses the Resnet_v1_50 model. 
-
-Get the download link for the floating point model package tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip from the model_zool's [yaml](https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0/model.yaml) file.
-
+This example will use Resnet_v1_50 model and please first download the float model for it as follows.
 ```
 $ cd /workspace/examples/wego/tensorflow-1.x/02_on_the_fly_quantization/resnet_v1_50
 $ wget https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip -O tf_resnetv1_50_imagenet_224_224_0.38_4.3G_3.0.zip

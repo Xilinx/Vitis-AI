@@ -41,20 +41,20 @@ files:
   type: xmodel
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-  checksum: a0f2472510a9493b98bdebcb7bc40551
+  checksum: 065cb073a53d9c5ba8f799acdb13f394
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-  checksum: 0974d3253aacee51bc3d7cbe44e1b694
+  checksum: fd2be0e45d39b9bd0a40156e7eb59a15
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-  checksum: b8b709e64c63682d31f49cc302451a97
+  checksum: 4081408a84ea7d02e0b540c877a88236
 - name: SemanticFPN_cityscapes_pt
   type: xmodel
   board: vck5000-DPUCVDX8H-8pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_cityscapes_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-  checksum: aaae75799972ee88bd45f4acde7ba255
+  checksum: ac67c7d14ffa51ad333564704324516a
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

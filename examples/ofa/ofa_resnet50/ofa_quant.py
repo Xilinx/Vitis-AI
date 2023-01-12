@@ -58,7 +58,7 @@ default="/workspace/imagenet/",
 help='Data set directory, when quant_mode=calib, it is for calibration, while quant_mode=test it is for evaluation')
 parser.add_argument(
 '--model_dir',
-default="/workspace/automl/models/",
+default="/workspace/examples/ofa/ofa_resnet50/models/",
 help='Trained model file path. Download pretrained model from the following url and put it in model_dir specified path: https://download.pytorch.org/models/resnet18-5c106cde.pth'
 )
 parser.add_argument(
@@ -100,7 +100,7 @@ args, _ = parser.parse_known_args()
   # return parser
 
 def load_data(train=True,
-              data_dir='dataset/imagenet',
+              data_dir='/workspace/imagenet',
               batch_size=128,
               subset_len=None,
               sample_method='random',
@@ -206,7 +206,7 @@ def accuracy(output, target, topk=(1,)):
 
     res = []
     for k in topk:
-      correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+      correct_k = correct[:k].flatten().float().sum(0, keepdim=True)
       res.append(correct_k.mul_(100.0 / batch_size))
     return res
 

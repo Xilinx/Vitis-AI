@@ -327,6 +327,8 @@ class SeparateConvAct(transforms.Transform):
     conv_metadata = conv_layer_node.metadata
     conv_layer_name = conv_layer_node.layer['config']['name']
     act_type = conv_layer_node.layer['config']['activation']
+    if isinstance(act_type, dict):
+      act_type = act_type['class_name']
 
     if act_type == 'linear':
       return match_layer
@@ -346,6 +348,79 @@ class SeparateConvAct(transforms.Transform):
     act_layer_node = LayerNode.from_layer(
         act_layer, input_layers=[conv_layer_node], metadata=act_metadata)
     return act_layer_node
+
+  def custom_objects(self):
+    return {}
+
+
+class SeparableConv(transforms.Transform):
+  """Separate  SeparableConv2D layers  to DepthWiseConv and PointWiseConv(normal conv).
+  """
+
+  def pattern(self):
+    return LayerPattern('SeparableConv2D', {}, [])
+
+  def replacement(self, match_layer):
+    separable_conv_layer_node = match_layer
+    separable_conv_metadata = separable_conv_layer_node.metadata
+    separable_conv_layer_name = separable_conv_layer_node.layer['config'][
+        'name']
+    depthwise_kernel_size = separable_conv_layer_node.layer['config'][
+        'kernel_size']
+    depthwise_padding = separable_conv_layer_node.layer['config']['padding']
+    depthwise_strides = separable_conv_layer_node.layer['config']['strides']
+    depth_multiplier = separable_conv_layer_node.layer['config'][
+        'depth_multiplier']
+    depth_multiplier = separable_conv_layer_node.layer['config'][
+        'depth_multiplier']
+    dilation_rate = separable_conv_layer_node.layer['config']['dilation_rate']
+    depthwise_weights = separable_conv_layer_node.weights['depthwise_kernel:0']
+    separable_conv_data_format = separable_conv_layer_node.layer['config'][
+        'data_format']
+
+    pointwise_filters = separable_conv_layer_node.layer['config']['filters']
+
+    logger.debug('Separable conv {} '.format(separable_conv_layer_name))
+
+    separable_conv_depthwise_layer = keras.layers.DepthwiseConv2D(
+        name=separable_conv_layer_name + '_' + 'depthwise_conv',
+        kernel_size=depthwise_kernel_size,
+        use_bias=False,
+        padding=depthwise_padding,
+        strides=depthwise_strides,
+        data_format=separable_conv_data_format,
+        depth_multiplier=depth_multiplier,
+        dilation_rate=dilation_rate)
+    separable_conv_depthwise_layer.layer = separable_conv_layer_node.layer
+    separable_conv_depthwise_layer.layer['config'][
+        'padding'] = separable_conv_layer_node.layer['config']['padding']
+    depthwise_weights_all = {'depthwise_kernel:0': depthwise_weights}
+    separable_conv_depthwise_layer_node = LayerNode.from_layer(
+        separable_conv_depthwise_layer,
+        weights=depthwise_weights_all,
+        metadata=separable_conv_metadata)
+
+    use_bias = separable_conv_layer_node.layer['config']['use_bias']
+    separable_conv_pointwise_layer = keras.layers.Conv2D(
+        name=separable_conv_layer_name + '_' + 'pointwise_conv',
+        kernel_size=(1, 1),
+        filters=pointwise_filters,
+        use_bias=use_bias,
+        data_format=separable_conv_data_format)
+
+    separable_conv_pointwise_metadata = copy.deepcopy(separable_conv_metadata)
+    pointwise_weights = separable_conv_layer_node.weights['pointwise_kernel:0']
+    pointwise_bias = separable_conv_layer_node.weights[
+        'bias:0'] if use_bias else None
+    pointwise_weights_all = {'kernel:0': pointwise_weights}
+    if use_bias:
+      pointwise_weights_all['bias:0'] = pointwise_bias
+    separable_conv_pointwise_layer_node = LayerNode.from_layer(
+        separable_conv_pointwise_layer,
+        input_layers=[separable_conv_depthwise_layer_node],
+        weights=pointwise_weights_all,
+        metadata=separable_conv_pointwise_metadata)
+    return separable_conv_pointwise_layer_node
 
   def custom_objects(self):
     return {}
@@ -438,11 +513,17 @@ class ConvertReLU6ToReLU(transforms.Transform):
   """Convert ReLU6 layers to ReLU layers, mainly used in CLE."""
 
   def pattern(self):
-    return LayerPattern('ReLU', {'max_value': 6.0}, [])
+    return LayerPattern('ReLU|Activation')
 
   def replacement(self, match_layer):
     relu_layer = match_layer
-    relu_layer.layer['config'].pop('max_value')
+    if relu_layer.layer.get('class_name') == 'ReLU' and relu_layer.layer[
+        'config'].get('max_value') == 6.0:
+      relu_layer.layer['config'].pop('max_value')
+    elif relu_layer.layer.get(
+        'class_name') == 'Activation' and relu_layer.layer['config'].get(
+            'activation') == 'relu6':
+      relu_layer.layer['config']['activation'] = 'relu'
     return match_layer
 
   def custom_objects(self):

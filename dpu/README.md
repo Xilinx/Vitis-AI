@@ -5,11 +5,11 @@
  </tr>
 </table>
 
-## Vitis-AI DPU IP and Reference Designs
+## Vitis&trade; AI DPU IP and Reference Designs
 
 The purpose of this page is to distribute DPU IP and reference designs.
 
-Today, Xilinx DPU IPs are not incorporated into the standard Vivado IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
+Today, Xilinx&reg; DPU IPs are not incorporated into the standard Vivado&trade; IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
 
 - The DPU IP is released as a reference design that is available to download from the links provided in the table below.  Users can start with the reference design and modify it to suit their requirements.
 - The DPU is released as a separate IP download that can be incorporated into a new or existing design by the developer.  
@@ -46,7 +46,7 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
   <tr>
     <td align="center">DPUCZDX8G</td>
     <td align="center">MPSoC / Kria K26</td>
-    <td align="center">Programmable logic based DPU, targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Support either the Vitis or Vivado flows on 16nm ZU+ targets.</td>
+    <td align="center">Programmable logic based DPU, targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports either the Vitis or Vivado flows on 16nm Zynq&reg; UltraScale+&trade; platforms.</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg338-dpu">PG338</a></td>
    <td align="center"><a href="ref_design_docs/README_DPUCZDX8G.md">Link</a></td>
@@ -55,7 +55,7 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
   <tr>
     <td align="center">DPUCVDX8G</td>
     <td align="center">VCK190</td>
-    <td align="center"> AIE centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal targets.</td> 
+    <td align="center"> AIE centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal&trade; ACAPs.</td> 
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_VAI_v3.0.tar.gz">Download</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g">PG389</a></td>
    <td align="center"><a href="ref_design_docs/README_DPUCVDX8G.md">Link</a></td>

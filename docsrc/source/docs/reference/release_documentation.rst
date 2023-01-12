@@ -26,7 +26,7 @@ Release Documentation
    * - Supported Platform
      - Product Guide
 
-   * - Zynq Ultrascale+, Kria	Versal Embedded, Alveo, ZCU102, ZCU104, K26 SOM
+   * - Zynq® Ultrascale+™, Kria™	Versal® Embedded, Alveo™, ZCU102, ZCU104, K26 SOM
      - `DPUCZDX8G (PG338) <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
 
    * - Versal Edge VEK280
@@ -43,12 +43,9 @@ Release Documentation
 
    * - Alveo 16nm HBM U280, U55C, U50, U50LV
      - `DPUCAHX8H (PG367) <https://docs.xilinx.com/r/en-US/pg367-dpucahx8h>`__
-   
+
    * - Alveo 16nm HBM U280, U50LV
      - `DPUCAHX8L (PG366) <https://docs.xilinx.com/r/en-US/pg366-dpucahx8l>`__
 
    * - Versal VCK5000
      - `DPUCVDX8H (PG403) <https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h>`__
-
-
-

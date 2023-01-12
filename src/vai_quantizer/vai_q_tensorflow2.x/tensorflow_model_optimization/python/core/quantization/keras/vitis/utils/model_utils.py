@@ -41,6 +41,14 @@ logger = common_utils.VAILogger
 keras = tf.keras
 
 
+def create_input_tensor(shape):
+  """create the input_shape tensor with tensor or inputlayer format"""
+  if shape.count(None) or shape.count(-1):
+      return keras.layers.Input(shape=shape[1:])
+  else: 
+      return tf.convert_to_tensor(np.random.random(shape))
+
+
 def remove_layer(model, class_name, name='.*'):
   """Remove given layer from the model."""
   transforms = [vitis_optimize_transforms.RemoveLayer(class_name, name)]
@@ -68,6 +76,13 @@ def convert_quantize_strategy(model, conversion='tqt_to_pof2s'):
 
 def separate_conv_act(model):
   transforms = [vitis_optimize_transforms.SeparateConvAct()]
+  transformed_model, _ = model_transformer.ModelTransformer(
+      model, transforms, None, None).recursive_transform()
+  return transformed_model
+
+
+def separable_conv(model):
+  transforms = [vitis_optimize_transforms.SeparableConv()]
   transformed_model, _ = model_transformer.ModelTransformer(
       model, transforms, None, None).recursive_transform()
   return transformed_model
@@ -109,6 +124,9 @@ def get_quantize_info(model):
       quantize_info[layer.layer.name] = layer.get_quantize_info()
     elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
       quantize_info[layer.name] = layer.get_quantize_info()
+    elif isinstance(layer, vitis_custom_wrapper.CustomOpWrapper) and isinstance(
+        layer.layer, vitis_quantize_wrapper.QuantizeWrapper):
+      quantize_info[layer.layer.layer.name] = layer.layer.get_quantize_info()
   return quantize_info
 
 
@@ -184,10 +202,15 @@ def get_shape(model, calib_dataset=None, input_shape=None):
   if not hasattr(model, "shape_info"):
     input_data = None
     if input_shape is not None:
-      input_data = np.random.random(input_shape)
-      if not (input_data.ndim == model.input.shape.ndims):
-        logger.debug("ndims of input_shape's({}) is not equal to ndims of " \
-            "model.input.shape({}) ".format(input_data.shape, model.input.shape))
+      if input_shape.count(-1) == 0 and input_shape.count(None) == 0:
+        input_data = np.random.random(input_shape)
+      else:
+        if calib_dataset is not None:
+          input_data = calib_dataset
+        else:
+          logger.error(
+              'Please assign calib_dataset when input_shape has None or -1, input_shape is:({}) .'
+              .format(input_shape))
     elif calib_dataset is not None:
       input_data = calib_dataset
     else:
@@ -250,9 +273,12 @@ def get_shape(model, calib_dataset=None, input_shape=None):
   dst_weights = []
   for w in model.optimizer.weights:
     name = w.name.split(":")[0]
-    dst_weights.append(model.shape_info[name])
+    shape_info = model.shape_info[name]
+    for i in range(len(shape_info)):
+      if shape_info[i] == None:
+        shape_info[i] = -1
+    dst_weights.append(shape_info)
   model.optimizer.set_weights(dst_weights)
-
   return model.shape_info
 
 
@@ -280,6 +306,10 @@ def set_layer_mode(model, mode, layer_names=None):
     if is_quantize_layer(layer):
       if not layer_names or layer.name in layer_names:
         layer.mode = mode
+      elif isinstance(layer, vitis_custom_wrapper.CustomOpWrapper):
+        if is_quantize_layer(layer.layer):
+          if not layer_names or layer.layer.name in layer_names:
+            layer.layer.mode = mode
   return
 
 
@@ -296,8 +326,12 @@ def convert_to_onnx(tf_model, output_dir, quantized_model_name,
   filepath = os.path.join(output_dir, quantized_model_name + '.onnx')
   saved_model_filepath = os.path.join(output_dir, quantized_model_name)
   tf_model.save(saved_model_filepath, save_format='tf')
-  os.system('python -m tf2onnx.convert --saved-model {} --output {} --opset {}'
-            .format(saved_model_filepath, filepath, onnx_opset_version))
+  import tf2onnx
+  model_proto, external_tensor_storage = tf2onnx.convert.from_keras(tf_model,
+                input_signature=None, opset=onnx_opset_version, custom_ops=None,
+                custom_op_handlers=None, custom_rewriter=None,
+                inputs_as_nchw=None, extra_opset=None, shape_override=None,
+                target=None, large_model=False, output_path=filepath)
 
 
 def dump_model_weights(model, dump_float, output_dir):
@@ -333,17 +367,21 @@ def dump_model_weights(model, dump_float, output_dir):
     logger.info("Dumping ({}/{}): {}".format(index, len(w_q_map), w_name))
 
     res = w.numpy()
-    res = res.flatten()
+    res_flatten = res.flatten()
     if dump_float:
-      res.tofile(filename + '_float.bin')
-      np.savetxt(filename + "_float.txt", res, fmt="%s", delimiter=",")
+      res_flatten.tofile(filename + '_float.bin')
+      np.savetxt(filename + "_float.txt", res_flatten, fmt="%s", delimiter=",")
 
-    if w_name in w_q_map and w_q_map[w_name]:
+    if w_name in w_q_map and w_q_map[w_name] is not None:
       res = np.round(res * 2**w_q_map[w_name])
       res = res.clip(-128, 127)
-      res.astype(np.int8).tofile(filename + ".bin")
+      res_flatten = res.flatten()
+      res_flatten.astype(np.int8).tofile(filename + ".bin")
       np.savetxt(
-          filename + ".txt", res.astype(np.int8), fmt="%s", delimiter=",")
+          filename + ".txt",
+          res_flatten.astype(np.int8),
+          fmt="%s",
+          delimiter=",")
 
 
 def dump_model_activations(model, dataset, dump_float, output_dir):
@@ -406,6 +444,14 @@ def dump_model_activations(model, dataset, dump_float, output_dir):
 def check_in_model(model, layer):
   layers = [l.name for l in model.layers]
   return layer in layers
+
+
+def check_near_dropout(model, ignore_layers=[]):
+  for layer in model.layers:
+    if isinstance(layer, keras.layers.Dropout):
+      layer_in_name = layer.inbound_nodes[0].inbound_layers.name
+      if layer_in_name in ignore_layers:
+        return True
 
 
 def get_candidate_layers(model, in_layers=[], out_layers=[], ignore_layers=[]):
@@ -527,34 +573,56 @@ def get_candidate_layers(model, in_layers=[], out_layers=[], ignore_layers=[]):
   return candidate_layers
 
 
-def modify_input_shape(model, new_input_shape):
+def modify_input_shape(model, new_input_shape, calib_dataset=None):
   """Modify the model's input shape, return modified model."""
   new_inputs = None
   new_num = 1
   if isinstance(new_input_shape, list):
     if isinstance(new_input_shape[0], list):
-      new_inputs = [keras.Input(shape=shape) for shape in new_input_shape]
+      new_inputs = [create_input_tensor(shape) for shape in new_input_shape]
       new_num = len(new_input_shape)
     else:
-      new_inputs = keras.Input(shape=new_input_shape)
+      new_inputs = create_input_tensor(new_input_shape)
   elif isinstance(new_input_shape, tuple):
-    new_inputs = keras.Input(shape=new_input_shape)
+    new_inputs = create_input_tensor(new_input_shape)
+  elif isinstance(new_input_shape, dict):
+    new_inputs = {}
+    for name, shape in new_input_shape.items():
+      dict_inputs = create_input_tensor(shape)
+      new_inputs[name] = dict_inputs
+    new_num = len(new_input_shape)
   else:
     logger.error('Invalid input shape {}.'.format(new_input_shape))
 
   if new_num != len(model.inputs):
     logger.error('Model {} expects {} inputs, but got {} input_shape.'.format(
         model.name, len(model.inputs), new_num))
+  fixed_shape_model = keras.models.clone_model(model, input_tensors=new_inputs)
+  fixed_shape_model.set_weights(model.get_weights())
+  #check fixed shape  model
+  #for cnt in range(new_num):
+  #  shape_list = new_inputs[cnt].shape.as_list()
+  #  if shape_list.count(None) or shape_list.count(-1):
+  #    if calib_dataset is not None:
+  #      new_inputs = calib_dataset
+  #      break
+  #  else:
+  #    continue
+  #fixed_shape_model.predict(new_inputs, batch_size=1, steps=1)
+  return fixed_shape_model, new_inputs
 
-  new_outputs = model.call(new_inputs)
-  new_model = keras.models.Model(
-      inputs=new_inputs, outputs=new_outputs, name=model.name)
-  return new_model
 
-
-def adjust_quantize_info(model, quantize_info, adjust_vitis_sigmoid,
-                         adjust_shift_cut, adjust_shift_bias,
-                         adjust_shift_read):
+def adjust_quantize_info(model,
+                         quantize_info,
+                         adjust_vitis_sigmoid,
+                         adjust_shift_cut,
+                         adjust_shift_bias,
+                         adjust_shift_read,
+                         adjust_shift_write,
+                         adjust_shift_swish,
+                         align_concat=False,
+                         align_pool=False):
   return vitis_pof2s_refine_transforms.adjust_quantize_info(
       model, quantize_info, adjust_vitis_sigmoid, adjust_shift_cut,
-      adjust_shift_bias, adjust_shift_read)
+      adjust_shift_bias, adjust_shift_read, adjust_shift_write,
+      adjust_shift_swish, align_concat, align_pool)

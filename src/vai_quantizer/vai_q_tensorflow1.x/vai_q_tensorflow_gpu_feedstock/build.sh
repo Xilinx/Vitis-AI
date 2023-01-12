@@ -19,25 +19,10 @@ export PYTHON_BIN_PATH=${PYTHON}
 export PYTHON_LIB_PATH=${SP_DIR}
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
-# Configure
-export TF_NEED_CUDA="1"
-yes "" | ./configure
+pip install tensorflow-gpu==1.15.2
 
-bazel build \
-  --verbose_failures \
-  --config=opt \
-  --config=cuda \
-  --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" \
-  --copt="-march=x86-64" \
-  --copt="-mno-sse3" \
-  --copt="-mno-sse4.1" \
-  --copt="-mno-sse4.2" \
-  --copt="-mno-avx" \
-  --copt="-mno-avx2" \
-  --copt="-mno-avx512f" \
-  --copt="-mno-fma" \
-  //tensorflow/tools/pip_package:build_pip_package
+bash cp_cuda_include_filse.sh
 
-bazel-bin/tensorflow/tools/pip_package/build_pip_package --gpu "$SRC_DIR/tensorflow_pkg"
+bash build.sh gpu 0
 
-pip install --no-deps $SRC_DIR/tensorflow_pkg/*.whl
+pip install --no-deps $SRC_DIR/pkgs/*.whl

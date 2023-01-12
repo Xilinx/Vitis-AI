@@ -2,6 +2,8 @@
 Supported devices
 - VCK190
 
+:pushpin: **Note:** Use VAI2.5 setup to run this applicaion
+
 ## Table of Contents
 
 - [Introduction](#Introduction)

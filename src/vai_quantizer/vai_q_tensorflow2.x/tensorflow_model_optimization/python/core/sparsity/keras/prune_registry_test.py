@@ -88,7 +88,6 @@ class PruneRegistryTest(tf.test.TestCase):
             layers.RNN([
                 layers.LSTMCell(10),
                 layers.GRUCell(10),
-                keras.experimental.PeepholeLSTMCell(10),
                 layers.SimpleRNNCell(10)
             ])))
 

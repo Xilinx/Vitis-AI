@@ -33,17 +33,17 @@ fi
 ##############################
 if [[ $distroname == *"Ubuntu 18.04"* ]] || [[ $distroname == *"Ubuntu 20.04"* ]] || [[ $distroname == *"Ubuntu 22.04"* ]]; then
   echo "Ubuntu 18.04/20.04/22.04"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base_2-20221111_all.deb.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base_2-20221205_all.deb.tar.gz"
 elif [[ $distroname == *"CentOS"* ]] || [[ $distroname == *"Red Hat"* ]]; then
   echo "CentOS/RHEL"
-  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base-2-20221111.noarch.rpm.tar.gz"
+  DEPLOY_PLFM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xilinx-vck5000-gen4x8-qdma-base-2-20221205.noarch.rpm.tar.gz"
 else
   echo "Failed, couldn't detect os distribution"
   exit 1
 fi
 
 ##############################
-# Install Gen3x4 Platform
+# Install Gen4x8 Platform
 ##############################
 mkdir ./temp
 cd ./temp
@@ -61,6 +61,10 @@ fi
 cd ..
 rm -rf ./temp
 ##############################
-# Flash alveo
+# Flash Device
 ##############################
-sudo /opt/xilinx/xrt/bin/xbmgmt program --device --base --image /lib/firmware/xilinx/aed3e95a48cf64bb247522fac4f92ddc/partition.xsabin
+sudo /opt/xilinx/xrt/bin/xbmgmt program --device --base --image xilinx_vck5000_gen4x8_qdma_base_2
+
+##############################
+# Warm reboot is required to recognize new SC image on the device.
+##############################

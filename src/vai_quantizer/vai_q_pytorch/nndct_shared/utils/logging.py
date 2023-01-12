@@ -259,6 +259,7 @@ class NndctScreenLogger(metaclass=SingletonMeta):
                         INFO: f"\n{GREEN}[VAIQ_NOTE]",
                         ERROR: f"\n{RED}[VAIQ_ERROR]"
                         }
+    self._code_prefix = 'QUANTIZER_TORCH_'
     self._cached_msg = []
 
   def warning(self, msg, *args, **kwargs):
@@ -288,26 +289,26 @@ class NndctScreenLogger(metaclass=SingletonMeta):
 
   def error2user(self, code, msg, *args, **kwargs):
     prefix = (self._log_prefix[ERROR] 
-    	+ '[' + code.name + ']') 
+        + '[' + self._code_prefix + code.name + ']')
     msg = self.full_message(msg, prefix=prefix)
     self._logger().error(msg, *args, **kwargs)
     self.flush()
   
   def warning2user(self, code, msg, *args, **kwargs):
     prefix = (self._log_prefix[WARN] 
-    	+ '[' + code.name + ']') 
+        + '[' + self._code_prefix + code.name + ']')
     msg = self.full_message(msg, prefix=prefix)
     self._logger().warning(msg, *args, **kwargs)
     self.flush()
 
-  def check2user(self, code, msg, condition):
+  def check2user(self, code, msg, condition, exit_status=1):
     if not condition:
       self.error2user(code, msg)
-      _sys.exit(1)
+      _sys.exit(exit_status)
 
   def info2user(self, code, msg, *args, **kwargs):
     prefix = (self._log_prefix[INFO] 
-    	+ '[' + code.name + ']') 
+        + '[' + self._code_prefix + code.name + ']')
     msg = self.full_message(msg, prefix=prefix)
     self._logger().info(msg, *args, **kwargs)
     self.flush()

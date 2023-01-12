@@ -27,8 +27,8 @@ from pytorch_nndct.utils.nndct2torch_op_map import get_nndct_op_type, get_torch_
 
 class CPUGPUQstrategy(QuantStrategyBase):
   
-  def __init__(self, quant_strategy_info: Dict[str, Union[str, int, bool]]):
-    super().__init__(quant_strategy_info, is_lstm=False)
+  def __init__(self, quant_strategy_info: Dict[str, Union[str, int, bool]], is_lstm=False):
+    super().__init__(quant_strategy_info, is_lstm=is_lstm)
     self._layer_quant_types = []
     self._layer_quant_names = []
     # for layer_type, layer_config in self._quant_strategy_info["layer_type_config"].items():
@@ -128,6 +128,28 @@ class NndctCGQstrategy(CPUGPUQstrategy):
                 else:
                   config['input'][node.name].append([self.num_bits_w, None, None, None])
                   quant_algo['input'][node.name].append(create_quant_algo("weights", self._quant_strategy_info["weights"], node))
+      elif (self.lstm and (node in quant_info_mgr.Nndctgraph.inputs) and node.op.type not in [NNDCT_OP.BLOCK, NNDCT_OP.TUPLE_INPUT]):
+        # this path is only for quantizing a whole graph without quant stub OP
+        # for lstm, check the following node type
+        if (node.in_quant_part or (any(
+            (quant_info_mgr.is_node_quantizable(c, self.lstm) and
+             c.op.type is not NNDCT_OP.QUANT_STUB)
+            for c in quant_info_mgr.Nndctgraph.children(node.name)))):
+          end = quant_info_mgr.quant_output(node.name).name
+          if end not in config['output']:
+            layer_group_quant = self.get_quant_group_activation_config(quant_info_mgr, node.name)
+            config['output'][end] = []
+            quant_algo['output'][end] = []
+            config['output'][end] = []
+            for tensor in quant_info_mgr.quant_output(node.name).out_tensors:
+              if tensor.name not in config['param'].keys():
+                #config['output'][end].append([self.num_bits_a, None])
+                if layer_group_quant:
+                  config['output'][end].append([layer_group_quant['bit_width'], None, None, None])
+                  quant_algo['output'][end].append(create_quant_algo("activation", layer_group_quant, node))
+                else:
+                  config['output'][end].append([self.num_bits_a, None, None, None])
+                  quant_algo['output'][end].append(create_quant_algo("activation", self._quant_strategy_info["activation"], node))
     
     # check the input fix of all quantized ops 
     if not self.lstm:
