@@ -1,5 +1,0 @@
-op {
-  graph_op_name: "TPUCompilationResult"
-  visibility: HIDDEN
-  summary: "CompilationResultProto indicating the status of the TPU compilation."
-}

@@ -1,0 +1,90 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: pruned fadnetv2 for disparity estimation on tartanair
+input size: 576*960
+float ops: 201G
+task: disparity estimation
+framework: pytorch
+prune: '0.51'
+version: 3.0
+files:
+- name: pt_fadnetv2_sceneflow_576_960_0.51_201G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_sceneflow_576_960_0.51_201G_3.0.zip
+  checksum: 8891b5942bb12f8e9d3c8c36772c1a6b
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: f14e6950f1d539c8f63b07d3d6782ff8
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: ecb3a77261db2b4539ff46f2d2dce9e6
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: e2ddba064b2207048c1dc99f814402d0
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-vck190-r3.0.0.tar.gz
+  checksum: 08af5ca52f87623401b7fa6f8eb5551a
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-vck190-r3.0.0.tar.gz
+  checksum: a761e1ec263cd46f0535f78f5d386fcc
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck190-r3.0.0.tar.gz
+  checksum: d121f1fd8c040abb0d79cc8353737a88
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: dc94067588390050cf3c9e91d3772e65
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 33c6570971f0713bfb650ab2b8304a61
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 4e2c63e78903cbb044622106f30cb49e
+- name: FADNet_v2_pruned_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 93eed89302702d17e4de035e2a3d5854
+- name: FADNet_v2_pruned_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 944d6724c3121d4cd6eb64da2201d92a
+- name: FADNet_v2_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_pruned_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 15eb0cb22acb3e61fc04a4e327ee5c43
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

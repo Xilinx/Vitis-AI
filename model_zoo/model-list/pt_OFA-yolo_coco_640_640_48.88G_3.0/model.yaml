@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: OFA-Yolo for Detection.
+input size: 640*640
+float ops: 48.88G
+task: detection
+framework: pytorch
+prune: none
+version: 3.0
+files:
+- name: pt_OFA-yolo_coco_640_640_48.88G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-yolo_coco_640_640_48.88G_3.0.zip
+  checksum: f0489a4067be607922c08643b4753d8d
+- name: ofa_yolo_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 515be081d51fb5b57aa05df3c06f52fb
+- name: ofa_yolo_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck190-r3.0.0.tar.gz
+  checksum: 8f4b0fec4666cea21aedb5d75ce20cd8
+- name: ofa_yolo_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 44a0895872080fbed331aaef99fca323
+- name: ofa_yolo_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 02935d1e94685a22549d47326a7529ac
+- name: ofa_yolo_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 79eee0cd2460b69735963ad4bc7a5a55
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,94 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_tfssd, ./test_performance_tfssd, ./test_video_tfssd first param followed must be with model name.
+  Valid model name:
+    ssd_mobilenet_v1_coco_tf
+    ssd_mobilenet_v2_coco_tf
+    ssd_resnet_50_fpn_coco_tf
+    ssd_inception_v2_coco_tf
+    ssdlite_mobilenet_v2_coco_tf
+    
+    
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_tfssd ssd_mobilenet_v1_coco_tf sample_tfssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0317 12:35:59.122107  4235 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0317 12:35:59.122210  4235 process_result.hpp:43] RESULT: 18	6.46762	13.5106	93.3071	259.973	0.952574
+I0317 12:35:59.122351  4235 process_result.hpp:43] RESULT: 18	118.046	28.8428	293.402	283.984	0.939913
+
+    
+    sample : ./test_jpeg_tfssd ssd_mobilenet_v2_coco_tf sample_tfssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0709 05:51:20.939500  4000 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:20.939601  4000 process_result.hpp:43] RESULT: 1    83.2766 -5.45941        203.465 206.673 0.377541
+I0709 05:51:20.939754  4000 process_result.hpp:43] RESULT: 1    87.3896 11.7359 243.635 267.581 0.377541
+I0709 05:51:20.939824  4000 process_result.hpp:43] RESULT: 18   111.551 27.7169 291.346 276.559 0.952574
+I0709 05:51:20.939899  4000 process_result.hpp:43] RESULT: 18   4.24144 2.43604 95.5333 255.138 0.817575
+
+
+    sample : ./test_jpeg_tfssd ssd_resnet_50_fpn_coco_tf sample_tfssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0709 05:51:26.215736  4005 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:26.215852  4005 process_result.hpp:43] RESULT: 18   6.92568 11.9622 98.0743 258.038 0.798187
+I0709 05:51:26.215986  4005 process_result.hpp:43] RESULT: 18   107.544 39      294.456 279     0.787931
+I0709 05:51:26.216050  4005 process_result.hpp:43] RESULT: 18   8.10038 8.96218 219.9   255.038 0.334589
+I0709 05:51:26.216116  4005 process_result.hpp:43] RESULT: 21   109.902 32.352  292.826 285.523 0.307358
+
+
+    sample : ./test_jpeg_tfssd ssd_inception_v2_coco_tf sample_tfssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0826 15:11:04.683904 16311 process_result.hpp:43] RESULT: 18   113.689 28.8428 293.484 283.984 0.974043
+I0826 15:11:04.684190 16311 process_result.hpp:43] RESULT: 18   0.718068        9.99001 91.7563 251.037 0.835484
+
+    sample : ./test_jpeg_tfssd ssdlite_mobilenet_v2_coco_tf sample_tfssd.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0709 05:51:29.020128  4018 demo.hpp:1183] batch: 0     image: sample_tfssd.jpg
+I0709 05:51:29.020251  4018 process_result.hpp:43] RESULT: 1    77.2704 -0.462019       206.82  228.192 0.437824
+I0709 05:51:29.020419  4018 process_result.hpp:43] RESULT: 1    156.833 -1.90521        212.689 80.8526 0.320821
+I0709 05:51:29.020473  4018 process_result.hpp:43] RESULT: 18   113.689 35.0645 293.484 277.762 0.939913
+I0709 05:51:29.020546  4018 process_result.hpp:43] RESULT: 18   1.76009 10.391  95.363  263.092 0.817575
+
+
+
+Performance: 
+    ./test_performance_tfssd ssd_mobilenet_v1_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_resnet_50_fpn_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssdlite_mobilenet_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+    ./test_performance_tfssd ssd_inception_v2_coco_tf test_performance_tfssd.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_tfssd_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_tfssd_mt ssd_mobilenet_v1_coco_tf image_list.txt result.txt -t 2

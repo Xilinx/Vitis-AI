@@ -1,0 +1,70 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: PointPillars on KITTI.
+input size: 12000*100*4
+float ops: 11.2G
+task: 3d detection
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_pointpillars_kitti_12000_100_11.2G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_pointpillars_kitti_12000_100_11.2G_3.0.zip
+  checksum: 5ad7a30c21dc6c2041ff03c827fd53dc
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 1525fde18c181280bd449df55f637cbd
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: be78a7b01a81fe564f8387c49226dc2a
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck190-r3.0.0.tar.gz
+  checksum: 04f314aa74dac017352d6643a4b130fa
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck190-r3.0.0.tar.gz
+  checksum: a49a45114e27607169e49f0546b36cca
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 3bbcc3db0b1de1c852e6d6ee2dc0f194
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 40adb1bb3cd2902a92dada405823bbc3
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 9b9f4da0e73fb27cecbb7054f840ff40
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: ac2381ee363968b56bbce9a9970abed1
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

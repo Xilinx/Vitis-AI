@@ -1,0 +1,16 @@
+name: vitis-ai-tensorflow2
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.7
+  - vai-wego-tensorflow2
+  - tensorflow-onnx
+  - vaic
+  - dpuv3-pycompiler
+  - xnnc
+  - xcompiler
+  - rt-engine
+  - vai_utf

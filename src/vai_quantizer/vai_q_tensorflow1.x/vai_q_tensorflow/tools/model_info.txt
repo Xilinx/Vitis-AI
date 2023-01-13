@@ -1,0 +1,971 @@
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/Conv/Conv2D + FeatureExtractor/MobilenetV2/Conv/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/Conv/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/MobilenetV2/input/aquant, FeatureExtractor/MobilenetV2/Conv/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv/depthwise/depthwise 
+    inpos: 6    w_pos: 6    b_pos: 7    out_pos:4
+    attr: 
+         _output_shapes:None
+         data_format:b'NHWC'
+         strides:[1, 2, 2, 1]
+         T:1
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+         explicit_paddings:None
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/Conv/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv/project/Conv2D 
+    inpos: 4    w_pos: 5    b_pos: 6    out_pos:4
+    attr: 
+         dilations:[1, 1, 1, 1]
+         strides:[1, 1, 1, 1]
+         T:1
+         _output_shapes:None
+         data_format:b'NHWC'
+         padding:b'SAME'
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/expand/Conv2D 
+    inpos: 4    w_pos: 7    b_pos: 5    out_pos:4
+    attr: 
+         padding:b'SAME'
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         T:1
+         use_cudnn_on_gpu:True
+         data_format:b'NHWC'
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_1/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_1/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_1/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_1/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/depthwise 
+    inpos: 4    w_pos: 7    b_pos: 8    out_pos:4
+    attr: 
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         T:1
+         explicit_paddings:None
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/project/Conv2D 
+    inpos: 4    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         strides:[1, 2, 2, 1]
+         padding:b'SAME'
+         data_format:b'NHWC'
+         T:1
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_1/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_1/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_1/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/expand/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_2/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:4
+    attr: 
+         _output_shapes:None
+         explicit_paddings:None
+         T:1
+         strides:[1, 1, 1, 1]
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_2/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_2/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_2/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_1/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_2/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/depthwise 
+    inpos: 4    w_pos: 8    b_pos: 8    out_pos:4
+    attr: 
+         _output_shapes:None
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         T:1
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/project/Conv2D 
+    inpos: 4    w_pos: 5    b_pos: 6    out_pos:4
+    attr: 
+         T:1
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         padding:b'SAME'
+         data_format:b'NHWC'
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_2/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_2/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_2/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:4
+    attr: 
+         T:1
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         padding:b'SAME'
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_2/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_1/project/BatchNorm/FusedBatchNormV3/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/add/aquant 
+    attr: 
+         _output_shapes:None
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_3/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_3/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_3/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_2/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_3/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/depthwise 
+    inpos: 4    w_pos: 8    b_pos: 9    out_pos:4
+    attr: 
+         data_format:b'NHWC'
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         T:1
+         dilations:[1, 1, 1, 1]
+         explicit_paddings:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_3/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_3/project/Conv2D 
+    inpos: 4    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         padding:b'SAME'
+         T:1
+         strides:[1, 2, 2, 1]
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         _output_shapes:None
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_3/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_3/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_3/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_3/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/expand/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_4/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:5
+    attr: 
+         _output_shapes:None
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         T:1
+         data_format:b'NHWC'
+         explicit_paddings:None
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_4/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_4/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_4/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_3/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_4/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/depthwise 
+    inpos: 5    w_pos: 8    b_pos: 10    out_pos:5
+    attr: 
+         T:1
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+         padding:b'SAME'
+         data_format:b'NHWC'
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         T:1
+         data_format:b'NHWC'
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_4/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_4/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_4/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:5
+    attr: 
+         padding:b'SAME'
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         _output_shapes:None
+         T:1
+         strides:[1, 1, 1, 1]
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_4/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_3/project/BatchNorm/FusedBatchNormV3/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_5/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_5/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_5/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_4/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_5/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/depthwise 
+    inpos: 4    w_pos: 8    b_pos: 11    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         T:1
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         _output_shapes:None
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         strides:[1, 1, 1, 1]
+         padding:b'SAME'
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         data_format:b'NHWC'
+         T:1
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_5/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_5/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_5/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         T:1
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         padding:b'SAME'
+         _output_shapes:None
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_5/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_4/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_6/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_6/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_6/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_5/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_6/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/depthwise 
+    inpos: 4    w_pos: 9    b_pos: 9    out_pos:5
+    attr: 
+         T:1
+         padding:b'SAME'
+         data_format:b'NHWC'
+         _output_shapes:None
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_6/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_6/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         data_format:b'NHWC'
+         T:1
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         strides:[1, 2, 2, 1]
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_6/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_6/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_6/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_6/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/expand/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_7/add 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:5
+    attr: 
+         data_format:b'NHWC'
+         T:1
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         padding:b'SAME'
+         dilations:[1, 1, 1, 1]
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_7/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_7/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_7/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_6/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_7/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/depthwise 
+    inpos: 5    w_pos: 8    b_pos: 11    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         T:1
+         data_format:b'NHWC'
+         use_cudnn_on_gpu:True
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         T:1
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_7/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_7/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_7/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/add 
+    inpos: 4    w_pos: 9    b_pos: 6    out_pos:5
+    attr: 
+         padding:b'SAME'
+         use_cudnn_on_gpu:True
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+         data_format:b'NHWC'
+         explicit_paddings:None
+         dilations:[1, 1, 1, 1]
+         T:1
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_7/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_6/project/BatchNorm/FusedBatchNormV3/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/add/aquant 
+    attr: 
+         _output_shapes:None
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_8/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_8/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_8/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_7/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_8/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/depthwise 
+    inpos: 4    w_pos: 9    b_pos: 11    out_pos:5
+    attr: 
+         T:1
+         explicit_paddings:None
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+         strides:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         _output_shapes:None
+         padding:b'SAME'
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         T:1
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_8/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_8/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_8/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/add 
+    inpos: 4    w_pos: 9    b_pos: 5    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         padding:b'SAME'
+         explicit_paddings:None
+         T:1
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_8/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_7/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_9/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_9/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_9/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_8/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_9/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/depthwise 
+    inpos: 4    w_pos: 9    b_pos: 10    out_pos:5
+    attr: 
+         T:1
+         data_format:b'NHWC'
+         explicit_paddings:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         dilations:[1, 1, 1, 1]
+         T:1
+         strides:[1, 1, 1, 1]
+         padding:b'SAME'
+         _output_shapes:None
+         data_format:b'NHWC'
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_9/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_9/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_9/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/add 
+    inpos: 4    w_pos: 8    b_pos: 5    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         padding:b'SAME'
+         data_format:b'NHWC'
+         T:1
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_9/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_8/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_10/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_10/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_10/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_9/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_10/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/depthwise 
+    inpos: 4    w_pos: 9    b_pos: 10    out_pos:5
+    attr: 
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         _output_shapes:None
+         padding:b'SAME'
+         data_format:b'NHWC'
+         T:1
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_10/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_10/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         _output_shapes:None
+         T:1
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_10/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_10/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_10/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_10/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/expand/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_11/add 
+    inpos: 4    w_pos: 9    b_pos: 6    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         padding:b'SAME'
+         explicit_paddings:None
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_11/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_11/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_11/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_10/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_11/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/depthwise 
+    inpos: 5    w_pos: 8    b_pos: 11    out_pos:5
+    attr: 
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 7    out_pos:4
+    attr: 
+         T:1
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         padding:b'SAME'
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_11/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_11/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_11/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/add 
+    inpos: 4    w_pos: 9    b_pos: 5    out_pos:5
+    attr: 
+         padding:b'SAME'
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         T:1
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         explicit_paddings:None
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_11/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_10/project/BatchNorm/FusedBatchNormV3/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_12/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_12/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_12/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_11/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_12/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/depthwise 
+    inpos: 4    w_pos: 9    b_pos: 10    out_pos:5
+    attr: 
+         T:1
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         explicit_paddings:None
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/project/Conv2D 
+    inpos: 5    w_pos: 5    b_pos: 7    out_pos:4
+    attr: 
+         padding:b'SAME'
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         T:1
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_12/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_12/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_12/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/add 
+    inpos: 4    w_pos: 9    b_pos: 5    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         T:1
+         strides:[1, 1, 1, 1]
+         explicit_paddings:None
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         data_format:b'NHWC'
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_12/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_11/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_13/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_13/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_13/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_12/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_13/expand/weights/wquant 
+    output nodes: BoxPredictor_0/ClassPredictor/Conv2D, BoxPredictor_0/BoxEncodingPredictor/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/depthwise 
+    inpos: 4    w_pos: 10    b_pos: 8    out_pos:5
+    attr: 
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         _output_shapes:None
+         T:1
+pattern [Conv + bias ]: (BoxPredictor_0/ClassPredictor/Conv2D + BoxPredictor_0/ClassPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/expand/Relu6/aquant, BoxPredictor_0/ClassPredictor/weights/wquant 
+    output nodes: BoxPredictor_0/Reshape_1 
+    inpos: 5    w_pos: 8    b_pos: 4    out_pos:4
+    attr: 
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         T:1
+         data_format:b'NHWC'
+         explicit_paddings:None
+         _output_shapes:None
+pattern [Conv + bias ]: (BoxPredictor_0/BoxEncodingPredictor/Conv2D + BoxPredictor_0/BoxEncodingPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/expand/Relu6/aquant, BoxPredictor_0/BoxEncodingPredictor/weights/wquant 
+    output nodes: BoxPredictor_0/Reshape 
+    inpos: 5    w_pos: 8    b_pos: 8    out_pos:3
+    attr: 
+         padding:b'SAME'
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         dilations:[1, 1, 1, 1]
+         T:1
+         use_cudnn_on_gpu:True
+         data_format:b'NHWC'
+         explicit_paddings:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 7    out_pos:4
+    attr: 
+         T:1
+         strides:[1, 2, 2, 1]
+         data_format:b'NHWC'
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_13/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_13/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_13/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/expand/Conv2D, FeatureExtractor/MobilenetV2/expanded_conv_14/add 
+    inpos: 4    w_pos: 9    b_pos: 6    out_pos:5
+    attr: 
+         padding:b'SAME'
+         use_cudnn_on_gpu:True
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         explicit_paddings:None
+         _output_shapes:None
+         T:1
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_14/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_14/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_14/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_13/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_14/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/depthwise 
+    inpos: 5    w_pos: 9    b_pos: 13    out_pos:5
+    attr: 
+         padding:b'SAME'
+         explicit_paddings:None
+         dilations:[1, 1, 1, 1]
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         data_format:b'NHWC'
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 7    out_pos:5
+    attr: 
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         T:1
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_14/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_14/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_14/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/add 
+    inpos: 5    w_pos: 10    b_pos: 5    out_pos:5
+    attr: 
+         T:1
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         data_format:b'NHWC'
+         explicit_paddings:None
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_14/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_13/project/BatchNorm/FusedBatchNormV3/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/add/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_15/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_15/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_15/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_14/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_15/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/depthwise 
+    inpos: 5    w_pos: 9    b_pos: 13    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         explicit_paddings:None
+         _output_shapes:None
+         T:1
+         data_format:b'NHWC'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 7    out_pos:5
+    attr: 
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         T:1
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_15/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_15/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_15/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/add 
+    inpos: 5    w_pos: 9    b_pos: 5    out_pos:5
+    attr: 
+         T:1
+         data_format:b'NHWC'
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         explicit_paddings:None
+         use_cudnn_on_gpu:True
+op type AddV2: (FeatureExtractor/MobilenetV2/expanded_conv_15/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_14/add/aquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/add/aquant 
+    attr: 
+         _output_shapes:None
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_16/expand/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_16/expand/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_16/expand/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_15/add/aquant, FeatureExtractor/MobilenetV2/expanded_conv_16/expand/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/depthwise 
+    inpos: 4    w_pos: 10    b_pos: 11    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+         data_format:b'NHWC'
+         _output_shapes:None
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         T:1
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/depthwise + FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_16/expand/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/expanded_conv_16/project/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         dilations:[1, 1, 1, 1]
+         T:1
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         _output_shapes:None
+pattern [Conv + bias ]: (FeatureExtractor/MobilenetV2/expanded_conv_16/project/Conv2D + FeatureExtractor/MobilenetV2/expanded_conv_16/project/BatchNorm/FusedBatchNormV3/add)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_16/depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/expanded_conv_16/project/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/Conv_1/Conv2D 
+    inpos: 4    w_pos: 10    b_pos: 5    out_pos:5
+    attr: 
+         data_format:b'NHWC'
+         padding:b'SAME'
+         T:1
+         _output_shapes:None
+         strides:[1, 1, 1, 1]
+         explicit_paddings:None
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/Conv_1/Conv2D + FeatureExtractor/MobilenetV2/Conv_1/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/Conv_1/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/expanded_conv_16/project/BatchNorm/FusedBatchNormV3/add/aquant, FeatureExtractor/MobilenetV2/Conv_1/weights/wquant 
+    output nodes: BoxPredictor_1/ClassPredictor/Conv2D, BoxPredictor_1/BoxEncodingPredictor/Conv2D, FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/Conv2D 
+    inpos: 5    w_pos: 9    b_pos: 10    out_pos:5
+    attr: 
+         use_cudnn_on_gpu:True
+         strides:[1, 1, 1, 1]
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         data_format:b'NHWC'
+         T:1
+         explicit_paddings:None
+pattern [Conv + bias ]: (BoxPredictor_1/ClassPredictor/Conv2D + BoxPredictor_1/ClassPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/Conv_1/Relu6/aquant, BoxPredictor_1/ClassPredictor/weights/wquant 
+    output nodes: BoxPredictor_1/Reshape_1 
+    inpos: 5    w_pos: 8    b_pos: 4    out_pos:4
+    attr: 
+         T:1
+         strides:[1, 1, 1, 1]
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+         explicit_paddings:None
+         data_format:b'NHWC'
+pattern [Conv + bias ]: (BoxPredictor_1/BoxEncodingPredictor/Conv2D + BoxPredictor_1/BoxEncodingPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/Conv_1/Relu6/aquant, BoxPredictor_1/BoxEncodingPredictor/weights/wquant 
+    output nodes: BoxPredictor_1/Reshape 
+    inpos: 5    w_pos: 9    b_pos: 8    out_pos:3
+    attr: 
+         explicit_paddings:None
+         padding:b'SAME'
+         _output_shapes:None
+         dilations:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         T:1
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/Conv2D + FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/Conv_1/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/depthwise 
+    inpos: 5    w_pos: 10    b_pos: 6    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         explicit_paddings:None
+         _output_shapes:None
+         use_cudnn_on_gpu:True
+         data_format:b'NHWC'
+         padding:b'SAME'
+         strides:[1, 1, 1, 1]
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/depthwise + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_2_1x1_256/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Conv2D 
+    inpos: 5    w_pos: 5    b_pos: 6    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         padding:b'SAME'
+         strides:[1, 2, 2, 1]
+         _output_shapes:None
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Conv2D + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512_depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/weights/wquant 
+    output nodes: BoxPredictor_2/ClassPredictor/Conv2D, BoxPredictor_2/BoxEncodingPredictor/Conv2D, FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/Conv2D 
+    inpos: 5    w_pos: 8    b_pos: 5    out_pos:5
+    attr: 
+         dilations:[1, 1, 1, 1]
+         explicit_paddings:None
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+         _output_shapes:None
+         data_format:b'NHWC'
+         strides:[1, 1, 1, 1]
+         T:1
+pattern [Conv + bias ]: (BoxPredictor_2/ClassPredictor/Conv2D + BoxPredictor_2/ClassPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Relu6/aquant, BoxPredictor_2/ClassPredictor/weights/wquant 
+    output nodes: BoxPredictor_2/Reshape_1 
+    inpos: 5    w_pos: 10    b_pos: 4    out_pos:4
+    attr: 
+         data_format:b'NHWC'
+         explicit_paddings:None
+         _output_shapes:None
+         padding:b'SAME'
+         T:1
+         dilations:[1, 1, 1, 1]
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+pattern [Conv + bias ]: (BoxPredictor_2/BoxEncodingPredictor/Conv2D + BoxPredictor_2/BoxEncodingPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Relu6/aquant, BoxPredictor_2/BoxEncodingPredictor/weights/wquant 
+    output nodes: BoxPredictor_2/Reshape 
+    inpos: 5    w_pos: 10    b_pos: 10    out_pos:3
+    attr: 
+         strides:[1, 1, 1, 1]
+         dilations:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         _output_shapes:None
+         padding:b'SAME'
+         explicit_paddings:None
+         data_format:b'NHWC'
+         T:1
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/Conv2D + FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_2_3x3_s2_512/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/depthwise 
+    inpos: 5    w_pos: 9    b_pos: 6    out_pos:5
+    attr: 
+         T:1
+         strides:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         _output_shapes:None
+         explicit_paddings:None
+         padding:b'SAME'
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/depthwise + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_1_Conv2d_3_1x1_128/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/depthwise_weights/wquant 
+    output nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/Conv2D 
+    inpos: 5    w_pos: 6    b_pos: 6    out_pos:4
+    attr: 
+         T:1
+         _output_shapes:None
+         data_format:b'NHWC'
+         strides:[1, 2, 2, 1]
+         dilations:[1, 1, 1, 1]
+         padding:b'SAME'
+pattern [Conv + bias + relu]: (FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/Conv2D + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/BatchNorm/FusedBatchNormV3/add + FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/Relu6)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256_depthwise/Relu6/aquant, FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/weights/wquant 
+    output nodes: BoxPredictor_3/ClassPredictor/Conv2D, BoxPredictor_3/BoxEncodingPredictor/Conv2D 
+    inpos: 4    w_pos: 8    b_pos: 6    out_pos:5
+    attr: 
+         T:1
+         dilations:[1, 1, 1, 1]
+         use_cudnn_on_gpu:True
+         _output_shapes:None
+         data_format:b'NHWC'
+         padding:b'SAME'
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+pattern [Conv + bias ]: (BoxPredictor_3/ClassPredictor/Conv2D + BoxPredictor_3/ClassPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/Relu6/aquant, BoxPredictor_3/ClassPredictor/weights/wquant 
+    output nodes: BoxPredictor_3/Reshape_1 
+    inpos: 5    w_pos: 10    b_pos: 4    out_pos:4
+    attr: 
+         use_cudnn_on_gpu:True
+         dilations:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         padding:b'SAME'
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         T:1
+         _output_shapes:None
+pattern [Conv + bias ]: (BoxPredictor_3/BoxEncodingPredictor/Conv2D + BoxPredictor_3/BoxEncodingPredictor/BiasAdd)
+    input nodes: FeatureExtractor/MobilenetV2/layer_19_2_Conv2d_3_3x3_s2_256/Relu6/aquant, BoxPredictor_3/BoxEncodingPredictor/weights/wquant 
+    output nodes: BoxPredictor_3/Reshape 
+    inpos: 5    w_pos: 10    b_pos: 11    out_pos:3
+    attr: 
+         use_cudnn_on_gpu:True
+         padding:b'SAME'
+         T:1
+         _output_shapes:None
+         explicit_paddings:None
+         strides:[1, 1, 1, 1]
+         data_format:b'NHWC'
+         dilations:[1, 1, 1, 1]
+op type Reshape: (BoxPredictor_3/Reshape_1)
+    input nodes: BoxPredictor_3/ClassPredictor/BiasAdd/aquant, BoxPredictor_3/Reshape_1/shape 
+    output nodes: BoxPredictor_3/Reshape_1/aquant 
+    attr: 
+         _output_shapes:None
+         T:1
+         Tshape:3
+op type Reshape: (BoxPredictor_3/Reshape)
+    input nodes: BoxPredictor_3/BoxEncodingPredictor/BiasAdd/aquant, BoxPredictor_3/Reshape/shape 
+    output nodes: BoxPredictor_3/Reshape/aquant 
+    attr: 
+         T:1
+         Tshape:3
+         _output_shapes:None
+op type Reshape: (BoxPredictor_2/Reshape_1)
+    input nodes: BoxPredictor_2/ClassPredictor/BiasAdd/aquant, BoxPredictor_2/Reshape_1/shape 
+    output nodes: BoxPredictor_2/Reshape_1/aquant 
+    attr: 
+         _output_shapes:None
+         Tshape:3
+         T:1
+op type Reshape: (BoxPredictor_2/Reshape)
+    input nodes: BoxPredictor_2/BoxEncodingPredictor/BiasAdd/aquant, BoxPredictor_2/Reshape/shape 
+    output nodes: BoxPredictor_2/Reshape/aquant 
+    attr: 
+         Tshape:3
+         _output_shapes:None
+         T:1
+op type Reshape: (BoxPredictor_1/Reshape_1)
+    input nodes: BoxPredictor_1/ClassPredictor/BiasAdd/aquant, BoxPredictor_1/Reshape_1/shape 
+    output nodes: BoxPredictor_1/Reshape_1/aquant 
+    attr: 
+         T:1
+         _output_shapes:None
+         Tshape:3
+op type Reshape: (BoxPredictor_1/Reshape)
+    input nodes: BoxPredictor_1/BoxEncodingPredictor/BiasAdd/aquant, BoxPredictor_1/Reshape/shape 
+    output nodes: BoxPredictor_1/Reshape/aquant 
+    attr: 
+         Tshape:3
+         T:1
+         _output_shapes:None
+op type Reshape: (BoxPredictor_0/Reshape_1)
+    input nodes: BoxPredictor_0/ClassPredictor/BiasAdd/aquant, BoxPredictor_0/Reshape_1/shape 
+    output nodes: BoxPredictor_0/Reshape_1/aquant 
+    attr: 
+         Tshape:3
+         T:1
+         _output_shapes:None
+op type ConcatV2: (concat_1)
+    input nodes: BoxPredictor_0/Reshape_1/aquant, BoxPredictor_1/Reshape_1/aquant, BoxPredictor_2/Reshape_1/aquant, BoxPredictor_3/Reshape_1/aquant, concat_1/axis 
+    output nodes: concat_1/aquant 
+    attr: 
+         T:1
+         N:4
+         Tidx:3
+         _output_shapes:None
+op type Mul: (Postprocessor/scale_logits)
+    input nodes: concat_1/aquant, Postprocessor/scale_logits/y 
+    output nodes: Postprocessor/convert_scores 
+    attr: 
+         _output_shapes:None
+         T:1
+op type Sigmoid: (Postprocessor/convert_scores)
+    input nodes: Postprocessor/scale_logits 
+    output nodes: Postprocessor/raw_box_scores 
+    attr: 
+         _output_shapes:None
+         T:1
+op type Reshape: (BoxPredictor_0/Reshape)
+    input nodes: BoxPredictor_0/BoxEncodingPredictor/BiasAdd/aquant, BoxPredictor_0/Reshape/shape 
+    output nodes: BoxPredictor_0/Reshape/aquant 
+    attr: 
+         _output_shapes:None
+         T:1
+         Tshape:3
+op type ConcatV2: (concat)
+    input nodes: BoxPredictor_0/Reshape/aquant, BoxPredictor_1/Reshape/aquant, BoxPredictor_2/Reshape/aquant, BoxPredictor_3/Reshape/aquant, concat/axis 
+    output nodes: concat/aquant 
+    attr: 
+         T:1
+         Tidx:3
+         _output_shapes:None
+         N:4
+op type Squeeze: (Squeeze)
+    input nodes: concat/aquant 
+    output nodes: Postprocessor/raw_box_encodings 
+    attr: 
+         squeeze_dims:[2]
+         _output_shapes:None
+         T:1

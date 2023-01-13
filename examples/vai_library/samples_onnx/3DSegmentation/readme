@@ -1,0 +1,54 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+
+  add environment parameter DEBUG_USE_NEW_SCHEDULE=0 before executable files.
+
+  ./test_3DSegmentation_onnx, ./test_performance_3DSegmentation_onnx, ./test_accuracy_3DSegmentation_onnx first param followed must be with model name.
+  Valid model name:
+    salsanext_v2_onnx_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx  scan_dir
+    output : 
+width 2048 height 64 
+load file 
+scan_dir/scan_x.txt 127405
+scan_dir/scan_y.txt 127405
+scan_dir/scan_z.txt 127405
+scan_dir/scan_remission.txt 127405
+start running
+
+
+Performance:
+    sample : ./test_performance_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx test_performance_3Dsegmentation.list -s 60 -t 6 test_performance_3Dsegmentation.list
+   
+
+Accuracy:
+    test accuracy of salsanext_v2_onnx_pt:
+    ./test_accuracy_3DSegmentation_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    sample:
+    ./test_accuracy_3DSegmentation_onnx /usr/share/vitis_ai_library/models/salsanext_v2_onnx_pt/salsanext_v2_onnx_pt.onnx image.list result.txt -t 2

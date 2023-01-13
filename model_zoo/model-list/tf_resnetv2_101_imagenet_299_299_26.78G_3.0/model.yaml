@@ -1,0 +1,122 @@
+# ADVANCED MICRO DEVICES, INC. 
+# LICENSE AGREEMENT FOR NON-COMMERCIAL MODELS 
+#
+# Trained Models:
+# inception-resnetv2
+# inceptionv1
+# inceptionv1 pruned0.09
+# inceptionv1 pruned0.16
+# inceptionv2
+# inceptionv3
+# inceptionv3 pruned0.2
+# inceptionv3 pruned0.4
+# inceptionv4
+# inceptionv4 pruned0.2
+# inceptionv4 pruned0.4
+# mobilenetv1_0.25
+# mobilenetv1_0.5
+# mobilenetv1_1.0
+# mobilenetv1_1.0 pruned0.11
+# mobilenetv1_1.0 pruned0.12
+# mobilenetv2_1.0
+# mobilenetv2_1.4
+# resnetv1_50
+# resnetv1_50 pruned0.38
+# resnetv1_50 pruned0.65
+# resnetv1_101
+# resnetv1_101 pruned0.35
+# resnetv1_101 pruned0.57
+# resnetv1_152
+# resnetv1_152 pruned0.51
+# resnetv1_152pruned0.60
+# vgg16
+# vgg16 pruned0.43
+# vgg16 pruned0.50
+# vgg19
+# vgg19 pruned0.24
+# vgg19 pruned0.39
+# resnetv2_50
+# resnetv2_101
+# resnetv2_152
+# efficientnet-edgetpu-S
+# efficientnet-edgetpu-M
+# efficientnet-edgetpu-L
+# mlperf_resnet50
+# mobilenetEdge1.0
+# mobilenetEdge0.75
+# resnet50
+# mobilenetv1
+# inceptionv3
+# efficientnet-b0
+# mobilenetv3
+# efficientnet-lite
+# ViT
+# inceptionv3
+# inceptionv3 pruned0.3
+# inceptionv3 pruned0.4
+# inceptionv3 pruned0.5
+# inceptionv3 pruned0.6
+# squeezenet
+# resnet50_v1.5
+# resnet50_v1.5 pruned0.3
+# resnet50_v1.5 pruned0.4
+# resnet50_v1.5 pruned0.5
+# resnet50_v1.5 pruned0.6
+# resnet50_v1.5 pruned0.7
+# OFA-resnet50
+# OFA-resnet50 pruned0.45
+# OFA-resnet50 pruned0.60
+# OFA-resnet50 pruned0.74
+# OFA-resnet50 pruned0.88
+# OFA-depthwise-resnet50
+#
+# This License Agreement for Non-Commercial Models (“Agreement”) is a legal agreement between you (either an individual or 
+# an entity) and Advanced Micro Devices, Inc. (“AMD”). DO NOT USE THE TRAINED MODELS IDENTIFIED ABOVE UNTIL YOU HAVE 
+# CAREFULLY READ AND AGREE TO THE AGREEMENT. BY USING, INSTALLING, MODIFYING, COPYING, TRAINING, BENCHMARKING, OR 
+# DISTRIBUTING THE TRAINED MODELS, YOU ACCEPT ALL TERMS AND CONDITIONS OF THIS AGREEMENT.  
+# If you do not accept these terms, do not use the Trained Models. 
+#
+# 1.Subject to Your compliance with this Agreement, AMD grants you a license to use, modify, and distribute the Trained 
+# Models solely for non-commercial and research purposes. This means you may use the Trained Models for benchmarking, 
+# testing, and evaluating the Trained Models (including non-commercial research undertaken by or funded by a
+# commercial entity) but you cannot use the Trained Models in any commercial offering, including as part of a 
+# product or service You use or provide to others in exchange for money or other consideration. 
+#
+# 2.Your use of the Trained Models are subject to the following conditions: (a) You cannot alter any copyright, trademark, 
+# or other notice in the Trained Models; (b) You cannot sublicense or distribute the Trained Models under any other terms or # conditions; (c) You cannot use AMD’s trademarks in your applications or technologies in a way that suggests you 
+# applications or technologies are endorsed by AMD; (d) if you distribute the Trained Model, You must provide corresponding # source code for Trained Model; and (e) if the Trained Models include any code or content subject to a open source license # or third party license (“Third Party Materials”), You agree to comply with such license terms. 
+#
+# 3.THE TRAINED MODELS (INCLUDING THIRD PARTY MATERIALS, IF ANY) ARE PROVIDED “AS IS” AND WITHOUT A WARRANTY OF ANY KIND, 
+# WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+# PURPOSE AND NON-INFRINGEMENT. YOU BEAR ALL RISK OF USING THE TRAINED MODELS (INCLUDING THIRD PARTY PART MATERIALS, IF ANY) # AND YOU AGREE TO RELEASE AMD FROM ANY LIABILITY OR DAMAGES FOR ANY CLAIM  OR ACTION ARISING OUT OF OR IN CONNECTION WITH 
+# YOUR USE OF THE TRAINED MODEL AND/OR THIRD PARTY MATERIALS. 
+
+description: resnetv2_101 classifier on ImageNet.
+input size: 299*299
+float ops: 26.78G
+task: classification
+framework: tensorflow
+prune: 'no'
+version: 3.0
+files:
+- name: tf_resnetv2_101_imagenet_299_299_26.78G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv2_101_imagenet_299_299_26.78G_3.0.zip
+  checksum: c6ebe0e8d3d21239e67704b7fcc02618
+- name: resnet_v2_101_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 2549ac950e6b0e1e8c9fedbca23222f9
+- name: resnet_v2_101_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-vck190-r3.0.0.tar.gz
+  checksum: 6f4b7418b42d09222a2cf65f7eaf628f
+- name: resnet_v2_101_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: ac79705eb19080d2249cff858d000837
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

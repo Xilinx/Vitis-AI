@@ -1,0 +1,35 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: 3D Unet networks on KiTS19
+input size: 128*128*128
+float ops: 1065.44G
+task: 3D Segmentation
+framework: PyTorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_3D-UNET_kits19_128_128_128_1065.44G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_3D-UNET_kits19_128_128_128_1065.44G_3.0.zip
+  checksum: 3e9d1ef624d7db4c3c92f857146ba1de
+- name: 3D-Unet_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=3D-Unet_pt-vck190-r3.0.0.tar.gz
+  checksum: 84ed84e15fb886edc1b0fb3e5f95845d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/of_classification_evaluation/AksFallDetectionEvaluation.cpp
+cmath
+-
+fstream
+-
+iostream
+-
+vector
+-
+string
+-
+map
+-
+boost/filesystem.hpp
+-
+boost/algorithm/string.hpp
+-
+chrono
+-
+aks/AksKernelBase.h
+-
+aks/AksNodeParams.h
+-
+aks/AksLogger.h
+-
+aks/AksTensorBuffer.h
+-
+

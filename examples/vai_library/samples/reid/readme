@@ -1,0 +1,86 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_reid, ./test_performance_reid, ./test_video_reid first param followed must be with model name.
+  Valid model name:
+    personreid-res50_pt
+    personreid-res18_pt
+    facereid-large_pt
+    facereid-small_pt
+    personreid_res50_pruned_0_4_pt
+    personreid_res50_pruned_0_5_pt
+    personreid_res50_pruned_0_6_pt
+    personreid_res50_pruned_0_7_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_reid personreid-res50_pt sample_reid_001.jpg sample_reid_002.jpg
+    output : 
+dismat : 0.490
+    
+    sample : ./test_jpeg_reid personreid-res18_pt sample_reid_001.jpg sample_reid_002.jpg
+    output : 
+dismat : 0.413
+
+    sample : ./test_jpeg_reid facereid-large_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+dismat : 1.021
+    
+    sample : ./test_jpeg_reid facereid-small_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+dismat : 1.161 
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_4_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat : 0.705
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_5_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat :  0.639
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_6_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat : 0.736
+
+    sample : ./test_jpeg_reid personreid_res50_pruned_0_7_pt face_reid_001.jpg face_reid_002.jpg
+    output : 
+distmat :  0.684
+
+
+Performance: 
+    ./test_performance_reid facereid-small_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid-res50_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid facereid-large_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid-res18_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid_res50_pruned_0_4_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid_res50_pruned_0_5_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid_res50_pruned_0_6_pt test_performance_reid.list -s 60 -t <thread> 
+    ./test_performance_reid personreid_res50_pruned_0_7_pt test_performance_reid.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_reid <model_name> <image_list_0_filename> <image_list_1_filename> <output_filename>
+
+    sample:
+    ./test_accuracy_reid personreid-res50_pt image_list_0.txt image_list_1.txt result.txt

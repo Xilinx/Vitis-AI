@@ -1,9 +1,0 @@
-absl-py~=0.7
-numpy~=1.14
-six~=1.10
-scipy
-enum34~=1.1
-mock
-dm-tree~=0.1.1
-tensorflow~=2.8
-keras~=2.8

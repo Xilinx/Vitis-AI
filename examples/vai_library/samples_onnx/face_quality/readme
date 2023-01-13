@@ -1,0 +1,53 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+
+  add environment parameter DEBUG_USE_NEW_SCHEDULE=0 before executable files.
+
+  ./test_face_quality_onnx, ./test_performance_face_quality_onnx, ./test_accuracy_face_quality_onnx first param followed must be with model name.
+  Valid model name:
+    face-quality_onnx_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx sample_facequality5pt.jpg
+    output : 
+I1209 20:00:14.563274 67008 test_face_quality_onnx.cpp:76] batch 0
+I1209 20:00:14.563339 67008 test_face_quality_onnx.cpp:40] score : 0.746494 points
+I1209 20:00:14.563381 67008 test_face_quality_onnx.cpp:42] 0.333333 0.35
+I1209 20:00:14.563442 67008 test_face_quality_onnx.cpp:42] 0.8 0.3625
+I1209 20:00:14.563473 67008 test_face_quality_onnx.cpp:42] 0.6 0.5
+I1209 20:00:14.563503 67008 test_face_quality_onnx.cpp:42] 0.366667 0.7375
+I1209 20:00:14.563534 67008 test_face_quality_onnx.cpp:42] 0.75 0.75
+
+
+Performance:
+    sample : ./test_performance_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx -s 60 -t 6 test_performance_facequality5pt.list
+
+Accuracy:
+    test accuracy of resnet50_pt_onnx:
+    ./test_accuracy_face_quality_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    sample:
+    ./test_accuracy_face_quality_onnx /usr/share/vitis_ai_library/models/face-quality_onnx_pt/face-quality_onnx_pt.onnx test_list.txt result.txt -t 2

@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/optical_flow_opencv_postprocess/AksOpticalFlowOpenCVPostProcess.cpp
+iostream
+-
+stdint.h
+-
+vector
+-
+boost/filesystem.hpp
+-
+opencv2/core/core.hpp
+-
+opencv2/imgcodecs.hpp
+-
+opencv2/imgproc/imgproc.hpp
+-
+aks/AksKernelBase.h
+-
+aks/AksNodeParams.h
+-
+aks/AksTensorBuffer.h
+-
+

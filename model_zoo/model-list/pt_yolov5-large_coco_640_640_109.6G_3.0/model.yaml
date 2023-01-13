@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv5-large on COCO.
+input size: 640*640
+float ops: 109.6G
+task: 2d detection
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_yolov5-large_coco_640_640_109.6G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_yolov5-large_coco_640_640_109.6G_3.0.zip
+  checksum: b58b2f56ec5ba758eb8f31261a4bbfe0
+- name: yolov5_large_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 14ebad91249c97cf10a7263d8d53f1ea
+- name: yolov5_large_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck190-r3.0.0.tar.gz
+  checksum: 9316bfa2ddfe9b496c1c583e413cacb3
+- name: yolov5_large_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 867ad0edf25692d3a0c9f67c09055834
+- name: yolov5_large_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: d834c4215e2b6bc9e968e39e5407f5c5
+- name: yolov5_large_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov5_large_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 90d6886e1af2b34fcd6ff346d5bf2d9a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

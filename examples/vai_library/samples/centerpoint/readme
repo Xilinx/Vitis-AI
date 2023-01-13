@@ -1,0 +1,75 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_file_centerpoint, ./test_performance_centerpoint must be followed by specified model names as params.
+  Valid model name:
+    model_0:  centerpoint_0_pt
+    model_1:  centerpoint_1_pt
+  
+  run command like this: 
+    ./test_file_centerpoint [model_0] [model_1] [input_file]
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample :./test_file_centerpoint centerpoint_0_pt centerpoint_1_pt input_1.txt
+    output : 
+bbox:   29.9  2.90625  -0.841217  1.75505  4.21016  1.43243  -2.88196  score:  0.974043
+bbox:   26.975  3.5375  -0.903717  1.78269  4.27646  1.43243  -2.9866  score:  0.949669
+bbox:   9.03125  5.1125  -1.42645  1.72785  3.77396  1.4779  3.0714  score:  0.943348
+bbox:   32.5  2.81875  -0.716217  1.70106  3.95508  1.43243  0.133067  score:  0.939913
+bbox:   11.575  4.675  -1.31309  1.78269  4.3438  1.50118  -3.13378  score:  0.919643
+bbox:   18.0813  4.1625  -1.14261  1.75505  4.08062  1.41023  0.246831  score:  0.909907
+bbox:   15.3313  4.31875  -1.14261  1.78269  4.21016  1.41023  3.03265  score:  0.880797
+bbox:   6.69375  4.925  -1.51241  1.83928  4.41221  1.52482  0.434902  score:  0.867036
+bbox:   18.275  -6.7625  -0.789996  1.75505  4.01736  1.45499  -2.84584  score:  0.851953
+bbox:   21.475  -6.69375  -0.801452  1.72785  4.08062  1.4779  -2.86743  score:  0.851953
+bbox:   9.74375  -6.10625  -1.05145  1.78269  4.14488  1.4779  -3.0714  score:  0.835484
+bbox:   20.8938  4.43125  -1.01761  1.78269  4.14488  1.41023  3.06363  score:  0.817575
+bbox:   25.925  -6.475  -0.789996  1.75505  3.95508  1.45499  3.14159  score:  0.7773
+bbox:   28.9625  -7.01875  -0.688089  1.72785  3.89376  1.50118  -0.114877  score:  0.743168
+bbox:   24.1125  4.09375  -1.02872  1.81077  4.3438  1.43243  -3.07917  score:  0.731059
+bbox:   12.7563  -6.3  -0.852496  1.75505  4.14488  1.45499  0.354449  score:  0.705785
+bbox:   70.7125  4.1875  0.436911  1.78269  4.3438  1.50118  1.58654  score:  0.637031
+bbox:   37.0812  -18.1375  0.412658  1.75505  4.27646  1.67468  -0.897964  score:  0.5
+bbox:   40.6562  -11.85  0.374411  1.70106  3.89376  1.50118  -1.03285  score:  0.334589
+bbox:   41.3  0.437501  -0.449361  1.83928  4.55227  1.64872  -1.50838  score:  0.307358
+bbox:   63.45  -14.15  1.08839  1.78269  4.08062  1.57322  -1.18491  score:  0.294215
+bbox:   13.9438  -3.65625  -0.852496  1.75505  3.95508  1.45499  -2.35619  score:  0.164516
+bbox:   70.7938  -0.312499  0.58839  1.75505  3.95508  1.57322  2.11935  score:  0.164516
+bbox:   34.2  -18.1625  -0.012409  1.70106  4.08062  1.52482  -1.11973  score:  0.156105
+bbox:   41.8312  1.875  -0.236498  1.86825  4.62395  1.598  -1.88785  score:  0.132964
+bbox:   35.475  -9.11875  -0.574909  1.81077  4.08062  1.52482  -1.32353  score:  0.119203
+bbox:   59.45  -7.7875  0.288085  1.81077  4.21016  1.54883  1.95266  score:  0.100879
+ 
+
+   
+Performance: 
+    ./test_performance_centerpoint centerpoint_0_pt centerpoint_1_pt centerpoint test_performance_centerpoint.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_centerpoint <model_name_0> <model_name_1> <image_list_filename> <binary_file_set_repo_name> <output_filename>
+
+    sample:
+    ./test_accuracy_centerpoint centerpoint_0_pt centerpoint_1_pt image_list.txt file_set result.txt

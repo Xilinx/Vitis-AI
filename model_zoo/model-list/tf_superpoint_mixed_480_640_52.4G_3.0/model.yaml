@@ -1,0 +1,40 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Superpoint Self-Supervised Interest Point Detection and Description
+input size: 480x640
+float ops: 52.4G
+task: Interest Point Detection
+framework: tensorflow
+prune: none
+version: 3.0
+files:
+- name: tf_superpoint_mixed_480_640_52.4G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_superpoint_mixed_480_640_52.4G_3.0.zip
+  checksum: d4e23a5b45f452fe0261b438a0f550d5
+- name: superpoint_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=superpoint_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: ac7097b65f2cf2e503af3309d75799cb
+- name: superpoint_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=superpoint_tf-vck190-r3.0.0.tar.gz
+  checksum: d9cbf9cb68bb114448ca1a0c6b37370b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -O3  -shared -Wl,-soname,libFallDetectionEvaluation.so.1 -o libFallDetectionEvaluation.so.1.3.0 CMakeFiles/FallDetectionEvaluation.dir/AksFallDetectionEvaluation.cpp.o  -lxir 

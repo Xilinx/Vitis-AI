@@ -1,0 +1,2 @@
+tensorflow_gpu==1.15.2
+progressbar~=2.5

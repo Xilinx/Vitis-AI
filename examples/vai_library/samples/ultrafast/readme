@@ -1,0 +1,126 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_ultrafast 
+  ./test_performance_ultrafast 
+  ./test_accuracy_ultrafast
+
+1, compile
+
+    execute the following command:
+
+      sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_ultrafast ultrafast_pt sample_ultrafast.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1130 10:53:27.486382 22365 demo.hpp:1190] batch: 0     image: sample_ultrafast.jpg
+lane: 0
+    ( -2, 247.882 )
+    ( -2, 268.368 )
+    ( -2, 288.854 )
+    ( -2, 307.292 )
+    ( 730.57, 327.778 )
+    ( 671.788, 348.264 )
+    ( 608.811, 368.75 )
+    ( 551.716, 387.188 )
+    ( 490.879, 407.674 )
+    ( 426.056, 428.16 )
+    ( 367.219, 448.646 )
+    ( 312.42, 467.083 )
+    ( 255.203, 487.569 )
+    ( 196.121, 508.056 )
+    ( 139.042, 528.542 )
+    ( 87.4306, 546.979 )
+    ( 34.9727, 567.465 )
+    ( 11.8018, 587.951 )
+lane: 1
+    ( -2, 247.882 )
+    ( -2, 268.368 )
+    ( -2, 288.854 )
+    ( -2, 307.292 )
+    ( 808.567, 327.778 )
+    ( 795.014, 348.264 )
+    ( 783.329, 368.75 )
+    ( 773.442, 387.188 )
+    ( 762.144, 407.674 )
+    ( 751.917, 428.16 )
+    ( 741.564, 448.646 )
+    ( 731.842, 467.083 )
+    ( 720.735, 487.569 )
+    ( 709.785, 508.056 )
+    ( 700.179, 528.542 )
+    ( 690.053, 546.979 )
+    ( 676.029, 567.465 )
+    ( 663.493, 587.951 )
+lane: 2
+    ( -2, 247.882 )
+    ( -2, 268.368 )
+    ( -2, 288.854 )
+    ( -2, 307.292 )
+    ( 895.558, 327.778 )
+    ( 940.167, 348.264 )
+    ( 984.948, 368.75 )
+    ( 1032.1, 387.188 )
+    ( 1076.52, 407.674 )
+    ( 1121.48, 428.16 )
+    ( 1167.12, 448.646 )
+    ( 1209.62, 467.083 )
+    ( 1256.72, 487.569 )
+    ( 1302.62, 508.056 )
+    ( 1345.52, 528.542 )
+    ( 1384.57, 546.979 )
+    ( 1428.96, 567.465 )
+    ( 1472.08, 587.951 )
+lane: 3
+    ( -2, 247.882 )
+    ( -2, 268.368 )
+    ( -2, 288.854 )
+    ( -2, 307.292 )
+    ( -2, 327.778 )
+    ( -2, 348.264 )
+    ( -2, 368.75 )
+    ( -2, 387.188 )
+    ( -2, 407.674 )
+    ( -2, 428.16 )
+    ( -2, 448.646 )
+    ( -2, 467.083 )
+    ( -2, 487.569 )
+    ( -2, 508.056 )
+    ( -2, 528.542 )
+    ( -2, 546.979 )
+    ( -2, 567.465 )
+    ( -2, 587.951 )
+
+
+
+    sample : ./test_performance_ultrafast ultrafast_pt -t 4 -s 20   test_performance_ultrafast.list
+
+
+
+Performance: 
+    ./test_performance_ultrafast ultrafast_pt test_performance_ultrafast.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_ultrafast ./ <image_list_filename> <output_filename>
+
+    sample:
+    ./test_accuracy_ultrafast ./ image_list.txt result.txt

@@ -1,0 +1,349 @@
+NOTICE:  BY INVOKING THIS SCRIPT AND USING THE SOFTWARE INSTALLED BY THE
+SCRIPT, YOU AGREE ON BEHALF OF YOURSELF AND YOUR EMPLOYER (IF APPLICABLE)
+TO BE BOUND TO THE LICENSE AGREEMENTS APPLICABLE TO THE SOFTWARE THAT YOU
+INSTALL BY RUNNING THE SCRIPT.
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THIS SCRIPT FILE TO AUTOMATICALLY
+INSTALL A VARIETY OF SOFTWARE COPYRIGHTED
+BY XILINX AND THIRD PARTIES THAT IS SUBJECT TO VARIOUS LICENSE AGREEMENTS 
+THAT APPEAR UPON INSTALLATION, ACCEPTANCE AND/OR ACTIVATION OF THE
+SOFTWARE AND/OR ARE CONTAINED OR DESCRIBED IN THE CORRESPONDING RELEASE
+NOTES OR OTHER DOCUMENTATION OR HEADER OR SOURCE FILES. XILINX DOES NOT
+GRANT TO LICENSEE ANY RIGHTS OR LICENSES TO SUCH THIRD-PARTY SOFTWARE.
+LICENSEE AGREES TO CAREFULLY REVIEW AND ABIDE BY THE TERMS AND CONDITIONS
+OF SUCH LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH SOFTWARE.
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE TO BE DOWNLOADED
+AND INSTALLED ON YOUR SYSTEM. BY ELECTING TO CONTINUE, YOU UNDERSTAND THAT THE
+INSTALLATION OF THE SOFTWARE LISTED BELOW MAY ALSO RESULT IN THE INSTALLATION
+ON YOUR SYSTEM OF ADDITIONAL SOFTWARE NOT LISTED BELOW IN ORDER TO OPERATE
+(SUCH SOFTWARE IS HEREAFTER REFERRED TO AS ‘DEPENDENCIES’)
+XILINX DOES NOT GRANT TO LICENSEE ANY RIGHTS OR LICENSES TO SUCH DEPENDENCIES
+LICENSEE AGREES TO CAREFULLY REVIEW AND ABIDE BY THE TERMS AND CONDITIONS
+OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH DEPENDENCIES
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+UBUNTU'S MAIN REPO AND INSTALLED ON YOUR SYSTEM:
+
+http://us.archive.ubuntu.com/ubuntu/dists/focal/
+locals
+pybind11-dev
+python3-pybind11
+libopencv-dev
+gcc-9
+gcc-10
+g++-9
+g++-10
+libprotobuf-c-dev
+protobuf-compiler
+python-protobuf
+swig
+
+http://repo.radeon.com/rocm/apt/
+rccl
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+ANACONDA REPO AND INSTALLED ON YOUR SYSTEM:
+https://anaconda.org”
+
+anyio
+argon2-cffi
+argon2-cffi-bindings
+astunparse
+attrs
+backcall
+backports
+backports.functools_lru_cache
+beautifulsoup4
+blas
+bleach
+brotli
+brotli-bin
+brotlipy
+bzip2
+ca-certificates
+cairo
+c-ares
+certifi
+cffi
+chardet
+charset-normalizer
+cmake
+colorama
+conda
+conda-build
+conda-package-handling
+cryptography
+cycler
+dbus
+debugpy
+decorator
+defusedxml
+dill
+entrypoints
+exceptiongroup
+expat
+ffmpeg
+filelock
+flit-core
+fmt
+fontconfig
+fonttools
+freetype
+fribidi
+future
+gettext
+gflags
+giflib
+glib
+glib-tools
+glob2
+glog
+gmp
+gnutls
+graphite2
+graphviz
+gst-plugins-base
+gstreamer
+gtest
+h5py
+harfbuzz
+hdf5
+icu
+idna
+importlib_metadata
+importlib_resources
+iniconfig
+intel-openmp
+ipykernel
+ipython
+ipython_genutils
+ipywidgets
+jasper
+jedi
+jinja2
+joblib
+jpeg
+json-c
+jsoncpp
+jsonschema
+jupyter
+jupyter_client
+jupyter_console
+jupyter_core
+jupyterlab_pygments
+jupyterlab_widgets
+jupyter_server
+keyutils
+kiwisolver
+krb5
+lame
+lcms2
+ld_impl_linux-64
+libarchive
+libblas
+libboost
+libbrotlicommon
+libbrotlidec
+libbrotlienc
+libcblas
+libcurl
+libedit
+libev
+libffi
+_libgcc_mutex
+libgcc-ng
+libgfortran4
+libgfortran5
+libgfortran-ng
+libglib
+libgomp
+libiconv
+liblapack
+liblapacke
+liblief
+libmamba
+libmambapy
+libnghttp2
+libnsl
+libopenblas
+libpng
+libprotobuf
+libsodium
+libsolv
+libsqlite
+libssh2
+libstdcxx-ng
+libtiff
+libtool
+libuuid
+libuv
+libwebp
+libxcb
+libxml2
+libzlib
+llvm-openmp
+lz4-c
+lzo
+mamba
+markupsafe
+marshmallow
+matplotlib
+matplotlib-base
+matplotlib-inline
+mistune
+mkl
+mkl-include
+munkres
+nbclassic
+nbclient
+nbconvert
+nbconvert-core
+nbconvert-pandoc
+nbformat
+ncurses
+nest-asyncio
+nettle
+ninja
+nnpack
+notebook
+notebook-shim
+numpy
+numpy-base
+olefile
+opencv
+openh264
+_openmp_mutex
+openssl
+packaging
+pandas
+pandoc
+pandocfilters
+pango
+parso
+patch
+patchelf
+pcre
+pexpect
+pickleshare
+pillow
+pip
+pixman
+pkginfo
+pkgutil-resolve-name
+pluggy
+progressbar2
+prometheus_client
+prompt_toolkit
+prompt-toolkit
+psutil
+pthread-stubs
+ptyprocess
+pybind11
+pybind11-abi
+pybind11-global
+pycosat
+pycparser
+pydot
+pygments
+py-lief
+pyopenssl
+pyparsing
+pyqt
+pyrsistent
+pysocks
+pytest
+python
+python_abi
+python-dateutil
+python-fastjsonschema
+python-graphviz
+python-libarchive-c
+python-utils
+pytz
+pyyaml
+pyzmq
+qt
+qtconsole
+qtconsole-base
+qtpy
+readline
+reproc
+reproc-cpp
+requests
+rhash
+ripgrep
+ruamel_yaml
+ruamel.yaml
+scikit-learn
+scipy
+send2trash
+setuptools
+sip
+six
+sniffio
+soupsieve
+sqlite
+tabulate
+target_factory
+terminado
+threadpoolctl
+tinycss2
+tk
+toml
+tomli
+toolz
+tornado
+tqdm
+traitlets
+typing_extensions
+typing-extensions
+tzdata
+unicodedata2
+urllib3
+wcwidth
+webencodings
+websocket-client
+wheel
+widgetsnbextension
+x264
+xorg-kbproto
+xorg-libice
+xorg-libsm
+xorg-libx11
+xorg-libxau
+xorg-libxdmcp
+xorg-libxext
+xorg-libxpm
+xorg-libxrender
+xorg-libxt
+xorg-renderproto
+xorg-xextproto
+xorg-xproto
+xz
+yaml
+yaml-cpp
+zeromq
+zipp
+zlib
+zstd
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+www.xilinx.com AND INSTALLED ON YOUR SYSTEM:
+
+xrt
+xrm
+conda-channel
+conda-channel-wego
+vairuntime
+
+BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
+OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN
+THIS FILE ANY OF THE AFORMENTIONED SOFTWARE OR DEPENDENCIES, AND THAT YOU ARE
+SOLELY RESPONSIBLE FOR THE INSTALLATION OF SUCH SOFTWARE AND DEPENDENCIES ON
+YOUR SYSTEM AND FOR CAREFULLY REVIEWING AND ABIDING BY THE TERMS AND CONDITIONS
+OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH SOFTWARE AND DEPENDENCIES
+

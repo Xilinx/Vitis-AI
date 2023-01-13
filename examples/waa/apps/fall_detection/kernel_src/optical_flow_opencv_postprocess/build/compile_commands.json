@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/optical_flow_opencv_postprocess/build",
+  "command": "/usr/bin/c++  -DOpticalFlowOpenCVPostProcess_EXPORTS -isystem /usr/include/opencv   -O3 -fPIC   -std=gnu++17 -o CMakeFiles/OpticalFlowOpenCVPostProcess.dir/AksOpticalFlowOpenCVPostProcess.cpp.o -c /workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/optical_flow_opencv_postprocess/AksOpticalFlowOpenCVPostProcess.cpp",
+  "file": "/workspace/examples/Whole-App-Acceleration/apps/fall_detection/kernel_src/optical_flow_opencv_postprocess/AksOpticalFlowOpenCVPostProcess.cpp"
+}
+]

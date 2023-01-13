@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: OFA-RCAN for Single Image Super-Resolution.
+input size: 360*640
+float ops: 40.5G
+task: super-resolution
+framework: pytorch
+prune: None
+version: 3.0
+files:
+- name: pt_OFA-rcan_DIV2K_360_640_40.5G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-rcan_DIV2K_360_640_40.5G_3.0.zip
+  checksum: fc5ef807a038be816f7944b9f3bb4d5d
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 8ff94a600d6b0fe5d27fec40ee5bd1ec
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck190-r3.0.0.tar.gz
+  checksum: 9194a2e35d431930660e1472634c6310
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 9e30b16b7083491397fbed1a0063da4d
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 670df0cc604eb2334aa68bbc46143381
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 57d9cc0417c7239bd7666b2bfea8bc4a
+- name: ofa_rcan_latency_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 043a9004d65a90940c37492027e9ce6a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,0 +1,82 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_segmentation, ./test_performance_segmentation, ./test_video_segmentation first param followed must be with model name.
+  Valid model name:
+    semantic_seg_citys_tf2
+    unet_chaos-CT_pt
+    SemanticFPN_cityscapes_pt
+    ENet_cityscapes_pt
+    mobilenet_v2_cityscapes_tf
+    SemanticFPN_Mobilenetv2_pt
+    HRNet_pt
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_segmentation semantic_seg_citys_tf2 sample_semantic_seg_citys_tf2.png
+    output : 
+
+    sample : ./test_jpeg_segmentation unet_chaos-CT_pt sample_segmentation_chaos.jpg
+    output : 
+
+    sample : ./test_jpeg_segmentation SemanticFPN_cityscapes_pt sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation ENet_cityscapes_pt sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation mobilenet_v2_cityscapes_tf sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation SemanticFPN_Mobilenetv2_pt sample_segmentation.jpg
+    output :
+
+    sample : ./test_jpeg_segmentation HRNet_pt sample_segmentation.jpg
+    output :
+
+
+Performance: 
+    ./test_performance_segmentation SemanticFPN_cityscapes_pt test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation unet_chaos-CT_pt test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation ENet_cityscapes_pt test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation semantic_seg_citys_tf2 test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation mobilenet_v2_cityscapes_tf test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation SemanticFPN_Mobilenetv2_pt test_performance_segmentation.list -s 60 -t <thread> 
+    ./test_performance_segmentation HRNet_pt test_performance_segmentation.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_segmentation <model_name> <image_list_filename> <output_filename>
+
+    FPN-resnet18_Endov uses different command:
+    ./test_accuracy_endov <model_name> <image_list_filename> <output_filename>
+
+    unet_chaos-CT_pt has one more parameter:
+    ./test_accuracy_unet <model_name> <image_set_repo_name> <image_list_filename> <output_filename>
+
+
+    sample:
+    
+    ./test_accuracy_unet unet_chaos-CT_pt image_set image_list.txt result.txt

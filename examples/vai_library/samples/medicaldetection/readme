@@ -1,0 +1,107 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_medicaldetection
+  ./test_performance_medicaldetection
+  ./test_accuracy_medicaldetection
+  ./test_video_medicaldetection
+  
+  Valid model name:
+    RefineDet-Medical_EDD_tf
+    RefineDet-Medical_EDD_baseline_tf   
+    RefineDet-Medical_EDD_pruned_0_5_tf 
+    RefineDet-Medical_EDD_pruned_0_75_tf
+    RefineDet-Medical_EDD_pruned_0_85_tf
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1130 09:58:27.691592 21919 demo.hpp:1190] batch: 0     image: sample_medicaldetection.jpg
+I1130 09:58:27.691716 21919 process_result.hpp:39] RESULT: BE   0.982344   -3.43982 74.9771 224.676 297.461
+I1130 09:58:27.691851 21919 process_result.hpp:39] RESULT: BE   0.933227   6.9815 235.247 40.5273 308.017
+I1130 09:58:27.691900 21919 process_result.hpp:39] RESULT: suspicious   0.920301   30.1318 150.183 105.637 230.057
+I1130 09:58:27.691951 21919 process_result.hpp:39] RESULT: BE   0.847918   236.555 220.063 302.176 318.571
+I1130 09:58:27.692001 21919 process_result.hpp:39] RESULT: BE   0.62172   288.623 88.7677 319.638 140.871
+
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_baseline_tf  sample_medicaldetection.jpg
+    output : 
+I1119 15:08:46.555428 291149 demo.hpp:1183] batch: 0 image: sample_medicaldetection.jpg
+process_result.hpp:39] RESULT: suspicious 0.982344 27.6605 148.338 108.589 228.713
+process_result.hpp:39] RESULT: BE 0.977174 7.73558 238.422 38.2794 308.953
+process_result.hpp:39] RESULT: BE 0.977174 242.094 224.84 300.004 322.124
+process_result.hpp:39] RESULT: BE 0.922886 289.321 88.4908 318.194 139.771
+process_result.hpp:39] RESULT: BE 0.902205 5.2061 61.1119 229.085 294.862
+
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_pruned_0_5_tf        sample_medicaldetection.jpg
+    output : 
+I1119 14:59:51.322222 287080 demo.hpp:1183] batch: 0 image: sample_medicaldetection.jpg
+process_result.hpp:39] RESULT: BE 0.946152 241.004 222.65 298.914 319.026
+process_result.hpp:39] RESULT: suspicious 0.946152 28.2296 149.405 109.92 232.592
+process_result.hpp:39] RESULT: BE 0.922886 -2.28287 90.2407 238.279 309.143
+process_result.hpp:39] RESULT: BE 0.876354 7.54161 239.692 38.3731 308.914
+process_result.hpp:39] RESULT: BE 0.77812 288.491 91.5031 319.313 142.32
+
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_pruned_0_75_tf   sample_medicaldetection.jpg
+    output : 
+I1119 15:12:39.590687 291558 demo.hpp:1183] batch: 0 image: sample_medicaldetection.jpg
+process_result.hpp:39] RESULT: BE 0.982344 6.79217 70.4326 230.671 298.549
+process_result.hpp:39] RESULT: BE 0.956493 285.827 91.8759 318.823 141.409
+process_result.hpp:39] RESULT: suspicious 0.940982 26.5729 145.984 106.948 228.911
+process_result.hpp:39] RESULT: BE 0.922886 8.29523 235.331 39.0305 306.304
+process_result.hpp:39] RESULT: BE 0.915131 236.549 215.942 301.354 316.314
+
+    sample : ./test_jpeg_medicaldetection RefineDet-Medical_EDD_pruned_0_85_tf sample_medicaldetection.jpg
+    output : 
+I1119 15:03:45.422173 287491 demo.hpp:1183] batch: 0 image: sample_medicaldetection.jpg
+process_result.hpp:39] RESULT: BE 0.982344 1.05887 66.2058 218.049 304.523
+process_result.hpp:39] RESULT: suspicious 0.951322 26.7316 145.89 102.711 228.817
+process_result.hpp:39] RESULT: BE 0.915131 239.463 224.226 302.49 319.376
+process_result.hpp:39] RESULT: BE 0.816896 9.31533 242.823 42.8409 305.067
+process_result.hpp:39] RESULT: BE 0.77812 286.834 90.4995 319.217 145.242
+
+
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 1 -s 20   test_performance_medicaldetection.list
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 2 -s 20   test_performance_medicaldetection.list
+    sample : ./test_performance_medicaldetection RefineDet-Medical_EDD_tf   -t 4 -s 20   test_performance_medicaldetection.list
+
+    sample : ./test_video_medicaldetection RefineDet-Medical_EDD_tf sample_medicaldetection.avi
+    output : 
+
+
+
+Performance: 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_baseline_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_5_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_75_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+    ./test_performance_medicaldetection RefineDet-Medical_EDD_pruned_0_85_tf test_performance_medicaldetection.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_medicaldetection_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_medicaldetection_mt RefineDet-Medical_EDD_tf image_list.txt result.txt -t 2

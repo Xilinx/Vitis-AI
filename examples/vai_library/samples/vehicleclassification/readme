@@ -1,0 +1,65 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_vehicleclassification, ./test_performance_vehicleclassification, ./test_video_vehicleclassification, ./test_accuracy_vehicleclassification first param followed must be with model name.
+  Valid model name:
+    vehicle_make_resnet18_pt
+    vehicle_type_resnet18_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_vehicleclassification vehicle_make_resnet18_pt sample_vehicleclassification.jpg
+    output :
+I0109 19:11:32.478858  1302 demo.hpp:1193] batch: 0     image: sample_vehicle_make.jpg
+I0109 19:11:32.478921  1302 process_result.hpp:24] r.index 1 audi, r.score 0.999997
+I0109 19:11:32.511299  1302 process_result.hpp:24] r.index 21 mazda, r.score 2.26032e-06
+I0109 19:11:32.511387  1302 process_result.hpp:24] r.index 34 subaru, r.score 1.12535e-07
+I0109 19:11:32.511456  1302 process_result.hpp:24] r.index 17 kia, r.score 1.12535e-07
+I0109 19:11:32.511515  1302 process_result.hpp:24] r.index 13 infiniti, r.score 4.13993e-08
+
+    sample : ./test_jpeg_vehicleclassification vehicle_type_resnet18_pt sample_vehicleclassification.jpg
+    output :
+I0109 19:12:19.121683  1404 demo.hpp:1193] batch: 0     image: sample_vehicle_type.jpg
+I0109 19:12:19.121739  1404 process_result.hpp:24] r.index 6 Sedan r.score 0.975803
+I0109 19:12:19.154119  1404 process_result.hpp:24] r.index 3 Hatchback, r.score 0.0178725
+I0109 19:12:19.154208  1404 process_result.hpp:24] r.index 2 Coupe, r.score 0.00512054
+I0109 19:12:19.154274  1404 process_result.hpp:24] r.index 5 Minivan, r.score 0.00114255
+I0109 19:12:19.154336  1404 process_result.hpp:24] r.index 1 Convertible, r.score 3.4502e-05
+
+
+Performance: 
+    ./test_performance_vehicleclassification vehicle_make_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thread> 
+    ./test_performance_vehicleclassification vehicle_type_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_vehicleclassification <model_name> <input_list_filename> <output_filename>
+
+    or you can use multi-thread to test, like:
+
+    ./test_accuracy_vehicleclassification_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_vehicleclassification vehicle_make_resnet18_pt image_list.txt result.txt
+    ./test_accuracy_vehicleclassification_mt vehicle_make_resnet18_pt image_list.txt result.txt -t 2

@@ -1,0 +1,90 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: pruned fadnet for disparity estimation on tartanair
+input size: 576*960
+float ops: 154G
+task: disparity estimation
+framework: pytorch
+prune: '0.65'
+version: 3.0
+files:
+- name: pt_fadnet_sceneflow_576_960_0.65_154G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnet_sceneflow_576_960_0.65_154G_3.0.zip
+  checksum: cc914de0274e4666fdf918512aa63158
+- name: FADNet_pruned_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: b58f16fe750dba1430ca40b03c36263b
+- name: FADNet_pruned_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 66b4fe4ca9d0e8129f152de1a3fb3dd8
+- name: FADNet_pruned_2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 861e48206122a037f079988e9bcc878b
+- name: FADNet_pruned_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-vck190-r3.0.0.tar.gz
+  checksum: e9262d6dda77fc0b639abf378f4efa87
+- name: FADNet_pruned_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-vck190-r3.0.0.tar.gz
+  checksum: 8c3609192ccfc81482f327f170c1463e
+- name: FADNet_pruned_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck190-r3.0.0.tar.gz
+  checksum: c4f66e7b5cf62ea12e6f2d363c8a5bb6
+- name: FADNet_pruned_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 72c457c54590bc7ce4cf0866096fc06f
+- name: FADNet_pruned_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: cc308c8bbcbd14a71578a816dd73bec6
+- name: FADNet_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 4cab0157ba7475996793290eb73b89c8
+- name: FADNet_pruned_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: ec2def1bd5aef5dd8c91a7152e56306d
+- name: FADNet_pruned_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 6a2dcfede4a1ae8e1fc97d09f82e406f
+- name: FADNet_pruned_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: ef3512bf4da106e351521a9e3f401d96
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

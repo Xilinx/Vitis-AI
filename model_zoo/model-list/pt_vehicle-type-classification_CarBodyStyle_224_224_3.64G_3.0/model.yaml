@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: car type classification based on resnet18
+input size: 224*224
+float ops: 3.64G
+task: car type classification
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0zip
+  checksum: 0d236af3fa6130491daf6aa726af8d68
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: d3586c312b284fa7f06d40c5d20f781a
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck190-r3.0.0.tar.gz
+  checksum: c8c417898ced5dd3c5077fdae29d0242
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: c9ab7e84ee06e40765d2e0ad91762718
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 09e01ba6fb1a938f18a63c594676eda0
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: bc3ab8b8344a04d456552e04d015d817
+- name: vehicle_type_resnet18_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=vehicle_type_resnet18_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: c39d584ef6c061031192774076e4b4fb
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

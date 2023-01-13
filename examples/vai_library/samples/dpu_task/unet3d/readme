@@ -1,0 +1,48 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#### Install (on server)
+# Please install the following package on server:
+torch
+nibabel
+
+
+#### Create the input data (on server)
+# The origin images is nii file, you need convert them to npy files.
+# Please use the following command on server to create the input data.
+
+python3 preprocess_dataset.py --data_dir <input folder> --result_dir <output folder>
+
+
+#### Run (on board)
+python3 unet3d.py -x <xmodel path> -i <input image path> -o <output path>
+
+# If you want see the slice image, you can add '-s' behind the terminal command.
+# Test accuracy need add '-a', and copy output files into the server.
+
+
+#### Test accuracy (on server)
+# Create input shape file
+python3 load_files.py
+
+# Need move the result of dpu into a 'output' folder, and the groundtruth into 'golden'
+python3 test_loss_all.py
+
+
+#### Test performance (on board)
+python3 unet3d.py -x <xmodel path> -i <input image path> -t <thread num> -c <cycle num> -p
+
+

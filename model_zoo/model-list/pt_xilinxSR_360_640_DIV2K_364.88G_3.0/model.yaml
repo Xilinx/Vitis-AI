@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: xilinxSR super-resolution networks on DIV2K
+input size: 360*640
+float ops: 364.88G
+task: Super Resolution 4X
+framework: PyTorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_xilinxSR_360_640_DIV2K_364.88G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_xilinxSR_360_640_DIV2K_364.88G_3.0.zip
+  checksum: 0b38cb6fb8af7cbab9fc75a19c1a2ae4
+- name: xilinxSR_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 57c9ccdeb62a833f9d1e84633bbfed29
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck190-r3.0.0.tar.gz
+  checksum: 4a2443eacd80391698648823e12166a6
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: f95b1c53d887b0834c3c032218b15852
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 5dfbe456be11ef0f7cc5a962d702b5cb
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 12fd098bb570a7e3a747da060f985700
+- name: xilinxSR_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=xilinxSR_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 920913a87380884e3bc4b713d9104043
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

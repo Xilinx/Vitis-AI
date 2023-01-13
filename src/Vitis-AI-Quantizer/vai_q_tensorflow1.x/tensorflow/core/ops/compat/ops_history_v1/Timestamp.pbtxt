@@ -1,8 +1,0 @@
-op {
-  name: "Timestamp"
-  output_arg {
-    name: "ts"
-    type: DT_DOUBLE
-  }
-  is_stateful: true
-}

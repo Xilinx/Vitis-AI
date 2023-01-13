@@ -1,0 +1,90 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: fadnetv2 for disparity estimation on tartanair
+input size: 576*960
+float ops: 412G
+task: disparity estimation
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_fadnetv2_sceneflow_576_960_412G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_sceneflow_576_960_412G_3.0.zip
+  checksum: eba94a29a11450dc6319ce8f1e4a8768
+- name: FADNet_v2_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: ba47459fa27dee1707adc0448f1b1e9e
+- name: FADNet_v2_1_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: b903cf98e1c023cd416919026c737eb8
+- name: FADNet_v2_2_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 6a7a4cec678a06da7cf3ce19d1e89436
+- name: FADNet_v2_0_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck190-r3.0.0.tar.gz
+  checksum: d2cb3fff3c2dd117a91ca60206da9a6b
+- name: FADNet_v2_1_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck190-r3.0.0.tar.gz
+  checksum: c1147c904ced84228731b38da5e7a3de
+- name: FADNet_v2_2_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck190-r3.0.0.tar.gz
+  checksum: eb4558620c54eaf9b4746a0373ae3826
+- name: FADNet_v2_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 643f7b6ea5ee6936e47fa2b7cae9b732
+- name: FADNet_v2_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 0fb6028c0dca075881663c77f9dc9f76
+- name: FADNet_v2_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: c61e035f6a97a4c3a85ec82055bbcadf
+- name: FADNet_v2_0_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: d9655abd58100e64da17841b2649dbf6
+- name: FADNet_v2_1_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 80988e37fe2f499cf13add307d5b0eb5
+- name: FADNet_v2_2_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: f745b05a41da14d7c3375bb821b564af
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
