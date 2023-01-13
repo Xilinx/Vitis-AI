@@ -15,7 +15,7 @@ Docker Containers and GPU Support
 
 Model Zoo
 ~~~~~~~~~
-- Deprecated support for pre-trained ImageNet models due to licence restrictions
+- Updated Model Zoo with commentary regarding dataset licensing restrictions
 - Added 14 new models and deprecated 28 models for a total of 130 models
 - Added super resolution 4x, as well as 2D and 3D semantic segmentation for Medical applications
 - Optimized models for benchmarks:

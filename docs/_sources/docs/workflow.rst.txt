@@ -74,7 +74,7 @@ Supported Evaluation Targets
      - `ZCU102 <https://www.xilinx.com/zcu102>`__ / `ZCU104 <https://www.xilinx.com/zcu104>`__ / `Kria K26 SOM <https://www.xilinx.com/kria>`__
 
    * - Alveo Data Center Acceleration Cards
-     - `U200 16nm DDR <https://www.xilinx.com/U200>`__ / `U250 16 nm DDR <https://www.xilinx.com/U250>`__ / `U280 16 nm HBM <https://www.xilinx.com/U280>`__ / `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__ / `U50 16 nm HBM <https://www.xilinx.com/U50>`__ / `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ / `V70 <https://www.xilinx.com/member/vitis-ai-v70.html>`__
+     - `U200 16nm DDR <https://www.xilinx.com/U200>`__ / `U250 16 nm DDR <https://www.xilinx.com/U250>`__ / `U280 16 nm HBM <https://www.xilinx.com/U280>`__ / `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__ / `U50 16 nm HBM <https://www.xilinx.com/U50>`__ / `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ / `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
 
 .. note:: See the `Alveo Product Selection Guide <https://www.xilinx.com/content/dam/xilinx/support/documents/selection-guides/alveo-product-selection-guide.pdf>`__ for more information on device selection.
 

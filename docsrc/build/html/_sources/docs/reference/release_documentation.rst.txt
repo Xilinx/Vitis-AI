@@ -36,7 +36,7 @@ Release Documentation
      - `DPUCVDX8G (PG389) <https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g>`__
 
    * - Alveo V70
-     - `Early access <https://www.xilinx.com/member/vitis-ai-v70.html>`__
+     - `Early access <https://www.xilinx.com/member/v70.html#vitis_ai>`__
 
    * - 16nm DDR U200,U250
      - `DPUCADF8H (PG400) <https://docs.xilinx.com/r/en-US/pg400-dpucadf8h>`__

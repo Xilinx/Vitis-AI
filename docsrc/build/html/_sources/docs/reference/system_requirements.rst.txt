@@ -36,7 +36,7 @@ The following table lists target boards that are supported with pre-built board 
 Family                 Supported Target
 ====================== ==================================
 Alveo                  U50, U50LV, U200, U250, U280 cards
-Alveo 		           V70 `Early Access <https://www.xilinx.com/member/vitis-ai-v70.html>`__ 
+Alveo 		           V70 `Early Access <https://www.xilinx.com/member/v70.html#vitis_ai>`__ 
 Zynq UltraScale+ MPSoC ZCU102 and ZCU104 Boards
 Versal                 VCK190 and VCK5000 boards
 Versal AI Edge         VEK280 `Early Access <https://www.xilinx.com/member/vitis-ai-vek280.html>`__

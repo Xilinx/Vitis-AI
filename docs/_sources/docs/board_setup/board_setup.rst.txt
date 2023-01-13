@@ -10,7 +10,7 @@ Setup instructions for each of the supported platforms are:
 - VCK190 :doc:`setup instructions <board_setup_vck190>`
 - VCK5000 :doc:`setup instructions <board_setup_vck5000>`
 - Alveo :doc:`setup instructions <board_setup_alveo>`
-- V70 `Early Access <https://www.xilinx.com/member/vitis-ai-v70.html>`__
+- V70 `Early Access <https://www.xilinx.com/member/v70.html#vitis_ai>`__
 
 
 Guidance to install Vitis AI to these target platforms is found in :doc:`Install to Target <vai_install_to_target>`.
