@@ -82,7 +82,6 @@ debugpy
 decorator
 defusedxml
 dill
-dpuv3-pycompiler
 entrypoints
 exceptiongroup
 expat
@@ -263,7 +262,6 @@ python-fastjsonschema
 python-graphviz
 python-libarchive-c
 python-utils
-pytorch_nndct_rocm
 pytz
 pyyaml
 pyzmq
@@ -277,7 +275,6 @@ reproc-cpp
 requests
 rhash
 ripgrep
-rt-engine
 ruamel_yaml
 ruamel.yaml
 scikit-learn
@@ -305,23 +302,13 @@ typing_extensions
 typing-extensions
 tzdata
 unicodedata2
-unilog
 urllib3
-vaic
-vai_optimizer_pytorch_rocm
-vai_optimizer_tensorflow2_rocm
-vai_q_tensorflow2_rocm
-vai_utf
-vart
 wcwidth
 webencodings
 websocket-client
 wheel
 widgetsnbextension
 x264
-xcompiler
-xir
-xnnc
 xorg-kbproto
 xorg-libice
 xorg-libsm
@@ -343,6 +330,15 @@ zipp
 zlib
 zstd
 
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+www.xilinx.com AND INSTALLED ON YOUR SYSTEM:
+
+xrt
+xrm
+conda-channel
+conda-channel-wego
+vairuntime
 
 BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
 OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN

@@ -150,7 +150,6 @@ debugpy
 decorator
 defusedxml
 dill
-dpuv3-pycompiler
 entrypoints
 exceptiongroup
 expat
@@ -354,9 +353,6 @@ python-libarchive-c
 python-utils
 pytorch
 pytorch-mutex
-pytorch_nndct_cpu
-pytorch_nndct_wego
-pytorch_wego
 pytz
 pyu2f
 pyyaml
@@ -372,7 +368,6 @@ requests
 requests-oauthlib
 ripgrep
 rsa
-rt-engine
 ruamel_yaml
 scikit-learn
 scipy
@@ -385,14 +380,11 @@ sniffio
 soupsieve
 sqlite
 tabulate
-target_explorer
-target_factory
 tensorboard
 tensorboard-data-server
 tensorboard-plugin-wit
 tensorflow-base
 tensorflow-estimator
-tensorflow-onnx
 termcolor
 terminado
 testpath
@@ -401,7 +393,6 @@ tinycss2
 tk
 toml
 tomli
-torchvision_wego
 tornado
 tqdm
 traitlets
@@ -409,27 +400,15 @@ typing_extensions
 typing-extensions
 tzdata
 unicodedata2
-unilog
 urllib3
-vaic
-vai_q_tensorflow
-vai_q_tensorflow2
-vai_utf
-vai_wego_tensorflow
-vai-wego-tensorflow2
-vart
 wcwidth
 webencodings
 websocket-client
-wego_torch
 werkzeug
 wheel
 widgetsnbextension
 wrapt
 x264
-xcompiler
-xir
-xnnc
 xorg-kbproto
 xorg-libice
 xorg-libsm
@@ -451,6 +430,16 @@ zeromq
 zipp
 zlib
 zstd
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+www.xilinx.com AND INSTALLED ON YOUR SYSTEM:
+
+xrt
+xrm
+conda-channel
+conda-channel-wego
+vairuntime  
 
 BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
 OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN

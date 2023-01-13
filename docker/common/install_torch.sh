@@ -20,7 +20,7 @@ sudo ln -s /opt/conda $VAI_ROOT/conda;
     && sudo  conda config --env --remove-key channels || true  \
     && sudo conda config --env --append channels ${VAI_CONDA_CHANNEL} 
 #&& mamba update --force-reinstall --no-deps -n base pytorch_nndct_rocm -c conda-forge \
-torchvision_cmd=" pip install torchvision==0.13.1 "
+torchvision_cmd=" pip install torchvision==0.13.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu "
 if  [[ ${DOCKER_TYPE} == 'gpu' ]]; then
     torchvision_cmd=" pip install torchvision==0.13.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html "
 

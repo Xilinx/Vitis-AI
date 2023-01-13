@@ -24,9 +24,16 @@ OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH DEPENDENCIES
 
 BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
 (AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+https://hub.docker.com/r/nvidia/cuda AND INSTALLED ON YOUR SYSTEM:
+
+nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
+
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
 UBUNTU'S MAIN REPO AND INSTALLED ON YOUR SYSTEM:
 
 http://us.archive.ubuntu.com/ubuntu/dists/focal/
+
 
 apt-transport-https 
 autoconf 
@@ -153,7 +160,6 @@ debugpy
 decorator
 defusedxml
 dill
-dpuv3-pycompiler
 entrypoints
 exceptiongroup
 expat
@@ -236,6 +242,7 @@ lame
 lcms2
 ld_impl_linux-64
 libabseil
+libaec
 libarchive
 libblas
 libboost
@@ -374,7 +381,6 @@ python-libarchive-c
 python-utils
 pytorch
 pytorch-mutex
-pytorch_nndct
 pytz
 pyu2f
 pyyaml
@@ -391,7 +397,6 @@ requests
 requests-oauthlib
 ripgrep
 rsa
-rt-engine
 ruamel_yaml
 scikit-learn
 scipy
@@ -405,15 +410,12 @@ soupsieve
 sqlite
 swig
 tabulate
-target_factory
 tensorboard
 tensorboard-data-server
 tensorboard-plugin-wit
 tensorflow
 tensorflow-base
 tensorflow-estimator
-tensorflow-onnx
-tensorflow-onnx_gpu
 termcolor
 terminado
 testpath
@@ -430,16 +432,7 @@ typing_extensions
 typing-extensions
 tzdata
 unicodedata2
-unilog
 urllib3
-vaic
-vai_optimizer_pytorch_gpu
-vai_optimizer_tensorflow2_gpu
-vai_optimizer_tensorflow_gpu
-vai_q_tensorflow2_gpu
-vai_q_tensorflow_gpu
-vai_utf
-vart
 wcwidth
 webencodings
 websocket-client
@@ -448,9 +441,6 @@ wheel
 widgetsnbextension
 wrapt
 x264
-xcompiler
-xir
-xnnc
 xorg-kbproto
 xorg-libice
 xorg-libsm
@@ -473,11 +463,20 @@ zipp
 zlib
 zstd
 
-                                                                                                                                                                                                               
+BY ELECTING TO CONTINUE, YOU WILL CAUSE THE FOLLOWING SOFTWARE PACKAGES
+(AND THEIR RESPECTIVE DEPENDENCIES, IF APPLICABLE) TO BE DOWNLOADED FROM
+www.xilinx.com AND INSTALLED ON YOUR SYSTEM:
+
+xrt
+xrm
+conda-channel
+conda-channel-wego
+vairuntime
+
+
 BY ELECTING TO CONTINUE, YOU ACKNOWLEDGE AND AGREE, FOR YOURSELF AND ON BEHALF
 OF YOUR EMPLOYER (IF APPLICABLE), THAT XILINX IS NOT DISTRIBUTING TO YOU IN
 THIS FILE ANY OF THE AFORMENTIONED SOFTWARE OR DEPENDENCIES, AND THAT YOU ARE
 SOLELY RESPONSIBLE FOR THE INSTALLATION OF SUCH SOFTWARE AND DEPENDENCIES ON
 YOUR SYSTEM AND FOR CAREFULLY REVIEWING AND ABIDING BY THE TERMS AND CONDITIONS
 OF ANY LICENSE AGREEMENTS TO THE EXTENT THAT THEY GOVERN SUCH SOFTWARE AND DEPENDENCIES
-
