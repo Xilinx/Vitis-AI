@@ -28,7 +28,7 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 
 If you work in Vitis-AI 3.0 version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
 In this conda environment, python version is 3.7, pytorch version is 1.12 and torchvision version is 0.13. You can directly start our "resnet18" example without installation steps.
-A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
+A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/common/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
