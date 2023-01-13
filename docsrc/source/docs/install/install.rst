@@ -9,7 +9,7 @@ Host / Development Software Installation
 There are three primary options for installation:
 
 -  [Option1] Directly leverage pre-built Docker containers available from Docker Hub:
-   `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/vitis-ai/tags>`__\.
+   `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/>`__\.
 -  [Option2] Build a custom container to target your local host machine.
 -  [Option3] Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on :doc:`AWS <install_on_aws>`, or :doc:`Azure <install_on_azure>`.
 
