@@ -83,32 +83,14 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <th width="50%" align="center"><h3><b>Description</b></hr></th>
     <th width="10%" align="center"><h3><b>Reference Design</b></hr></th>
     <th width="10%" align="center"><h3><b>Product Guide</b></hr></th>
-    <th width="5%" align="center"><h3><b>IP-only Download</b></hr></th>
   </tr>
 </thead>
 <tbody>
-  <tr>
-    <td align="center">DPUCAHX8H</td>
-    <td align="center">U50/U50lv/U280/U55c</td>
-    <td align="center">High throughput CNN inference 16nm DPU. Optimized with high bandwidth memory. DPU core is fully built with FPGA programming logic. Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg367-dpucahx8h">PG367</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCAHX8H_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
-  </tr>
-  <tr>
-    <td align="center">DPUCADF8H</td>
-    <td align="center">U200/U250</td>
-    <td align="center">High throughput CNN inference 16nm DPU. Optimized with DDR. DPU core is fully built with FPGA programming logic. Support Xilinx shell integration.</td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg400-dpucadf8h">PG400</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCADF8H_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
-  </tr>
   <tr>
     <td align="center">DPUCV2DX8G</td>
     <td align="center">V70</td>
     <td align="center"><b>---</b></td> 
     <td align="center"><a href="https://www.xilinx.com/member/vitis-ai-v70.html">Early Access</a></td>
-    <td align="center"><b>---</b></td>
     <td align="center"><b>---</b></td>
   </tr>
   <tr>
@@ -117,27 +99,22 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <td rowspan="5" align="center">High throughput CNN inference 7nm DPU for ACAP platforms. All computing engines are implemented with FPGA AIE cores.  Support Xilinx shell integration.</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_VAI_v3.0.tar.gz">Download</a></td>
     <td rowspan="5" align="center"><a href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h">PG403</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_4pe_miscdwc</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_4pe_miscdwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_6pe_misc</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_misc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_6pe_dwc</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_6pe_dwc_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
   <tr>
     <td align="center">DPUCVDX8H_8pe_normal</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal_VAI_v3.0.tar.gz">Download</a></td>
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_8pe_normal_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
   </tr>
 </tbody>
 </table>
