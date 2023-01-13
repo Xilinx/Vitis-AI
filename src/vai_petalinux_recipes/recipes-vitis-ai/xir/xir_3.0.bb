@@ -3,12 +3,7 @@ DESCRIPTION = "Xilinx Intermediate Representation for deep learning algorithm. D
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-BRANCH = "3.0"
-SRC_URI = "git://gitenterprise.xilinx.com/VitisAI/xir.git;protocol=https;branch=${BRANCH}"
-
-SRCREV = "22bcd05068bdfdae31a9d094d2ab812505d04ddf"
-
-S = "${WORKDIR}/git"
+S = "${WORKDIR}/git/src/vai_runtime/xir"
 
 DEPENDS = "protobuf-native protobuf-c boost unilog"
 

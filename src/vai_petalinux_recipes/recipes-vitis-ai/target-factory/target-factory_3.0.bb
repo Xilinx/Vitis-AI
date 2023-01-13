@@ -3,12 +3,7 @@ DESCRIPTION = "A factory to manage DPU target description infos. Register target
 
 require recipes-vitis-ai/vitis-ai-library/vitisai.inc
 
-BRANCH = "3.0"
-SRC_URI = "git://gitenterprise.xilinx.com/VitisAI/target_factory.git;protocol=https;branch=${BRANCH}"
-
-SRCREV = "c787d60164549b08512affc5179ba4e4f173996e"
-
-S = "${WORKDIR}/git"
+S = "${WORKDIR}/git/src/vai_runtime/target_factory"
 
 DEPENDS = "unilog protobuf-native protobuf-c"
 
