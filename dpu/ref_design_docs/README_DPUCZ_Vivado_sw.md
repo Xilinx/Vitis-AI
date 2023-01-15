@@ -71,6 +71,7 @@ The pre-built vivado design xsa file path is `$TRD_HOME/prj/Vivado/hw/pre-built`
 ## 2.2 Customize RootFS, Kernel, Device Tree and U-boot
 
 ### **2.2.1 (MUST) Enable DPU driver for vivado flow**
+**Please copy $TRD_HOME/prj/Vivado/sw/meta-vitis/recipes-kernel to <your_petalinux_project_dir>/project-spec/meta-user for DPU v4.1 Vivado Flow Reference Design with Petalinux 2022.2.**
 - Run `petalinux-config -c kernel`
 - Select and Enable DPU driver
 - Exit and Save
@@ -107,7 +108,7 @@ This step is not a must but it makes it easier to find and select all required p
 
     **NOTE**: recipes-vitis-ai is used for Vitis flow by default. In vivado flow, please comment out the following line in recipes-vitis-ai/vart/vart_3.0.bb
     ```
-    #PACKAGECONFIG_append = " vitis"
+    #PACKAGECONFIG:append = " vitis"
     ```
 
 - Append the CONFIG_x lines below to <your_petalinux_project_dir>/project-spec/meta-user/conf/user-rootfsconfig file.
