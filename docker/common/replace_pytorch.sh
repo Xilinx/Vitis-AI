@@ -22,14 +22,18 @@ if [ -z "$1" ]; then
 fi
 
 if [ -d "/usr/local/cuda" ]; then
+  cd /tmp && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+  sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600 && cd -
+  sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+  sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" 
   sudo apt update -y
-  sudo apt-get install -y cuda-toolkit-10-2
+  sudo apt-get install -y cuda-toolkit-11-0
   sudo rm /etc/alternatives/g++
   sudo rm /etc/alternatives/gcc
   sudo rm /etc/alternatives/gcov
-  sudo ln -s /usr/bin/g++-7 /etc/alternatives/g++
-  sudo ln -s /usr/bin/gcc-7 /etc/alternatives/gcc
-  sudo ln -s /usr/bin/gcov-7 /etc/alternatives/gcov
+  sudo ln -s /usr/bin/g++-9 /etc/alternatives/g++
+  sudo ln -s /usr/bin/gcc-9 /etc/alternatives/gcc
+  sudo ln -s /usr/bin/gcov-9 /etc/alternatives/gcov
 
   if [ $? -eq 0 ]; then
     echo -e "\n#### NVCC is installed successfully."
@@ -39,6 +43,11 @@ if [ -d "/usr/local/cuda" ]; then
   fi
 fi
 
+if [ -f "/home/vitis-ai-user/.condarc" ]; then
+    rm /home/vitis-ai-user/.condarc -f
+fi
+
+
 eval "$(command conda 'shell.bash' 'hook' 2> /dev/null)"
 
 echo -e "\n#### Creating a new conda environment by cloning vitis-ai-pytorch and activate it..."
@@ -47,7 +56,16 @@ cd /scratch/
 wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-3.0.tar.gz
 tar -xzvf conda-channel.tar.gz
 source /opt/vitis_ai/conda/etc/profile.d/conda.sh
-conda create -n $1  --clone vitis-ai-pytorch  
+sudo conda env export -n vitis-ai-pytorch >/tmp/pytorch.yaml
+sed -i '/artifactory/d' /tmp/pytorch.yaml
+sed -i '/prefix/d' /tmp/pytorch.yaml
+sed -i '/torchvision/d' /tmp/pytorch.yaml
+sed -i 's/python-graphviz/graphviz/g' /tmp/pytorch.yaml
+if [ -f "/opt/vitis_ai/conda/.condarc" ]; then
+   rm /opt/vitis_ai/conda/.condarc -f
+fi
+conda config --env --append channels file:///scratch/conda-channel
+conda env create  -n $1 -f /tmp/pytorch.yaml -v
 if [ $? -eq 0 ]; then
   echo -e "\n#### New conda environment is created successfully."
 else
@@ -64,15 +82,23 @@ else
 fi
 
 echo -e "\n#### Removing original pytorch related packages ..."
-mamba uninstall -y pytorch torchvision pytorch_nndct
+mamba uninstall -y pytorch pytorch_nndct
+pip uninstall torchvision
 
-echo -e "\n#### Installing pytorch 1.9 packages ..."
+echo -e "\n#### Installing target pytorch packages ..."
 echo -e "\e[91m>>>> Edit this line of command to set the target version, refer to https://pytorch.org/get-started/previous-versions/ <<<<\e[m"
 #### Installing pytorch 1.7.1 packages ...torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html
-mamba install -y pytorch==1.9.0 torchvision==0.10.0 torchaudio==0.9.0 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.8.1 torchvision==0.9.1 torchaudio==0.8.1 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.2 -c pytorch
+if [ -d "/usr/local/cuda" ]; then
+  mamba install -y pytorch==1.7.1 cudatoolkit=11.0 -c pytorch
+  pip install torchvision==0.8.2
+  #mamba install -y pytorch==1.9.1 cudatoolkit=10.2 -c pytorch
+  #pip install torchvision==0.10.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
+else
+  mamba install -y pytorch==1.7.1 cpuonly -c pytorch
+  pip install torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+  #mamba install -y pytorch==1.9.1 cpuonly -c pytorch
+  #pip install torchvision==0.10.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+fi
 
 if [ $? -eq 0 ]; then
   echo -e "\n#### Pytorch packages is replaced successfully."
@@ -85,7 +111,7 @@ echo -e "\n#### Checkout code of vai_q_pytorch ..."
 echo -e "\e[91m>>>> You can apply your local code of vai_q_pytorch and comment out the following lines of git command <<<<\e[m"
 git init code_vaiq && cd code_vaiq 
 git config core.sparsecheckout true
-echo 'tools/Vitis-AI-Quantizer/vai_q_pytorch/' >> .git/info/sparse-checkout 
+echo 'src/vai_quantizer/vai_q_pytorch' >> .git/info/sparse-checkout 
 git remote add origin https://github.com/Xilinx/Vitis-AI.git
 git pull origin master
 cd src/vai_quantizer/vai_q_pytorch
@@ -112,6 +138,6 @@ else
   exit 2
 fi
 
-mamba install -y python=3.7 --force-reinstall
+mamba install -y python=3.7 --force-reinstall -c conda-forge 
 sudo rm -rf /scratch/*
 echo -e "\n#### Cleaned up /scratch ."
