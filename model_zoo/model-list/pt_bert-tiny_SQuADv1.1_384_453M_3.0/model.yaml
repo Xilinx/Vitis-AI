@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-tiny_SQuADv1.1_384_453M_3.0.zip
-  checksum: 221e20b6d950136ea556a3a722eacead
+  checksum: 73d133e1e44dfab2d99462ae5b314dd7
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

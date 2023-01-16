@@ -14,18 +14,17 @@
 # limitations under the License.
 
 
-description: BERT Large for SQuADv1.1 Question Answering.
+description: BERT Base for SQuADv1.1 Question Answering.
 input size: '384'
-float ops: 246.42G
+float ops: 70.66G
 task: Question Answering
 framework: pytorch
 prune: 'no'
 version: 3.0
 files:
-- name: pt_bert-large_ SQuADv1.1_384_246.42G_3.0
+- name: pt_bert-base_SQuADv1.1_384_70.66G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-large_
-    SQuADv1.1_384_246.42G_3.0.zip
-  checksum: aa23a400e0b6f7d9a927fed6d7962ac8
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-base_SQuADv1.1_384_70.66G_3.0.zip
+  checksum: 02060f81590d233fbd7c4f548ad821b8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
