@@ -41,7 +41,7 @@ Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for
    
    Vitis-AI Integration With ONNX Runtime (Edge)
    
-In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only). :doc:`../docs/workflow-third-party` may also be used to enable support for operations that cannot be accelerated by the DPU. These third party solutions are of “beta” quality and offer limited support than the standard Vitis AI workflow.
+In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only). :doc:`../docs/workflow-third-party` may also be used to enable support for operations that cannot be accelerated by the DPU. These third party solutions are of “beta” quality and offer more limited support than the standard Vitis AI workflow.
 
    
 .. _model_optimization:
