@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04
+FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 env DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 ENV TZ=America/Denver
