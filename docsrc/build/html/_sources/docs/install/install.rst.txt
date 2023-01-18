@@ -9,7 +9,7 @@ Host / Development Software Installation
 There are three primary options for installation:
 
 -  [Option1] Directly leverage pre-built Docker containers available from Docker Hub:
-   `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/vitis-ai/tags>`__\.
+   `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/>`__\.
 -  [Option2] Build a custom container to target your local host machine.
 -  [Option3] Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on :doc:`AWS <install_on_aws>`, or :doc:`Azure <install_on_azure>`.
 
@@ -35,7 +35,7 @@ Installation Guidance
        cd Vitis-AI
 
    ..  important::
-       The installation commands are only relevant for the current release of Vitis AI. If your intention is to install a Docker for a historic release you must leverage one of previous release :doc:`Docker containers <../reference/docker_image_versions>`.
+       The installation commands are only relevant for the current release of Vitis AI. If your intention is to install a Docker for a historic release you must leverage one of the previous release :doc:`Docker containers <../reference/docker_image_versions>`.
 
 Option 1: Leverage the Pre-Built Docker
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,27 +60,30 @@ Where ``<Framework>`` and ``<Arch>`` can be selected as in the table below:
    :widths: 50 25 25
    :header-rows: 1
 
-   * - Desired Framework
-     - <Arch>
+   * - Desired Docker
      - <Framework>
+     - <Arch>
    * - TensorFlow 1.15 cpu-only
+     - tensorflow
      - cpu
-     - tf1
    * - TensorFlow 2 cpu-only
+     - tensorflow2
      - cpu
-     - tf2
    * - PyTorch cpu-only
-     - cpu
      - pytorch
+     - cpu
    * - TensorFlow 2 ROCm
+     - tensorflow2
      - rocm
-     - tf2
+   * - PyTorch ROCm
+     - pytorch
+     - rocm
    * - TF2 with AI Optimizer ROCm
+     - opt-tensorflow2
      - rocm
-     - opt_tf2
    * - PyTorch with AI Optimizer ROCm
+     - opt-pytorch
      - rocm
-     - opt_pytorch
 
 
 *Specific Examples:*
@@ -103,7 +106,7 @@ Next, you can now start the Vitis AI Docker using the following command:
 
 .. code-block::
 
-    <Vitis-AI install path>/Vitis-AI/docker_run.sh xilinx/vitis-ai-<cpu|rockm>-<tf1|tf2|opt_tf1|opt_tf2|pytorch|opt_pytorch>:latest
+    <Vitis-AI install path>/Vitis-AI/docker_run.sh xilinx/vitis-ai-<tensorflow|tensorflow2|opt-tensorflow2|pytorch|opt_pytorch>-<cpu|rocm>:latest
 
     
 .. _build-docker-from-scripts:
@@ -206,7 +209,7 @@ If the Docker has been enabled with CUDA-capable GPU support, confirm that the G
 
 .. code-block::
 
-   docker run --gpus all nvidia/cuda:11.0-base nvidia-smi
+   docker run --gpus all nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04 nvidia-smi
 
 This should result in an output similar to the below:
 
@@ -238,8 +241,7 @@ You can now start the Docker for Vitis AI using the following command:
 
 .. code-block::
 
-    ../docker_run.sh xilinx/vitis-ai-<gpu|cpu|rockm>-<tf1|tf2|opt_tf1|opt_tf2|pytorch|opt_pytorch>:latest
-
+    ./docker_run.sh xilinx/vitis-ai-<tensorflow|tensorflow2|opt-tensorflow2|pytorch|opt_pytorch>-<cpu|gpu|rocm>:latest
 
 .. important:: Use ``./docker_run.sh`` as a script reference should you have customized requirements for launching your Docker container.
 

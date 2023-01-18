@@ -198,6 +198,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 <p>For Zynq® UltraScale+™ MPSoC and Versal ACAP™ embedded applications, Xilinx supports an official flow which you can use to add support for these custom operators. More details can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/custom_operator">here</a>.</p>
 <p>For Alveo™ cards, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/wego">Whole Graph Optimizer</a> (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.</p>
+<p>Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the Xilinx Versal™ and Zynq® UltraScale+™ MPSoC APUs, or the AMD64 (or x64) host processor (Alveo™ targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “<strong>V</strong> itis AI <strong>O</strong> NNX Runtime <strong>E</strong> ngine”.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this powerful workflow.</p>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" src="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Edge)</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only). <a class="reference internal" href="workflow-third-party.html"><span class="doc">Third-party Inference Stack Integration</span></a> may also be used to enable support for operations that cannot be accelerated by the DPU. These third party solutions are of “beta” quality and offer limited support than the standard Vitis AI workflow.</p>
 </section>
 </section>
@@ -217,10 +224,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>The Vitis AI Optimizer leverages the native framework in which the model was trained, and the input and output of the pruning process are a frozen FP32 graph. At a high level, the workflow of the AI Optimizer consists of several steps. The optimizer first performs a sensitivity analysis designed to determine the degree to which each of the convolution kernels (channels) at each layer impacts the predictions of the network. Following this, the kernel weights for channels to be pruned are zeroed, permitting an accurate evaluation of the “proposed” pruned model. The remaining weights are then optimized (fine-tuned) for several training epochs to recover accuracy. Multiple iterations of pruning are typically employed, and after each iteration, the state can be captured, permitting the developer to backtrack by one or more pruning iterations. This ability enables the developer to prune for multiple iterations and then select the iteration with the preferred result. As necessary, pruning can be restarted from a previous iteration with different hyperparameters to address accuracy “cliffs” that may present at a specific iteration.</p>
 <p>The final phase of pruning, the transform step, removes the channels selected for pruning (previously zeroed weights), resulting in a reduction of the number of channels at each pruned layer in the final computational graph. For instance, a layer that previously required the computation of 128 channels (128 convolution kernels) may now only require the computation of output activations for 87 channels (i.e., 41 channels were pruned). Following the transform step, the model is now in a form that can be ingested by the Vitis AI Quantizer and deployed on the target.</p>
 <p>The following diagram illustrates the high-level pruning workflow:</p>
-<figure class="align-default" id="id4">
+<figure class="align-default" id="id5">
 <a class="reference internal image-reference" href="../_images/optimizer_workflow.PNG"><img alt="../_images/optimizer_workflow.PNG" src="../_images/optimizer_workflow.PNG" style="width: 1300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Vitis AI Optimizer Pruning Workflow</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Vitis AI Optimizer Pruning Workflow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="channel-pruning">
@@ -253,10 +260,10 @@ memory footprint, and data path bandwidth required for inference.</p>
 <h3>Quantization Process<a class="headerlink" href="#quantization-process" title="Permalink to this heading">¶</a></h3>
 <p>The Vitis AI Quantizer, integrated as a component of either TensorFlow or PyTorch, performs a calibration step in which a subset of the original training data (typically 100-1000 samples, no labels required) is forward propagated through the network to analyze the distribution of the activations at each layer. The weights and activations are then quantized as 8-bit integer values. This process is referred to as Post-Training Quantization. Following quantization, the prediction accuracy of the network is re-tested using data from the validation set. If the accuracy is acceptable, the quantization process is complete.</p>
 <p>With certain network topologies, the developer may experience excessive accuracy loss. In these cases, a technique referred to as QAT (Quantization Aware Training) can be used with the source training data to execute several back propagation passes to optimize (fine-tune) the quantized weights.</p>
-<figure class="align-default" id="id5">
+<figure class="align-default" id="id6">
 <a class="reference internal image-reference" href="../_images/quant_workflow.PNG"><img alt="../_images/quant_workflow.PNG" src="../_images/quant_workflow.PNG" style="width: 1300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Vitis AI Quantizer Workflow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Vitis AI Quantizer Workflow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
@@ -296,10 +303,10 @@ memory footprint, and data path bandwidth required for inference.</p>
 <p>As part of the compilation process, the weights are formatted as INT8, concatenated, and shuffled for efficient execution. Thus, it is not possible to review the weights post-compilation.</p>
 </div>
 <p>The following diagram illustrates a high-level overview of the Vitis AI Compiler workflow:</p>
-<figure class="align-default" id="id6">
+<figure class="align-default" id="id7">
 <a class="reference internal image-reference" href="../_images/compiler_workflow.PNG"><img alt="../_images/compiler_workflow.PNG" src="../_images/compiler_workflow.PNG" style="width: 1300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Vitis AI Compiler Workflow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Vitis AI Compiler Workflow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The Vitis AI Compiler is a component of the Vitis AI toolchain, installed in the VAI Docker. The source code for the compiler is not provided.</p>
@@ -336,7 +343,7 @@ memory footprint, and data path bandwidth required for inference.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on January 10, 2023.
+      <span class="lastupdated">Last updated on January 16, 2023.
       </span></p>
   </div>
 

@@ -13,7 +13,7 @@ This repository provides access to optimized deep learning models that can be us
   <img width="1264" height="420" src="images/vitis_ai_model_zoo.png">
 </p>
 
-As of the 3.0 release of Vitis AI, all Model Zoo documentation has migrated to Github.IO.  You may access the Model Zoo documentation online [here](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow-model-zoo) or offline [here](../docs/docs/workflow-model-zoo.html).
+As of the 3.0 release of Vitis AI, all Model Zoo documentation has migrated to Github.IO.  You may access the Model Zoo documentation online [here](https://xilinx.github.io/Vitis-AI/docs/workflow-model-zoo) or offline [here](../docs/docs/workflow-model-zoo.html).
 
 Please note that if the models are marked as limited to non-commercial use, then users must comply with the [Xilinx license agreement for non-commercial models](/model_zoo/Xilinx-license-agreement-for-non-commercial-models.md). 
 

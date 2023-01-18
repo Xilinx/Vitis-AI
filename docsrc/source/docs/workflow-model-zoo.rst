@@ -16,7 +16,7 @@ To make the job of using the Model Zoo a little easier, we have provided a downl
 
     <a href="reference/ModelZoo_VAI3.0_Github_web.htm"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br>
 
-.. note:: Please note that if the models are marked as "Non-Commercial Use Only", users must comply with this `AMD license agreement <https://github.com/Xilinx/Vitis-AI/blob/v3.0/model_zoo/AMD-license-agreement-for-non-commercial-models.md>`__ 
+.. note:: Please note that if the models are marked as "Non-Commercial Use Only", users must comply with this `AMD license agreement <https://github.com/Xilinx/Vitis-AI/blob/v3.0/model_zoo/Xilinx-license-agreement-for-non-commercial-models.md>`__ 
 
 .. note:: The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table's header. Free download of Vitis AI and Vitis AI Library from `Vitis AI Github <https://github.com/Xilinx/Vitis-AI>`__ and `Vitis AI Library Github <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library>`__.
 

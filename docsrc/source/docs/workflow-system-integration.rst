@@ -78,7 +78,7 @@ The Vitis AI Profiler is a component of the Vitis AI toolchain installed in the 
 -  A tutorial that provides additional insights on the capabilities of the Vitis AI Profiler is available
    `here <https://github.com/Xilinx/Vitis-AI-Tutorials/blob/1.4/Design_Tutorials/16-profiler_introduction/README.md>`__.
 
-.. |trade|  unicode:: U+02223 .. TRADEMARK SIGN
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:
 .. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
    :ltrim:

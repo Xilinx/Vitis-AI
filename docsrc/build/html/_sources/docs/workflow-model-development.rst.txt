@@ -34,8 +34,16 @@ For Zynq |reg| UltraScale+ |trade| MPSoC and Versal ACAP |trade| embedded applic
 
 For Alveo |trade| cards, the `Whole Graph Optimizer <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/wego>`__ (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.
 
+Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the Xilinx Versal |trade| and Zynq |reg| UltraScale+ |trade| MPSoC APUs, or the AMD64 (or x64) host processor (Alveo |trade| targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “**V** itis AI **O** NNX Runtime **E** ngine”.  Users should refer to the section "Programming with VOE" in :doc:`UG1414 <../docs/reference/release_documentation>` for additional information on this powerful workflow.
+
+.. figure:: reference/images/VAI_3rd_party_ONNXRuntime_Edge.PNG
+   :width: 1300
+   
+   Vitis-AI Integration With ONNX Runtime (Edge)
+   
 In addition, the TVM compiler, TF Lite Delegate, and ONNX Runtime Execution Provider (Alveo only). :doc:`../docs/workflow-third-party` may also be used to enable support for operations that cannot be accelerated by the DPU. These third party solutions are of “beta” quality and offer limited support than the standard Vitis AI workflow.
 
+   
 .. _model_optimization:
 
 Model Optimization

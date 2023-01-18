@@ -18,13 +18,13 @@ The reference designs are fully functional and can be used as a template for IP 
 
 ## Version and Compatibility
 
-As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP on this page are specific to Vitis AI v3.0 and were verified with Vivado and Vitis 2022.2.  If you are using a different version of Vitis or Vivado, please refer to the [version compatibility document](version_compatibility.md) for additional information.
+As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP on this page are specific to Vitis AI v3.0 and were verified with Vivado and Vitis 2022.2.  If you are using a different version of Vitis or Vivado, please refer to [IP and Tool Version Compatibility](https://xilinx.github.io/Vitis-AI/docs/reference/version_compatibility.html) for additional information.
 
 ## Introduction
 
 The table below associates currently available DPU IP with the supported target, and provides links to download the reference design and documentation.  For convenience, a separate IP repo is provided for users who do not wish to download the reference design.  The IP is thus included both in the reference design, but also is available as a separate download.  
 
-Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for detailed information on the capabilities and device targets for Xilinx DPUs.
+Please refer to [DPU Nomenclature](https://xilinx.github.io/Vitis-AI/docs/reference/dpu_nomenclature.html) for detailed information on the capabilities and device targets for Xilinx DPUs.
 
 
 ### Edge IP
@@ -90,7 +90,7 @@ Please refer to [DPU Nomenclature](../docs/reference/dpu_nomenclature.md) for de
     <td align="center">DPUCV2DX8G</td>
     <td align="center">V70</td>
     <td align="center"><b>---</b></td> 
-    <td align="center"><a href="https://www.xilinx.com/member/vitis-ai-v70.html">Early Access</a></td>
+    <td align="center"><a href="https://www.xilinx.com/member/v70.html">Early Access</a></td>
     <td align="center"><b>---</b></td>
   </tr>
   <tr>

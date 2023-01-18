@@ -167,11 +167,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </section>
 <section id="onnx-runtime">
 <h2>ONNX Runtime<a class="headerlink" href="#onnx-runtime" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="https://onnxruntime.ai/">ONNX Runtime</a> was devised as a cross-platform inference deployment runtime for ONNX models. ONNX Runtime
-provides the benefit of runtime interpretation of models represented as an ONNX intermediate representation (IR).</p>
+<p><a class="reference external" href="https://onnxruntime.ai/">ONNX Runtime</a> was devised as a cross-platform inference deployment runtime for ONNX models. ONNX Runtime provides the benefit of runtime interpretation of models represented in the ONNX intermediate representation (IR) format.</p>
 <p>The <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/">ONNX Runtime Execution Provider</a> framework enables the integration of proprietary or customized tensor accelerator cores from any “execution provider.” Such “execution providers” are typically tensor acceleration IP blocks integrated into an SoC by the semiconductor vendor. Specific subgraphs or operations within the ONNX graph can be offloaded to that core based on the advertised capabilities of that execution provider. The ability of a given accelerator to offload operations is presented as a listing of capabilities to the ONNX Runtime.</p>
-<p>Additional details of the Vitis AI Execution Provider can be found <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.</p>
-<p>As of Vitis AI 3.0, we have enhanced our support for ONNX Runtime in order to on Xilinx targets.  In this context, the Vitis AI Quantizer can be leveraged to export a quantized ONNX model to the runtime where it is compiled.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this new workflow.</p>
+<p>Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the Xilinx Versal™ and Zynq® UltraScale+™ MPSoC APUs, or the AMD64 (or x64) host processor (Alveo™ targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “<strong>V</strong> itis AI <strong>O</strong> NNX Runtime <strong>E</strong> ngine”.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this powerful workflow.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" src="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" style="width: 1300px;" /></a>
 <figcaption>
@@ -184,7 +182,7 @@ provides the benefit of runtime interpretation of models represented as an ONNX 
 <p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Data Center)</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p>For Xilinx Data Center targets, Vitis AI Execution Provider support has also been published as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/third_party/onnxruntime">workflow reference</a> in recent releases.</p>
+<p>As a reference, for Xilinx Data Center targets, Vitis AI Execution Provider support was also previously published as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/third_party/onnxruntime">workflow reference</a>.  The details of the Vitis AI Execution Provider used in this previous release can be found <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.  Our expectation is that the VOE workflow will supercede this historic workflow for most use cases.</p>
 </section>
 <section id="tensorflow-lite">
 <h2>TensorFlow Lite<a class="headerlink" href="#tensorflow-lite" title="Permalink to this heading">¶</a></h2>
@@ -222,7 +220,7 @@ provides the benefit of runtime interpretation of models represented as an ONNX 
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on January 10, 2023.
+      <span class="lastupdated">Last updated on January 16, 2023.
       </span></p>
   </div>
 
