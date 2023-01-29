@@ -1,8 +1,9 @@
-=====================================
 Setting up a Versal Accelerator Card
-=====================================
+====================================
 
-The Xilinx |reg| DPUs for VCK5000-PROD card is a High Performance CNN processing engine **DPUCVDX8H**. The detailed combination of VCK5000-PROD card and DPU IP  is shown in the following table, you can choose one of them according to your own situation.
+The Xilinx |reg| **DPUCVDX8H** for the Versal VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.
+
+As a first step, it is recommended that you select the appropriate DPU configuration for your application:
 
 === ================ =====================
 No. Accelerator Card DPU IP
@@ -13,65 +14,81 @@ No. Accelerator Card DPU IP
 4   VCK5000-PROD     DPUCVDX8H_8pe_normal
 === ================ =====================
 
-1. VCK5000-PROD Card Setup in Host
-------------------------------
+This selection depends on several factors:
 
-We provide some scripts to help to automatically finish the VCK5000-PROD card setup process. You could refer to these to understand the required steps. To use the scripts, just input the command below. It will detect Operating System you are using, then download and install the appropriate packages. Suppose you have downloaded Vitis-AI, entered Vitis-AI directory.
+- `misc` is selected if the models to be deployed leverage pooling and element-wise layers
+- `dwc` is selected if the models to be deployed leverage Depthwise Convolution (eg. MobileNets)
+- The number of `pe` or "processing engines" determines both performance and programmable logic resource utilization
 
-.. note:: You should use this script in host environment, namely out of the Docker container. After the script is executed successfully, manually reboot the host server once. For cloud DPU, Vitis AI 3.0 applies 2022.2 Tools/Platform/XRT/XRM.
+If you are just getting started and are uncertain which to choose, you may wish to start with the `DPUCVDX8H_4pe_miscdwc` as it provides the most extensive operator support.  Please refer to `this user guide <https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h/Configuration-Options>`__ for more extensive details regarding selection.
 
-::
 
+VCK5000-PROD Card Setup
+-----------------------
+
+A script is provided to drive the VCK5000-PROD card setup process.
+
+.. note:: You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis AI 3.0 specifically leverages the 2022.2 versions of the Vitis tools, VCK5000 platform, XRT and XRM.
+
+This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.  Please refer to :doc:`Host System Requirements <../reference/system_requirements>` prior to proceeding.
+
+Execute this script as follows:
+
+.. code-block::
+
+   cd <Vitis-AI install path>/Vitis-AI/board_setup/vck5000
    source ./install.sh
 
-The following installation steps were performed in this script.
 
-- Install XRT.
-- Install XRM. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on a machine. It is used by the runtime.
-- Install the VCK5000-PROD Card Target Platform.
-- Install DPU V4E xclbin for VCK5000-PROD.
 
-After the script is executed successfully, use the XRT command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.
+The following installation steps are performed by this script:
 
-::
+1. XRT Installation. The `Xilinx RunTime (XRT) <https://github.com/Xilinx/XRT>`__ is a combination of userspace and kernel driver components supporting PCIe accelerator cards such as the VCK5000. 
+2. XRM Installation. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on the host. It is required by the runtime.
+3. Installation of the VCK5000-PROD platform.
+4. Installation of the DPU xclbin for the VCK5000-PROD platform.
+
+After the script is executed successfully, use the XRT `xbutil` command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.
+
+.. code-block::
 
    /opt/xilinx/xrt/bin/xbutil examine
 
+.. note:: Vitis AI 3.0 requires the use of a VCK5000-PROD card. Support for the pre-production VCK5000-ES1 card is not available in this release. If you do not have a production release card, you must use `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
 
-.. note:: This version requires the use of a VCK5000-PROD card. VCK5000-ES1 card is no longer updated since Vitis AI 2.0, if you want to use it, refer to `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
+Docker Container Environment Variable Setup
+-------------------------------------------
 
-2. Environment Variable Setup in Docker Container
--------------------------------------------------
+First, ensure that you have cloned Vitis AI, entered the Vitis AI directory.  Start Docker. 
 
-Suppose you have downloaded Vitis-AI, entered Vitis-AI directory, and then started Docker image. In the docker container, execute the following steps. You can use the following command to set environment variables. It should be noted that the xclbin file should be in the
-``/opt/xilinx/overlaybins`` directory. There are four xclbins to choose from depending on the parameters you use.
+From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the ``/opt/xilinx/overlaybins`` directory prior to execution. There are four xclbin files to choose from.  Select the xclbin that matches your chosen DPU configuration.
 
-- For 4PE 350 Hz, you can select DPU IP via the following command.
+- For the 4PE 350MHz configuration with pooling, elementwise and depthwise convolution support:
 
-::
+   .. code-block::
+   
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc
+	  
+- For the 6PE 350MHz configuration with depthwise convolution support:
 
-   source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc
+   .. code-block::
+   
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc
 
-- For 6PE 350 Hz with DWC, you can select DPU IP via the following command.
+- For the 6PE 350MHz configuration with pooling and elementwise support:
 
-::
+   .. code-block::
+   
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc
 
-   source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc
+- For the 8PE 350MHz base configuration:
 
-- For 6PE 350 Hz with MISC, you can select DPU IP via the following command.
+   .. code-block::
+   
+      source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
 
-::
-
-   source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc
-
-- For 8PE 350 Hz, you can select DPU IP via the following command.
-
-::
-
-   source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:
 .. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
    :ltrim:
-

@@ -137,4 +137,4 @@ Vitis AI is composed of the following key components:
    :caption: FAQ
    :hidden:
 
-   Frequenty Asked Questions <docs/reference/faq>
+   Frequently Asked Questions <docs/reference/faq>

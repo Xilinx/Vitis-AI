@@ -89,7 +89,7 @@ The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and model
 		
 5. (Optional) Download the model.
    
-   Click `Xilinx AI Model Zoo <../../model_zoo/model-list>`__ to view all the models. For each model, a YAML file is used to describe all the details about the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
+   You can now select a model from the Vitis AI Model Zoo `Vitis AI Model Zoo <../workflow-model-zoo.html>`__.  Navigate to the  `model-list subdirectory  <https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list>`__  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
 
    a. Take the ZCU102 ``resnet50`` model as an example.
 

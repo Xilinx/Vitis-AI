@@ -20,7 +20,7 @@ To make the job of using the Model Zoo a little easier, we have provided a downl
 
 .. note:: The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table's header. Free download of Vitis AI and Vitis AI Library from `Vitis AI Github <https://github.com/Xilinx/Vitis-AI>`__ and `Vitis AI Library Github <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library>`__.
 
-.. note:: Unless otherwise specified, the benchmarks for all models can be assumed to employ the maximum number of channels (i.e., for benchmarking, the images used at the test leverage three channels if specified input dimensions are 299*299*3 (HWC).
+.. note:: Unless otherwise specified, the benchmarks for all models can be assumed to employ the maximum number of channels (i.e., for benchmarking, the images used for test have three color channels if the specified input dimensions are 299*299*3 (HWC)).
 
 
 

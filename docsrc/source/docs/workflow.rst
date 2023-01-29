@@ -82,7 +82,7 @@ When you are ready to start with one of these pre-built platforms, you should re
 
 In addition, developers with access to suitable available hardware platforms can experience pre-built demonstrations available for download through the `Vitis AI Developer page <https://www.xilinx.com/developer/products/vitis-ai.html#demos>`__. Contact your local FAE to arrange a live demonstration.
 
-Last but not least, embedded in the Vitis AI Github repo, there is a folder that is provided in which we may publish demonstrations from time-to-time. You can access the `demos here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/demos>`__.
+Last but not least, embedded in the Vitis AI Github repo, there is a folder that in which we may publish demonstrations from time-to-time. You can access the `demos here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/demos>`__.
 
 Once the “test drive” of the hardware platform is complete, Xilinx recommends reviewing this documentation to become more familiar with the components of Vitis AI.
 

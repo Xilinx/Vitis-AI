@@ -74,14 +74,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Host Install Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#host-development-software-installation">Host / Development Software Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-guidance">Installation Guidance</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#option-1-leverage-the-pre-built-docker">Option 1: Leverage the Pre-Built Docker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#option-2-build-the-docker-container-from-xilinx-recipes">Option 2: Build the Docker Container from Xilinx Recipes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#building-the-container">Building the Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparing-for-the-installation">Preparing for the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cpu-only-host-initial-preparation">CPU-only Host Initial Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rocm-gpu-host-initial-preparation">ROCm GPU Host Initial Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cuda-gpu-host-initial-preparation">CUDA GPU Host Initial Preparation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-install-and-verification">Docker Install and Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-repository">Clone The Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#leverage-vitis-ai-containers">Leverage Vitis AI Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#option-1-leverage-the-pre-built-docker">Option 1: Leverage the Pre-Built Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#option-2-build-the-docker-container-from-xilinx-recipes">Option 2: Build the Docker Container from Xilinx Recipes</a></li>
 </ul>
 </li>
 </ul>
@@ -130,7 +134,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequenty Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
         </div>
@@ -160,16 +164,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="host-installation-instructions">
 <h1>Host Installation Instructions<a class="headerlink" href="#host-installation-instructions" title="Permalink to this heading">¶</a></h1>
 <p>The purpose of this page is to provide the developer with guidance on the installation of Vitis™ AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in <a class="reference internal" href="../board_setup/board_setup.html"><span class="doc">Board Setup</span></a>.</p>
-<section id="host-development-software-installation">
-<h2>Host / Development Software Installation<a class="headerlink" href="#host-development-software-installation" title="Permalink to this heading">¶</a></h2>
 <p>There are three primary options for installation:</p>
-<ul class="simple">
-<li><p>[Option1] Directly leverage pre-built Docker containers available from Docker Hub:
-<a class="reference external" href="https://hub.docker.com/r/xilinx/">xilinx/vitis-ai</a>.</p></li>
-<li><p>[Option2] Build a custom container to target your local host machine.</p></li>
-<li><p>[Option3] Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on <a class="reference internal" href="install_on_aws.html"><span class="doc">AWS</span></a>, or <a class="reference internal" href="install_on_azure.html"><span class="doc">Azure</span></a>.</p></li>
+<p><strong>[Option1]</strong> Directly leverage pre-built Docker containers available from Docker Hub: <a class="reference external" href="https://hub.docker.com/r/xilinx/">xilinx/vitis-ai</a>.</p>
+<p><strong>[Option2]</strong> Build a custom container to target your local host machine.</p>
+<p><strong>[Option3]</strong> Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on <a class="reference internal" href="install_on_aws.html"><span class="doc">AWS</span></a>, or <a class="reference internal" href="install_on_azure.html"><span class="doc">Azure</span></a>.</p>
+<p>In addition, Vitis AI supports three host types:</p>
+<blockquote>
+<div><blockquote>
+<div><ul class="simple">
+<li><p>CPU-only with no GPU acceleration</p></li>
+<li><p>CUDA-capable GPUs</p></li>
+<li><p>AMD ROCm™ GPUs</p></li>
 </ul>
-</section>
+</div></blockquote>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>These installation instructions are only relevant for the current release of Vitis AI. If your intention is to pull a Docker container for a historic release you must leverage one of the previous release <a class="reference internal" href="../reference/docker_image_versions.html"><span class="doc">Docker containers</span></a>.</p>
+</div>
+</div></blockquote>
 <section id="pre-requisites">
 <h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -177,30 +189,97 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p>Confirm that you have at least <strong>100GB</strong> of free space in the target partition.</p></li>
 </ul>
 </section>
-<section id="installation-guidance">
-<h2>Installation Guidance<a class="headerlink" href="#installation-guidance" title="Permalink to this heading">¶</a></h2>
-<ul>
-<li><p>If Docker was not previously installed on your development machine with NVIDIA Container Toolkit or ROCm support, visit  <a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a>.</p></li>
-<li><p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p></li>
-<li><p>To get started, the developer should clone the Vitis AI repository as follows:</p>
+<section id="preparing-for-the-installation">
+<h2>Preparing for the Installation<a class="headerlink" href="#preparing-for-the-installation" title="Permalink to this heading">¶</a></h2>
+<p>Refer to the relevant section (CPU-only, ROCm, CUDA) below to prepare your selected host for Docker installation.</p>
+<section id="cpu-only-host-initial-preparation">
+<h3>CPU-only Host Initial Preparation<a class="headerlink" href="#cpu-only-host-initial-preparation" title="Permalink to this heading">¶</a></h3>
+<p>CPU hosts require no special preparation.</p>
+</section>
+<section id="rocm-gpu-host-initial-preparation">
+<h3>ROCm GPU Host Initial Preparation<a class="headerlink" href="#rocm-gpu-host-initial-preparation" title="Permalink to this heading">¶</a></h3>
+<p>For ROCm hosts, developers should prepare their host by referring to the <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md">ROCm Docker installation documentation</a>.</p>
+</section>
+<section id="cuda-gpu-host-initial-preparation">
+<h3>CUDA GPU Host Initial Preparation<a class="headerlink" href="#cuda-gpu-host-initial-preparation" title="Permalink to this heading">¶</a></h3>
+<p>If you are leveraging a Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit, which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a> for additional information.</p>
+<p>For Ubuntu distributions, NVIDIA driver and Container Toolkit installation can generally be accomplished as in the following example (use sudo for non-root users):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">purge</span> <span class="n">nvidia</span><span class="o">*</span> <span class="n">libnvidia</span><span class="o">*</span>
+<span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">driver</span><span class="o">-</span><span class="n">xxx</span>
+<span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">toolkit</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">xxx</span></code> is the version of driver that you are choosing to install (i.e, <code class="docutils literal notranslate"><span class="pre">nvidia-driver-510</span></code>), and is a version that meets Vitis AI <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p>
+<p>A simple test to confirm driver installation is to execute <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code>.  This command can be used as an initial test outside of the Docker environment, and also can be used as a simple test inside of a Docker container following the installation of Docker and the Nvidia Container Toolkit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
+</pre></div>
+</div>
+<p>The output should appear similar to the below, indicating the activation of the driver, and the successful installation of CUDA:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Thu</span> <span class="n">Dec</span>  <span class="mi">8</span> <span class="mi">21</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2022</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">470.161.03</span>   <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">470.161.03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">11.4</span>     <span class="o">|</span>
+<span class="o">/|-------------------------------+----------------------+----------------------+</span>
+<span class="o">/|</span> <span class="n">GPU</span>  <span class="n">Name</span>        <span class="n">Persistence</span><span class="o">-</span><span class="n">M</span><span class="o">|</span> <span class="n">Bus</span><span class="o">-</span><span class="n">Id</span>        <span class="n">Disp</span><span class="o">.</span><span class="n">A</span> <span class="o">|</span> <span class="n">Volatile</span> <span class="n">Uncorr</span><span class="o">.</span> <span class="n">ECC</span> <span class="o">|</span>
+<span class="o">/|</span> <span class="n">Fan</span>  <span class="n">Temp</span>  <span class="n">Perf</span>  <span class="n">Pwr</span><span class="p">:</span><span class="n">Usage</span><span class="o">/</span><span class="n">Cap</span><span class="o">|</span>         <span class="n">Memory</span><span class="o">-</span><span class="n">Usage</span> <span class="o">|</span> <span class="n">GPU</span><span class="o">-</span><span class="n">Util</span>  <span class="n">Compute</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>               <span class="n">MIG</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|===============================+======================+======================|</span>
+<span class="o">/|</span>   <span class="mi">0</span>  <span class="n">NVIDIA</span> <span class="n">GeForce</span> <span class="o">...</span>  <span class="n">Off</span>  <span class="o">|</span> <span class="mi">00000000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="n">Off</span> <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/|</span>  <span class="mi">0</span><span class="o">%</span>   <span class="mi">40</span><span class="n">C</span>    <span class="n">P8</span>     <span class="mi">1</span><span class="n">W</span> <span class="o">/</span> <span class="mi">120</span><span class="n">W</span> <span class="o">|</span>     <span class="mi">15</span><span class="n">MiB</span> <span class="o">/</span>  <span class="mi">5944</span><span class="n">MiB</span> <span class="o">|</span>      <span class="mi">0</span><span class="o">%</span>      <span class="n">Default</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/+-------------------------------+----------------------+----------------------+</span>
+<span class="o">/</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">Processes</span><span class="p">:</span>                                                                  <span class="o">|</span>
+<span class="o">/|</span>  <span class="n">GPU</span>   <span class="n">GI</span>   <span class="n">CI</span>        <span class="n">PID</span>   <span class="n">Type</span>   <span class="n">Process</span> <span class="n">name</span>                  <span class="n">GPU</span> <span class="n">Memory</span> <span class="o">|</span>
+<span class="o">/|</span>        <span class="n">ID</span>   <span class="n">ID</span>                                                   <span class="n">Usage</span>      <span class="o">|</span>
+<span class="o">/|=============================================================================|</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Refer <a class="reference external" href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA driver installation</a> for further details of driver installation.</p>
+</section>
+</section>
+<section id="docker-install-and-verification">
+<h2>Docker Install and Verification<a class="headerlink" href="#docker-install-and-verification" title="Permalink to this heading">¶</a></h2>
+<p>Once you are confident that your host has been prepared according to the above guidance refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p>
+</div>
+</div></blockquote>
+<p>Next, perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a “Hello World” message and exits.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+</pre></div>
+</div>
+<p>Finally, verify that the version of Docker that you have installed meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> by running the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+</div>
+</section>
+<section id="clone-the-repository">
+<h2>Clone The Repository<a class="headerlink" href="#clone-the-repository" title="Permalink to this heading">¶</a></h2>
+<p>If you have not already done so, you should now clone the Vitis AI repository to the host machine as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Xilinx/Vitis-AI
 <span class="nb">cd</span> Vitis-AI
 </pre></div>
 </div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The installation commands are only relevant for the current release of Vitis AI. If your intention is to install a Docker for a historic release you must leverage one of the previous release <a class="reference internal" href="../reference/docker_image_versions.html"><span class="doc">Docker containers</span></a>.</p>
-</div>
-</li>
+</section>
+<section id="leverage-vitis-ai-containers">
+<h2>Leverage Vitis AI Containers<a class="headerlink" href="#leverage-vitis-ai-containers" title="Permalink to this heading">¶</a></h2>
+<p>You are now ready to start working with the Vitis AI Docker container.  At this stage you will choose whether you wish to use the pre-built container, or build the container from scripts.</p>
+<p>Starting with the Vitis AI 3.0 release, pre-built Docker containers are framework specific.  Furthermore, we have extended support to include AMD ROCm enabled GPUs.
+Users thus now have three options for the host Docker:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>CPU-only</p></li>
+<li><p>CUDA-capable GPUs</p></li>
+<li><p>ROCm-capable GPUs</p></li>
 </ul>
+</div></blockquote>
+<p>CUDA-capable GPUs are not supported by pre-built containers, and thus the developer must <a class="reference internal" href="#build-docker-from-scripts"><span class="std std-ref">build the container from scripts</span></a>.</p>
 <section id="option-1-leverage-the-pre-built-docker">
 <h3>Option 1: Leverage the Pre-Built Docker<a class="headerlink" href="#option-1-leverage-the-pre-built-docker" title="Permalink to this heading">¶</a></h3>
-<p>As of the Vitis AI 3.0 release, pre-built Docker containers are framework specific.  Furthermore, we have extended support to include AMD ROCm enabled GPUs.
-Users thus now have three options for a host:
-- CPU-only
-- CUDA-capable GPUs
-- ROCm-capable GPUs</p>
-<p>CUDA-capable GPUs are not supported by pre-built containers, and thus the developer must <a class="reference internal" href="#build-docker-from-scripts"><span class="std std-ref">build the container from scripts</span></a>.</p>
 <p>To download the most up-to-date version of the pre-built docker, you will need execute the appropriate command, using the following general format:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">Framework</span><span class="o">&gt;-&lt;</span><span class="n">Arch</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
@@ -220,32 +299,32 @@ Users thus now have three options for a host:
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>TensorFlow 1.15 cpu-only</p></td>
-<td><p>tensorflow</p></td>
+<tr class="row-even"><td><p>PyTorch cpu-only</p></td>
+<td><p>pytorch</p></td>
 <td><p>cpu</p></td>
 </tr>
 <tr class="row-odd"><td><p>TensorFlow 2 cpu-only</p></td>
 <td><p>tensorflow2</p></td>
 <td><p>cpu</p></td>
 </tr>
-<tr class="row-even"><td><p>PyTorch cpu-only</p></td>
-<td><p>pytorch</p></td>
+<tr class="row-even"><td><p>TensorFlow 1.15 cpu-only</p></td>
+<td><p>tensorflow</p></td>
 <td><p>cpu</p></td>
 </tr>
-<tr class="row-odd"><td><p>TensorFlow 2 ROCm</p></td>
+<tr class="row-odd"><td><p>PyTorch ROCm</p></td>
+<td><p>pytorch</p></td>
+<td><p>rocm</p></td>
+</tr>
+<tr class="row-even"><td><p>TensorFlow 2 ROCm</p></td>
 <td><p>tensorflow2</p></td>
 <td><p>rocm</p></td>
 </tr>
-<tr class="row-even"><td><p>PyTorch ROCm</p></td>
-<td><p>pytorch</p></td>
-<td><p>rocm</p></td>
-</tr>
-<tr class="row-odd"><td><p>TF2 with AI Optimizer ROCm</p></td>
-<td><p>opt-tensorflow2</p></td>
-<td><p>rocm</p></td>
-</tr>
-<tr class="row-even"><td><p>PyTorch with AI Optimizer ROCm</p></td>
+<tr class="row-odd"><td><p>PyTorch with AI Optimizer ROCm</p></td>
 <td><p>opt-pytorch</p></td>
+<td><p>rocm</p></td>
+</tr>
+<tr class="row-even"><td><p>TF2 with AI Optimizer ROCm</p></td>
+<td><p>opt-tensorflow2</p></td>
 <td><p>rocm</p></td>
 </tr>
 </tbody>
@@ -253,22 +332,19 @@ Users thus now have three options for a host:
 <p><em>Specific Examples:</em></p>
 <blockquote>
 <div><ul class="simple">
+<li><p>PyTorch CPU-only docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-pytorch-cpu:latest</span></code></p></li>
+<li><p>PyTorch ROCm docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-pytorch-rocm:latest</span></code></p></li>
 <li><p>TensorFlow 2 CPU docker : <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-tensorflow2-cpu:latest</span></code></p></li>
 <li><p>TensorFlow 2 ROCm docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-tensorflow2-rocm:latest</span></code></p></li>
-<li><p>PyTorch ROCm docker: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">xilinx/vitis-ai-pytorch-rocm:latest</span></code></p></li>
 </ul>
 </div></blockquote>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the quantization process. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the Vitis AI <a class="reference internal" href="../workflow-model-development.html#quantization-process"><span class="std std-ref">Quantization process</span></a>. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.  The <a class="reference internal" href="../workflow-model-development.html#model-optimization"><span class="std std-ref">AI Optimizer containers</span></a> are only required for pruning and require a license.</p>
 </div>
-<p>Next, a quick and simple test of the docker container can be accomplished by executing the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
-</pre></div>
-</div>
-<p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
-<p>Next, you can now start the Vitis AI Docker using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">tensorflow</span><span class="o">|</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt_pytorch</span><span class="o">&gt;-&lt;</span><span class="n">cpu</span><span class="o">|</span><span class="n">rocm</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
+<p>Next, you can now start the Vitis AI Docker using the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
+<span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">pytorch</span><span class="o">|</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">tensorflow</span><span class="o">&gt;-&lt;</span><span class="n">cpu</span><span class="o">|</span><span class="n">rocm</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 </section>
@@ -283,10 +359,12 @@ Users thus now have three options for a host:
 <li><p>If you are building the Docker from within China, <a class="reference internal" href="China_Ubuntu_servers.html"><span class="doc">script modifications</span></a> are strongly recommended.</p></li>
 </ul>
 </div>
-<section id="building-the-container">
-<h4>Building the Container<a class="headerlink" href="#building-the-container" title="Permalink to this heading">¶</a></h4>
-<p>The command to build the container is: <code class="docutils literal notranslate"><span class="pre">./docker_build.sh</span> <span class="pre">-t</span> <span class="pre">&lt;DOCKER_TYPE&gt;</span> <span class="pre">-f</span> <span class="pre">&lt;FRAMEWORK&gt;</span></code></p>
-<p>Where the supported build options are:</p>
+<p>Navigate to the docker subdirectory in the Vitis AI install path:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
+</pre></div>
+</div>
+<p>Here you will find the docker_build.sh script that will be used to build the container.  Execute the script as follows: <code class="docutils literal notranslate"><span class="pre">./docker_build.sh</span> <span class="pre">-t</span> <span class="pre">&lt;DOCKER_TYPE&gt;</span> <span class="pre">-f</span> <span class="pre">&lt;FRAMEWORK&gt;</span></code></p>
+<p>The supported build options are:</p>
 <table class="docutils align-default" id="id2">
 <caption><span class="caption-text">Vitis AI Docker Container Build Options</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
 <colgroup>
@@ -302,58 +380,50 @@ Users thus now have three options for a host:
 </thead>
 <tbody>
 <tr class="row-even"><td><p>cpu</p></td>
-<td><p>tf1</p></td>
-<td><p>TensorFlow 1.15 cpu-only</p></td>
+<td><p>pytorch</p></td>
+<td><p>PyTorch cpu-only</p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p>tf2</p></td>
 <td><p>TensorFlow 2 cpu-only</p></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p>pytorch</p></td>
-<td><p>PyTorch cpu-only</p></td>
+<td><p>tf1</p></td>
+<td><p>TensorFlow 1.15 cpu-only</p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>gpu</p></td>
-<td><p>tf1</p></td>
-<td><p>TensorFlow 1.15 CUDA-gpu</p></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p>opt_tf1</p></td>
-<td><p>TF1 with AI Optimizer CUDA-gpu</p></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p>tf2</p></td>
-<td><p>TensorFlow 2</p></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p>opt_tf2</p></td>
-<td><p>TF2 with AI Optimizer CUDA-gpu</p></td>
-</tr>
-<tr class="row-even"><td></td>
 <td><p>pytorch</p></td>
-<td><p>PyTorch</p></td>
+<td><p>PyTorch CUDA-gpu</p></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p>opt_pytorch</p></td>
 <td><p>PyTorch with AI Optimizer CUDA-gpu</p></td>
 </tr>
 <tr class="row-even"><td></td>
+<td><p>tf2</p></td>
+<td><p>TensorFlow 2 CUDA-gpu</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>opt_tf2</p></td>
+<td><p>TensorFlow 2 with AI Optimizer CUDA-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>tf1</p></td>
+<td><p>TensorFlow 1.15 CUDA-gpu</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>opt_tf1</p></td>
+<td><p>TensorFlow 1.15 with AI Optimizer CUDA-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>rocm</p></td>
-<td><p>tf2</p></td>
-<td><p>TensorFlow 2 ROCm-gpu</p></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p>opt_tf2</p></td>
-<td><p>TF2 with AI Optimizer ROCm-gpu</p></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p>pytorch</p></td>
 <td><p>PyTorch ROCm-gpu</p></td>
 </tr>
@@ -361,11 +431,19 @@ Users thus now have three options for a host:
 <td><p>opt_pytorch</p></td>
 <td><p>PyTorch with AI Optimizer ROCm-gpu</p></td>
 </tr>
+<tr class="row-odd"><td></td>
+<td><p>tf2</p></td>
+<td><p>TensorFlow 2 ROCm-gpu</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>opt_tf2</p></td>
+<td><p>TensorFlow 2 with AI Optimizer ROCm-gpu</p></td>
+</tr>
 </tbody>
 </table>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the quantization process. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cpu</span></code> option <em>does not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the Vitis AI <a class="reference internal" href="../workflow-model-development.html#quantization-process"><span class="std std-ref">Quantization process</span></a>. The pre-built <code class="docutils literal notranslate"><span class="pre">cpu</span></code> container should only be used when a GPU is not available on the host machine.  The <a class="reference internal" href="../workflow-model-development.html#model-optimization"><span class="std std-ref">AI Optimizer containers</span></a> are only required for pruning and require a license.</p>
 </div>
 <p>As an example, the developer should use the following commands to build a Pytorch CUDA GPU docker with support for the Vitis AI Optimizer. Adjust your path to <code class="docutils literal notranslate"><span class="pre">&lt;Vitis-AI</span> <span class="pre">install</span> <span class="pre">path&gt;/Vitis-AI/docker</span></code> directory as necessary.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">docker</span>
@@ -375,15 +453,9 @@ Users thus now have three options for a host:
 <p>You may also <code class="docutils literal notranslate"><span class="pre">run</span> <span class="pre">docker_build.sh</span> <span class="pre">--help</span></code> for additional information.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This process may take several hours to complete. Assuming the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">docker_build</span></code> process may take several hours to complete. Assuming the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.</p>
 </div>
-<p>Once the build script has completed, do an initial test of your docker using the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">docker</span>
-<span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
-</pre></div>
-</div>
-<p>This command downloads a test image and runs it in a container. When the container runs, it prints a message and exits.</p>
-<p>If the Docker has been enabled with CUDA-capable GPU support, confirm that the GPU is visible by executing the following command from within the container:</p>
+<p>If the Docker has been enabled with CUDA-capable GPU support, do a final test to ensure that the GPU is visible by executing the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">--</span><span class="n">gpus</span> <span class="nb">all</span> <span class="n">nvidia</span><span class="o">/</span><span class="n">cuda</span><span class="p">:</span><span class="mf">11.3.1</span><span class="o">-</span><span class="n">cudnn8</span><span class="o">-</span><span class="n">runtime</span><span class="o">-</span><span class="n">ubuntu20</span><span class="mf">.04</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
 </pre></div>
 </div>
@@ -411,10 +483,11 @@ Users thus now have three options for a host:
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If CUDA GPU support was expected but was not enabled in your container, check your NVIDIA driver and CUDA versions versus the <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> and verify your installation of the NVIDIA Container Toolkit (<a class="reference internal" href="install_docker.html"><span class="doc">Installing Docker</span></a>). If you missed a step, you can rectify the problem and re-run <code class="docutils literal notranslate"><span class="pre">docker_build.sh</span></code>.</p>
+<p>If CUDA GPU support was expected but was not enabled, check your NVIDIA driver and CUDA versions versus the <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> and verify your installation of the NVIDIA Container Toolkit. If you missed a step, you can rectify the problem and re-run <code class="docutils literal notranslate"><span class="pre">docker_build.sh</span></code>.</p>
 </div>
 <p>You can now start the Docker for Vitis AI using the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">tensorflow</span><span class="o">|</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt_pytorch</span><span class="o">&gt;-&lt;</span><span class="n">cpu</span><span class="o">|</span><span class="n">gpu</span><span class="o">|</span><span class="n">rocm</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
+<span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-&lt;</span><span class="n">pytorch</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">pytorch</span><span class="o">|</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">opt</span><span class="o">-</span><span class="n">tensorflow2</span><span class="o">|</span><span class="n">tensorflow</span><span class="o">&gt;-&lt;</span><span class="n">cpu</span><span class="o">|</span><span class="n">gpu</span><span class="o">|</span><span class="n">rocm</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 <div class="admonition important">
@@ -423,7 +496,6 @@ Users thus now have three options for a host:
 </div>
 <p>In most cases, you have now completed the installation. Congratulations!</p>
 <p>If you have previously been instructed by your ML Specialist or FAE to leverage a specific patch for support of certain features, you should now follow the instructions <a class="reference internal" href="patch_instructions.html"><span class="doc">patch instructions</span></a> to complete your installation.</p>
-</section>
 </section>
 </section>
 </section>

@@ -107,6 +107,8 @@ memory footprint, and data path bandwidth required for inference.
 
 Xilinx general-purpose CNN-focused DPUs leverage INT8 (8-bit integer) quantization of a trained network. In many real-world datasets, the distribution of weights and activations at a given layer in the network typically spans a much narrower range than can be represented by a 32-bit floating point number. It is thus possible to accurately represent the distribution of weights and activations at a given layer as integer values by simply applying a scaling factor. The impact on prediction accuracy of INT8 quantization is typically low, often less than 1%. This is true in many applications in which the input data consists of images and video, point-cloud data, and input data from various sampled-data systems, including specific audio and RF applications.
 
+.. _quantization-process:
+
 Quantization Process
 ~~~~~~~~~~~~~~~~~~~~
 
