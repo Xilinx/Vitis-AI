@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0-cudnn8-runtime-ubuntu18.04
+FROM nvidia/cuda:11.0.3-cudnn8-runtime-ubuntu18.04
 env DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 ENV TZ=America/Denver
@@ -29,6 +29,7 @@ ENV LC_ALL en_US.UTF-8
 RUN chmod 1777 /tmp \
     && mkdir /scratch \
     && chmod 1777 /scratch \
+    && rm -fr /etc/apt/sources.list.d/cuda* \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         apt-transport-https \
