@@ -253,7 +253,7 @@ score[949]  =  0.00054879   text: strawberry,
 root@xilinx-zcu102-trd:~/app#
 ```
 
-###### **Note:** The matching model files has been provided in the app path as default settings, if the DPU settings changed, the model files need to be regenerated. For other models, please refer to [Run the VART Examples](https://github.com/Xilinx/Vitis-AI/tree/master/setup/mpsoc#step3-run-the-vitis-ai-examples) and [Running Vitis AI Library Examples](https://github.com/Xilinx/Vitis-AI/blob/master/src/Vitis-AI-Library/README.md#running-vitis-ai-library-examples).
+###### **Note:** The matching model files has been provided in the app path as default settings, if the DPU settings changed, the model files need to be regenerated. For other models, please refer to [Running Vitis AI Library Examples](https://github.com/Xilinx/Vitis-AI/blob/master/src/vai_library/README.md#running-vitis-ai-library-examples).
 
 ### 5.3 Configurate the DPU
 
@@ -473,7 +473,7 @@ For details, please refer to **UltraRAM** of **Advanced Tab** in Chapter 4 DPU C
 
 ## 6 Run with Vitis AI Library
 
-For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/tree/master/demo/Vitis-AI-Library)
+For the instroduction of Vitis AI Library, please refer to **Quick Start For Edge** of this page [Vitis AI Library](https://github.com/Xilinx/Vitis-AI/blob/master/src/vai_library/README.md).
 
 <hr/>
 <p align="center"><sup>Copyright&copy; 2022 Xilinx</sup></p>
