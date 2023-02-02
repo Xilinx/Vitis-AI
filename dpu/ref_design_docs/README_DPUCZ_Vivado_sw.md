@@ -231,7 +231,7 @@ score[939]  =  0.000904801  text: zucchini, courgette,
 score[949]  =  0.00054879   text: strawberry,
 root@xilinx-zcu102-trd:~/app#
 ```
-Note: The TRD project has generated the default matching model file in $TRD_HOME/prj/Vivado/sw/meta-vitis/recipes-apps/resnet50/files/app.tar.gz. If users change the DPU settings, the model need to be created again. For other network running, please refer to [Run the Vitis AI Examples](https://github.com/Xilinx/Vitis-AI/tree/master/setup/mpsoc#step3-run-the-vitis-ai-examples) and [Running Vitis AI Library Examples](https://github.com/Xilinx/Vitis-AI/blob/master/src/Vitis-AI-Library/README.md#running-vitis-ai-library-examples).
+Note: The TRD project has generated the default matching model file in $TRD_HOME/prj/Vivado/sw/meta-vitis/recipes-apps/resnet50/files/app.tar.gz. If users change the DPU settings, the model need to be created again. For other network running, please refer to [Run the Vitis AI Examples](https://github.com/Xilinx/Vitis-AI/tree/master/examples/vai_runtime#running-vitis-ai-examples-1) and [Running Vitis AI Library Examples](https://github.com/Xilinx/Vitis-AI/blob/master/src/vai_library/README.md#running-vitis-ai-library-examples).
 
 # 4 Known Issues
 
