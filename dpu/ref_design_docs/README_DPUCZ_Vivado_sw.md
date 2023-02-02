@@ -104,7 +104,7 @@ Exclude zocl and xrt from rootfs, which are required for Vitis acceleration flow
 This step is not a must but it makes it easier to find and select all required packages in next step. If this step is skipped, please enable the required packages one by one in next step.
 
 **Add vitis-ai-library to rootfs**
-- Copy the lastest [recipes-vitis-ai](https://github.com/Xilinx/Vitis-AI/tree/master/setup/petalinux/recipes-vitis-ai) to your <your_petalinux_project_dir>/project-spec/meta-user
+- Copy the lastest [recipes-vitis-ai](../../src/vai_petalinux_recipes/recipes-vitis-ai) to your <your_petalinux_project_dir>/project-spec/meta-user
 
     **NOTE**: recipes-vitis-ai is used for Vitis flow by default. In vivado flow, please comment out the following line in recipes-vitis-ai/vart/vart_3.0.bb
     ```

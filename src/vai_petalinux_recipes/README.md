@@ -9,7 +9,7 @@
 # Introduction
 There are two ways to install the `Vitis AI` libraries: 
 * To rebuild the system by configuring PetaLinux. (Build-Time)
-* To install VAI3.0 to the target leveraging a pre-built package. (Run-Time) See the board setup instructions for details of the online installation [process](../../docs/board_setup/vai_install_to_target)
+* To install VAI3.0 to the target leveraging a pre-built package. (Run-Time) See the board setup instructions for details of the online installation [process](https://xilinx.github.io/Vitis-AI/docs/board_setup/vai_install_to_target.html)
 
 # To rebuild the system by configuring PetaLinux
 If users want to install VAI3.0 into rootfs when generating system image by PetaLinux, users need to get the VAI3.0 recipes.
