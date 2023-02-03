@@ -2,16 +2,16 @@ Setting up a Zynq UltraScale+ MPSoC Target
 ==========================================
 
 Introduction
---------------
+------------
 
-This directory contains instructions for running DPUCZDX8G on Zynq® Ultrascale+™ MPSoC platforms. **DPUCZDX8G** is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.
+This directory contains instructions for running DPUCZDX8G on Zynq |reg| Ultrascale+ |trade| MPSoC targets. **DPUCZDX8G** is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks.
 
 Step 1: Setup Cross-compiler
 ----------------------------
 
 .. note:: Perform these steps this on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in ``~/petalinux_sdk_2022.2``.
 
-1. Run the following commands to install the cross-compilation system environment:
+1. Run the following commands to install the cross-compilation environment:
 
    .. code-block:: Bash
 
@@ -34,23 +34,23 @@ The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and model
 
 1. Installing a Board Image.
 
-   a.  Download the SD card system image files from the following links:
+   a.  Download the SD card image from the appropriate link:
 
       - `ZCU102 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.2-v3.0.0.img.gz>`__
       - `ZCU104 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.2-v3.0.0.img.gz>`__
       - `KV260 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz>`__
 
-	.. note:: For ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.
+	.. note:: For the ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.
 
    b.  Use Etcher software to burn the image file onto the SD card.
 
-   c.  Insert the SD card with the image into the destination board.
+   c.  Insert the imaged SD card into the target board.
 
    d.  Plug in the power adapter and boot the board using the serial port to interact with the target.
 
    e.  Configure the IP address and related settings for the board using the serial port.
 
-   For the details, refer to `Setting Up the Evaluation Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__.
+   For additional details, refer to `Setting Up the Evaluation Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__.
 
 2. (Optional) Run ``zynqmp_dpu_optimize.sh`` to optimize board settings.
 
@@ -104,7 +104,7 @@ The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and model
 
           scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 
-   c. Log in to the board (using ssh or serial port) and install the model package:
+   c. Log in to the board (via ssh or serial port) and install the model package:
 
       .. code-block:: Bash
 
@@ -127,7 +127,7 @@ Step 3: Run the Vitis AI Examples
        cd ~
        tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
 
-3. Enter the directory of samples in the target board. Take ``resnet50`` as an example.
+3. Navigate to the example directory on the target board. Take ``resnet50`` as an example.
 
    ``cd ~/Vitis-AI/examples/vai_runtime/resnet50``
 
@@ -167,4 +167,10 @@ Launching Commands for VART Samples on Edge
 References
 ----------
 
-`Vitis AI User Guide <https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html>`__
+-  `Vitis AI User Guide <https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html>`__
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

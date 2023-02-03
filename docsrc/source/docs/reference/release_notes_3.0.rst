@@ -133,6 +133,11 @@ DPU IP - CNN - V70 Data Center DPUCV2DX8G
 - Batch size 13 support
 - Supports more than 70 Model Zoo models
 
+Legacy Alveo DPU Support
+~~~~~~~~~~~~~~~~~~~~~~~~
+- Vitis AI support for the DPUCAHX8H/DPUCAHX8H-DWC IP, and Alveo™ U50LV and U55C cards was discontinued with the release of Vitis AI 3.0. The final release to support these targets was Vitis AI 2.5.0.
+
+
 WeGO
 ~~~~
 - Integrated WeGO with the Vitis-AI Quantizer to enable on-the-fly quantization and improve easy-of-use

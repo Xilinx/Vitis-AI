@@ -74,9 +74,9 @@ Supported Evaluation Targets
      - `ZCU102 <https://www.xilinx.com/zcu102>`__ / `ZCU104 <https://www.xilinx.com/zcu104>`__ / `Kria K26 SOM <https://www.xilinx.com/kria>`__
 
    * - Alveo Data Center Acceleration Cards
-     - `U200 16nm DDR <https://www.xilinx.com/U200>`__ / `U250 16 nm DDR <https://www.xilinx.com/U250>`__ / `U280 16 nm HBM <https://www.xilinx.com/U280>`__ / `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__ / `U50 16 nm HBM <https://www.xilinx.com/U50>`__ / `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ / `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
+     - `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
 
-.. note:: See the `Alveo Product Selection Guide <https://www.xilinx.com/content/dam/xilinx/support/documents/selection-guides/alveo-product-selection-guide.pdf>`__ for more information on device selection.
+Vitis AI support for the `U200 16nm DDR <https://www.xilinx.com/U200>`__, `U250 16 nm DDR <https://www.xilinx.com/U250>`__, `U280 16 nm HBM <https://www.xilinx.com/U280>`__, `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__, `U50 16 nm HBM <https://www.xilinx.com/U50>`__, and `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ has been discontinued.   `Please leverage a previous release for these targets or contact your local sales team for additional guidance <https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_alveo.html>`__.  
 
 When you are ready to start with one of these pre-built platforms, you should refer to :doc:`../docs/board_setup/board_setup`. These instructions guide users to download a pre-built board image to launch deployment examples that leverage Vitis AI Model Zoo. This is a crucial first step to becoming familiar with Vitis AI.
 

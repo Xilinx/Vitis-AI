@@ -147,27 +147,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h1>Setting up the Versal VCK190<a class="headerlink" href="#setting-up-the-versal-vck190" title="Permalink to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
-<p>This directory contains instructions for running DPUCVDX8G on Versal® AI Core platforms. <strong>DPUCVDX8G</strong> is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.</p>
+<p>This directory contains instructions for running DPUCVDX8G on Versal™ AI Core targets. <strong>DPUCVDX8G</strong> is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks.</p>
 </section>
 <section id="step-1-setup-cross-compiler">
 <h2>Step 1: Setup Cross-compiler<a class="headerlink" href="#step-1-setup-cross-compiler" title="Permalink to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p>Run the following command to install cross-compilation system environment:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Install it on your local host Linux system, not in the docker system. By default, the Cross Compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code> by default. For the <code class="docutils literal notranslate"><span class="pre">VCK190</span> <span class="pre">Production</span></code> board, use <code class="docutils literal notranslate"><span class="pre">host_cross_compiler_setup</span> <span class="pre">sh</span></code>.</p>
+<p>Perform these steps this on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code>.</p>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">host_cross_compiler_setup</span><span class="o">.</span><span class="n">sh</span>
+<ol class="arabic">
+<li><p>Run the following commands to install the cross-compilation environment:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> Vitis-AI/board_setup/vck190
+./host_cross_compiler_setup.sh
 </pre></div>
 </div>
 </li>
 <li><p>When the installation is complete, follow the prompts and execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">~/</span><span class="n">petalinux_sdk_2022</span><span class="mf">.2</span><span class="o">/</span><span class="n">environment</span><span class="o">-</span><span class="n">setup</span><span class="o">-</span><span class="n">cortexa72</span><span class="o">-</span><span class="n">cortexa53</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you close the current terminal, you need to re-execute the above instructions in the new terminal interface.</p>
+<p>If you close the current terminal, you must re-execute the above instructions in the new terminal interface.</p>
 </div>
 </li>
 </ol>
@@ -178,7 +179,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ol class="arabic">
 <li><p>Installing a Board Image.</p>
 <ol class="loweralpha">
-<li><p>Download the SD card system image files from the following links:</p>
+<li><p>Download the SD card image from the following link:</p>
 <p><a class="reference external" href="https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.2-v3.0.0.img.gz">VCK190 Production Board</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -186,53 +187,55 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 </li>
 <li><p>Use Etcher software to burn the image file onto the SD card.</p></li>
-<li><p>Insert the SD card with the image into the destination board.</p></li>
-<li><p>Plug in power and boot the board using the serial port to perate on the system.</p></li>
-<li><p>Set up the IP information of the board using the serial port.</p></li>
+<li><p>Insert the imaged SD card into the target board.</p></li>
+<li><p>Plug in the power adapter and boot the board using the serial port to interact with the target.</p></li>
+<li><p>Configure the IP address and related settings for the board using the serial port.</p></li>
 </ol>
-<p>For the details, refer <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation Board</a></p>
+<p>For additional details, refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation Board</a>.</p>
 </li>
-<li><p>(Optional) How to install Vitis AI for PetaLinux 2022.2.</p>
-<p>There are two ways to install the dependent libraries of Vitis AI:</p>
-<ul class="simple">
-<li><p><strong>Build-Time</strong>: Rebuild the system by configuring PetaLinux. For <code class="docutils literal notranslate"><span class="pre">VAI3.0</span> <span class="pre">Recipes</span></code>, refer to <a class="reference external" href="../petalinux-recipes.html">Vitis-AI-Recipes</a>.</p></li>
-<li><p><strong>Run-Time</strong>: Install the Vitis AI online via <code class="docutils literal notranslate"><span class="pre">dnf</span></code>. Execute <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">install</span> <span class="pre">packagegroup-petalinux-vitisai</span></code> to complete the installation on the target. For more details, refer <a class="reference external" href="../petalinux-recipes.html">VAI3.0 Online Install</a>.</p></li>
+<li><p>(Optional) How to leverage Vitis AI with PetaLinux 2022.2</p>
+<p>You can install the Vitis AI libraries on the target either at build-time or at run-time:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Build-Time: Rebuild the system by configuring PetaLinux. For <code class="docutils literal notranslate"><span class="pre">VAI3.0</span> <span class="pre">Recipes</span></code>, refer to <a class="reference external" href="../petalinux-recipes.html">Vitis-AI-Recipes</a></p></li>
+<li><p>Run-Time: Install Vitis AI online via <cite>dnf</cite>. Execute <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">install</span> <span class="pre">packagegroup-petalinux-vitisai</span></code> to complete the installation on the target. For more details, refer <a class="reference external" href="../petalinux-recipes.html">VAI3.0 Online Install</a></p></li>
 </ul>
+</div></blockquote>
 </li>
-<li><p>(Optional) How to update Vitis AI Runtime and install them separately.</p>
-<p>If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps:</p>
-<ol class="loweralpha">
-<li><p>Copy the following folder to the board using scp.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="o">-</span><span class="n">r</span> <span class="n">board_setup</span><span class="o">/</span><span class="n">vck190</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
+<li><p>(Optional) How to update Vitis AI Runtime on the target</p>
+<p>If you have an updated version of the Vitis AI Runtime and wish to install the update to your target, follow these steps.</p>
+<ul>
+<li><p>Copy the board_setup/mpsoc folder to the board using scp:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>scp -r board_setup/vck190 root@IP_OF_BOARD:~/
 </pre></div>
 </div>
 </li>
 <li><p>Log in to the board using ssh. You can also use the serial port to login.</p></li>
-<li><p>Install the Vitis AI Runtime. Execute the following command:</p>
+<li><p>Now, install the Vitis AI Runtime. Execute the following commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">vck190</span>
 <span class="n">bash</span> <span class="n">target_vart_setup</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
-</ol>
+</ul>
 </li>
 <li><p>(Optional) Download the model.</p>
 <p>You can now select a model from the Vitis AI Model Zoo <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
 <ol class="loweralpha">
-<li><p>Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> of VCK190 as an example.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /workspace
-wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.0.0.tar.gz -O resnet50-vck190-r3.0.0.tar.gz
+<li><p>Take the VCK190 <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> model as an example.</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /workspace
+wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>resnet50-vck190-r3.0.0.tar.gz -O resnet50-vck190-r3.0.0.tar.gz
 </pre></div>
 </div>
 </li>
 <li><p>Copy the downloaded file to the board using scp with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scp</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">vck190</span><span class="o">-</span><span class="n">r3</span><span class="mf">.0.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="n">root</span><span class="nd">@IP_OF_BOARD</span><span class="p">:</span><span class="o">~/</span>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>scp resnet50-vck190-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 </pre></div>
 </div>
 </li>
-<li><p>Log in to the board (using ssh or serial port) and install the model package.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">resnet50</span><span class="o">-</span><span class="n">vck190</span><span class="o">-</span><span class="n">r3</span><span class="mf">.0.0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">cp</span> <span class="n">resnet50</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vitis_ai_library</span><span class="o">/</span><span class="n">models</span> <span class="o">-</span><span class="n">r</span>
+<li><p>Log in to the board (via ssh or serial port) and install the model package.</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>tar -xzvf resnet50-vck190-r3.0.0.tar.gz
+cp resnet50 /usr/share/vitis_ai_library/models -r
 </pre></div>
 </div>
 </li>
@@ -242,7 +245,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.
 </section>
 <section id="step-3-run-the-vitis-ai-examples">
 <h2>Step 3: Run the Vitis AI Examples<a class="headerlink" href="#step-3-run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h2>
-<p>Follow <a class="reference internal" href="board_setup_mpsoc.html#mpsoc-run-vitis-ai-examples"><span class="std std-ref">Step 3: Run the Vitis AI Examples</span></a> to run Vitis AI examples.</p>
+<p>Refer to <a class="reference internal" href="board_setup_mpsoc.html#mpsoc-run-vitis-ai-examples"><span class="std std-ref">Step 3: Run the Vitis AI Examples</span></a> to run Vitis AI examples.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>

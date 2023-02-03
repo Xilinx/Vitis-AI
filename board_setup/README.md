@@ -7,7 +7,9 @@
 
 ## Target Board Setup
 
-The Vitis-AI repository provides pre-built board images that can be leveraged by users who wish to test-drive the Vitis-AI workflow, run examples and evaluate models from the Model Zoo.  This directory provides detailed documentation for the use of these pre-built images for supported targets.
+The Vitis-AI repository provides pre-built board images that can be leveraged by users who wish to test-drive the Vitis-AI workflow, run examples and evaluate models from the Model Zoo.  This directory provides the necessary scripts and files that will enable usage of these targets.
 
-The subfolders here are the launch point for developers who wish to leverage these workflows.  For additional high-level details please refer to the [workflow](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow.html#test-drive-vitis-ai-on-a-supported-platform) and [board setup](https://xilinx.github.io/Vitis-AI/3.0/html/docs/board_setup/board_setup.html) documentation , or browse the documentation in the subfolders for lower-level details.
+As of the 3.0 release of Vitis AI, the target setup documentation has migrated to Github.IO.  **YOU MAY ACCESS THE TARGET SETUP DOCUMENTATION [ONLINE](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup.html)** or **[OFFLINE](../docs/docs/board_setup/board_setup.html)**.
+
+For additional high-level details please refer to the [workflow documentation](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow.html#test-drive-vitis-ai-on-a-supported-platform).
 

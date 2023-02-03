@@ -147,7 +147,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h1>Setting up a Zynq UltraScale+ MPSoC Target<a class="headerlink" href="#setting-up-a-zynq-ultrascale-mpsoc-target" title="Permalink to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
-<p>This directory contains instructions for running DPUCZDX8G on Zynq® Ultrascale+™ MPSoC platforms. <strong>DPUCZDX8G</strong> is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.</p>
+<p>This directory contains instructions for running DPUCZDX8G on Zynq® Ultrascale+™ MPSoC targets. <strong>DPUCZDX8G</strong> is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks.</p>
 </section>
 <section id="step-1-setup-cross-compiler">
 <h2>Step 1: Setup Cross-compiler<a class="headerlink" href="#step-1-setup-cross-compiler" title="Permalink to this heading">¶</a></h2>
@@ -156,7 +156,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>Perform these steps this on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code>.</p>
 </div>
 <ol class="arabic">
-<li><p>Run the following commands to install the cross-compilation system environment:</p>
+<li><p>Run the following commands to install the cross-compilation environment:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> Vitis-AI/board_setup/mpsoc
 ./host_cross_compiler_setup.sh
 </pre></div>
@@ -179,7 +179,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ol class="arabic">
 <li><p>Installing a Board Image.</p>
 <ol class="loweralpha simple">
-<li><p>Download the SD card system image files from the following links:</p></li>
+<li><p>Download the SD card image from the appropriate link:</p></li>
 </ol>
 <blockquote>
 <div><ul>
@@ -188,18 +188,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p><a class="reference external" href="https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz">KV260</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.</p>
+<p>For the ZCU102/ZCU104/KV260, the version of the board image should be 2022.2 or above.</p>
 </div>
 </li>
 </ul>
 </div></blockquote>
 <ol class="loweralpha simple" start="2">
 <li><p>Use Etcher software to burn the image file onto the SD card.</p></li>
-<li><p>Insert the SD card with the image into the destination board.</p></li>
+<li><p>Insert the imaged SD card into the target board.</p></li>
 <li><p>Plug in the power adapter and boot the board using the serial port to interact with the target.</p></li>
 <li><p>Configure the IP address and related settings for the board using the serial port.</p></li>
 </ol>
-<p>For the details, refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation Board</a>.</p>
+<p>For additional details, refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board">Setting Up the Evaluation Board</a>.</p>
 </li>
 <li><p>(Optional) Run <code class="docutils literal notranslate"><span class="pre">zynqmp_dpu_optimize.sh</span></code> to optimize board settings.</p>
 <p>The script runs automatically after the board boots up with the official image. But you can also find the <code class="docutils literal notranslate"><span class="pre">dpu_sw_optimize.tar.gz</span></code> in <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz">DPUCZDX8G.tar.gz</a>.</p>
@@ -248,7 +248,7 @@ wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</s
 </pre></div>
 </div>
 </li>
-<li><p>Log in to the board (using ssh or serial port) and install the model package:</p>
+<li><p>Log in to the board (via ssh or serial port) and install the model package:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
 cp resnet50 /usr/share/vitis_ai_library/models -r
 </pre></div>
@@ -272,7 +272,7 @@ tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_ru
 </div>
 </div></blockquote>
 </li>
-<li><p>Enter the directory of samples in the target board. Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> as an example.</p>
+<li><p>Navigate to the example directory on the target board. Take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> as an example.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/Vitis-AI/examples/vai_runtime/resnet50</span></code></p>
 </li>
 <li><p>Run the example.</p>
@@ -336,7 +336,9 @@ tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_ru
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html">Vitis AI User Guide</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.xilinx.com/html_docs/vitis_ai/3_0/index.html">Vitis AI User Guide</a></p></li>
+</ul>
 </section>
 </section>
 

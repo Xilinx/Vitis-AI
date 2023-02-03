@@ -1,101 +1,101 @@
 Setting up the Versal VCK190
-==========================================
+============================
 
 Introduction
--------------
+------------
 
-This directory contains instructions for running DPUCVDX8G on Versal® AI Core platforms. **DPUCVDX8G** is a configurable computation engine dedicated to convolutional neural networks. It includes highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogleNet, YOLO, SSD, MobileNet, FPN, and others. With Vitis™ AI, Xilinx® has integrated all the edge and cloud solutions under a unified API and toolset.
+This directory contains instructions for running DPUCVDX8G on Versal |trade| AI Core targets. **DPUCVDX8G** is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks.
 
 Step 1: Setup Cross-compiler
------------------------------
+----------------------------
 
-1. Run the following command to install cross-compilation system environment:
+.. note:: Perform these steps this on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in ``~/petalinux_sdk_2022.2``.
 
-   .. note:: Install it on your local host Linux system, not in the docker system. By default, the Cross Compiler will be installed in ``~/petalinux_sdk_2022.2`` by default. For the ``VCK190 Production`` board, use ``host_cross_compiler_setup sh``.
+1. Run the following commands to install the cross-compilation environment:
 
-   .. code-block::
+   .. code-block:: Bash
 
+      cd Vitis-AI/board_setup/vck190
       ./host_cross_compiler_setup.sh
+
 
 2. When the installation is complete, follow the prompts and execute the following command:
 
-   .. code-block::
+   .. code-block:: Bash
 
       source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 
-   .. note:: If you close the current terminal, you need to re-execute the above instructions in the new terminal interface.
+   .. note:: If you close the current terminal, you must re-execute the above instructions in the new terminal interface.
 
 Step 2: Setup the Target
--------------------------
+------------------------
 
 The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and models are built into the board image, enhancing the user experience. Therefore, the user need not install Vitis AI Runtime packages and model packages on the board separately. However, following these steps, the users can still install the model or Vitis AI Runtime on their image or on the official image.
 
 1. Installing a Board Image.
 
-   a. Download the SD card system image files from the following links:
+   a. Download the SD card image from the following link:
 
       `VCK190 Production Board <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.2-v3.0.0.img.gz>`__
 
       .. note:: The version of the VCK190 production board image is 2022.2.
 
-   b. Use Etcher software to burn the image file onto the SD card.
+   b.  Use Etcher software to burn the image file onto the SD card.
 
-   c. Insert the SD card with the image into the destination board.
+   c.  Insert the imaged SD card into the target board.
 
-   d. Plug in power and boot the board using the serial port to perate on the system.
+   d.  Plug in the power adapter and boot the board using the serial port to interact with the target.
 
-   e. Set up the IP information of the board using the serial port.
+   e.  Configure the IP address and related settings for the board using the serial port.
 
-   For the details, refer `Setting Up the Evaluation Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__
+   For additional details, refer to `Setting Up the Evaluation Board <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Setting-Up-the-Evaluation-Board>`__.
 
-2. (Optional) How to install Vitis AI for PetaLinux 2022.2.
+2. (Optional) How to leverage Vitis AI with PetaLinux 2022.2
 
-   There are two ways to install the dependent libraries of Vitis AI:
+   You can install the Vitis AI libraries on the target either at build-time or at run-time:
 
-   -  **Build-Time**: Rebuild the system by configuring PetaLinux. For ``VAI3.0 Recipes``, refer to `Vitis-AI-Recipes <../petalinux-recipes.html>`__.
+   		- Build-Time: Rebuild the system by configuring PetaLinux. For ``VAI3.0 Recipes``, refer to `Vitis-AI-Recipes <../petalinux-recipes.html>`__
+   		- Run-Time: Install Vitis AI online via `dnf`. Execute ``dnf install packagegroup-petalinux-vitisai`` to complete the installation on the target. For more details, refer `VAI3.0 Online Install <../petalinux-recipes.html>`__
 
-   -  **Run-Time**: Install the Vitis AI online via ``dnf``. Execute ``dnf install packagegroup-petalinux-vitisai`` to complete the installation on the target. For more details, refer `VAI3.0 Online Install <../petalinux-recipes.html>`__.
+3. (Optional) How to update Vitis AI Runtime on the target
 
+   If you have an updated version of the Vitis AI Runtime and wish to install the update to your target, follow these steps.
 
-3. (Optional) How to update Vitis AI Runtime and install them separately.
+   -  Copy the board_setup/mpsoc folder to the board using scp:
 
-   If you want to update the Vitis AI Runtime or install them to your custom board image, follow these steps:
+      .. code-block:: Bash
 
-   a. Copy the following folder to the board using scp.
+         scp -r board_setup/vck190 root@IP_OF_BOARD:~/
 
-      .. code-block::
+   -  Log in to the board using ssh. You can also use the serial port to login.
+   -  Now, install the Vitis AI Runtime. Execute the following commands:
 
-          scp -r board_setup/vck190 root@IP_OF_BOARD:~/
+      ::
+		
+		cd ~/vck190
+		bash target_vart_setup.sh
 
-   b. Log in to the board using ssh. You can also use the serial port to login.
-
-   c. Install the Vitis AI Runtime. Execute the following command:
-
-      .. code-block::
-
-          cd ~/vck190
-          bash target_vart_setup.sh
 
 4. (Optional) Download the model.
 
    You can now select a model from the Vitis AI Model Zoo `Vitis AI Model Zoo <../workflow-model-zoo.html>`__.  Navigate to the  `model-list subdirectory  <https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list>`__  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
 
-   a. Take ``resnet50`` of VCK190 as an example.
+   a. Take the VCK190 ``resnet50`` model as an example.
 
-      .. code-block::
+      .. code-block:: Bash
 
           cd /workspace
           wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck190-r3.0.0.tar.gz -O resnet50-vck190-r3.0.0.tar.gz
 
    b. Copy the downloaded file to the board using scp with the following command:
 
-      .. code-block::
+      .. code-block:: Bash
 
          scp resnet50-vck190-r3.0.0.tar.gz root@IP_OF_BOARD:~/
 
-   c. Log in to the board (using ssh or serial port) and install the model package.
+   c. Log in to the board (via ssh or serial port) and install the model package.
 
-      .. code-block::
+      .. code-block:: Bash
 
          tar -xzvf resnet50-vck190-r3.0.0.tar.gz
          cp resnet50 /usr/share/vitis_ai_library/models -r
@@ -103,7 +103,7 @@ The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and model
 Step 3: Run the Vitis AI Examples
 ----------------------------------
 
-Follow :ref:`mpsoc-run-vitis-ai-examples` to run Vitis AI examples.
+Refer to :ref:`mpsoc-run-vitis-ai-examples` to run Vitis AI examples.
 
 References
 ----------

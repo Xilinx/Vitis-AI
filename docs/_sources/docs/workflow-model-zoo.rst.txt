@@ -73,7 +73,7 @@ The Vitis AI Model Zoo repository provides a Python ``/model_zoo/downloader.py``
 
       python3  downloader.py
 
-2. Input the framework keyword followed by a short-form version of the model name (if known) (example: resnet). Use a space as a separator (exampletf2 vgg16). If you input all, you will get a list of all models.
+2. Input the framework keyword followed by a short-form version of the model name (if known) (example: resnet). Use a space as a separator (example: tf2 vgg16). If you input all, you will get a list of all models.
 
    The available framework keywords are listed here:
 
