@@ -145,7 +145,105 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
              
   <section id="setting-up-a-versal-accelerator-card">
 <h1>Setting up a Versal Accelerator Card<a class="headerlink" href="#setting-up-a-versal-accelerator-card" title="Permalink to this heading">¶</a></h1>
-<p>For target setup and configuration instructions, please refer to the HTML documentation provided <a class="reference external" href="https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup.html">online</a> or [offline here](../docs/docs/board_setup/board_setup.html)</p>
+<p>The Xilinx® <strong>DPUCVDX8H</strong> for the Versal VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.</p>
+<p>As a first step, it is recommended that you select the appropriate DPU configuration for your application:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>No.</p></th>
+<th class="head"><p>Accelerator Card</p></th>
+<th class="head"><p>DPU IP</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_4pe_miscdwc</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_6pe_dwc</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_6pe_misc</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_8pe_normal</p></td>
+</tr>
+</tbody>
+</table>
+<p>This selection depends on several factors:</p>
+<ul class="simple">
+<li><p><cite>misc</cite> is selected if the models to be deployed leverage pooling and element-wise layers</p></li>
+<li><p><cite>dwc</cite> is selected if the models to be deployed leverage Depthwise Convolution (eg. MobileNets)</p></li>
+<li><p>The number of <cite>pe</cite> or “processing engines” determines both performance and programmable logic resource utilization</p></li>
+</ul>
+<p>If you are just getting started and are uncertain which to choose, you may wish to start with the <cite>DPUCVDX8H_4pe_miscdwc</cite> as it provides the most extensive operator support.  Please refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h/Configuration-Options">this user guide</a> for more extensive details regarding selection.</p>
+<section id="vck5000-prod-card-setup">
+<h2>VCK5000-PROD Card Setup<a class="headerlink" href="#vck5000-prod-card-setup" title="Permalink to this heading">¶</a></h2>
+<p>A script is provided to drive the VCK5000-PROD card setup process.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis AI 3.0 specifically leverages the 2022.2 versions of the Vitis tools, VCK5000 platform, XRT and XRM.</p>
+</div>
+<p>This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.  Please refer to <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> prior to proceeding.</p>
+<p>Execute this script as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span>
+<span class="n">source</span> <span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The following installation steps are performed by this script:</p>
+<ol class="arabic simple">
+<li><p>XRT Installation. The <a class="reference external" href="https://github.com/Xilinx/XRT">Xilinx RunTime (XRT)</a> is a combination of userspace and kernel driver components supporting PCIe accelerator cards such as the VCK5000.</p></li>
+<li><p>XRM Installation. The <a class="reference external" href="https://github.com/Xilinx/XRM/">Xilinx Resource Manager (XRM)</a> manages and controls FPGA resources on the host. It is required by the runtime.</p></li>
+<li><p>Installation of the VCK5000-PROD platform.</p></li>
+<li><p>Installation of the DPU xclbin for the VCK5000-PROD platform.</p></li>
+</ol>
+<p>After the script is executed successfully, use the XRT <cite>xbutil</cite> command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">xilinx</span><span class="o">/</span><span class="n">xrt</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">xbutil</span> <span class="n">examine</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Vitis AI 3.0 requires the use of a VCK5000-PROD card. Support for the pre-production VCK5000-ES1 card is not available in this release. If you do not have a production release card, you must use <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v1.4.1">Vitis AI 1.4.1</a>.</p>
+</div>
+</section>
+<section id="docker-container-environment-variable-setup">
+<h2>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h2>
+<p>First, ensure that you have cloned Vitis AI, entered the Vitis AI directory.  Start Docker.</p>
+<p>From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory prior to execution. There are four xclbin files to choose from.  Select the xclbin that matches your chosen DPU configuration.</p>
+<ul>
+<li><p>For the 4PE 350MHz configuration with pooling, elementwise and depthwise convolution support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_4pe_miscdwc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 6PE 350MHz configuration with depthwise convolution support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6pe_dwc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 6PE 350MHz configuration with pooling and elementwise support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6PE_misc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 8PE 350MHz base configuration:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_8pe_normal</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</section>
 </section>
 
 
@@ -167,7 +265,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on January 16, 2023.
+      <span class="lastupdated">Last updated on February 9, 2023.
       </span></p>
   </div>
 

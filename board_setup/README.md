@@ -11,5 +11,5 @@ The Vitis-AI repository provides pre-built board images that can be leveraged by
 
 As of the 3.0 release of Vitis AI, the target setup documentation has migrated to Github.IO.  **YOU MAY ACCESS THE TARGET SETUP DOCUMENTATION [ONLINE](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup.html)** or **[OFFLINE](../docs/docs/board_setup/board_setup.html)**.
 
-For additional high-level details please refer to the [workflow documentation](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow.html#test-drive-vitis-ai-on-a-supported-platform).
+For additional high-level details please refer to the [workflow documentation](https://xilinx.github.io/Vitis-AI/docs/workflow.html#test-drive-vitis-ai-on-a-supported-platform).
 
