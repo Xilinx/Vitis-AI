@@ -15,7 +15,6 @@ if [[ ${DOCKER_TYPE} == "cpu"  ]]; then
 
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p  $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --append channels ${VAI_WEGO_CONDA_CHANNEL}/wegotf1 \
     && conda config --remove channels defaults || true  \
@@ -37,7 +36,6 @@ if [[ ${DOCKER_TYPE} == "cpu"  ]]; then
 else
     . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p  $VAI_ROOT/conda/pkgs \
-    && mamba install -y  -c conda-forge conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --add channels ${VAI_WEGO_CONDA_CHANNEL}/wegotf1 \

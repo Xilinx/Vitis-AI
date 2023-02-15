@@ -14,8 +14,7 @@ sudo chmod -R 777 /scratch/
 sudo ln -s /opt/conda $VAI_ROOT/conda;
 
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
-    && sudo mkdir -p $VAI_ROOT/conda/pkgs \
-    && sudo  conda install  -y -c conda-forge mamba conda-build \
+    && sudo mkdir -p $VAI_ROOT/conda/pkgs  && sudo chmod 777  $VAI_ROOT/conda/pkgs \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && sudo  conda config --env --remove-key channels || true  \
     && sudo conda config --env --append channels ${VAI_CONDA_CHANNEL} 
@@ -31,6 +30,7 @@ if [[ ${DOCKER_TYPE} == 'rocm' ]]; then
     
     sudo conda update conda -y --force-reinstall -c conda-forge -c anaconda \
     && sudo conda  remove -y -n base --force numpy numpy-base \
+    && sudo  conda install  -y -c conda-forge mamba conda-build \
     && sudo mamba env update -v -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-pytorch.yml \
     && sudo conda install -y -n base pytorch_nndct_rocm -c ${VAI_CONDA_CHANNEL} -c conda-forge  \
     && sudo conda clean -y --force-pkgs-dirs \
@@ -42,7 +42,6 @@ if [[ ${DOCKER_TYPE} == 'rocm' ]]; then
 else
     . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && conda install  -y -c conda-forge mamba conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels || true  \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} 

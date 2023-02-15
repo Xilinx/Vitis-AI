@@ -10,7 +10,6 @@ fi
 sudo chmod -R 777 /scratch/
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \
     && conda config --remove channels defaults  || true \

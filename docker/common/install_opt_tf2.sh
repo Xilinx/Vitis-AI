@@ -12,7 +12,6 @@ fi
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir  -p $VAI_ROOT/conda/pkgs \
     && sudo chmod -R 777 /scratch \
-    && mamba install -c conda-forge conda-build \
     && sudo python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \

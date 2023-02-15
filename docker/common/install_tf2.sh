@@ -33,7 +33,6 @@ fi
 if [[ ${DOCKER_TYPE} == 'cpu' ]]; then
    . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --append channels ${VAI_WEGO_CONDA_CHANNEL}/wegotf2 \
     && conda config --remove channels defaults || true \
@@ -60,7 +59,6 @@ if [[ ${DOCKER_TYPE} == 'cpu' ]]; then
 elif [[ ${DOCKER_TYPE} == 'rocm' ]]; then
   . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && sudo python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --append channels ${conda_channel}  \
@@ -87,7 +85,6 @@ elif [[ ${DOCKER_TYPE} == 'rocm' ]]; then
 else
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && sudo python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --append channels ${conda_channel}  \
