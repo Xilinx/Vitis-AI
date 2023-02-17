@@ -59,16 +59,16 @@ vai_runtime
 
 ## Quick Start For Embedded
 ### Setting Up the Host
-For `MPSOC`, follow [Setting Up the Host](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-1-setup-cross-compiler) to set up the host for embedded.  
-For `VCK190`, follow [Setting Up the Host](../../board_setup/vck190/board_setup_vck190.rst#step-1-setup-cross-compiler) to set up the host for embedded.
+For `MPSOC`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-1-setup-cross-compiler) to set up the host for embedded.  
+For `VCK190`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck190.html#step-1-setup-cross-compiler) to set up the host for embedded.
 
 ### Setting Up the Target
-For `MPSOC`, follow [Setting Up the Target](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-2-setup-the-target) to set up the target.  
-For `VCK190`, follow [Setting Up the Target](../../board_setup/vck190/board_setup_vck190.rst#step-2-setup-the-target) to set up the target.
+For `MPSOC`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck190.html#step-2-setup-the-target) to set up the target.  
+For `VCK190`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-2-setup-the-target) to set up the target.
 	  
 ### Running Vitis AI Examples
 
-Follow [Running Vitis AI Examples](../../board_setup/mpsoc/board_setup_mpsoc.rst#step-3-run-the-vitis-ai-examples) to run Vitis AI examples.
+Follow [Running Vitis AI Examples](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples) to run Vitis AI examples.
 
 Note: When you update from VAI1.3 to VAI2.0, VAI2.5 or VAI3.0, refer to the following to modify your compilation options.
 1. For Petalinux 2021.1 and above, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
@@ -93,7 +93,7 @@ For demonstration purposes, we provide the following pre-compiled DPU IP with VA
 | 3 | VCK5000-PROD | DPUCVDX8H_6pe_misc    |
 | 4 | VCK5000-PROD | DPUCVDX8H_8pe_normal  |
 
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](../../board_setup/vck5000/board_setup_vck5000.rst#setting-up-a-versal-accelerator-card) to set up the host.
+For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck5000.html#setting-up-a-versal-accelerator-card) to set up the host.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take `resnet50` as an example.
