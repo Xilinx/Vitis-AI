@@ -313,8 +313,6 @@ For the clock design, make sure that:
 
 Changing platform needs to modify 3 files: 'vitis_prj/Makefile', 'vitis_prj/scripts/xvdpu_aie_noc.py', and 'vitis_prj/scripts/postlink.tcl'.
 
-**Note:** If the target platform is based on ES1 device, check the known issue about the workaround for ES1 device.
-
 1) 'vitis_prj/Makefile':
 - Change the path of 'xpfm' file for the varibale 'PLATFORM'
 ```
@@ -490,25 +488,6 @@ set_param place.preplaceNOC true
 
 For details about 'Vivado_init.tcl', refer to the link page 'https://docs.xilinx.com/r/en-US/ug894-vivado-tcl-scripting/Initializing-Tcl-Scripts'.
 
-
-2, Workaround for ES1 Device
-
-For platform based on an ES1 device, before running apps, need firstly run workaround for ES1 device.
-
-After board is booting up, create a script with the following content, and run it on the ES1 board.
-
-
-```
-for i in {0..49}
-do
-  for j in {1..8}
-  do
-    a=0x20000000000
-    b=0x31000
-    devmem $[a+b+(i<<23)+(j<<18)] 32 0
-  done
-done
-```
 
 <!--                                                                      
 * Copyright 2019 Xilinx Inc.                                               
