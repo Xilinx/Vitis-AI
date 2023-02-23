@@ -56,10 +56,10 @@ Please refer to [DPU Nomenclature](https://xilinx.github.io/Vitis-AI/docs/refere
     <td align="center">DPUCVDX8G</td>
     <td align="center">VCK190</td>
     <td align="center">AIE centric DPU (requires some programmable logic), targeting general purpose CNN inference with full support for the Vitis AI ModelZoo. Supports the Vitis flow for 7nm Versal&trade; ACAPs.</td> 
-    <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_VAI_v3.0.tar.gz">Download</a></td>
+    <td align="center"><a href="">To be updated by end of Feb.</a></td>
     <td align="center"><a href="https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g">PG389</a></td>
    <td align="center"><a href="ref_design_docs/README_DPUCVDX8G.md">Link</a></td>
-   <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_ip_repo_VAI_v3.0.tar.gz">Get IP</a></td>
+   <td align="center"><a href="">To be updated by end of Feb.</a></td>
   </tr>
   <tr>
     <td align="center">DPUCV2DX8G</td>
