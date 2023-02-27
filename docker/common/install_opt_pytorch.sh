@@ -40,7 +40,7 @@ else
     && python3 -m pip install --upgrade pip wheel setuptools requests \
     && conda config --env --remove-key channels || true \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \
-    && conda config --remove channels defaults || true \
+    && conda config --env --remove channels defaults || true \
     && ${command_opt} \
     && conda clean -y --force-pkgs-dirs \
     && rm -fr ~/.cache \

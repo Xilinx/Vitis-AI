@@ -17,7 +17,8 @@ sudo ln -s /opt/conda $VAI_ROOT/conda;
     && sudo mkdir -p $VAI_ROOT/conda/pkgs  && sudo chmod 777  $VAI_ROOT/conda/pkgs \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && sudo  conda config --env --remove-key channels || true  \
-    && sudo conda config --env --append channels ${VAI_CONDA_CHANNEL} 
+    && sudo conda config --env --append channels ${VAI_CONDA_CHANNEL} \
+    && sudo conda config --env --remove channels defaults || true 
 #&& mamba update --force-reinstall --no-deps -n base pytorch_nndct_rocm -c conda-forge \
 torchvision_cmd=" pip install torchvision==0.13.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu "
 if  [[ ${DOCKER_TYPE} == 'gpu' ]]; then
@@ -44,7 +45,8 @@ else
     && mkdir -p $VAI_ROOT/conda/pkgs \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels || true  \
-    && conda config --env --append channels ${VAI_CONDA_CHANNEL} 
+    && conda config --env --append channels ${VAI_CONDA_CHANNEL} \
+    && conda config --env --remove channels defaults || true  
 
     mamba env create -v -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-pytorch.yml \
         && conda activate vitis-ai-pytorch \

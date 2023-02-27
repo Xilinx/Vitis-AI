@@ -3,7 +3,7 @@ name: vitis-ai-pytorch
 channels:
   - pytorch
   - conda-forge
-  - anaconda
+  - prometeia
 
 dependencies:
   - python=3.7

@@ -2,7 +2,7 @@ name: vitis-ai-optimizer_pytorch
 
 channels:
   - pytorch
-  - anaconda
+  - prometeia
 
 dependencies:
   - vai_optimizer_pytorch_gpu
