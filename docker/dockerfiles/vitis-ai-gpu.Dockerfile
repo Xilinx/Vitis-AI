@@ -276,6 +276,7 @@ RUN if [[ ${VAI_CONDA_CHANNEL} =~ .*"tar.gz" ]]; then \
     && conda config --env --remove-key channels \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \ 
+    && conda config --env --remove channels defaults \
     && mamba env create -f /scratch/vitis-ai-optimizer_darknet.yml \
     && mamba env create -f /scratch/vitis-ai-optimizer_pytorch.yml \
     && mamba env create -f /scratch/vitis-ai-optimizer_tensorflow.yml \
@@ -290,7 +291,7 @@ RUN if [[ ${VAI_CONDA_CHANNEL} =~ .*"tar.gz" ]]; then \
         && conda activate vitis-ai-tensorflow2 \
         && mamba install --no-update-deps -y vai_q_tensorflow2_gpu pydot pyyaml jupyter ipywidgets \
             dill progressbar2 pytest scikit-learn pandas matplotlib \
-            pillow -c conda-forge -c defaults \
+            pillow -c conda-forge -c anaconda \
         && pip install -r /scratch/pip_requirements.txt \
         && pip install --ignore-installed tensorflow==2.8 keras==2.8 protobuf==3.11.* \
         && pip uninstall -y h5py \
@@ -299,7 +300,7 @@ RUN if [[ ${VAI_CONDA_CHANNEL} =~ .*"tar.gz" ]]; then \
     && rm -fr ~/.cache \
     && mkdir -p $VAI_ROOT/conda/pkgs \
     && sudo chmod 777 $VAI_ROOT/conda/pkgs \
-    && sudo rm /opt/vitis_ai/conda/.condarc \
+#    && sudo rm /opt/vitis_ai/conda/.condarc \
     && mkdir -p $VAI_ROOT/compiler \
         && conda activate vitis-ai-pytorch \
         && sudo cp -r $CONDA_PREFIX/lib/python3.7/site-packages/vaic/arch $VAI_ROOT/compiler/arch \
