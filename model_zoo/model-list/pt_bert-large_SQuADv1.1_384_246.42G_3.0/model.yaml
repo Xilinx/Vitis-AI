@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-large_SQuADv1.1_384_246.42G_3.0.zip
-  checksum: d8252c47a4da6993e6dde9d788fd5176
+  checksum: 6b0ffbdef1b65fcde44b462b4b5ab790
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

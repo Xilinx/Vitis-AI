@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_xilinxSR_360_640_DIV2K_364.88G_3.0.zip
-  checksum: 0b38cb6fb8af7cbab9fc75a19c1a2ae4
+  checksum: 1461f66ff7c30d63a2597d157e145c0d
 - name: xilinxSR_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

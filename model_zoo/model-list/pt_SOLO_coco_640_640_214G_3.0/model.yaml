@@ -26,7 +26,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_SOLO_coco_640_640_214G_3.0.zip
-  checksum: 0a3e92e8b34605970374253afce3dc90
+  checksum: 21b42e5c6128d6c532f67c9875a4724d
 - name: solo_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
