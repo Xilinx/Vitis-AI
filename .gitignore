@@ -1,0 +1,8 @@
+# MacOS temporary files
+.DS_Store
+
+# Temporary file generated after docker_run
+.confirm
+
+# IntelliJ IDEA files
+.idea
