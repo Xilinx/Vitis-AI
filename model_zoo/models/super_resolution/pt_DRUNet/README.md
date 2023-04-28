@@ -51,17 +51,18 @@ Link to download the original dataset: https://github.com/clausmichele/CBSD68-da
 
 # Quick Start
 
-1. Follow the Quick Start Prerequisites chapter in the model_zoo README:
-install the Vitis-AI, run the docker container and download test data.
-2. Go to the model's folder:
+1. Follow the [Quick Start Prerequisites chapter](Vitis-AI/blob/master/model_zoo/README.md#quick-start-prerequisites)
+in the main Model Zoo README: install the Vitis-AI, run the docker container and download test data.
+2. All the following commands must be run inside the Vitis-AI container.
+3. Go to the model's folder:
 ```bash
 cd /workspace/model_zoo/models/super_resolution/pt_DRUNet
 ```
-3. Make a folder to save artifacts:
+4. Make a folder and subfolders to save artifacts:
 ```bash
 bash scripts/make_artifacts_folder.sh
 ```
-4. Download the model files for specific device and device configuration:
+5. Download model files for specific device and device configuration:
 ```bash
 cd /workspace/model_zoo
 python downloader.py
@@ -78,13 +79,13 @@ python downloader.py
 
 # As a result you will download the .tar.gz archive with model files.
 ```
-5. Move and unzip the downloaded model:
+6. Move and unzip the downloaded model:
 ```bash
 mv drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz models/super_resolution/pt_DRUNet/artifacts/models/
 cd models/super_resolution/pt_DRUNet/
 tar -xzvf artifacts/models/drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -C artifacts/models/
 ```
-6. Set environment variables for a specific device and device configuration inside the docker container:
+7. Set environment variables for a specific device and device configuration inside the docker container:
 ```bash
 # source /vitis_ai_home/board_setup/<DEVICE_NAME>/setup.sh <DEVICE_CONFIGURATION>
 # where:
@@ -94,7 +95,7 @@ tar -xzvf artifacts/models/drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -C arti
 # Example:
 source /vitis_ai_home/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
 ```
-7. Run the inference on files:
+8. Run the inference on files:
 ```bash
 # bash inference.sh <MODEL_PATH> [<image paths list>]
 # where:
@@ -107,7 +108,7 @@ bash scripts/inference.sh \
     /workspace/Vitis-AI-Library/samples/rcan/images/1.png /workspace/Vitis-AI-Library/samples/rcan/images/2.png \
     /workspace/Vitis-AI-Library/samples/rcan/images/3.png
 ```
-8. Results of the inference you will find in the folder: `artifacts/inference`
+9. Results of the inference you can find in the folder: `artifacts/inference`.
 
 # Script Description
 
