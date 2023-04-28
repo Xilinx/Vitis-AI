@@ -78,6 +78,7 @@ python downloader.py
 # input num: 7
 
 # As a result you will download the .tar.gz archive with model files.
+# Example: drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
 ```
 6. Move and unzip the downloaded model:
 ```bash
