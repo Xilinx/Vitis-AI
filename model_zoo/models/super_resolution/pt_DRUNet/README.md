@@ -51,7 +51,7 @@ Link to download the original dataset: https://github.com/clausmichele/CBSD68-da
 
 # Quick Start
 
-1. Follow the [Quick Start Prerequisites chapter](Vitis-AI/model_zoo/README.md#quick-start-prerequisites)
+1. Follow the [Quick Start Prerequisites chapter](../../../README.md#quick-start-prerequisites)
 in the main Model Zoo README: install the Vitis-AI, run the docker container and download test data.
 2. All the following commands must be run inside the Vitis-AI container.
 3. Go to the model's folder:
