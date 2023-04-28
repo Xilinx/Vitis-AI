@@ -10,6 +10,36 @@
 
 As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance benchmarks have migrated to Github.IO.  **[YOU MAY ACCESS THE MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/docs/workflow-model-zoo)** or **[OFFLINE](../docs/docs/workflow-model-zoo.html)**.
 
+# Quick Start Prerequisites
+
+1. Before starting, make sure that the host computer fully supports Xilinx FPGA/ACAP and the appropriate accelerator
+is installed correctly, e.g.
+[Xilinx VCK5000 Versal](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck5000.html).
+Or you can use an already configured server on [vmaccel.com](https://www.vmaccel.com/).
+2. Install the latest [Vitis-AI](https://xilinx.github.io/Vitis-AI/docs/install/install.html).
+3. Go to the Vitis-AI repo:
+```bash
+# cd <Vitis-AI install path>/Vitis-AI
+# where:
+# <Vitis-AI install path> - the path where Vitis-AI was installed
+
+# Example:
+cd ~/Vitis-AI
+```
+4. Start the Vitis AI Docker:
+```bash
+# ./docker_run.sh xilinx/vitis-ai-<Framework>-<Arch>:latest
+# where:
+# <Framework>, <Arch> - deep learning framework and target architecture,
+# more info in the Vitis-AI installation instruction
+
+# Example:
+./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+```
+5. Download the test data:
+```bash
+bash model_zoo/scripts/download_test_data.sh
+```
 
 ## Contributing
 
