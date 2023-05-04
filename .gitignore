@@ -6,3 +6,6 @@
 
 # IntelliJ IDEA files
 .idea
+
+# Artifact folders in the Model Zoo
+model_zoo/models/*/*/artifacts
