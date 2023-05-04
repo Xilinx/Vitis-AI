@@ -10,7 +10,9 @@
 
 As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance benchmarks have migrated to Github.IO.  **[YOU MAY ACCESS THE MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/docs/workflow-model-zoo)** or **[OFFLINE](../docs/docs/workflow-model-zoo.html)**.
 
-# Quick Start Prerequisites
+## Quick Start
+
+### Prerequisites
 
 1. Before starting, make sure that the host computer fully supports Xilinx FPGA/ACAP and the appropriate accelerator
 is installed correctly, e.g.
@@ -40,6 +42,81 @@ cd ~/Vitis-AI
 ```bash
 bash model_zoo/scripts/download_test_data.sh
 ```
+6. Make folders and subfolders to store artifacts:
+```bash
+cd model_zoo
+bash scripts/make_artifacts_folders.sh
+```
+
+### Native Inference
+
+1. Follow the [Prerequisites chapter](#prerequisites): install the Vitis-AI, run the docker container, 
+download test data, make folders to store artifacts.
+2. All the following commands must be run inside the Vitis-AI container.
+3. Select one of the available models from `model_zoo/models` and set the environment variable with the absolute
+path to the model:
+```bash
+# MODEL_FOLDER="$(pwd)"/model_zoo/models/<application>/<model name>
+# where:
+# "$(pwd)" - the absolute path to the current folder inside the container, e.g.: /workspace
+# <application> - type or application of the model
+# <model name> - the name of the specific model
+
+# Example:
+MODEL_FOLDER="$(pwd)"/model_zoo/models/super_resolution/pt_DRUNet
+```
+4. Download model files for the specific device and device configuration:
+```bash
+cd /workspace/model_zoo
+python downloader.py
+
+# A command line interface will be provided for downloading model files.
+
+# In the first input you need to specify the base framework and the specific model name.
+# Example of the first input:
+# input: pt drunet
+
+# Then select the desired device configuration.
+# Example of the second input:
+# input num: 7
+
+# As a result you will download the .tar.gz archive with model files.
+# Example: drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+```
+5. Move and unzip the downloaded model:
+```bash
+# Example:
+mv drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz $MODEL_FOLDER/artifacts/models/
+tar -xzvf $MODEL_FOLDER/artifacts/models/drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -C $MODEL_FOLDER/artifacts/models/
+```
+6. Set environment variables for a specific device and device configuration inside the docker container:
+```bash
+# source /vitis_ai_home/board_setup/<DEVICE_NAME>/setup.sh <DEVICE_CONFIGURATION>
+# where:
+# <DEVICE_NAME> - the name of current device
+# <DEVICE_CONFIGURATION> - selected device configuration
+
+# Example:
+source /vitis_ai_home/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
+```
+7. Go to the specific model's folder inside the `model_zoo`:
+```bash
+cd $MODEL_FOLDER
+```
+8. Run the inference on files:
+```bash
+# bash inference.sh <MODEL_PATH> [<image paths list>]
+# where:
+# <MODEL_PATH> - the absolute path to the .xmodel
+# [<image paths list>] - space-separated list of image absolute paths
+
+# Example
+bash scripts/inference.sh \
+    $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel \
+    /workspace/Vitis-AI-Library/samples/rcan/images/1.png /workspace/Vitis-AI-Library/samples/rcan/images/2.png \
+    /workspace/Vitis-AI-Library/samples/rcan/images/3.png
+```
+9. Results of the inference will be stored in the folder: `artifacts/inference`.
 
 ## Contributing
 

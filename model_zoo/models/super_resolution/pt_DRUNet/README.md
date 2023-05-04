@@ -51,65 +51,8 @@ Link to download the original dataset: https://github.com/clausmichele/CBSD68-da
 
 # Quick Start
 
-1. Follow the [Quick Start Prerequisites chapter](../../../README.md#quick-start-prerequisites)
-in the main Model Zoo README: install the Vitis-AI, run the docker container and download test data.
-2. All the following commands must be run inside the Vitis-AI container.
-3. Go to the model's folder:
-```bash
-cd /workspace/model_zoo/models/super_resolution/pt_DRUNet
-```
-4. Make a folder and subfolders to save artifacts:
-```bash
-bash scripts/make_artifacts_folder.sh
-```
-5. Download model files for specific device and device configuration:
-```bash
-cd /workspace/model_zoo
-python downloader.py
-
-# A command line interface will be provided for downloading model files.
-
-# In the first input you need to specify the base framework and the model name.
-# Example of the first input:
-# input: pt drunet
-
-# Then select the desired device configuration.
-# Example of the second input:
-# input num: 7
-
-# As a result you will download the .tar.gz archive with model files.
-# Example: drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-```
-6. Move and unzip the downloaded model:
-```bash
-mv drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz models/super_resolution/pt_DRUNet/artifacts/models/
-cd models/super_resolution/pt_DRUNet/
-tar -xzvf artifacts/models/drunet_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -C artifacts/models/
-```
-7. Set environment variables for a specific device and device configuration inside the docker container:
-```bash
-# source /vitis_ai_home/board_setup/<DEVICE_NAME>/setup.sh <DEVICE_CONFIGURATION>
-# where:
-# <DEVICE_NAME> - the name of current device
-# <DEVICE_CONFIGURATION> - selected device configuration
-
-# Example:
-source /vitis_ai_home/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
-```
-8. Run the inference on files:
-```bash
-# bash inference.sh <MODEL_PATH> [<image paths list>]
-# where:
-# <MODEL_PATH> - the absolute path to the .xmodel
-# [<image paths list>] - space-separated list of image absolute paths
-
-# Example
-bash scripts/inference.sh \
-    /workspace/model_zoo/models/super_resolution/pt_DRUNet/artifacts/models/drunet_pt/drunet_pt.xmodel \
-    /workspace/Vitis-AI-Library/samples/rcan/images/1.png /workspace/Vitis-AI-Library/samples/rcan/images/2.png \
-    /workspace/Vitis-AI-Library/samples/rcan/images/3.png
-```
-9. Results of the inference you can find in the folder: `artifacts/inference`.
+Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo README:
+install the Vitis-AI, run the docker container, download test data and then run the inference.
 
 # Script Description
 
