@@ -141,13 +141,14 @@ python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
 
 - Original paper results of mean PNSR metric
   ![Paper results](./images/paper_results.png)
-- Comparison with SOTA
-  - Sigma 15:
-    ![Sigma 15](./images/papers_with_code_results_15.png)
-  - Sigma 25:
-    ![Sigma 25](./images/papers_with_code_results_25.png)
-  - Sigma 50:
-    ![Sigma 50](./images/papers_with_code_results_50.png)
+- Comparison with SOTA on PNSR metric with different noise level:
+
+
+  |                                                                                     | [Sigma15](https://paperswithcode.com/sota/grayscale-image-denoising-on-bsd68-sigma15) | [Sigma25](https://paperswithcode.com/sota/color-image-denoising-on-cbsd68-sigma25) | [Sigma50](https://paperswithcode.com/sota/color-image-denoising-on-cbsd68-sigma50) |
+  | ----------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+  |                                                                              DRUNet | 31.91                                                                                 | 29.48                                                                              | 26.59                                                                              |
+  | [ADL](https://paperswithcode.com/paper/adversarial-distortion-learning-for-medical) | 32.11                                                                                 | 29.50                                                                              | 26.87                                                                              |
+  |      [KBNet](https://paperswithcode.com/paper/kbnet-kernel-basis-network-for-image) | 31.98                                                                                 | 29.54                                                                              | 26.65                                                                              |
 
 # Links
 
