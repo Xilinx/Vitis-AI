@@ -130,7 +130,61 @@ python src/metric.py [DATASET FOLDER] [INFERENCE FOLDER]
 
 ## Comparison
 - Original paper results of mean PNSR metric:
-  ![Paper results](./images/paper_results.png)
+<table style="undefined;table-layout: fixed; width: 472px">
+<colgroup>
+<col style="width: 59.444444px">
+<col style="width: 46.444444px">
+<col style="width: 77.444444px">
+<col style="width: 49.444444px">
+<col style="width: 62.444444px">
+<col style="width: 55.444444px">
+<col style="width: 60.444444px">
+<col style="width: 60.444444px">
+</colgroup>
+<thead>
+  <tr>
+    <th>Dataset</th>
+    <th>Noise<br>level</th>
+    <th>DRUNet</th>
+    <th><a href="https://github.com/Ding-Liu/NLRN" target="_blank" rel="noopener noreferrer">NLRN</a></th>
+    <th><a href="https://github.com/hsijiaxidian/FOCNet" target="_blank" rel="noopener noreferrer">FOCNet</a></th>
+    <th><a href="https://github.com/cszn/IRCNN" target="_blank" rel="noopener noreferrer">IRCNN</a></th>
+    <th><a href="https://github.com/cszn/FFDNet" target="_blank" rel="noopener noreferrer">FFDNet</a></th>
+    <th><a href="https://github.com/cszn/DnCNN" target="_blank" rel="noopener noreferrer">DnCNN</a></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="3">BSD68</td>
+    <td>15</td>
+    <td>31.91</td>
+    <td>31.88</td>
+    <td>31.83</td>
+    <td>31.63</td>
+    <td>31.63</td>
+    <td>31.73</td>
+  </tr>
+  <tr>
+    <td>25</td>
+    <td>29.48</td>
+    <td>29.41</td>
+    <td>29.38</td>
+    <td>29.15</td>
+    <td>29.19</td>
+    <td>29.23</td>
+  </tr>
+  <tr>
+    <td>50</td>
+    <td>26.59</td>
+    <td>26.47</td>
+    <td>26.50</td>
+    <td>26.19</td>
+    <td>26.29</td>
+    <td>26.23</td>
+  </tr>
+</tbody>
+</table>
+
 - Comparison with SOTA on PNSR metric with different noise level:
 
 
