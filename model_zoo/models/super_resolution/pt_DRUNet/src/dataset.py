@@ -2,7 +2,11 @@ import os
 import argparse
 
 
-def prepare_dataset(dataset_folder):
+def prepare_dataset(dataset_folder: str) -> None:
+    """
+    Function that creates list file for each sub-folder in dataset folder.
+    :param dataset_folder: Path where the whole dataset is stored.
+    """
     noisy_folders = [
         p for p in os.listdir(dataset_folder) if 'noisy' in p and
                                                  os.path.isdir(os.path.join(dataset_folder, p))

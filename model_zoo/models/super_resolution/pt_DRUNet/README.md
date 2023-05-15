@@ -14,9 +14,8 @@
   - [Script Parameters](#script-parameters)
   - [Data Preprocessing](#data-preprocessing)
   - [Inference Process](#inference-process)
+- [Quality](#quality)
 - [Performance](#performance)
-  - [Evaluation Performance](#evaluation-performance)
-  - [Inference Performance](#inference-performance)
 - [Links](#links)
 - [Vitis AI Model Zoo Homepage](#vitis-ai-model-zoo-homepage)
 
@@ -120,9 +119,7 @@ python src/dataset.py [DATASET FOLDER]
 - Native inference - follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo
 - AMD Server
 
-# Performance
-
-## Evaluation Performance
+# Quality
 
 To evaluate the model inference results, you may compute [PNSR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) metric.
 Use the following script:
@@ -131,15 +128,8 @@ Use the following script:
 python src/metric.py [DATASET FOLDER] [INFERENCE FOLDER]
 ```
 
-To get performance report, use:
-
-```python
-python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
-```
-
-## Inference Performance
-
-- Original paper results of mean PNSR metric
+## Comparison
+- Original paper results of mean PNSR metric:
   ![Paper results](./images/paper_results.png)
 - Comparison with SOTA on PNSR metric with different noise level:
 
@@ -149,6 +139,15 @@ python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
   |                                                                              DRUNet | 31.91                                                                                 | 29.48                                                                              | 26.59                                                                              |
   | [ADL](https://paperswithcode.com/paper/adversarial-distortion-learning-for-medical) | 32.11                                                                                 | 29.50                                                                              | 26.87                                                                              |
   |      [KBNet](https://paperswithcode.com/paper/kbnet-kernel-basis-network-for-image) | 31.98                                                                                 | 29.54                                                                              | 26.65                                                                              |
+
+
+# Performance
+
+To get performance report, use:
+
+```python
+python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
+```
 
 # Links
 
