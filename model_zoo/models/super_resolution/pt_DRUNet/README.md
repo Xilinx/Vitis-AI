@@ -2,26 +2,21 @@
 
 - [Contents](#contents)
 - [Model Description](#model-description)
-    - [Description](#description)
-    - [Paper](#paper)
+  - [Description](#description)
+  - [Paper](#paper)
 - [Model Architecture](#model-architecture)
 - [Dataset](#dataset)
 - [Features](#features)
 - [Environment Requirements](#environment-requirements)
 - [Quick Start](#quick-start)
 - [Script Description](#script-description)
-    - [Structure](#structure)
-    - [Script Parameters](#script-parameters)
-    - [Data Preprocessing](#data-preprocessing)
-    - [Evaluation Process](#evaluation-process)
-        - [Usage](#usage)
-        - [Result](#result)
-    - [Inference Process](#inference-process)
-        - [Usage](#usage-1)
-        - [Result](#result-1)
+  - [Structure](#structure)
+  - [Script Parameters](#script-parameters)
+  - [Data Preprocessing](#data-preprocessing)
+  - [Inference Process](#inference-process)
 - [Performance](#performance)
-    - [Evaluation Performance](#evaluation-performance)
-    - [Inference Performance](#inference-performance)
+  - [Evaluation Performance](#evaluation-performance)
+  - [Inference Performance](#inference-performance)
 - [Links](#links)
 - [Vitis AI Model Zoo Homepage](#vitis-ai-model-zoo-homepage)
 
@@ -29,47 +24,55 @@
 
 ## Description
 
-A Dilated-Residual U-Net Deep Learning Network for Image Denoising. It combines the strengths of the U-Net architecture 
-and dilated convolutions, along with residual connections, to effectively remove noise from images 
+A Dilated-Residual U-Net Deep Learning Network for Image Denoising. It combines the strengths of the U-Net architecture
+and dilated convolutions, along with residual connections, to effectively remove noise from images
 while preserving important image details.
 
 ## Paper
 
 Krishna Devalla, Sripad, et al. "DRUNET: A Dilated-Residual U-Net Deep Learning Network to Digitally Stain Optic
-Nerve Head Tissues in Optical Coherence Tomography Images." arXiv e-prints (2018): 
+Nerve Head Tissues in Optical Coherence Tomography Images." arXiv e-prints (2018):
 [arXiv-1803](https://arxiv.org/abs/1803.00232).
 
 # Model Architecture
-A Dilated-Residual U-Net architecture leverages a combination of U-Net structure, dilated convolutions, 
-residual connections, and skip connections. This combination enables the model to capture both local and global 
-contextual information, propagate gradients effectively, and recover fine details, ultimately leading 
+
+A Dilated-Residual U-Net architecture leverages a combination of U-Net structure, dilated convolutions,
+residual connections, and skip connections. This combination enables the model to capture both local and global
+contextual information, propagate gradients effectively, and recover fine details, ultimately leading
 to high-quality image denoising results.
+![Model Architecture](./images/architecture.png)
 
 # Dataset
+
 Dataset for testing: CBSD68. The CBSD68  dataset is a widely used benchmark dataset for image denoising. CBSD stands for "Color and Binary Shape Database".
-It consists of 68 grayscale images with various scenes and objects. 
+It consists of 68 grayscale images with various scenes and objects.
 
 Link to download the  dataset: https://github.com/clausmichele/CBSD68-dataset
 
 # Features
+
 The notable features of the Dilated-Residual U-Net:
+
 1. **U-Net Architecture**: Enables contextual information capture and spatial detail recovery.
 2. **Dilated Convolutions**: Captures both local and global contextual information.
 3. **Residual Connections**: Efficiently propagates gradients and preserves important features.
 4. **Skip Connections**: Merges high-resolution and low-resolution features to recover fine details.
 5. **Multi-Scale Information Fusion**: Considers information at multiple scales for effective denoising.
+
 # Environment Requirements
-- Docker: Install Docker on your host system.
-- Hardware Platform: prepare Xilinx FPGA/ACAP and the appropriate accelerator should be installed correctly, e.g.
-[Xilinx VCK5000 Versal](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck5000.html).
-- Model Files: Include the Vitis-AI model files inside the Docker image. You can either download them from the Vitis-AI model zoo or add your own trained model files to the image. 
-Make sure the model files are accessible within the Docker container.
-- Input Data: Prepare the input data you want to use for inference and ensure it is accessible within the Docker container.
+
+Before running the model inference, make sure that the latest version of
+[Vitis-AI](https://xilinx.github.io/Vitis-AI/docs/install/install.html) is installed and the host computer fully supports
+Xilinx FPGA/ACAP and the appropriate accelerator is installed correctly, e.g. Xilinx VCK5000 Versal.
 
 # Quick Start
 
 Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo README:
-install the Vitis-AI, run the docker container, download test data and then run the inference.
+
+1. Install the Vitis-AI
+2. Run the docker container
+3. Download test data
+4. Run the inference of the model
 
 # Script Description
 
@@ -78,36 +81,73 @@ install the Vitis-AI, run the docker container, download test data and then run 
 ```text
 .
 ├── artifacts                   # models binaries and inference result files
-└── scripts                     
-    ├── config.env              # environment variables setting       
-    └── inference.sh            # bash script for running model inference
+├── scripts   
+│   ├── config.env              # environment variables setting   
+│   └── inference.sh            # script for getting model's inference
+└── src   
+    ├── dataset.py              # data preparation  
+    └── metric.py               # model results evaluation
 ```
+
 ## Script Parameters
+
 Inference:
+
 ```text
 model_path                   # The path to the model binary .xmodel
 filepaths                    # The list of files for inference
 results_folder               # The directory where model's inference results are stored.
 ```
+
 ## Data Preprocessing
 
-## Evaluation Process
+> **Warning**
+> Python scripts should be started in virtual environment. To set it up, use:
+>
+> ```bash
+> bash scripts/setup_venv.sh
+> source .venv/bin/activate
+> ```
 
-### Usage
+To prepare the dataset catalog structure, you may use:
 
-### Result
+```python
+python src/dataset.py [DATASET FOLDER]
+```
 
 ## Inference Process
 
-### Usage
-
-### Result
+- Native inference - follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo
+- AMD Server
 
 # Performance
 
 ## Evaluation Performance
 
+To evaluate the model inference results, you may compute [PNSR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) metric.
+Use the following script:
+
+```python
+python src/metric.py [DATASET FOLDER] [INFERENCE FOLDER]
+```
+
+To get performance report, use:
+
+```python
+python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
+```
+
 ## Inference Performance
+
+- Original paper results of mean PNSR metric
+  ![Paper results](./images/paper_results.png)
+- Comparison with SOTA
+  - Sigma 15:
+    ![Sigma 15](./images/papers_with_code_results_15.png)
+  - Sigma 25:
+    ![Sigma 25](./images/papers_with_code_results_25.png)
+  - Sigma 50:
+    ![Sigma 50](./images/papers_with_code_results_50.png)
 
 # Links
 
@@ -115,7 +155,8 @@ results_folder               # The directory where model's inference results are
 - CBSD68-dataset for image denoising benchmarks: https://github.com/clausmichele/CBSD68-dataset
 - Plug-and-Play Image Restoration with Deep Denoiser Prior: https://arxiv.org/pdf/2008.13751.pdf
 - Learning Deep CNN Denoiser Prior for Image Restoration: https://arxiv.org/pdf/1704.03264.pdf
+- Benchmarks based on the CBSD68-dataset with SOTA solutions: https://paperswithcode.com/dataset/cbsd68
 
 # Vitis AI Model Zoo Homepage
 
-Please check the official Vitis AI Model Zoo [homepage](https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo).
+Check the official Vitis AI Model Zoo [homepage](https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo).
