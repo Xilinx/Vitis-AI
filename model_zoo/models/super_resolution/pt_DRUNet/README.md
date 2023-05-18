@@ -12,7 +12,6 @@
 - [Script Description](#script-description)
   - [Structure](#structure)
   - [Script Parameters](#script-parameters)
-  - [Data Preprocessing](#data-preprocessing)
   - [Inference Process](#inference-process)
 - [Quality](#quality)
 - [Performance](#performance)
@@ -39,7 +38,6 @@ A Dilated-Residual U-Net architecture leverages a combination of U-Net structure
 residual connections, and skip connections. This combination enables the model to capture both local and global
 contextual information, propagate gradients effectively, and recover fine details, ultimately leading
 to high-quality image denoising results.
-![Model Architecture](./images/architecture.png)
 
 # Dataset
 
@@ -79,13 +77,16 @@ Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model
 
 ```text
 .
+├── config.env                  # environment variables setting 
+├── requirements.txt            # dependencies for python virtual environment 
 ├── artifacts                   # models binaries and inference result files
-├── scripts   
-│   ├── config.env              # environment variables setting   
-│   └── inference.sh            # script for getting model's inference
-└── src   
-    ├── dataset.py              # data preparation  
-    └── metric.py               # model results evaluation
+├── scripts  
+│   ├── inference.sh            # getting model's inference
+│   ├── metric.sh               # calculate model quality metric
+│   ├── eval.sh                 # calculate model performance metrics
+│   └── setup_venv.sh           # create python virtual environment
+└── src  
+    └── metric.py               # model results evaluation (used in metric.sh)
 ```
 
 ## Script Parameters
@@ -98,22 +99,6 @@ filepaths                    # The list of files for inference
 results_folder               # The directory where model's inference results are stored.
 ```
 
-## Data Preprocessing
-
-> **Warning**
-> Python scripts should be started in virtual environment. To set it up, use:
->
-> ```bash
-> bash scripts/setup_venv.sh
-> source .venv/bin/activate
-> ```
-
-To prepare the dataset catalog structure, you may use:
-
-```python
-python src/dataset.py [DATASET FOLDER]
-```
-
 ## Inference Process
 
 - Native inference - follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo
@@ -124,84 +109,90 @@ python src/dataset.py [DATASET FOLDER]
 To evaluate the model inference results, you may compute [PNSR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) metric.
 Use the following script:
 
-```python
-python src/metric.py [DATASET FOLDER] [INFERENCE FOLDER]
+```bash
+  # Format: bash scripts/metric.sh <DATASET_FOLDER> <INFERENCE_FOLDER>
+  # where:
+  # <DATASET_FOLDER> - The path of folder where original dataset is stored.
+  # <INFERENCE_FOLDER> - The path of folder where results of model inference is stored.
+  # The metric values will be stored in the artifacts/inference/quality/psnr.txt file
+  # Example:
+  
+  bash scripts/metric.sh /workspace/Vitis-AI-Library/samples/rcan/images/ $MODEL_FOLDER/artifacts/inference/results/
 ```
 
 ## Comparison
+
 - Original paper results of mean PNSR metric:
-<table style="undefined;table-layout: fixed; width: 472px">
-<colgroup>
-<col style="width: 59.444444px">
-<col style="width: 46.444444px">
-<col style="width: 77.444444px">
-<col style="width: 49.444444px">
-<col style="width: 62.444444px">
-<col style="width: 55.444444px">
-<col style="width: 60.444444px">
-<col style="width: 60.444444px">
-</colgroup>
-<thead>
-  <tr>
-    <th>Dataset</th>
-    <th>Noise<br>level</th>
-    <th>DRUNet</th>
-    <th><a href="https://github.com/Ding-Liu/NLRN" target="_blank" rel="noopener noreferrer">NLRN</a></th>
-    <th><a href="https://github.com/hsijiaxidian/FOCNet" target="_blank" rel="noopener noreferrer">FOCNet</a></th>
-    <th><a href="https://github.com/cszn/IRCNN" target="_blank" rel="noopener noreferrer">IRCNN</a></th>
-    <th><a href="https://github.com/cszn/FFDNet" target="_blank" rel="noopener noreferrer">FFDNet</a></th>
-    <th><a href="https://github.com/cszn/DnCNN" target="_blank" rel="noopener noreferrer">DnCNN</a></th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3">BSD68</td>
-    <td>15</td>
-    <td>31.91</td>
-    <td>31.88</td>
-    <td>31.83</td>
-    <td>31.63</td>
-    <td>31.63</td>
-    <td>31.73</td>
-  </tr>
-  <tr>
-    <td>25</td>
-    <td>29.48</td>
-    <td>29.41</td>
-    <td>29.38</td>
-    <td>29.15</td>
-    <td>29.19</td>
-    <td>29.23</td>
-  </tr>
-  <tr>
-    <td>50</td>
-    <td>26.59</td>
-    <td>26.47</td>
-    <td>26.50</td>
-    <td>26.19</td>
-    <td>26.29</td>
-    <td>26.23</td>
-  </tr>
-</tbody>
-</table>
-
-- Comparison with SOTA on PNSR metric with different noise level:
-
-
-  |                                                                                     | [Sigma15](https://paperswithcode.com/sota/grayscale-image-denoising-on-bsd68-sigma15) | [Sigma25](https://paperswithcode.com/sota/color-image-denoising-on-cbsd68-sigma25) | [Sigma50](https://paperswithcode.com/sota/color-image-denoising-on-cbsd68-sigma50) |
-  | ----------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-  |                                                                              DRUNet | 31.91                                                                                 | 29.48                                                                              | 26.59                                                                              |
-  | [ADL](https://paperswithcode.com/paper/adversarial-distortion-learning-for-medical) | 32.11                                                                                 | 29.50                                                                              | 26.87                                                                              |
-  |      [KBNet](https://paperswithcode.com/paper/kbnet-kernel-basis-network-for-image) | 31.98                                                                                 | 29.54                                                                              | 26.65                                                                              |
-
+  <table style="undefined;table-layout: fixed; width: 472px">
+    <colgroup>
+    <col style="width: 59.444444px">
+    <col style="width: 46.444444px">
+    <col style="width: 77.444444px">
+    <col style="width: 49.444444px">
+    <col style="width: 62.444444px">
+    <col style="width: 55.444444px">
+    <col style="width: 60.444444px">
+    <col style="width: 60.444444px">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Dataset</th>
+        <th>Noise<br>level</th>
+        <th>DRUNet</th>
+        <th><a href="https://github.com/Ding-Liu/NLRN" target="_blank" rel="noopener noreferrer">NLRN</a></th>
+        <th><a href="https://github.com/hsijiaxidian/FOCNet" target="_blank" rel="noopener noreferrer">FOCNet</a></th>
+        <th><a href="https://github.com/cszn/IRCNN" target="_blank" rel="noopener noreferrer">IRCNN</a></th>
+        <th><a href="https://github.com/cszn/FFDNet" target="_blank" rel="noopener noreferrer">FFDNet</a></th>
+        <th><a href="https://github.com/cszn/DnCNN" target="_blank" rel="noopener noreferrer">DnCNN</a></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="3">BSD68</td>
+        <td>15</td>
+        <td>31.91</td>
+        <td>31.88</td>
+        <td>31.83</td>
+        <td>31.63</td>
+        <td>31.63</td>
+        <td>31.73</td>
+      </tr>
+      <tr>
+        <td>25</td>
+        <td>29.48</td>
+        <td>29.41</td>
+        <td>29.38</td>
+        <td>29.15</td>
+        <td>29.19</td>
+        <td>29.23</td>
+      </tr>
+      <tr>
+        <td>50</td>
+        <td>26.59</td>
+        <td>26.47</td>
+        <td>26.50</td>
+        <td>26.19</td>
+        <td>26.29</td>
+        <td>26.23</td>
+      </tr>
+    </tbody>
+    </table>
 
 # Performance
 
-To get performance report, use:
+- You can profile the model using [vaitrace](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Starting-a-Simple-Trace-with-vaitrace) perfomance report,
+  the script and format described in the [Quick Start guide](../../../README.md#quick-start) at step 10, in the main Model Zoo.
+- To get performance metrics (FPS, E2E, DPU_MEAN), use:
+  ```bash
+  # Format: bash scripts/eval.sh <MODEL_PATH> [<image paths list>]
+  # where:
+  # <MODEL_PATH> - the absolute path to the .xmodel
+  # [<image paths list>] - space-separated list of image absolute paths
+  # Alternatively, you can pass --dataset option with the folder where images are stored.
+  # Example:
 
-```python
-python src/eval.py [INFERENCE FOLDER] [MODEL NAME]
-```
+  bash scripts/eval.sh $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel --dataset /workspace/Vitis-AI-Library/samples/rcan/images/
+  ```
 
 # Links
 

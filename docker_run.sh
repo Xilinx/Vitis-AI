@@ -77,6 +77,7 @@ docker_run_params=$(cat <<-END
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
+    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \
     -v $HERE:/workspace \
     -w /workspace \

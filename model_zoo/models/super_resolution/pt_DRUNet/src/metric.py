@@ -4,7 +4,7 @@ from typing import Dict, List
 import numpy as np
 import cv2
 from tqdm import tqdm
-
+from pprint import pprint
 
 def get_image(image_path: str):
     """
@@ -87,6 +87,22 @@ def get_psnr_all(dataset_folder: str, inference_folder: str) -> Dict:
             })
     return psnr_all
 
+def compute_psnr(dataset_folder: str, inference_folder: str) -> Dict:
+    """
+    Function that computes the pnsr metric for each inference result
+    :param dataset_folder: Path where the whole dataset is stored.
+    :param inference_folder: Path where inference results are stored.
+    :return:
+    """
+    psnr_all = {}
+    inference_files_names = os.listdir(inference_folder)
+
+    for inference_filename in sorted(inference_files_names):
+        denoised_image_path = os.path.join(inference_folder, inference_filename)
+        original_filename = inference_filename.split('_')[0] + '.png'
+        original_image_path = os.path.join(dataset_folder, original_filename)
+        psnr_all[original_filename] = get_psnr(original_image_path, denoised_image_path)
+    return psnr_all
 
 def get_psnr_mean(psnr_all: Dict) -> Dict:
     """
@@ -109,9 +125,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    psnr_all = get_psnr_all(args.dataset_folder, args.inference_folder)
-    psnr_mean = get_psnr_mean(psnr_all)
+    psnr = compute_psnr(args.dataset_folder, args.inference_folder)
+    print("PSNR:")
+    pprint(psnr)
 
-    print(f"PSNR all:\n{psnr_all}")
-    print(f"PSNR mean:\n{psnr_mean}")
+
+
 

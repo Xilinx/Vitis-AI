@@ -109,14 +109,29 @@ cd $MODEL_FOLDER
 # where:
 # <MODEL_PATH> - the absolute path to the .xmodel
 # [<image paths list>] - space-separated list of image absolute paths
-
-# Example
+# Alternatively, you can pass --dataset option with the folder where images for the inference are stored.
+# Example 1: 
 bash scripts/inference.sh \
     $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel \
     /workspace/Vitis-AI-Library/samples/rcan/images/1.png /workspace/Vitis-AI-Library/samples/rcan/images/2.png \
     /workspace/Vitis-AI-Library/samples/rcan/images/3.png
+# Example 2: 
+bash scripts/inference.sh \
+    $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel \
+    --dataset /workspace/Vitis-AI-Library/samples/rcan/images
 ```
 9. Results of the inference will be stored in the folder: `artifacts/inference`.
+10. To get the [vaitrace](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Starting-a-Simple-Trace-with-vaitrace) performance report, you can use:
+  ```bash
+  # Format: bash scripts/vaitrace.sh <MODEL_PATH> <TEST_IMAGE_PATH>
+  # where:
+  # <MODEL_PATH> - The path to the model file .xmodel
+  # <TEST_IMAGE_PATH> - The path to the image to be processed via vaitrace.
+  # The report files will be stored in the $MODEL_FOLDER/artifacts/inference/vaitrace folder
+  # Example: 
+
+  bash scripts/vaitrace.sh $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel /workspace/Vitis-AI-Library/samples/rcan/images/2.png
+  ```
 
 ## Contributing
 

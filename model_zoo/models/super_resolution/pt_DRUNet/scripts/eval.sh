@@ -68,12 +68,13 @@ else
     done
 fi
 
-RESULTS_FOLDER="$(pwd)"/artifacts/inference/results
-mkdir -p "$RESULTS_FOLDER"
+PERFORMANCE_FOLDER="$(pwd)"/artifacts/inference/perfomance
+mkdir -p "$PERFORMANCE_FOLDER"
+result_file=$PERFORMANCE_FOLDER/result.txt
 
 cd "$VAI_LIBRARY_SAMPLES_PATH" || exit
 
-EVAL_APP=test_accuracy_$VAI_SAMPLES_POSTFIX
+EVAL_APP=test_performance_$VAI_SAMPLES_POSTFIX
 build_if_not_exists $VAI_LIBRARY_SAMPLES_PATH $EVAL_APP
 
-./$EVAL_APP $MODEL_PATH $filepaths_list $RESULTS_FOLDER
+./$EVAL_APP $MODEL_PATH $filepaths_list | tee $result_file
