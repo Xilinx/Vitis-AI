@@ -16,8 +16,8 @@ As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance b
 Vitis-AI/model_zoo
 ├── images
 ├── model-list                      # list of all availible models with yaml configuration
-├── models
-│ ├── super_resolution              # task  
+├── models                          # model cards with code and all details 
+│ ├── super_resolution              # task name
 │ │ ├── pt_DRUNet                   # model name
 │ │ │ ├── config.env                # model configuration - env variables
 │ │ │ ├── artifacts                 # artifacts - will be created during the inference process
@@ -25,8 +25,7 @@ Vitis-AI/model_zoo
 │ │ │ │ │ ├── performance           # model productivity measurements
 │ │ │ │ │ ├── quality               # model quality measurements
 │ │ │ │ │ ├── results               # model inference results files
-│ │ │ │ │ ├── vaitrace              # vaitrace profiling performance reports
-│ │ │ │ │ └── filepaths.list
+│ │ │ │ │ └── vaitrace              # vaitrace profiling performance reports
 │ │ │ │ └── models                  # folder with model meta and .xmodel executable files
 │ │ │ ├── scripts                   # scripts for model processing 
 │ │ │ │ ├── inference.sh            # model inference

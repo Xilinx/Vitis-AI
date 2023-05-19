@@ -76,14 +76,12 @@ Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model
 
 ```text
 pt_DRUNet                     # model name 
-├── config.env                # model configuration - env variables
 ├── artifacts                 # artifacts - will be created during the inference process
 │ ├── inference               # folder with results values of inference and evaluation
 │ │ ├── performance           # model productivity measurements
 │ │ ├── quality               # model quality measurements
 │ │ ├── results               # model inference results files
-│ │ ├── vaitrace              # vaitrace profiling performance reports
-│ │ └── filepaths.list
+│ │ └── vaitrace              # vaitrace profiling performance reports
 │ └── models                  # folder with model meta and .xmodel executable files
 ├── scripts                   # scripts for model processing 
 │ ├── inference.sh            # model inference
@@ -92,6 +90,7 @@ pt_DRUNet                     # model name
 │ └── setup_venv.sh           # virtual environment creation
 ├── src                       # python supporting scripts
 │ └── quality.py              # quality metric calculation
+├── config.env                # model configuration - env variables
 ├── README.md
 └── requirements.txt          # requirements for the virtual environment
 ```
