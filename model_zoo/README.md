@@ -15,6 +15,7 @@ As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance b
 ```
 Vitis-AI/model_zoo
 ├── images
+├── model-list                      # list of all availible models with yaml configuration
 ├── models
 │ ├── super_resolution              # task  
 │ │ ├── pt_DRUNet                   # model name
@@ -40,9 +41,8 @@ Vitis-AI/model_zoo
 │ ├── semantic_segmentation
 │ ...  
 ├── scripts                         # common scripts for all models 
-├── downloader.py                   # python script for model files download
-├── model-list                      # list of all availible models with yaml configuration
 ├── AMD-license-agreement-for-non-commercial-models.md
+├── downloader.py                   # python script for model files download
 └── README.md
 ```
 ## Quick Start
