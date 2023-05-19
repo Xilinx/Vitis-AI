@@ -9,3 +9,7 @@
 
 # Artifact folders in the Model Zoo
 model_zoo/models/*/*/artifacts
+
+
+/docs/
+/docsrc/build/
