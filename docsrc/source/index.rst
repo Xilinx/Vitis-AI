@@ -72,6 +72,8 @@ Vitis AI is composed of the following key components:
    :hidden:
 
    Pre-trained, Optimized Models <docs/workflow-model-zoo>
+   Getting started <docs/getting-started-model-zoo>
+   Models overview <docs/models-overview>
 
 .. toctree::
    :maxdepth: 3

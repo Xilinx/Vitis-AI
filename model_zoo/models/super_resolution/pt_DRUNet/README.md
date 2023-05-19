@@ -11,7 +11,6 @@
 - [Quick Start](#quick-start)
 - [Script Description](#script-description)
   - [Structure](#structure)
-  - [Script Parameters](#script-parameters)
   - [Inference Process](#inference-process)
 - [Quality](#quality)
 - [Performance](#performance)
@@ -76,27 +75,25 @@ Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model
 ## Structure
 
 ```text
-.
-├── config.env                  # environment variables setting 
-├── requirements.txt            # dependencies for python virtual environment 
-├── artifacts                   # models binaries and inference result files
-├── scripts  
-│   ├── inference.sh            # getting model's inference
-│   ├── metric.sh               # calculate model quality metric
-│   ├── eval.sh                 # calculate model performance metrics
-│   └── setup_venv.sh           # create python virtual environment
-└── src  
-    └── metric.py               # model results evaluation (used in metric.sh)
-```
-
-## Script Parameters
-
-Inference:
-
-```text
-model_path                   # The path to the model binary .xmodel
-filepaths                    # The list of files for inference
-results_folder               # The directory where model's inference results are stored.
+pt_DRUNet                     # model name 
+├── config.env                # model configuration - env variables
+├── artifacts                 # artifacts - will be created during the inference process
+│ ├── inference               # folder with results values of inference and evaluation
+│ │ ├── performance           # model productivity measurements
+│ │ ├── quality               # model quality measurements
+│ │ ├── results               # model inference results files
+│ │ ├── vaitrace              # vaitrace profiling performance reports
+│ │ └── filepaths.list
+│ └── models                  # folder with model meta and .xmodel executable files
+├── scripts                   # scripts for model processing 
+│ ├── inference.sh            # model inference
+│ ├── performance.sh          # model performance report
+│ ├── quality.sh              # model quality report
+│ └── setup_venv.sh           # virtual environment creation
+├── src                       # python supporting scripts
+│ └── quality.py              # quality metric calculation
+├── README.md
+└── requirements.txt          # requirements for the virtual environment
 ```
 
 ## Inference Process
@@ -110,14 +107,14 @@ To evaluate the model inference results, you may compute [PNSR](https://en.wikip
 Use the following script:
 
 ```bash
-  # Format: bash scripts/metric.sh <DATASET_FOLDER> <INFERENCE_FOLDER>
+  # Format: bash scripts/quality.sh <DATASET_FOLDER> <INFERENCE_FOLDER>
   # where:
   # <DATASET_FOLDER> - The path of folder where original dataset is stored.
   # <INFERENCE_FOLDER> - The path of folder where results of model inference is stored.
   # The metric values will be stored in the artifacts/inference/quality/psnr.txt file
   # Example:
   
-  bash scripts/metric.sh /workspace/Vitis-AI-Library/samples/rcan/images/ $MODEL_FOLDER/artifacts/inference/results/
+  bash scripts/quality.sh /workspace/Vitis-AI-Library/samples/rcan/images/ $MODEL_FOLDER/artifacts/inference/results/
 ```
 
 ## Comparison
@@ -181,18 +178,19 @@ Use the following script:
 # Performance
 
 - You can profile the model using [vaitrace](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Starting-a-Simple-Trace-with-vaitrace) perfomance report,
-  the script and format described in the [Quick Start guide](../../../README.md#quick-start) at step 10, in the main Model Zoo.
+  the script and format described in the [Quick Start guide](../../../README.md#vaitrace), in the main Model Zoo.
 - To get performance metrics (FPS, E2E, DPU_MEAN), use:
   ```bash
-  # Format: bash scripts/eval.sh <MODEL_PATH> [<image paths list>]
+  # Format: bash scripts/performance.sh <MODEL_PATH> [<image paths list>]
   # where:
   # <MODEL_PATH> - the absolute path to the .xmodel
   # [<image paths list>] - space-separated list of image absolute paths
   # Alternatively, you can pass --dataset option with the folder where images are stored.
   # Example:
 
-  bash scripts/eval.sh $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel --dataset /workspace/Vitis-AI-Library/samples/rcan/images/
+  bash scripts/performance.sh $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel --dataset /workspace/Vitis-AI-Library/samples/rcan/images/
   ```
+
 
 # Links
 
