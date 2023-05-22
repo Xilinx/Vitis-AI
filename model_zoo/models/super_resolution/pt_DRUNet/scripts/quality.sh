@@ -27,4 +27,4 @@ QUALITY_FOLDER="$(pwd)"/artifacts/inference/quality
 mkdir -p "$QUALITY_FOLDER"
 result_file=$QUALITY_FOLDER/psnr.txt
 
-python src/metric.py $1 $2 | tee $result_file
+python src/quality.py $1 $2 | tee $result_file

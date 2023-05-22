@@ -5,3 +5,5 @@ Segmentation models
 
 .. toctree::
 
+    SemanticFPN <SemanticFPN>
+
