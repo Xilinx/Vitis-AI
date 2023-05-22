@@ -153,16 +153,16 @@ You may profile the model performance using [Vaitrace](https://docs.xilinx.com/r
 > **Warning**
 > To run the Vaitrace inside the docker container, you should have a **root permission**! <br>
 > To the `Vitis-AI/docker_run.sh` script, add the following patch: 
+   ```diff
+   @@ -89,6 +71,7 @@ docker_run_params=$(cat <<-END
+        -e USER=$user -e UID=$uid -e GID=$gid \
+        -e VERSION=$VERSION \
+        -v $DOCKER_RUN_DIR:/vitis_ai_home \
+   +    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
+        -v $HERE:/workspace \
+        -w /workspace \
+        --rm \
    ```
-      docker_run_params=$(cat <<-END
-     -e USER=$user -e UID=$uid -e GID=$gid \
-     -e VERSION=$VERSION \
-     -v $DOCKER_RUN_DIR:/vitis_ai_home \
-+    -v /sys/kernel/debug:/sys/kernel/debug  --privileged=true \
-     -v $HERE:/workspace \
-     -w /workspace \
-     --rm \
-  ```
 
 To run the Vaitrace, use: 
    ```

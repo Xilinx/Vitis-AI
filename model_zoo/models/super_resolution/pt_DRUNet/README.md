@@ -118,7 +118,7 @@ Use the following script:
 
 ## Comparison
 
-- Original paper results of mean PNSR metric:
+- Original paper results of mean PNSR metric: <br>
   <table style="undefined;table-layout: fixed; width: 472px">
     <colgroup>
     <col style="width: 59.444444px">
