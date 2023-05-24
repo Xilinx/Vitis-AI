@@ -5,7 +5,7 @@ source ../../../scripts/build.sh
 
 
 display_help() {
-    echo "Usage: $0 <inference_result> <ground_truth> [--dataset] [--cityscapes]"
+    echo "Usage: $0 <inference_result> <ground_truth> [--batch] [--dataset]"
     echo ""
     echo "Evaluate image quality based on inference results and ground truth."
     echo ""
@@ -14,8 +14,8 @@ display_help() {
     echo "  ground_truth      Path to the ground truth image or folder"
     echo ""
     echo "Optional arguments:"
-    echo "  --dataset         Evaluate a dataset (default: individual images)"
-    echo "  --cityscapes      Evaluate Cityscapes dataset"
+    echo "  --batch           Evaluate a folder (default: individual images)"
+    echo "  --dataset         Evaluate Cityscapes dataset"
     echo ""
 
 }
@@ -34,15 +34,15 @@ ground_truth="$2"
 dataset=""
 cityscapes=""
 
-if [[ "$3" == "--dataset" ]]; then
+if [[ "$3" == "--batch" ]]; then
   dataset="--dataset"
 fi
 
-if [[ "$3" == "--cityscapes" ]]; then
+if [[ "$3" == "--dataset" ]]; then
   cityscapes="--cityscapes"
 fi
 
-if [[ "$4" == "--cityscapes" ]]; then
+if [[ "$4" == "--dataset" ]]; then
   cityscapes="--cityscapes"
 fi
 

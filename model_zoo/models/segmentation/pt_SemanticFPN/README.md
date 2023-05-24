@@ -56,7 +56,7 @@ The notable features of the SemanticFPN:
 4. **End-to-end training**:The model can be trained end-to-end, allowing for joint optimization of the backbone network, 
     FPN, and the semantic segmentation head.
 5. **Real-time performance**: The model is designed to achieve real-time semantic segmentation, making it suitable for 
-    applications that require fast and efficient processing of images or videos..
+    applications that require fast and efficient processing of images or videos.
 
 # Environment Requirements
 
@@ -108,21 +108,18 @@ pt_SemanticFPN                # model name
 Use the following script:
 
 ```bash
-  # Format: bash scripts/quality.sh <inference_result> <ground_truth> [--dataset] [--cityscapes]
+  # Format: bash scripts/quality.sh <inference_result> <ground_truth> [--batch] [--dataset]
   # where:
   #  inference_result  - Path to the inference result image or folder.
   #  ground_truth      - Path to the ground truth image or folder
-  # --dataset          - Evaluate a dataset (default: individual images)
-  # --cityscapes       - Evaluate Cityscapes dataset
+  # --batch          - Evaluate a dataset (default: individual images)
+  # --dataset          - Evaluate Cityscapes dataset
   # The metric values will be stored in the artifacts/inference/quality/metrics.txt file
   # Example:
   
   bash scripts/quality.sh $MODEL_FOLDER/artifacts/inference/results/ /workspace/Vitis-AI-Library/samples/segmentation/images/ --dataset
 ```
 
-## Comparison
-
-- Original paper results: (todo: add table)
 # Performance
 
 - You can profile the model using [vaitrace](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Starting-a-Simple-Trace-with-vaitrace) perfomance report,
@@ -136,7 +133,7 @@ Use the following script:
   # Alternatively, you can pass --dataset option with the folder where images are stored.
   # Example:
 
-  bash scripts/performance.sh $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel --dataset /workspace/Vitis-AI-Library/samples/rcan/images/
+  bash scripts/performance.sh $MODEL_FOLDER/artifacts/models/SemanticFPN_Mobilenetv2_pt/SemanticFPN_Mobilenetv2_p.xmodel --dataset /workspace/Vitis-AI-Library/samples/segmentation/images/
   ```
 
 
