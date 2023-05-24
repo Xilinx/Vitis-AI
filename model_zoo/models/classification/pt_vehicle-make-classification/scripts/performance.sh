@@ -68,29 +68,13 @@ else
     done
 fi
 
-RESULTS_FOLDER="$(pwd)"/artifacts/inference/results
-if [ -d "RESULTS_FOLDER" ]; then
-  rm -rf "RESULTS_FOLDER"/*
-fi
-mkdir -p "$RESULTS_FOLDER"
+PERFORMANCE_FOLDER="$(pwd)"/artifacts/inference/perfomance
+mkdir -p "$PERFORMANCE_FOLDER"
+result_file=$PERFORMANCE_FOLDER/result.txt
 
 cd "$VAI_LIBRARY_SAMPLES_PATH" || exit
 
-EVAL_APP=test_accuracy_$VAI_SAMPLES_POSTFIX
+EVAL_APP=test_performance_$VAI_SAMPLES_POSTFIX
 build_if_not_exists $VAI_LIBRARY_SAMPLES_PATH $EVAL_APP
-RESULT_FILE=$RESULTS_FOLDER/result.txt
-touch "$RESULT_FILE"
-POSTFIX="_acc"
-RENAMED_MODEL_PATH="${MODEL_PATH}${POSTFIX}"
-mv "$MODEL_PATH" "$RENAMED_MODEL_PATH"
-./$EVAL_APP $MODEL_PATH $filepaths_list $RESULT_FILE
-mv "$RENAMED_MODEL_PATH" "$MODEL_PATH"
 
-while IFS=" " read -r filename number; do
-  base="${filename%.*}"
-  format="${filename##*.}"
-  result_image=$RESULTS_FOLDER/"${base}_result.txt"
-  echo "$number" >> "$result_image"
-done < "$RESULT_FILE"
-rm $RESULT_FILE
-
+./$EVAL_APP $MODEL_PATH $filepaths_list | tee $result_file
