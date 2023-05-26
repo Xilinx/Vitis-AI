@@ -2,4 +2,4 @@
 ================
 Semantic FPN model
 ================
-.. mdinclude:: ../../../../../model_zoo/models/segmentation/pt_SemanticFPN/README.md
+.. mdinclude:: ../../../model_cards/pt_SemanticFPN.md

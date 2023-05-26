@@ -66,7 +66,7 @@ Xilinx FPGA/ACAP and the appropriate accelerator is installed correctly, e.g. Xi
 
 # Quick Start
 
-Follow the [Quick Start guide](https://github.com/datamonsters/Vitis-AI/blob/new_model_zoo_structure/model_zoo/README.md#quick-start) in the main Model Zoo README:
+Follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo README:
 
 1. Install the Vitis-AI
 2. Run the docker container
@@ -100,7 +100,7 @@ pt_SemanticFPN                # model name
 
 ## Inference Process
 
-- Native inference - follow the [Quick Start guide](https://github.com/datamonsters/Vitis-AI/blob/new_model_zoo_structure/model_zoo/README.md#quick-start) in the main Model Zoo
+- Native inference - follow the [Quick Start guide](../../../README.md#quick-start) in the main Model Zoo
 - AMD Server
 
 # Quality
@@ -112,7 +112,7 @@ Use the following script:
   # where:
   #  inference_result  - Path to the inference result image or folder.
   #  ground_truth      - Path to the ground truth image or folder
-  # --batch          - Evaluate a dataset (default: individual images)
+  # --batch            - Evaluate a dataset (default: individual images)
   # --dataset          - Evaluate Cityscapes dataset
   # The metric values will be stored in the artifacts/inference/quality/metrics.txt file
   # Example:
@@ -123,7 +123,7 @@ Use the following script:
 # Performance
 
 - You can profile the model using [vaitrace](https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Starting-a-Simple-Trace-with-vaitrace) perfomance report,
-  the script and format described in the [Quick Start guide](https://github.com/datamonsters/Vitis-AI/blob/new_model_zoo_structure/model_zoo/README.md#vaitrace) in the main Model Zoo.
+  the script and format described in the [Quick Start guide](../../../README.md#vaitrace) in the main Model Zoo.
 - To get performance metrics (FPS, E2E, DPU_MEAN), use:
   ```bash
   # Format: bash scripts/performance.sh <MODEL_PATH> [<image paths list>]

@@ -2,4 +2,4 @@
 ================
 DRUNet model
 ================
-.. mdinclude:: ../../../../../model_zoo/models/super_resolution/pt_DRUNet/README.md
+.. mdinclude:: ../../../model_cards/pt_DRUNet.md

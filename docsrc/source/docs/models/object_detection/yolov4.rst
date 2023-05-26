@@ -2,4 +2,4 @@
 ================
 YOLOv4 model
 ================
-.. mdinclude:: ../../../../../model_zoo/models/object_detection/tf_yolov4/README.md
+.. mdinclude:: ../../../model_cards/tf_yolov4.md

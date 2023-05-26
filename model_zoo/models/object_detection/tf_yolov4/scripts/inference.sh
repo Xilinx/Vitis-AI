@@ -75,6 +75,7 @@ touch "$RESULT_FILE"
 cd "$VAI_LIBRARY_SAMPLES_PATH" || exit
 
 EVAL_APP=test_accuracy_"$VAI_SAMPLES_POSTFIX"_mt
+EVAL_APP=test_jpeg_"$VAI_SAMPLES_POSTFIX"
 build_if_not_exists $VAI_LIBRARY_SAMPLES_PATH $EVAL_APP
 
 ./$EVAL_APP $MODEL_PATH $filepaths_list $RESULTS_FILE

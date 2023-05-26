@@ -1,1 +1,1 @@
-.. mdinclude:: ../../../model_zoo/README.md
+.. mdinclude:: ../model_cards/model_zoo.md

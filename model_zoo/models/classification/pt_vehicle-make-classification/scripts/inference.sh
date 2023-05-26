@@ -86,11 +86,4 @@ mv "$MODEL_PATH" "$RENAMED_MODEL_PATH"
 ./$EVAL_APP $MODEL_PATH $filepaths_list $RESULT_FILE
 mv "$RENAMED_MODEL_PATH" "$MODEL_PATH"
 
-while IFS=" " read -r filename number; do
-  base="${filename%.*}"
-  format="${filename##*.}"
-  result_image=$RESULTS_FOLDER/"${base}_result.txt"
-  echo "$number" >> "$result_image"
-done < "$RESULT_FILE"
-rm $RESULT_FILE
 
