@@ -43,7 +43,7 @@ Link to download the dataset: https://cocodataset.org/
 
 # Features
 
-The notable features of the SemanticFPN:
+The notable features of the YOLO model:
 
 1. **Efficient backbone network** - CSPDarknet53
 2. **Feature fusion techniques** - FPN and PANet.

@@ -32,18 +32,18 @@ result_file=$QUALITY_FOLDER/metrics.txt
 inference_result="$1"
 ground_truth="$2"
 dataset=""
-cityscapes=""
+coco=""
 
 if [[ "$3" == "--batch" ]]; then
   dataset="--dataset"
 fi
 
 if [[ "$3" == "--dataset" ]]; then
-  cityscapes="--cityscapes"
+  coco="--coco"
 fi
 
 if [[ "$4" == "--dataset" ]]; then
-  cityscapes="--cityscapes"
+  coco="--coco"
 fi
 
-python src/quality.py $inference_result $ground_truth $dataset" $cityscapes | tee $result_file
+python src/quality.py $inference_result $ground_truth $dataset $coco | tee $result_file

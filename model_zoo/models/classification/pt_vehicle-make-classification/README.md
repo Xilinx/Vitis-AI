@@ -43,7 +43,7 @@ Link to download the  dataset: http://mmlab.ie.cuhk.edu.hk/datasets/comp_cars/
 
 # Features
 
-The notable features of the SemanticFPN:
+The notable features of the model:
 
 1. **Residual Neural Networks (ResNets)**.
 2. **Localization**.
@@ -131,7 +131,9 @@ Use the following script:
 # Links
 
 - CompCars dataset: http://mmlab.ie.cuhk.edu.hk/datasets/comp_cars/
-- Classification: New Annotations, Experiments, and Results: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7830427/pdf/sensors-21-00596.pdf
+- EfficientNet-EdgeTPU: Creating Accelerator-Optimized Neural Networks with AutoML.
+Google Research blog post: https://ai.googleblog.com/2019/08/efficientnet-edgetpu-creating.html
+
 - Going deeper with convolutions (Inception): https://arxiv.org/pdf/1409.4842
 - Benchmark on the CompCars (PapersWithCode): https://paperswithcode.com/dataset/compcars
 
