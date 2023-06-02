@@ -5,5 +5,6 @@ Object Detection models
 
 .. toctree::
 
+    SSD-Resnet34 <ssd_resnet34>
     YOLOv4 <yolov4>
 
