@@ -26,7 +26,7 @@ vision applications to detect and classify objects within an image or video fram
 
 ## Paper
 
- Bochkovskiy A., Wang C. Y., Liao H. Y. M. Yolov4: Optimal speed and accuracy of object detection. <br>
+ Bochkovskiy A., Wang C. Y., Liao H. Y. M. "Yolov4: Optimal speed and accuracy of object detection." <br>
  //arXiv preprint arXiv:2004.10934. – 2020. Link: https://arxiv.org/abs/2004.10934
 
 # Model Architecture

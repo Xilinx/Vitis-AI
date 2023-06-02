@@ -58,9 +58,9 @@ def evaluate_dataset(predictions_folder: str, ground_truth_folder: str) -> tuple
     return mean_iou, mean_accuracy
 
 
-def evaluate_cityscapes(results_folder: str, cityscapes_folder: str) -> tuple[float, float]:
+def evaluate_coco(results_folder: str, cityscapes_folder: str) -> tuple[float, float]:
     """
-    Evaluate mean IoU and mean Pixel-wise Accuracy for Cityscapes dataset.
+    Evaluate mean IoU and mean Pixel-wise Accuracy for COCO dataset.
     """
     predictions_folder = os.path.join(results_folder, 'predictions')
     ground_truth_folder = os.path.join(cityscapes_folder, 'gtFine')
@@ -79,12 +79,12 @@ if __name__ == '__main__':
     parser.add_argument('--coco', action='store_true', help='Evaluate Coco dataset')
     args = parser.parse_args()
 
-    if args.cityscapes:
+    if args.coco:
 
         results_folder = args.inference_result
-        cityscapes_folder = args.ground_truth
+        coco_folder = args.ground_truth
 
-        mean_iou, mean_accuracy = evaluate_cityscapes(results_folder, cityscapes_folder)
+        mean_iou, mean_accuracy = evaluate_coco(results_folder, coco_folder)
 
         print(f"Mean IoU: {mean_iou}")
         print(f"Mean Pixel-wise Accuracy: {mean_accuracy}")
