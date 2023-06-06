@@ -143,7 +143,7 @@ path to the model:
    # Example 2: 
    bash scripts/inference.sh \
        $MODEL_FOLDER/artifacts/models/drunet_pt/drunet_pt.xmodel \
-       --dataset /workspace/Vitis-AI-Library/samples/rcan/imagess
+       --dataset /workspace/Vitis-AI-Library/samples/rcan/images
    ```
 9. Results of the inference will be stored in the folder: `artifacts/inference`.
 
