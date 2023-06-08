@@ -5,5 +5,6 @@ Segmentation models
 
 .. toctree::
 
+    ENet <ENet>
     SemanticFPN <SemanticFPN>
 
