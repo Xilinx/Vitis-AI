@@ -133,7 +133,7 @@ Use the following script:
   # Alternatively, you can pass --dataset option with the folder where images are stored.
   # Example:
 
-  bash scripts/performance.sh $MODEL_FOLDER/artifacts/models/SemanticFPN_Mobilenetv2_pt/SemanticFPN_Mobilenetv2_p.xmodel --dataset /workspace/Vitis-AI-Library/samples/segmentation/images/
+  bash scripts/performance.sh $MODEL_FOLDER/artifacts/models/SemanticFPN_Mobilenetv2_pt/SemanticFPN_Mobilenetv2_pt.xmodel --dataset /workspace/Vitis-AI-Library/samples/segmentation/images/
   ```
 
 
