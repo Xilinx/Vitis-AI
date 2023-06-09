@@ -5,5 +5,6 @@ Classification models
 
 .. toctree::
 
+    InceptionV3 model <inceptionv3>
     Vehicle classification model <vehicle_make>
     EfficientNet-EdgeTPU-S model <efficientnet-edgetpu-s>
