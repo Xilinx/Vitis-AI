@@ -22,11 +22,11 @@ framework: pytorch
 prune: 'no'
 version: 3.0
 files:
-- name: pt_face-mask-detection_512_512_0.59G_3.0
+- name: pt_face-mask-detection_512_512_0.67G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-mask-detection_512_512_0.59G_3.0.zip
-  checksum: 48dbeb401e6f453f13898700021fe2d4
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_face-mask-detection_512_512_0.67G_3.0.zip
+  checksum: e91aad0a29ddd5d2c8a9eecf009bbcba
 - name: face_mask_detection_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

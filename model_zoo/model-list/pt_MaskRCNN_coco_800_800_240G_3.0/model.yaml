@@ -26,5 +26,5 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_MaskRCNN_coco_800_800_240G_3.0.zip
-  checksum: b1d75972d99fbec1422d75b8820753d4
+  checksum: ce628ac8ee0f2b7ffcbd6276ec7d360e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

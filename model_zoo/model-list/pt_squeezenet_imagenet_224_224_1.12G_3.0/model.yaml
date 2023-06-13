@@ -105,7 +105,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_squeezenet_imagenet_224_224_1.12G_3.0.zip
-  checksum: 5600ea7c7f4e38f6dad3ad86c95849a4
+  checksum: 4030a7123206ab3275f558ffdce1af04
 - name: squeezenet_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

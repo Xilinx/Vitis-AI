@@ -25,8 +25,8 @@ files:
 - name: pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0
   type: float & quantized
   board: GPU
-  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0zip
-  checksum: 0d236af3fa6130491daf6aa726af8d68
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_vehicle-type-classification_CarBodyStyle_224_224_3.64G_3.0.zip
+  checksum: ffbff63d4044f64b71a7f6c8aaa410f0
 - name: vehicle_type_resnet18_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260

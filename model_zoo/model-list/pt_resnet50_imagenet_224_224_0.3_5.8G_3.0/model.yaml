@@ -104,7 +104,7 @@ files:
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_resnet50_imagenet_224_224_0.3_5.8G_3.0.zip
-  checksum: c1bfa72aed0227f85780d5ee30464f10
+  checksum: d9e6afd26764640eeb72c1023ab21cd9
 - name: resnet50_pruned_0_3_pt
   type: xmodel
   board: zcu102 & zcu104 & kv260
