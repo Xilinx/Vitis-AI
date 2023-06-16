@@ -1,0 +1,189 @@
+#############################
+Quick Start Guide for VCK5000
+#############################
+
+
+The AMD **DPUCVDX8H** for the Versal |trade| VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.
+
+.. note:: Vitis AI 3.0 requires the use of a VCK5000-PROD card. Support for the pre-production VCK5000-ES1 card is not available in this release. If you do not have a production release card, you must use `Vitis AI 1.4.1 <https://github.com/Xilinx/Vitis-AI/tree/v1.4.1>`__.
+
+
+*************
+Prerequisites
+*************
+
+System Requirements
+===================
+
+-  Confirm that your development machine meets the minimum :doc:`Host System Requirements <../reference/system_requirements>`.
+-  Confirm that you have at least **100GB** of free space in the target partition.
+
+
+Docker Installation
+===================
+
+Make sure that the Docker engine is installed according to the official Docker `documentation <https://docs.docker.com/engine/install/>`__ to install the Docker engine.
+
+The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
+
+Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a "Hello World" message and exits. ::
+
+	docker run hello-world
+
+Finally, verify that the version of Docker that you have installed meets the minimum :doc:`Host System Requirements <../reference/system_requirements>` by running the following command::
+
+	docker --version
+
+
+Setup for ROCm and GPU Acceleration
+===================================
+
+For servers with ROCm and GPU-based acceleration, developers should prepare their host according to the `ROCm Docker installation documentation <https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md>`__.
+
+|
+
+**********************
+Installation Procedure
+**********************
+
+#. Pull an up-to-date version of one of the pre-built Vitis AI docker containers::
+
+    docker pull xilinx/<Docker Name>:latest
+
+   Where ``<Docker Name>`` is selected from the table below based on the desired configuration:
+
+	.. list-table:: Vitis AI Pre-built Container Options
+	   :widths: 60 40
+	   :header-rows: 1
+
+	   * - Desired Configuration
+	     - Docker Name
+	   * - PyTorch, CPU-only
+	     - vitis-ai-pytorch-cpu
+	   * - PyTorch, with ROCm acceleration
+	     - vitis-ai-pytorch-rocm
+	   * - PyTorch, with AI Optimizer and ROCm acceleration
+	     - vitis-ai-opt-pytorch-rocm
+	   * - TensorFlow 1.15, CPU-only
+	     - vitis-ai-tensorflow-cpu
+	   * - TensorFlow 2, CPU-only
+	     - vitis-ai-tensorflow2-cpu
+	   * - TensorFlow 2, with ROCm acceleration
+	     - vitis-ai-tensorflow2-rocm
+	   * - TensorFlow 2, with AI Optimizer and ROCm acceleration
+	     - vitis-ai-opt-tensorflow2-rocm
+
+	.. important:: The CPU-only containers *do not provide GPU acceleration support* which is **strongly recommended** for acceleration of the Vitis AI :ref:`Quantization process <quantization-process>`. The pre-built CPU-only containers should only be used when a GPU is not available on the host machine. The AI Optimizer containers are only required for :ref:`pruning <model-optimization>` and require a license.
+
+#. Clone the Vitis AI repository::
+
+	git clone https://github.com/Xilinx/Vitis-AI
+
+#. Execute the installation script. This script will detect the operating system of the host, and and install the appropriate packages for that operating system. For data center DPUs such as VCK5000, Vitis AI 3.0 leverages the 2022.2 versions of the Vitis tools, VCK5000 platform, XRT and XRM. ::
+
+    cd <Vitis-AI install path>/Vitis-AI/board_setup/vck5000
+    source ./install.sh
+
+#. Manually reboot the host server.
+
+#. Check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present::
+
+    /opt/xilinx/xrt/bin/xbutil examine
+
+|
+
+
+*************************
+Environment Setup
+*************************
+
+* The model development tools (quantization, compilation, etc...) are run within the Vitis AI docker container. To start the Vitis AI docker image, run the following command::
+
+	cd <Vitis-AI install path>/Vitis-AI
+	./docker_run.sh xilinx/<Docker Name>:latest
+
+* From inside the container, execute one of the following commands to configure the environment for the desired DPU configuration. There are four DPU configurations to choose from. If you are just getting started and are uncertain which to choose, you may wish to start with the ``DPUCVDX8H_4pe_miscdwc`` as it provides the most extensive operator support. Refer to `this user guide <https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h/Configuration-Options>`__ for more details regarding selection.
+
+
+   - For the 4PE 350MHz configuration with pooling, elementwise and depthwise convolution support::
+      
+         source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_4pe_miscdwc
+   	  
+   - For the 6PE 350MHz configuration with depthwise convolution support::
+      
+         source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6pe_dwc
+   
+   - For the 6PE 350MHz configuration with pooling and elementwise support::
+      
+         source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_6PE_misc
+   
+   - For the 8PE 350MHz base configuration::
+      
+         source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
+
+|
+
+****************************
+Tensorflow Resnet50 Tutorial
+****************************
+
+This tutorial assumes that Vitis AI has been installed and that the VCK5000 card has been configured, as explained in the installation instructions above.
+
+#. Pull the pre-built Vitis AI docker container for TensorFlow 1.15, and launch the image::
+
+	cd <Vitis-AI install path>/Vitis-AI
+	docker pull xilinx/vitis-ai-tensorflow-cpu:latest
+	./docker_run.sh xilinx/vitis-ai-tensorflow-cpu:latest
+
+   **Note:** All subsequent steps of this tutorial are executed in the docker session.
+
+#. Download the Resnet50 floating-point model from the Vitis AI model zoo::
+
+	wget https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip -O tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip
+	unzip tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip
+
+#. Download the calibration images (the full dataset is from `ImageNet <http://image-net.org/download-images>`__)::
+
+	wget https://www.xilinx.com/bin/public/openDownload?filename=Imagenet_calib.tar.gz -O Imagenet_calib.tar.gz
+	tar -xzvf Imagenet_calib.tar.gz -C tf_resnetv1_50_imagenet_224_224_6.97G_3.0/data
+
+#. Download the sample images used by the example application::
+
+	cd /workspace/examples
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+
+#. Activate the Conda "vitis-ai-tensorflow" environment::
+
+	conda activate vitis-ai-tensorflow
+
+#. Configure the quantization process: edit the ``/workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize/config.ini`` file and set the ``CALIB_BATCH_SIZE`` option to ``5``. 
+
+#. Quantize the floating-point model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize
+	bash quantize.sh
+
+#. Compile the quantized model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0
+	vai_c_tensorflow -f ./quantized/quantize_eval_model.pb -a /opt/vitis_ai/compiler/arch/DPUCVDX8H/VCK50008PE/arch.json -o ./compiled -n resnet50_tf
+
+#. Set up the runtime environment::
+
+	source /workspace/board_setup/vck5000/setup.sh DPUCVDX8H_8pe_normal
+
+#. Build and run the example::
+
+	cd /workspace/examples/vai_runtime/resnet50
+	bash -x build.sh
+	cp /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/compiled/resnet50_tf.xmodel ~
+	./resnet50 ~/resnet50_tf.xmodel
+
+   **Note:** The source code for the example application can be found in ``/workspace/examples/vai_runtime/resnet50/src/main.cc``.
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

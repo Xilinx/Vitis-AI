@@ -1,0 +1,344 @@
+###################################################
+Quick Start Guide for Versal |trade| AI Edge VEK280
+###################################################
+
+The AMD **DPUCV2DX** for Versal |trade| AI Edge is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support VEK280.
+
+
+*************
+Prerequisites
+*************
+
+Host Requirements
+=================
+
+-  Confirm that your development machine meets the minimum :doc:`Host System Requirements <../reference/system_requirements>`.
+-  Confirm that you have at least **100GB** of free space in the target partition.
+
+
+Applicable Targets
+==================
+
+-  This quickstart is applicable to the `VEK280 <https://www.xilinx.com/vek280>`__
+
+
+**********
+Quickstart
+**********
+
+Clone the Vitis AI Repository
+=============================
+
+   .. code-block:: Bash
+		
+	  git clone https://github.com/Xilinx/Vitis-AI
+	  cd Vitis-AI
+
+Install Docker
+==============
+
+Make sure that the Docker engine is installed according to the official Docker `documentation <https://docs.docker.com/engine/install/>`__.
+
+The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
+
+Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a "Hello World" message and exits. 
+
+   .. code-block:: Bash
+	
+	  docker run hello-world
+
+Finally, verify that the version of Docker that you have installed meets the minimum :doc:`Host System Requirements <../reference/system_requirements>` by running the following command
+
+   .. code-block:: Bash
+	
+	  docker --version
+
+Pull Vitis AI Docker
+====================
+
+For this quickstart tutorial we will simply use the CPU Docker.  It is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the :doc:`Full Install Instructions <../install/install>` but we would recommend that new users start with this simpler first step.
+
+Pull and start the latest Vitis AI Docker using the following commands:
+
+   .. code-block:: Bash
+		
+	  docker pull xilinx/vitis-ai-pytorch-cpu:latest
+	  ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+
+
+Setup the Host
+==============
+
+It will be useful to you later on to have the cross-compiler installed.  This will allow you to compiled MPSoC applications on your host machine inside Docker.  Run the following commands to install the cross-compilation environment:
+
+   .. code-block:: Bash
+
+      cd Vitis-AI/board_setup/mpsoc
+      ./host_cross_compiler_setup.sh
+	  
+.. note:: Perform these steps on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in ``~/petalinux_sdk_2023.1``.  The ~/petalinux_sdk_2023.1 path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions.
+
+
+When the installation is complete, follow the prompts and execute the following command:
+
+   .. code-block:: Bash
+
+      source ~/petalinux_sdk_2023.1/environment-setup-cortexa72-cortexa53-xilinx-linux
+
+   .. note:: If you close the current terminal, you must re-execute the above instructions in the new terminal interface.
+	 
+
+Cross compile the sample taking ``resnet50`` as an example:
+
+   .. code-block:: Bash
+   
+      cd Vitis-AI/examples/vai_runtime/resnet50
+      bash –x build.sh
+
+If the compilation process does not report any error and the executable file resnet50 is generated, then the host environment is installed correctly.
+
+
+Setup the Target
+================
+
+The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and models are built into the board image, enhancing the user experience. Therefore, the user need not install Vitis AI Runtime packages and model packages on the board separately.
+
+Prepare the Target
+++++++++++++++++++
+
+
+1.  Make the target / host connections as shown in the images below.  Plug in the power adapter, ethernet cable, and a DisplayPort monitor (optional) and connect the USB-UART interface to the host. 
+   
+   
+.. image:: ../reference/images/VEK280_setup.png
+	:width: 1300
+	
+	
+2.  Download the SD card image from `here <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vek280-dpu-v2023.1-v3.5.0.img.gz>`__
+ 
+3.  Use BalenaEtcher to burn the image file onto the SD card.
+
+.. image:: ../reference/images/Etcher.png
+    :width: 1300
+    
+4.  Insert the imaged SD card into the target board.
+   
+5.  Log in to the board with your terminal emulator of choice via SSH or with the Serial Parameters listed below.
+   
+	- Baud Rate: 115200
+	- Data Bit: 8
+	- Stop Bit: 1
+	- No Parity
+
+6.  The IP address for the target can be found with the command below.
+ 
+.. code-block:: Bash
+   
+   [Target] $ifconfig
+
+
+.. image:: ../reference/images/ifconfig.png
+    :width: 1300
+	
+	
+If you are using a point-to-point connection or DHCP is not available, you can manually set the IP address:
+	
+.. code-block:: Bash
+
+	[Target] $ifconfig eth0 [target_ip_address]
+	  	
+		
+7.  Next, connect to the board via SSH.  The password is 'root'
+
+.. code-block:: Bash
+
+    [Host] $ssh -X root@[target_ip_address]
+   
+   
+8. 	If you have not connected a DisplayPort monitor, it is recommended that you export the display.  If you do not do so, the examples will not run as expected.
+
+.. code-block:: Bash
+
+    [Host] $export DISPLAY=:0.0
+	
+   
+9.  Download the model.
+   
+You can now select a model from the Vitis AI Model Zoo `Vitis AI Model Zoo <../workflow-model-zoo.html>`__.  Navigate to the  `model-list subdirectory  <https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list>`__  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
+
+	a. Take the VEK280 ResNet50 model as an example.
+
+	.. code-block:: Bash
+		
+		cd /workspace
+		wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pruned_0_6_pt-vek280-r3.5.0.tar.gz -O resnet50_pruned_0_6_pt-vek280-r3.5.0.tar.gz 
+		
+		
+	b. Copy the downloaded file to the board using scp with the following command:
+		
+	.. code-block:: Bash
+
+		scp resnet50_pruned_0_6_pt-vek280-r3.5.0.tar.gz root@IP_OF_BOARD:~/
+		
+		
+	c. Log in to the board (via ssh or serial port) and install the model package:
+
+	.. code-block:: Bash
+	   
+		tar -xzvf resnet50_pruned_0_6_pt-vek280-r3.5.0.tar.gz 
+		cp resnet50 /usr/share/vitis_ai_library/models -r
+
+	
+
+Run the Vitis AI Examples
+=========================
+
+#. Download the `vitis_ai_runtime_r3.5.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz>`__ from host to the target using scp with the following command:
+
+.. code-block:: Bash
+
+	[Host]$scp vitis_ai_runtime_r3.5.*_image_video.tar.gz root@[IP_OF_BOARD]:~/
+	  
+
+#. Unzip the ``vitis_ai_runtime_r3.5.0_image_video.tar.gz`` package on the target.
+
+.. code-block:: Bash
+   
+	cd ~
+	tar -xzvf vitis_ai_runtime_r*3.5._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
+	
+
+#. Navigate to the example directory on the target board. Take ``resnet50`` as an example.
+
+.. code-block:: Bash
+	
+	cd ~/Vitis-AI/examples/vai_runtime/resnet50
+	
+
+#. Run the example.
+
+.. code-block:: Bash
+	
+	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+	
+
+For examples with video input, only ``webm`` and ``raw`` format are supported by default with the official system image. If you want to support video data in other formats, you need to install the relevant packages on the system.
+   
+
+Quantize, Compile, Deploy a Model
+=================================
+
+*Oops....the below is written for TF1.1 but needs to be updated to PyTorch so that it aligns with pulling the pre-built PyTorch CPU container as done above.  Aidan, can you build this out further?*
+
+
+This tutorial assumes that Vitis AI has been installed and that the MPSoC target has been configured, as explained in the installation instructions above.
+
+
+#. Download the calibration images (the full dataset is from `ImageNet <http://image-net.org/download-images>`__)::
+
+	wget https://www.xilinx.com/bin/public/openDownload?filename=Imagenet_calib.tar.gz -O Imagenet_calib.tar.gz
+	tar -xzvf Imagenet_calib.tar.gz -C tf_resnetv1_50_imagenet_224_224_6.97G_3.0/data
+
+#. Download the sample images used by the example application::
+
+	cd /workspace/examples
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+
+#. Activate the Conda "vitis-ai-tensorflow" environment::
+
+	conda activate vitis-ai-tensorflow
+
+#. Configure the quantization process: edit the ``/workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize/config.ini`` file and set the ``CALIB_BATCH_SIZE`` option to ``5``. 
+
+#. Quantize the floating-point model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize
+	bash quantize.sh
+
+#. Compile the quantized model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0
+	vai_c_tensorflow -f ./quantized/quantize_eval_model.pb -a /opt/vitis_ai/compiler/arch/DPUCVDX8H/VCK50008PE/arch.json -o ./compiled -n resnet50_tf
+
+#. Cross-compile the example application (*details to be added*)
+   Note: the example is already pre-compiled in the standard board image, but I feel it is important to show the cross-compilation steps as this is something people will have to do routinely.
+
+#. Transfer compiled example to MPSoC board (*details to be added*)
+
+#. Execute example (*details to be added*)
+
+
+Working with the Vitis AI Library
+=================================
+
+The Vitis AI runtime packages, and Vitis AI Library samples and models are compiled into the pre-built Vitis AI board images. You can run the examples directly. If you have a new program, compile it on the host side and copy the executable program to the target.
+
+1. Copy vitis_ai_library_r3.5.0_images.tar.gz and vitis_ai_library_r3.5.0_video.tar.gz from host to the target using the scp command as shown below::
+
+	[Host]$scp vitis_ai_library_r3.0.0_images.tar.gz root@IP_OF_BOARD:~/
+	[Host]$scp vitis_ai_library_r3.0.0_video.tar.gz root@IP_OF_BOARD:~/
+
+
+2. Untar the image and video packages on the target::
+
+	cd ~
+	tar -xzvf vitis_ai_library_r3.0*_images.tar.gz -C Vitis-AI/examples/vai_library
+	tar -xzvf vitis_ai_library_r3.0*_video.tar.gz -C Vitis-AI/examples/vai_library
+	
+3. Enter the extracted directory of the example on the target board and then compile the example. Take classification as an example::
+
+	cd ~/Vitis-AI/examples/vai_library/samples/classification
+	
+4. Run the example::
+
+	./test_jpeg_classification resnet50_pt sample_classification.jpg
+	
+Note: The application supports batch mode. If the DPU batch number is > than 1, you can also run the following command::
+
+	./test_jpeg_classification resnet50_pt <img1_url> [<img2_url> ...]
+	
+5. There are two ways to view the results. One is to view the results by printing the output predictions. The other way is to view the images by downloading the 0_sample_classification_result.jpg image.
+
+6. To run the video example, run the following command::
+
+	./test_video_classification resnet50_pt video_input.webm -t 8
+
+where, video_input.webm is the name of the video file for input and -t is the number of threads. You must prepare the video file yourself.
+
+Note:
+• Pre-built Vitis AI board images only support video file input in the webm or raw format. If you want
+to use a video file in a format that is not natively supported, you have to install the relevant
+packages, such as the ffmpeg package, on the target.
+• When a display is used as a sink for the post-processed video, the performance will be limited to
+the maximum frame rate supported by the display interface on the target. This might not reflect the
+maximum performance, a fact that particularly important when you have enabled multi-threading
+to benchmark maximum frame rates. However, you can test the maximum inference performance
+of the Vitis AI Libraries by issuing the following command:
+env DISPLAY=:0.0 DEBUG_DEMO=1 ./test_video_classification \
+resnet50_pt 'multifilesrc location=~/video_input.webm \
+! decodebin ! videoconvert ! appsink sync=false' -t 2
+7. To test the program with a USB camera as input, run the following command:
+./test_video_classification resnet50_pt 0 -t 4
+Here, 0 is the first USB camera device node. If you have multiple USB cameras, the value is
+1,2,3, etc., where, -t is the number of threads.
+
+
+IMPORTANT! Enable X11 forwarding with the following command (suppose in this example that the
+host machine IP address is 192.168.0.10) when logging in to the board using an SSH terminal because
+the test_video examples require a Linux windows subsystem target to work properly.
+export DISPLAY=192.168.0.10:0.0
+8. To test the performance of the model, run the following command::
+
+	./test_performance_classification resnet50_pt 
+	test_performance_classification.list -t 8 -s 60 
+	Here, -t is the number of threads and -s is the number of seconds.
+	
+To view a complete listing of command line options for the executable, run the command
+with the '-h' switch.
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

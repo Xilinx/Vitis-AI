@@ -1,0 +1,58 @@
+Target Setup Instructions
+=========================
+
+
+The following table lists target boards that are supported by Vitis |trade| AI, and provides links to the detailed setup instructions for each.  
+
+.. list-table::
+   :widths: 40 35 25
+   :header-rows: 1
+
+   * - Product
+     - Supported Target(s)
+     - Setup Documentation 
+
+   * - Versal |trade| AI Core
+     - `VCK190 <https://www.xilinx.com/vck190>`__
+     - :doc:`VCK190 Setup <board_setup_vck190>`
+	 
+   * - Versal |trade| AI Edge
+     - `VEK280 <https://www.xilinx.com/member/vitis-ai-vek280.html>`__
+     - `VEK280 Early Access <https://www.xilinx.com/member/vitis-ai-vek280.html>`__
+
+   * - Zynq |trade| Ultrascale+ |trade| Embedded
+     - `ZCU102 <https://www.xilinx.com/zcu102>`__ / `ZCU104 <https://www.xilinx.com/zcu104>`__ / `Kria K26 <https://www.xilinx.com/kria>`__
+     - :doc:`MPSoC Setup <board_setup_mpsoc>`
+
+   * - Alveo V70 Data Center Acceleration Card
+     - `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
+     - `V70 Early Access <https://www.xilinx.com/member/v70.html#vitis_ai>`__
+
+   * - Versal |trade| VCK5000 Development Card
+     - `VCK5000 <https://www.xilinx.com/vck5000>`__
+     - :doc:`VCK5000 Setup <board_setup_vck5000>`
+		
+.. note:: Custom target support for Edge/Embedded adaptive SoC targets may be enabled by the developer through Vitis and Vivado |trade| workflows.
+
+.. note:: As of the 3.0 release, Vitis AI support for the U200, U250, U50, U50LV and U55C has been discontinued.   Please leverage a previous release for these targets or contact your local sales team for additional guidance.
+
+
+.. _vai_install_to_target:
+
+Installing VAI3.0 Online
+========================
+
+To install Vitis |trade| AI 3.0 at run time, you can execute the command ``dnf install vitis-ai-library`` command directly on the target.
+
+.. note::
+
+   Before the release of ``PetaLinux VAI3.0 update``, the previous version of Vitis AI will be installed. Usually, ``PetaLinux VAI3.0 update`` will be released approximately 1 month after the Vitis 3.0 release.
+   
+   If you use this method, please ensure that the target board is connected to the Internet.
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:
+

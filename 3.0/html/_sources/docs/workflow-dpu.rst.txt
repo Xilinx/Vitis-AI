@@ -1,0 +1,89 @@
+.. _workflow-dpu:
+
+What is a DPU?
+--------------
+
+About the DPU IP
+================
+
+AMD uses the acronym D-P-U to identify soft accelerators that target deep-learning inference. These “**D** eep Learning **P** rocessing **U** nits” are a vital component of the Vitis AI solution. This (perhaps overloaded) term can refer to one of several potential accelerator architectures covering multiple network topologies.
+
+A DPU comprises elements available in the AMD programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs, and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the AMD AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of programmable logic and AI Engine array resources.
+
+An example of the DPUCZ, targeting Zynq |trade| Ultrascale+ |trade| devices is displayed in the following image:
+
+.. figure:: reference/images/DPUCZ.PNG
+   :width: 1300
+
+   Features and Architecture of the Zynq Ultrascale+ DPUCZ
+
+Vitis AI provides the DPU IP and the required tools to deploy both standard and custom neural networks on AMD adaptable targets:
+
+.. figure:: reference/images/VAI-1000ft.PNG
+   :width: 1300
+
+   Vitis AI 1000 Foot View
+
+Vitis AI DPUs are general-purpose AI inference accelerators. A single DPU instance in your design can enable you to deploy multiple CNNs simultaneously and process multiple streams simultaneously. The Processing depends on the DPU having sufficient parallelism to support the combination of the networks and the number of streams. Multiple DPU instances can be instantiated per device. The DPU can be scaled in size to accommodate the requirements of the user.
+
+The Vitis AI DPU architecture is called a "Matrix of (Heterogeneous) Processing Engines."  While on the surface, Vitis AI DPU architectures have some visual similarity to a systolic array; the similarity ends there. DPU is a micro-coded processor with its Instruction Set Architecture. Each DPU architecture has its own instruction set, and the Vitis AI Compiler compiles an executable ``.Xmodel`` to deploy for each network. The DPU executes the compiled instructions in the ``.Xmodel``. The Vitis AI Runtime addresses the underlying tasks of scheduling the inference of multiple networks, multiple streams, and even multiple DPU instances. The mix of processing engines in the DPU is heterogeneous, with the DPU having different engines specialized for different tasks. For instance, CONV2D operators are accelerated in a purpose-built PE, while another process depthwise convolutions.
+
+One advantage of this architecture is that there is no need to load a new bitstream or build a new hardware platform while changing the network.  This is an important differentiator from Data Flow accelerator architectures that are purpose-built for a single network.  That said, both the Matrix of Processing Engines and Data Flow architectures have a place in AMD designs.  If you need a highly optimized, specialized Data Flow accelerator for inference, refer to the `FINN & Brevitas  <https://xilinx.github.io/finn/>`__ solutions.  Data Flow architectures based on FINN can support inference at line rates for high-speed communications and extremely high sample rates for inference in the RF domain.  Neither of these two applications is a great fit for Vitis AI.  The reality is that both of these flows are complementary, and support for both can play an essential role in customer product differentiation and future-proofing.
+
+DPU Nomenclature
+================
+
+There are a variety of different DPUs available for different tasks and AMD platforms. The following decoder helps extract the features, characteristics, and target hardware platforms from a given DPU name.
+
+.. image:: reference/images/dpu_nomenclature_current.PNG
+
+Historic DPU Nomenclature
+=========================
+
+As of the Vitis |trade| 1.2 release, the historic DPUv1/v2/v3 nomenclature was deprecated. To better understand how these historic DPU names map into the current nomenclature, refer to the following table:
+
+.. image:: reference/images/dpu_nomenclature_legacy_mapping.PNG
+
+DPU Options
+===========
+
+Zynq |trade| UltraScale+ |trade| MPSoC: DPUCZDX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCZDX8G IP has been optimized for Zynq UltraScale+ MPSoC. You can integrate this IP
+as a block in the programmable logic (PL) of the selected Zynq UltraScale+ MPSoCs with direct
+connections to the processing system (PS). The DPU is user-configurable and exposes several
+parameters which can be specified to optimize PL resources or customize enabled features.
+
+Versal |trade| AI Core Series: DPUCVDX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCVDX8G is a high-performance general CNN processing engine optimized for the
+Versal AI Core Series. The Versal devices can provide superior performance/watt over
+conventional FPGAs, CPUs, and GPUs. The DPUCVDX8G is composed of AI Engines and PL
+circuits. This IP is user-configurable and exposes several parameters which can be specified to
+optimize AI Engines and PL resources or customize features.
+
+Versal |trade| AI Core Series: DPUCVDX8H
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCVDX8H is a high-performance and high-throughput general CNN processing engine
+optimized for the Versal AI Core series. Besides traditional program logic, Versal devices integrate
+high performance AI engine arrays, high bandwidth NoCs, DDR/LPDDR controllers, and other
+high-speed interfaces that can provide superior performance/watt over conventional FPGAs,
+CPUs, and GPUs. The DPUCVDX8H is implemented on Versal devices to leverage these benefits.
+You can configure the parameters to meet your data center application requirements.
+
+Versal |trade| AI Core / AI Edge Series: DPUCV2DX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCV2DX8G is a high-performance, general-purpose convolutional neural network(CNN)
+processing engine optimized for AMD Versal™ Adaptive SoC devices containing AI-ML tiles. This
+IP is user-configurable and exposes several parameters to configure the number of AI Engines
+used and programmable logic (PL) resource utilization.
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:

@@ -1,0 +1,289 @@
+.. _workflow-dpu:
+
+What is a DPU?
+--------------
+
+About the DPU IP
+================
+
+AMD uses the acronym D-P-U to identify soft accelerators that target deep-learning inference. These “**D** eep Learning **P** rocessing **U** nits” are a vital component of the Vitis AI solution. This (perhaps overloaded) term can refer to one of several potential accelerator architectures covering multiple network topologies.
+
+A DPU comprises elements available in the AMD programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs, and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the AMD AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of programmable logic and AI Engine array resources.
+
+An example of the DPUCZ, targeting Zynq |trade| Ultrascale+ |trade| devices is displayed in the following image:
+
+.. figure:: reference/images/DPUCZ.PNG
+   :width: 1300
+
+   Features and Architecture of the Zynq Ultrascale+ DPUCZ
+
+Vitis AI provides the DPU IP and the required tools to deploy both standard and custom neural networks on AMD adaptable targets:
+
+.. figure:: reference/images/VAI-1000ft.PNG
+   :width: 1300
+
+   Vitis AI 1000 Foot View
+
+Vitis AI DPUs are general-purpose AI inference accelerators. A single DPU instance in your design can enable you to deploy multiple CNNs simultaneously and process multiple streams simultaneously. The Processing depends on the DPU having sufficient parallelism to support the combination of the networks and the number of streams. Multiple DPU instances can be instantiated per device. The DPU can be scaled in size to accommodate the requirements of the user.
+
+The Vitis AI DPU architecture is called a "Matrix of (Heterogeneous) Processing Engines."  While on the surface, Vitis AI DPU architectures have some visual similarity to a systolic array; the similarity ends there. DPU is a micro-coded processor with its Instruction Set Architecture. Each DPU architecture has its own instruction set, and the Vitis AI Compiler compiles an executable ``.Xmodel`` to deploy for each network. The DPU executes the compiled instructions in the ``.Xmodel``. The Vitis AI Runtime addresses the underlying tasks of scheduling the inference of multiple networks, multiple streams, and even multiple DPU instances. The mix of processing engines in the DPU is heterogeneous, with the DPU having different engines specialized for different tasks. For instance, CONV2D operators are accelerated in a purpose-built PE, while another process depthwise convolutions.
+
+One advantage of this architecture is that there is no need to load a new bitstream or build a new hardware platform while changing the network.  This is an important differentiator from Data Flow accelerator architectures that are purpose-built for a single network.  That said, both the Matrix of Processing Engines and Data Flow architectures have a place in AMD designs.  If you need a highly optimized, specialized Data Flow accelerator for inference, refer to the `FINN & Brevitas  <https://xilinx.github.io/finn/>`__ solutions.  Data Flow architectures based on FINN can support inference at line rates for high-speed communications and extremely high sample rates for inference in the RF domain.  Neither of these two applications is a great fit for Vitis AI.  The reality is that both of these flows are complementary, and support for both can play an essential role in customer product differentiation and future-proofing.
+
+DPU Nomenclature
+================
+
+There are a variety of different DPUs available for different tasks and AMD platforms. The following decoder helps extract the features, characteristics, and target hardware platforms from a given DPU name.
+
+.. image:: reference/images/dpu_nomenclature_current.PNG
+
+Historic DPU Nomenclature
+=========================
+
+As of the Vitis |trade| 1.2 release, the historic DPUv1/v2/v3 nomenclature was deprecated. To better understand how these historic DPU names map into the current nomenclature, refer to the following table:
+
+.. image:: reference/images/dpu_nomenclature_legacy_mapping.PNG
+
+DPU Options
+===========
+
+Zynq |trade| UltraScale+ |trade| MPSoC: DPUCZDX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCZDX8G IP has been optimized for Zynq UltraScale+ MPSoC. You can integrate this IP
+as a block in the programmable logic (PL) of the selected Zynq UltraScale+ MPSoCs with direct
+connections to the processing system (PS). The DPU is user-configurable and exposes several
+parameters which can be specified to optimize PL resources or customize enabled features.
+
+Versal |trade| AI Core Series: DPUCVDX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCVDX8G is a high-performance general CNN processing engine optimized for the
+Versal AI Core Series. The Versal devices can provide superior performance/watt over
+conventional FPGAs, CPUs, and GPUs. The DPUCVDX8G is composed of AI Engines and PL
+circuits. This IP is user-configurable and exposes several parameters which can be specified to
+optimize AI Engines and PL resources or customize features.
+
+Versal |trade| AI Core Series: DPUCVDX8H
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCVDX8H is a high-performance and high-throughput general CNN processing engine
+optimized for the Versal AI Core series. Besides traditional program logic, Versal devices integrate
+high performance AI engine arrays, high bandwidth NoCs, DDR/LPDDR controllers, and other
+high-speed interfaces that can provide superior performance/watt over conventional FPGAs,
+CPUs, and GPUs. The DPUCVDX8H is implemented on Versal devices to leverage these benefits.
+You can configure the parameters to meet your data center application requirements.
+
+Versal |trade| AI Core / AI Edge Series: DPUCV2DX8G
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The DPUCV2DX8G is a high-performance, general-purpose convolutional neural network(CNN)
+processing engine optimized for AMD Versal™ Adaptive SoC devices containing AI-ML tiles. This
+IP is user-configurable and exposes several parameters to configure the number of AI Engines
+used and programmable logic (PL) resource utilization.
+
+
+Vitis AI DPU IP and Reference Designs
+-------------------------------------
+
+Today, AMD DPU IPs are not incorporated into the standard Vivado |trade| IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
+
+- The DPU IP is released as a reference design that is available to download from the links provided in the table below.  Users can start with the reference design and modify it to suit their requirements.
+- The DPU is released as a separate IP download that can be incorporated into a new or existing design by the developer.  
+
+The reference designs are fully functional and can be used as a template for IP integration and connectivity as well as Linux integration.
+
+
+Version and Compatibility
+=========================
+
+As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP in the table below were verified with specific versions of Vivado, Vitis, Petalinux and Vitis AI.  Please refer to :ref:`Version Compatibility <version-compatibility>` for additional information.
+
+.. note:: It is anticipated that users may wish to leverage the latest release of Vitis AI, Vitis or Vivado with DPU IP that has not been updated in this release.  For Adaptable SoC targets it is anticipated that the latest Vitis AI components such as Model Zoo models, Petalinux recipes, Quantizer, Compiler, VART and the Vitis AI Library can be directly leveraged by the user.  However, updated reference designs will no longer be provided for minor (x.5) Vitis AI releases for MPSoC and Versal AI Core targets.  Users are encouraged to use Vitis AI 3.0 for evaluation of those targets, and migrate to the Vitis AI 3.5 release if desired or necessary for production.
+
+The table below associates currently available DPU IP with the supported target, and provides links to download the reference design and documentation.  For convenience, a separate IP repo is provided for users who do not wish to download the reference design.  The IP is thus included both in the reference design, but also is available as a separate download.  
+
+
+IP and Reference Designs
+========================
+
+.. list-table:: DPU IP Resources
+   :widths: 10 10 20 20 20
+   :header-rows: 1
+
+
+   * - Product Guide
+     - Platforms
+     - Vitis AI Release
+     - Reference Design
+     - IP-only Download
+
+   * - DPUCV2DX8G `PG425 <https://docs.xilinx.com/r/en-US/pg425-dpu>`__
+     - VEK280
+     - 3.5
+     - `Download <https://www.xilinx.com/bin/public/openDownload?filename=DPUCV2DX8G_VAI_v3.5.tar.gz>`__
+     - `Get IP <https://www.xilinx.com/bin/public/openDownload?filename=DPUCV2DX8G_ip_repo_VAI_v3.5.tar.gz>`__
+
+   * - DPUCZDX8G `PG338 <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
+     - MPSoC & Kria K26
+     - 3.0
+     - `Download <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.5.tar.gz>`__
+     - `Get IP <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_ip_repo_VAI_v3.5.tar.gz>`__
+		
+   * - DPUCVDX8G `PG389 <https://docs.xilinx.com/r/en-US/pg389-dpu>`__
+     - VCK190
+     - 3.0
+     - `Download <https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_VAI_v3.0.tar.gz>`__
+     - `Get IP <https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8G_ip_repo_VAI_v3.0.tar.gz>`__	
+
+	
+.. _integrating-the-dpu:
+
+Integrating the DPU
+-------------------
+
+The basic steps to build a platform that integrates a Vitis |trade| AI DPU are as follows:
+
+1. A custom hardware platform is built using the Vitis software platform based on the Vitis
+Target Platform. The generated hardware includes the DPU IP and other kernels. You can
+also use the AMD Vitis |trade| or Vivado |trade| flows to integrate the DPU and build the custom hardware
+to suit your need.
+
+2. The Vitis AI toolchain in the host machine is used to build the model. It takes the pre-trained
+floating models as the input and runs them through the AI Optimizer (optional), AI Quantizer and AI Compiler.
+
+3. You can build executable software which runs on the built hardware. You can write your
+applications with C++ or Python which calls the Vitis AI Runtime and Vitis AI Library to load
+and run the compiled model files.
+
+.. _vitis-integration:
+
+Vitis Integration
+=================
+
+The Vitis |trade| workflow specifically targets developers with a software-centric approach to AMD SoC system development. Vitis AI is differentiated from traditional FPGA flows, enabling you to build FPGA acceleration into your applications without developing RTL kernels.
+
+The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an ``xclbin`` file. To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several `reference designs <https://github.com/Xilinx/Vitis-AI/tree/v3.5/dpu>`__ for the different DPU architectures and target platforms.
+
+In addition, a Vitis tutorial is available which provides the `end-to-end workflow <https://github.com/Xilinx/Vitis-Tutorials/tree/2023.1/Vitis_Platform_Creation/Design_Tutorials/02-Edge-AI-ZCU104>`__ for creating a Vitis Platform for ZCU104 targets.
+
+.. figure:: reference/images/vitis_integration.PNG
+   :width: 1300
+
+
+.. _vivado-integration:
+
+Vivado Integration
+==================
+
+The Vivado |reg| workflow targets traditional FPGA developers. It is important to note that the DPU IP is not currently integrated into the Vivado IP catalog. Currently, in order to update support the latest operators and network topologies at the time of Vitis AI release, the IP is released asynchronously as a `reference design and IP repository <https://github.com/Xilinx/Vitis-AI/tree/v3.5/dpu>`__.
+
+For more information, refer to the following resources:
+
+-  To integrate the DPU in a Vivado design, see this `tutorial <https://github.com/Xilinx/Vitis-AI-Tutorials/blob/2.0/Tutorials/Vitis-AI-Vivado-TRD/>`__.
+
+-  A quick-start example that assists you in deploying VART on Embedded targets is available `here <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_runtime/quick_start_for_embedded.md>`__.
+
+.. figure:: reference/images/vivado_integration.PNG
+   :width: 1300
+
+.. _linux-dpu-recipes:
+
+Vitis AI Linux Recipes
+======================
+
+Yocto and PetaLinux users will require bitbake recipes for the Vitis AI components that are compiled for the target. These recipes are provided in the `source code folder <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_petalinux_recipes>`__.
+
+.. important:: For Vitis AI releases >= v2.0, Vivado users (Zynq |reg| Ultrascale+ |trade| and Kria |trade| applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo |trade| and Versal |reg| designs must include XRT. By default, the Vitis AI Docker images incorporate XRT. Perhaps most important is that the Linux bitbake recipe for VART `assumes <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_petalinux_recipes/recipes-vitis-ai/vart/vart_3.5.bb#L17>`__ by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must either leverage ``vart_3.5_vivado.bb`` or, comment out the line ``PACKAGECONFIG:append = " vitis"`` in the ``vart_3.5.bb`` recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT, which is not compatible with Vivado will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.  Finally, be sure to only include one of the two bitbake recipes in the Petalinux build folder! 
+
+There are two ways to integrate the Vitis |trade| AI Library and Runtime in a custom design:
+
+- Build the Linux image using Petalinux, incorporating the necessary recipes.
+- Install Vitis AI 3.5 to the target leveraging a pre-built package at run time. See the details of online installation in :ref:`custom target <custom_target>`.
+
+Linux DeviceTree Bindings
+=========================
+
+Documentation for the Vitis AI DPUCZ Devicetree bindings can be `found here <https://github.com/Xilinx/linux-xlnx/blob/master/Documentation/devicetree/bindings/misc/xlnx%2Cdpu.yaml>`__ .
+
+Rebuilding the Linux Image With Petalinux
+=========================================
+
+Most developers will need to build a Petalinux or Yocto Vitis AI 3.5 image for their platform. You can obtain the recipes for Vitis AI 3.5 in the following two ways:
+
+-  Using ``recipes-vitis-ai`` in this repo.
+-  Upgrading the Petalinux eSDK.
+
+Using recipes-vitis-ai
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+     
+   ``recipes-vitis-ai`` enables **Vitis flow by default**. Recipes for both Vivado and Vitis are provided. In the Vivado recipe, the following line is commented out:
+
+   ..  code-block:: bash
+
+        #PACKAGECONFIG_append = " vitis"
+
+1. Copy the ``recipes-vitis-ai`` folder to ``<petalinux project>/project-spec/meta-user/``
+
+   ..  code-block:: bash
+
+      cp Vitis-AI/src/petalinux_recipes/recipes-vitis-ai <petalinux project>/project-spec/meta-user/
+
+3. Delete either ``recipes-vitis-ai/vart/vart_3.5.bb`` or ``recipes-vitis-ai/vart/vart_3.5_vivado.bb`` depending on workflow that you have selected for your design.
+
+3. Edit ``<petalinux project>/project-spec/meta-user/conf/user-rootfsconfig``
+   file, appending the following lines:
+
+   .. code-block::
+
+         CONFIG_vitis-ai-library
+         CONFIG_vitis-ai-library-dev
+         CONFIG_vitis-ai-library-dbg
+
+4. Source PetaLinux tool and run ``petalinux-config -c rootfs`` command. Select the following option.
+
+   .. code-block::
+
+         Select user packages --->
+         Select [*] vitis-ai-library
+
+   Then, save it and exit.
+
+5. Run ``petalinux-build``.
+
+   .. note:
+      
+      After you run the above successfully, the vitis-ai-library, VART3.5 and the dependent packages will all be installed into the rootfs image.
+
+      If you want to compile the example on the target, please select the ``vitis-ai-library-dev`` and ``packagegroup-petalinux-self-hosted``. Then, recompile the system.
+
+      If you want to use vaitracer tool, please select the ``vitis-ai-library-dbg``. And copy ``recipes-vai-kernel`` folder to ``<petalinux project>/project-spec/meta-user/``. Then, recompile the system.
+
+   ..  code-block:: bash
+
+       cp Vitis-AI/src/petalinux_recipes/recipes-vai-kernel <petalinux project>/project-spec/meta-user/
+
+Using Upgrade Petalinux eSDK
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Run the following commands to upgrade PetaLinux.
+
+.. code-block:: bash
+
+     source <petalinux-v2023.1>/settings
+     petalinux-upgrade -u ‘http://petalinux.xilinx.com/sswreleases/rel-v2023/sdkupdate/2023.1_update1/’ -p ‘aarch64’
+
+Following this upgrade, you will find ``vitis-ai-library_3.5.bb`` recipe in ``<petalinux project>/components/yocto/layers/meta-vitis-ai``.
+
+For details about this process, refer to `Petalinux Upgrade <https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade-Option>`__.
+
+.. note:: ``2023.1_update1`` will be released approximately 1 month after Vitis 3.5 release. The name of ``2023.1_update1`` may change. Modify it accordingly.
+
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

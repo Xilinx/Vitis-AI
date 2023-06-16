@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Quick Start Guide for VCK190 &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Quick Start Guide for Zynq™ UltraScale+™" href="mpsoc.html" />
+    <link rel="prev" title="Quick Start Guide for VCK5000" href="vck5000.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vck5000.html">Quick Start Guide for VCK5000</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide for VCK190</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-installation">Docker Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-for-rocm-and-gpu-acceleration">Setup for ROCm and GPU Acceleration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-procedure">Installation Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-setup">Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-resnet50-tutorial">Tensorflow Resnet50 Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">First Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-dpu.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Integrating the DPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Quick Start Guide for VCK190</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/quickstart/vck190.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start-guide-for-vck190">
+<h1>Quick Start Guide for VCK190<a class="headerlink" href="#quick-start-guide-for-vck190" title="Permalink to this heading">¶</a></h1>
+<p>The AMD  <strong>DPUCVDX8G</strong> for Versal™ VCK190 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support the VCK190.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
+<section id="system-requirements">
+<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Confirm that your development machine meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p></li>
+<li><p>Confirm that you have at least <strong>100GB</strong> of free space in the target partition.</p></li>
+</ul>
+</section>
+<section id="docker-installation">
+<h3>Docker Installation<a class="headerlink" href="#docker-installation" title="Permalink to this heading">¶</a></h3>
+<p>Make sure that the Docker engine is installed according to the official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
+<p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p>
+<p>Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a “Hello World” message and exits.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+</pre></div>
+</div>
+<p>Finally, verify that the version of Docker that you have installed meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> by running the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+</div>
+</section>
+<section id="setup-for-rocm-and-gpu-acceleration">
+<h3>Setup for ROCm and GPU Acceleration<a class="headerlink" href="#setup-for-rocm-and-gpu-acceleration" title="Permalink to this heading">¶</a></h3>
+<p>For servers with ROCm and GPU-based acceleration, developers should prepare their host according to the <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md">ROCm Docker installation documentation</a>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="installation-procedure">
+<h2>Installation Procedure<a class="headerlink" href="#installation-procedure" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Pull an up-to-date version of one of the pre-built Vitis AI docker containers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/&lt;</span><span class="n">Docker</span> <span class="n">Name</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;Docker</span> <span class="pre">Name&gt;</span></code> is selected from the table below based on the desired configuration:</p>
+<blockquote>
+<div><table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Vitis AI Pre-built Container Options</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Desired Configuration</p></th>
+<th class="head"><p>Docker Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PyTorch, CPU-only</p></td>
+<td><p>vitis-ai-pytorch-cpu</p></td>
+</tr>
+<tr class="row-odd"><td><p>PyTorch, with ROCm acceleration</p></td>
+<td><p>vitis-ai-pytorch-rocm</p></td>
+</tr>
+<tr class="row-even"><td><p>PyTorch, with AI Optimizer and ROCm acceleration</p></td>
+<td><p>vitis-ai-opt-pytorch-rocm</p></td>
+</tr>
+<tr class="row-odd"><td><p>TensorFlow 1.15, CPU-only</p></td>
+<td><p>vitis-ai-tensorflow-cpu</p></td>
+</tr>
+<tr class="row-even"><td><p>TensorFlow 2, CPU-only</p></td>
+<td><p>vitis-ai-tensorflow2-cpu</p></td>
+</tr>
+<tr class="row-odd"><td><p>TensorFlow 2, with ROCm acceleration</p></td>
+<td><p>vitis-ai-tensorflow2-rocm</p></td>
+</tr>
+<tr class="row-even"><td><p>TensorFlow 2, with AI Optimizer and ROCm acceleration</p></td>
+<td><p>vitis-ai-opt-tensorflow2-rocm</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The CPU-only containers <em>do not provide GPU acceleration support</em> which is <strong>strongly recommended</strong> for acceleration of the Vitis AI <a class="reference internal" href="../workflow-model-development.html#quantization-process"><span class="std std-ref">Quantization process</span></a>. The pre-built CPU-only containers should only be used when a GPU is not available on the host machine. The AI Optimizer containers are only required for <a class="reference internal" href="../workflow-model-development.html#model-optimization"><span class="std std-ref">pruning</span></a> and require a license.</p>
+</div>
+</div></blockquote>
+</li>
+<li><p>Clone the Vitis AI repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Xilinx</span><span class="o">/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
+</pre></div>
+</div>
+</li>
+<li><p>Install the petalinux sdk cross-compilation tools. By default, the cross-compiler will be installed in <code class="docutils literal notranslate"><span class="pre">~/petalinux_sdk_2022.2</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck190</span>
+<span class="o">./</span><span class="n">host_cross_compiler_setup</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>Download the pre-built Vitis AI board image for VCK190:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-vck190-dpu-v2022.2-v3.0.0.img.gz
+</pre></div>
+</div>
+<p><strong>Note:</strong> The pre-built Vitis AI board image includes the Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples and models. The examples are pre-compiled. Therefore, you do not need to install Vitis AI Runtime packages and model package on the board separately. To install the Vitis AI Runtime and Vitis AI models on your own image, refer to these <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Installing-Vitis-AI-Runtime-on-the-Evaluation-Board">instructions</a>.</p>
+</li>
+<li><p>Download and install Balena Etcher from <a class="reference external" href="https://etcher.io/">https://etcher.io/</a> to burn the board image file onto the SD card.</p></li>
+<li><p>Insert the imaged SD card into the target VCK190 board.</p></li>
+<li><p>Connect the power adapter and boot the board using the serial port to interact with the target.</p></li>
+<li><p>Configure the IP address and related settings for the board using the serial port.</p></li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="environment-setup">
+<h2>Environment Setup<a class="headerlink" href="#environment-setup" title="Permalink to this heading">¶</a></h2>
+<ul>
+<li><p>The model development tools (quantization, compilation, etc…) are run within the Vitis AI docker container. To start the Vitis AI docker image, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
+<span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/&lt;</span><span class="n">Docker</span> <span class="n">Name</span><span class="o">&gt;</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+</li>
+<li><p>The ARM cross-compiler is run on the host workstation (outside the docker container). To set up the environment for using the cross-compiler, source the following script in your terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">~/</span><span class="n">petalinux_sdk_2022</span><span class="mf">.2</span><span class="o">/</span><span class="n">environment</span><span class="o">-</span><span class="n">setup</span><span class="o">-</span><span class="n">cortexa72</span><span class="o">-</span><span class="n">cortexa53</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+<section id="tensorflow-resnet50-tutorial">
+<h2>Tensorflow Resnet50 Tutorial<a class="headerlink" href="#tensorflow-resnet50-tutorial" title="Permalink to this heading">¶</a></h2>
+<p>This tutorial assumes that Vitis AI has been installed and that the VCK190 board has been configured, as explained in the installation instructions above.</p>
+<ol class="arabic">
+<li><p>Pull the pre-built Vitis AI docker container for TensorFlow 1.15, and launch the image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span>
+<span class="n">docker</span> <span class="n">pull</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">tensorflow</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+<span class="o">./</span><span class="n">docker_run</span><span class="o">.</span><span class="n">sh</span> <span class="n">xilinx</span><span class="o">/</span><span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">tensorflow</span><span class="o">-</span><span class="n">cpu</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> All subsequent steps of this tutorial are executed in the docker session.</p>
+</li>
+<li><p>Download the Resnet50 floating-point model from the Vitis AI model zoo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip -O tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip
+unzip tf_resnetv1_50_imagenet_224_224_6.97G_3.0.zip
+</pre></div>
+</div>
+</li>
+<li><p>Download the calibration images (the full dataset is from <a class="reference external" href="http://image-net.org/download-images">ImageNet</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=Imagenet_calib.tar.gz -O Imagenet_calib.tar.gz
+tar -xzvf Imagenet_calib.tar.gz -C tf_resnetv1_50_imagenet_224_224_6.97G_3.0/data
+</pre></div>
+</div>
+</li>
+<li><p>Download the sample images used by the example application:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /workspace/examples
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+</pre></div>
+</div>
+</li>
+<li><p>Activate the Conda “vitis-ai-tensorflow” environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">tensorflow</span>
+</pre></div>
+</div>
+</li>
+<li><p>Configure the quantization process: edit the <code class="docutils literal notranslate"><span class="pre">/workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize/config.ini</span></code> file and set the <code class="docutils literal notranslate"><span class="pre">CALIB_BATCH_SIZE</span></code> option to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p></li>
+<li><p>Quantize the floating-point model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span><span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">quantize</span>
+<span class="n">bash</span> <span class="n">quantize</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+<li><p>Compile the quantized model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="n">vai_c_tensorflow</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">quantized</span><span class="o">/</span><span class="n">quantize_eval_model</span><span class="o">.</span><span class="n">pb</span> <span class="o">-</span><span class="n">a</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">vitis_ai</span><span class="o">/</span><span class="n">compiler</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">DPUCVDX8H</span><span class="o">/</span><span class="n">VCK50008PE</span><span class="o">/</span><span class="n">arch</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="o">./</span><span class="n">compiled</span> <span class="o">-</span><span class="n">n</span> <span class="n">resnet50_tf</span>
+</pre></div>
+</div>
+</li>
+<li><p>Cross-compile the example application (<em>details to be added</em>)
+Note: the example is already pre-compiled in the standard board image, but I feel it is important to show the cross-compilation steps as this is something people will have to do routinely.</p></li>
+<li><p>Transfer compiled example to VCK190 board (<em>details to be added</em>)</p></li>
+<li><p>Execute example (<em>details to be added</em>)</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vck5000.html" class="btn btn-neutral float-left" title="Quick Start Guide for VCK5000" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mpsoc.html" class="btn btn-neutral float-right" title="Quick Start Guide for Zynq™ UltraScale+™" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on May 18, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

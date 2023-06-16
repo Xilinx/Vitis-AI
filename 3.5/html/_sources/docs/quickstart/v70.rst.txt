@@ -1,0 +1,270 @@
+###############################
+Quick Start Guide for Versal V70
+###############################
+
+The AMD **DPUCV2DX8G** for the Versal |trade|  V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support V70.
+
+
+*************  
+Prerequisites
+*************
+
+System Requirements
+=================
+
+-  Confirm that your development machine meets the minimum :doc:`Host System Requirements <../reference/system_requirements>`.
+-  Confirm that you have at least **100GB** of free space in the target partition.
+
+Applicable Targets
+==================
+
+-  This quickstart is applicable to the `V70 <https://www.xilinx.com/applications/data-center/v70.html>`__
+
+
+
+**********
+Quickstart
+**********
+
+Installation Procedure
+======================
+
+Versal V70 Setup
+---------------
+
+A script is provided to drive the V70 card setup process.
+
+.. note:: You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis AI 3.5 specifically leverages the 2022.2 versions of the Vitis tools, V70 platform, XRT and XRM.
+
+This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.
+
+Execute this script as follows:
+
+.. code-block::
+
+   cd <Vitis-AI install path>/Vitis-AI/board_setup/v70
+   source ./install.sh
+
+
+
+The following installation steps are performed by this script:
+
+1. XRT Installation. The `Xilinx RunTime (XRT) <https://github.com/Xilinx/XRT>`__ is a combination of userspace and kernel driver components supporting PCIe accelerator cards such as the V70. 
+2. XRM Installation. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on the host. It is required by the runtime.
+3. Installation of the V70 platform.
+4. Installation of the DPU xclbin for the V70 platform.
+
+After the script is executed successfully, use the XRT `xbutil` command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.
+
+.. code-block::
+
+   /opt/xilinx/xrt/bin/xbutil examine
+
+Clone the Vitis AI Repository
+=============================
+
+   .. code-block:: Bash
+		
+	  git clone https://github.com/Xilinx/Vitis-AI
+	  cd Vitis-AI
+
+Install Docker
+==============
+
+Make sure that the Docker engine is installed according to the official Docker `documentation <https://docs.docker.com/engine/install/>`__.
+
+The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
+
+Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a "Hello World" message and exits. 
+
+   .. code-block:: Bash
+	
+	  docker run hello-world
+
+Finally, verify that the version of Docker that you have installed meets the minimum :doc:`Host System Requirements <../reference/system_requirements>` by running the following command
+
+   .. code-block:: Bash
+	
+	  docker --version
+
+Pull Vitis AI Docker
+====================
+
+For this quickstart tutorial we will simply use the CPU Docker.  It is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the :doc:`Full Install Instructions <../install/install>` but we would recommend that new users start with this simpler first step.
+
+Pull and start the latest Vitis AI Docker using the following commands:
+
+   .. code-block:: Bash
+		
+	  docker pull xilinx/vitis-ai-pytorch-cpu:latest
+	  ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+
+
+Docker Container Environment Variable Setup
+-------------------------------------------
+
+First, ensure that you have cloned Vitis AI, entered the Vitis AI directory.  Start Docker. 
+
+From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the ``/opt/xilinx/overlaybins`` directory prior to execution. Select the xclbin that matches your chosen DPU configuration.
+
+- For the Versal V70:
+
+   .. code-block::
+   
+      source <Vitis-AI install path>/board_setup/v70/setup.sh DPUCV2DX8G_v70
+	  
+
+
+Run the Vitis AI Examples
+=========================
+
+In the docker system, ``/workspace/examples/vai_runtime/`` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take ``resnet50`` as an example.
+
+#. Download the `vitis_ai_runtime_r3.5.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz>`__ package and unzip it:
+
+.. code-block:: Bash
+
+        cd /workspace/examples
+        wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+        tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+
+#. Download the ``resnet50`` model.
+
+* If the ``/usr/share/vitis_ai_library/models`` folder does not exist, create it first.
+
+.. code-block:: Bash
+   
+	sudo mkdir /usr/share/vitis_ai_library/models
+
+* For V70 DPU IP, install the model package as follows.
+
+.. code-block:: Bash
+
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
+        tar -xzvf resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+
+#. Navigate to the example directory in docker container.
+
+.. code-block:: Bash
+	
+	cd ~/Vitis-AI/examples/vai_runtime/resnet50
+
+#. Compile the example.
+
+.. code-block:: Bash
+
+        bash -x build.sh
+
+#. Run the example.
+
+.. code-block:: Bash
+	
+	./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+
+
+.. note:: Different DPU IP correspond to different model files, which cannot be used alternately.
+
+For the examples with video input, only ``webm`` and ``raw`` format are supported by default with the official system image. If you want to support video data in other formats, you need to install the relevant packages on the system.
+   
+
+Quantize, Compile, Deploy a Model
+=================================
+
+*Oops....the below is written for TF1.1 but needs to be updated to PyTorch so that it aligns with pulling the pre-built PyTorch CPU container as done above.  Aidan, can you build this out further?*
+
+
+This tutorial assumes that Vitis AI has been installed and that the MPSoC target has been configured, as explained in the installation instructions above.
+
+
+#. Download the calibration images (the full dataset is from `ImageNet <http://image-net.org/download-images>`__)::
+
+	wget https://www.xilinx.com/bin/public/openDownload?filename=Imagenet_calib.tar.gz -O Imagenet_calib.tar.gz
+	tar -xzvf Imagenet_calib.tar.gz -C tf_resnetv1_50_imagenet_224_224_6.97G_3.0/data
+
+#. Download the sample images used by the example application::
+
+	cd /workspace/examples
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+
+#. Activate the Conda "vitis-ai-tensorflow" environment::
+
+	conda activate vitis-ai-tensorflow
+
+#. Configure the quantization process: edit the ``/workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize/config.ini`` file and set the ``CALIB_BATCH_SIZE`` option to ``5``. 
+
+#. Quantize the floating-point model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize
+	bash quantize.sh
+
+#. Compile the quantized model::
+
+	cd /workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0
+	vai_c_tensorflow -f ./quantized/quantize_eval_model.pb -a /opt/vitis_ai/compiler/arch/DPUCVDX8H/VCK50008PE/arch.json -o ./compiled -n resnet50_tf
+
+#. Cross-compile the example application (*details to be added*)
+   Note: the example is already pre-compiled in the standard board image, but I feel it is important to show the cross-compilation steps as this is something people will have to do routinely.
+
+#. Transfer compiled example to MPSoC board (*details to be added*)
+
+#. Execute example (*details to be added*)
+
+
+Working with the Vitis AI Library
+=================================
+
+Suppose you have downloaded ``Vitis-AI``, entered ``Vitis-AI`` directory, and then started Docker image. Thus, ``vai_libray`` examples are located in the path of ``/workspace/examples/vai_library/`` in the docker system. To run an example for the Versal V70 card, use these steps:
+
+1. Select the model for your platforms.
+    For each model, there will be a yaml file which is used for describe all the details about the model. In the yaml file, you will find the model's download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list) to view all the models. Take [pytorch resnet50 yaml file](https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.5/model.yaml) as an example.
+
+    * If the `/usr/share/vitis_ai_library/models` folder does not exist, create it first::
+        
+        sudo mkdir /usr/share/vitis_ai_library/models
+        
+    * For DPUCV2DX8G DPU IP of V70 card, install the model package as follows::
+
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+        tar -xzvf resnet50-pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+        sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
+
+2. Download the [vitis_ai_library_r3.5.0_images.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz) and [vitis_ai_library_r3.5.0_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz) packages and untar them::
+        cd /workspace
+        wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz -O vitis_ai_library_r3.5.0_images.tar.gz
+        wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz -O vitis_ai_library_r3.5.0_video.tar.gz
+        tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C examples/vai_library/
+        tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C examples/vai_library/
+
+3. Enter the directory of the sample and then compile it::
+
+	cd /workspace/examples/vai_library/samples/classification
+	bash -x build.sh
+
+4. Run the image test mode::
+
+	./test_jpeg_classification resnet50_pt sample_classification.jpg
+
+5. To run the video example, run the following command::
+
+	./test_video_classification resnet50_pt <video_input.mp4> -t 8
+	
+Here, video_input.mp4 is the video file that you have to prepare for input and -t is the
+number of threads.
+
+6. To test the performance of the model, run the following command::
+
+	./test_performance_classification resnet50_pt 
+	test_performance_classification.list -t 8 -s 60
+
+Here, -t is the number of threads and -s is the number of seconds. To view a complete listing of command line options for the executable, run the command with the '-h' switch.
+
+Note: The performance test program is automatically run in batch mode
+
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

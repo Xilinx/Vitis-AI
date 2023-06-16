@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Release Notes 3.5 &mdash; Vitis™ AI 3.5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Vitis AI Host (Developer) Machine Requirements" href="system_requirements.html" />
+    <link rel="prev" title="Vitis AI" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-compatibility">Version Compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-and-github-repository">Documentation and Github Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-containers-and-gpu-support">Docker Containers and GPU Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-zoo">Model Zoo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#onnx-cnn-quantizer">ONNX CNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pytorch-cnn-quantizer">PyTorch CNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-2-cnn-quantizer">TensorFlow 2 CNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-1-cnn-quantizer">TensorFlow 1 CNN Quantizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiler">Compiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pytorch-optimizer">PyTorch Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-2-optimizer">TensorFlow 2 Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime">Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vitis-onnx-runtime-execution-provider-voe">Vitis ONNX Runtime Execution Provider (VOE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#library">Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-inspector">Model Inspector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profiler">Profiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-zynq-ultrascale-dpuczdx8g">DPU IP - Zynq Ultrascale+ DPUCZDX8G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-targets-dpucvdx8g">DPU IP - Versal AIE Targets DPUCVDX8G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h">DPU IP - CNN - Alveo Data Center DPUCVDX8H</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge">DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-v70-data-center-dpucv2dx8g">DPU IP - CNN - V70 Data Center DPUCV2DX8G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wego">WeGO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#known-issues">Known Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Quick Start Guide for VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Quick Start Guide for V70</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/custom_target.html">Quick Start Guide for Custom Targets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">First Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vitis-ai-dpu-ip-and-reference-designs">Vitis AI DPU IP and Reference Designs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#integrating-the-dpu">Integrating the DPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ref_design_docs/README_DPUCV2DX8G.html">VEK280 DPUCV2DX8G Reference Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/classlist.html">Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/filelist.html">File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/namespacelist.html">Namespace</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html#id1">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Release Notes 3.5</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/reference/release_notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-notes-3-5">
+<h1>Release Notes 3.5<a class="headerlink" href="#release-notes-3-5" title="Permalink to this heading">¶</a></h1>
+<section id="version-compatibility">
+<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Permalink to this heading">¶</a></h2>
+<p>Vitis™ AI v3.5 and the DPU IP released with the v3.5 branch of this repository are verified as compatible with Vitis, Vivado™, and PetaLinux version 2023.1. If you are using a previous release of Vitis AI, you should review the <a class="reference internal" href="version_compatibility.html#version-compatibility"><span class="std std-ref">version compatibility matrix</span></a> for that release.</p>
+</section>
+<section id="documentation-and-github-repository">
+<h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Merged UG1313 into UG1414</p></li>
+<li><p>Streamlined UG1414 to remove redundant content</p></li>
+<li><p>Streamlined UG1414 to focus exclusively on core tool usage.  Core tools such as the Optimizer, Quantizer and Compiler are now being utilized across multiple targets (ie Ryzen™ AI, EPYC™) and this change seeks to make UG1414 more portable to these targets</p></li>
+<li><p>Migrated Adaptable SoC and Alveo specific content from UG1414 to Github.IO</p></li>
+<li><p>New Github.IO Toctree structure</p></li>
+<li><p>Integrated VART Runtime APIs in Doxygen format</p></li>
+</ul>
+</section>
+<section id="docker-containers-and-gpu-support">
+<h2>Docker Containers and GPU Support<a class="headerlink" href="#docker-containers-and-gpu-support" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Removed Anaconda dependency from TensorFlow 2 and PyTorch containers in order to address Anaconda commercial license requirements</p></li>
+<li><p>Updated Docker container to disable Ubuntu 18.04 support (which was available in Vitis AI but not officially supported).  This was done to address <a class="reference external" href="https://nvd.nist.gov/vuln/detail/CVE-2021-3493">CVE-2021-3493</a>.</p></li>
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="model-zoo">
+<h2>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="onnx-cnn-quantizer">
+<h2>ONNX CNN Quantizer<a class="headerlink" href="#onnx-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Initial release</p></li>
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="pytorch-cnn-quantizer">
+<h2>PyTorch CNN Quantizer<a class="headerlink" href="#pytorch-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Pytorch 1.13 and 2.0 support</p></li>
+<li><p>Mixed precision quantization support, support float32/float16/bfloat16/intx mixed quantization</p></li>
+<li><p>Support of bit-wise accuracy cross check between quantizer and ONNX-runtime</p></li>
+<li><p>Split and chunk operators were automatically converted to slicing</p></li>
+<li><p>Dict input/output support for model forward function</p></li>
+<li><p>Keywords argument support for model forward function</p></li>
+<li><p>Matmul subroutine support</p></li>
+<li><p>QAT supports training on mutiple GPUs</p></li>
+<li><p>QAT supports operations with multiple inputs or outputs</p></li>
+</ul>
+</section>
+<section id="tensorflow-2-cnn-quantizer">
+<h2>TensorFlow 2 CNN Quantizer<a class="headerlink" href="#tensorflow-2-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="tensorflow-1-cnn-quantizer">
+<h2>TensorFlow 1 CNN Quantizer<a class="headerlink" href="#tensorflow-1-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="compiler">
+<h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="pytorch-optimizer">
+<h2>PyTorch Optimizer<a class="headerlink" href="#pytorch-optimizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Removed requirement for license purchase</p></li>
+<li><p>Supports PyTorch 1.11, 1.12 and 1.13</p></li>
+<li><p>Supports pruning of grouped convolution</p></li>
+<li><p>Supports setting the number of channels to be a multiple of the specified number after pruning</p></li>
+</ul>
+</section>
+<section id="tensorflow-2-optimizer">
+<h2>TensorFlow 2 Optimizer<a class="headerlink" href="#tensorflow-2-optimizer" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Removed requirement for license purchase</p></li>
+<li><p>Supports TensorFlow 2.11 and 2.12</p></li>
+<li><p>Supports pruning of tf.keras.layers.SeparableConv2D</p></li>
+<li><p>Fixed tf.keras.layers.Conv2DTranspose pruning bug</p></li>
+<li><p>Supports setting the number of channels to be a multiple of the specified number after pruning</p></li>
+</ul>
+</section>
+<section id="runtime">
+<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="vitis-onnx-runtime-execution-provider-voe">
+<h2>Vitis ONNX Runtime Execution Provider (VOE)<a class="headerlink" href="#vitis-onnx-runtime-execution-provider-voe" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="library">
+<h2>Library<a class="headerlink" href="#library" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="model-inspector">
+<h2>Model Inspector<a class="headerlink" href="#model-inspector" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="profiler">
+<h2>Profiler<a class="headerlink" href="#profiler" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="dpu-ip-zynq-ultrascale-dpuczdx8g">
+<h2>DPU IP - Zynq Ultrascale+ DPUCZDX8G<a class="headerlink" href="#dpu-ip-zynq-ultrascale-dpuczdx8g" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>IP has reached maturity</p></li>
+<li><p>No updates for this release</p></li>
+<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
+<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-targets-dpucvdx8g">
+<h2>DPU IP - Versal AIE Targets DPUCVDX8G<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8g" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>IP has reached maturity</p></li>
+<li><p>No updates for this release</p></li>
+<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
+<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-alveo-data-center-dpucvdx8h">
+<h2>DPU IP - CNN - Alveo Data Center DPUCVDX8H<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>IP has reached maturity</p></li>
+<li><p>No updates for this release</p></li>
+<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
+<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge">
+<h2>DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-v70-data-center-dpucv2dx8g">
+<h2>DPU IP - CNN - V70 Data Center DPUCV2DX8G<a class="headerlink" href="#dpu-ip-cnn-v70-data-center-dpucv2dx8g" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="wego">
+<h2>WeGO<a class="headerlink" href="#wego" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+</section>
+<section id="known-issues">
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Engineering to add comments</p></li>
+</ul>
+<p>AMD, the AMD Arrow logo, and combinations thereof are trademarks of Advanced Micro Devices, Inc.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Vitis AI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="system_requirements.html" class="btn btn-neutral float-right" title="Vitis AI Host (Developer) Machine Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on June 29, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

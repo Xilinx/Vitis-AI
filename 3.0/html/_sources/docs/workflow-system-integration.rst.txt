@@ -1,0 +1,153 @@
+.. _integrating-the-dpu:
+
+Integrating the DPU
+===================
+
+The basic steps to build a platform that integrates a Vitis |trade| AI DPU are as follows:
+
+1. A custom hardware platform is built using the Vitis software platform based on the Vitis
+Target Platform. The generated hardware includes the DPU IP and other kernels. In the Vitis
+AI release package, pre-built SD card images (for ZCU102/104, KV260, VCK190 and
+VEK280) and Versal shells are included for quick start and application development. You can
+also use the AMD Vitis |trade| or Vivado |trade| flows to integrate the DPU and build the custom hardware
+to suit your need.
+
+2. The Vitis AI toolchain in the host machine is used to build the model. It takes the pre-trained
+floating models as the input and runs them through the AI Optimizer (optional).
+
+3. You can build executable software which runs on the built hardware. You can write your
+applications with C++ or Python which calls the Vitis AI Runtime and Vitis AI Library to load
+and run the compiled model files.
+
+
+.. _vitis-integration:
+
+Vitis Integration
+-----------------
+
+The Vitis |trade| workflow specifically targets developers with a software-centric approach to AMD SoC system development. Vitis AI is differentiated from traditional FPGA flows, enabling you to build FPGA acceleration into your applications without developing RTL kernels.
+
+The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an ``xclbin`` file. To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several `reference designs <https://github.com/Xilinx/Vitis-AI/tree/v3.0/dpu>`__ for the different DPU architectures and target platforms.
+
+In addition, a Vitis tutorial is available which provides the `end-to-end workflow <https://github.com/Xilinx/Vitis-Tutorials/tree/2022.1/Vitis_Platform_Creation/Design_Tutorials/02-Edge-AI-ZCU104>`__ for creating a Vitis Platform for ZCU104 targets.
+
+.. figure:: reference/images/vitis_integration.PNG
+   :width: 1300
+
+
+.. _vivado-integration:
+
+Vivado Integration
+------------------
+
+The Vivado |reg| workflow targets traditional FPGA developers. It is important to note that the DPU IP is not currently integrated into the Vivado IP catalog. Currently, in order to update support the latest operators and network topologies at the time of Vitis AI release, the IP is released asynchronously as a `reference design and IP repository <https://github.com/Xilinx/Vitis-AI/tree/v3.0/dpu>`__.
+
+For more information, refer to the following resources:
+
+-  To integrate the DPU in a Vivado design, see this `tutorial <https://github.com/Xilinx/Vitis-AI-Tutorials/blob/2.0/Tutorials/Vitis-AI-Vivado-TRD/>`__.
+
+-  A quick-start example that assists you in deploying VART on Embedded targets is available `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/quick_start_for_embedded.md>`__.
+
+.. figure:: reference/images/vivado_integration.PNG
+   :width: 1300
+
+.. _linux-dpu-recipes:
+
+Vitis AI Linux Recipes
+----------------------
+
+Yocto and PetaLinux users will require bitbake recipes for the Vitis AI components that are compiled for the target. These recipes are provided in the `source code folder <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_petalinux_recipes>`__.
+
+.. important:: For Vitis AI releases >= v2.0, Vivado users (Zynq |reg| Ultrascale+ |trade| and Kria |trade| applications) must compile VART standalone without XRT. However, Vitis users must compile VART with XRT (required for Vitis kernel integration). All designs that leverage Vitis AI require VART, while all Alveo |trade| and Versal |reg| designs must include XRT. By default, the Vitis AI Docker images incorporate XRT. Perhaps most important is that the Linux bitbake recipe for VART `assumes <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_petalinux_recipes/recipes-vitis-ai/vart/vart_3.0.bb#L17>`__ by default that you are leveraging the Vitis flow. If you are leveraging the DPU in Vivado with Linux, you must either leverage ``vart_3.0_vivado.bb`` or, comment out the line ``PACKAGECONFIG:append = " vitis"`` in the ``vart_3.0.bb`` recipe in order to ensure that you are compiling VART without XRT. Failing to do so will result in runtime errors when executing VART APIs. Specifically, XRT, which is not compatible with Vivado will error out when it attempts to load an xclbin file, a kernel file that is absent in the Vivado flow.  Finally, be sure to only include one of the two bitbake recipes in the Petalinux build folder! 
+
+There are two ways to integrate the Vitis |trade| AI Library and Runtime in a custom design:
+
+- Build the Linux image using Petalinux, incorporating the necessary recipes.
+- Install Vitis AI 3.0 to the target leveraging a pre-built package at run time. See the board setup instructions for details of the online installation :ref:`process <vai_install_to_target>`.
+
+Linux DeviceTree Bindings
+-------------------------
+
+Documentation for the Vitis AI DPUCZ Devicetree bindings can be `found here <https://github.com/Xilinx/linux-xlnx/blob/master/Documentation/devicetree/bindings/misc/xlnx%2Cdpu.yaml>`__ .
+
+Rebuilding the Linux Image With Petalinux
+-----------------------------------------
+
+If users want to install Vitis AI 3.0 into the rootfs when generating system image with Petalinux, users need to use the Vitis AI 3.0 recipes. You can obtain the recipes for Vitis AI 3.0 in the following two ways:
+
+-  Using ``recipes-vitis-ai`` in this repo.
+-  Upgrading Petalinux eSDK.
+
+Using recipes-vitis-ai
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+     
+   ``recipes-vitis-ai`` enables **Vitis flow by default**. Recipes for both Vivado and Vitis are provided. In the Vivado recipe, the following line is commented out:
+
+   ..  code-block:: bash
+
+        #PACKAGECONFIG_append = " vitis"
+
+1. Copy the ``recipes-vitis-ai`` folder to ``<petalinux project>/project-spec/meta-user/``
+
+   ..  code-block:: bash
+
+      cp Vitis-AI/src/petalinux_recipes/recipes-vitis-ai <petalinux project>/project-spec/meta-user/
+
+3. Delete either ``recipes-vitis-ai/vart/vart_3.0.bb`` or ``recipes-vitis-ai/vart/vart_3.0_vivado.bb`` depending on workflow that you have selected for your design.
+
+3. Edit ``<petalinux project>/project-spec/meta-user/conf/user-rootfsconfig``
+   file, appending the following lines:
+
+   .. code-block::
+
+         CONFIG_vitis-ai-library
+         CONFIG_vitis-ai-library-dev
+         CONFIG_vitis-ai-library-dbg
+
+4. Source PetaLinux tool and run ``petalinux-config -c rootfs`` command. Select the following option.
+
+   .. code-block::
+
+         Select user packages --->
+         Select [*] vitis-ai-library
+
+   Then, save it and exit.
+
+5. Run ``petalinux-build``.
+
+   .. note:
+      
+      After you run the above successfully, the vitis-ai-library, VART3.0 and the dependent packages will all be installed into the rootfs image.
+
+      If you want to compile the example on the target, please select the ``vitis-ai-library-dev`` and ``packagegroup-petalinux-self-hosted``. Then, recompile the system.
+
+      If you want to use vaitracer tool, please select the ``vitis-ai-library-dbg``. And copy ``recipes-vai-kernel`` folder to ``<petalinux project>/project-spec/meta-user/``. Then, recompile the system.
+
+   ..  code-block:: bash
+
+       cp Vitis-AI/src/petalinux_recipes/recipes-vai-kernel <petalinux project>/project-spec/meta-user/
+
+Using Upgrade Petalinux eSDK
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Run the following commands to upgrade PetaLinux.
+
+.. code-block:: bash
+
+     source <petalinux-v2022.2>/settings
+     petalinux-upgrade -u ‘http://petalinux.xilinx.com/sswreleases/rel-v2022/sdkupdate/2022.2_update1/’ -p ‘aarch64’
+
+Following this upgrade, you will find ``vitis-ai-library_3.0.bb`` recipe in ``<petalinux project>/components/yocto/layers/meta-vitis-ai``.
+
+For details about this process, refer to `Petalinux Upgrade <https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade-Option>`__.
+
+.. note:: ``2022.2_update1`` will be released approximately 1 month after Vitis 3.0 release. The name of ``2022.2_update1`` may be changed. Modify it accordingly.
+
+     
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

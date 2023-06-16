@@ -1,0 +1,136 @@
+Release Notes 3.5
+=================
+
+Version Compatibility
+---------------------
+
+Vitis |trade| AI v3.5 and the DPU IP released with the v3.5 branch of this repository are verified as compatible with Vitis, Vivado |trade|, and PetaLinux version 2023.1. If you are using a previous release of Vitis AI, you should review the :ref:`version compatibility matrix <version-compatibility>` for that release.
+
+
+Documentation and Github Repository
+-----------------------------------
+- Merged UG1313 into UG1414
+- Streamlined UG1414 to remove redundant content
+- Streamlined UG1414 to focus exclusively on core tool usage.  Core tools such as the Optimizer, Quantizer and Compiler are now being utilized across multiple targets (ie Ryzen |trade| AI, EPYC |trade|) and this change seeks to make UG1414 more portable to these targets
+- Migrated Adaptable SoC and Alveo specific content from UG1414 to Github.IO
+- New Github.IO Toctree structure
+- Integrated VART Runtime APIs in Doxygen format
+
+Docker Containers and GPU Support
+----------------------------------
+- Removed Anaconda dependency from TensorFlow 2 and PyTorch containers in order to address Anaconda commercial license requirements
+- Updated Docker container to disable Ubuntu 18.04 support (which was available in Vitis AI but not officially supported).  This was done to address `CVE-2021-3493 <https://nvd.nist.gov/vuln/detail/CVE-2021-3493>`__.																																   
+- Engineering to add comments
+
+Model Zoo
+---------
+- Engineering to add comments
+
+ONNX CNN Quantizer
+------------------
+- Initial release
+- Engineering to add comments
+
+PyTorch CNN Quantizer
+---------------------
+- Pytorch 1.13 and 2.0 support
+- Mixed precision quantization support, support float32/float16/bfloat16/intx mixed quantization
+- Support of bit-wise accuracy cross check between quantizer and ONNX-runtime
+- Split and chunk operators were automatically converted to slicing
+- Dict input/output support for model forward function
+- Keywords argument support for model forward function
+- Matmul subroutine support
+- QAT supports training on mutiple GPUs
+- QAT supports operations with multiple inputs or outputs
+
+TensorFlow 2 CNN Quantizer
+--------------------------
+- Engineering to add comments
+
+TensorFlow 1 CNN Quantizer
+--------------------------
+- Engineering to add comments
+
+Compiler
+--------
+- Engineering to add comments
+
+PyTorch Optimizer
+-----------------
+- Removed requirement for license purchase
+- Supports PyTorch 1.11, 1.12 and 1.13
+- Supports pruning of grouped convolution
+- Supports setting the number of channels to be a multiple of the specified number after pruning
+
+TensorFlow 2 Optimizer
+----------------------
+- Removed requirement for license purchase
+- Supports TensorFlow 2.11 and 2.12
+- Supports pruning of tf.keras.layers.SeparableConv2D
+- Fixed tf.keras.layers.Conv2DTranspose pruning bug
+- Supports setting the number of channels to be a multiple of the specified number after pruning
+
+Runtime
+-------
+- Engineering to add comments
+
+Vitis ONNX Runtime Execution Provider (VOE)
+-------------------------------------------
+- Engineering to add comments
+
+Library
+-------
+- Engineering to add comments
+
+Model Inspector
+---------------
+- Engineering to add comments
+
+Profiler
+--------
+- Engineering to add comments
+
+DPU IP - Zynq Ultrascale+ DPUCZDX8G
+-----------------------------------
+- IP has reached maturity
+- No updates for this release
+- No updated reference design (DPU TRD) will be published for minor (ie x.5) releases
+- No updated pre-built board image will be published for minor (ie x.5) releases
+
+DPU IP - Versal AIE Targets DPUCVDX8G
+-------------------------------------
+- IP has reached maturity
+- No updates for this release
+- No updated reference design (DPU TRD) will be published for minor (ie x.5) releases
+- No updated pre-built board image will be published for minor (ie x.5) releases																					 
+
+DPU IP - CNN - Alveo Data Center DPUCVDX8H 
+------------------------------------------
+- IP has reached maturity
+- No updates for this release
+- No updated reference design (DPU TRD) will be published for minor (ie x.5) releases
+- No updated pre-built board image will be published for minor (ie x.5) releases																					 
+
+DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge)
+----------------------------------------------------------
+- Engineering to add comments
+
+DPU IP - CNN - V70 Data Center DPUCV2DX8G
+-----------------------------------------
+- Engineering to add comments
+
+WeGO
+----
+- Engineering to add comments
+
+Known Issues
+------------
+- Engineering to add comments
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:
+   
+   
+AMD, the AMD Arrow logo, and combinations thereof are trademarks of Advanced Micro Devices, Inc.

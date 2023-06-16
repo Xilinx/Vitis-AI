@@ -1,0 +1,422 @@
+######################################################
+Quick Start Guide for Zynq |trade| UltraScale+ |trade| 
+######################################################
+
+The AMD **DPUCZDX8G** for Zynq |trade| Ultrascale+ |trade| is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support KV260/ZCU102/ZCU104.
+
+
+*************
+Prerequisites
+*************
+
+Host Requirements
+===================
+
+-  Confirm that your development machine meets the minimum :doc:`Host System Requirements <../reference/system_requirements>`.
+-  Confirm that you have at least **100GB** of free space in the target partition.
+
+Applicable Targets
+==================
+
+-  This quickstart is applicable to the following hardware platforms:
+
+.. list-table::
+   :widths: 60 40
+   :header-rows: 1
+
+   * - Product
+     - Supported Target(s)
+
+   * - Zynq |trade| Ultrascale+ |trade| Adaptable SoC Evaluation Boards
+     - `ZCU102 <https://www.xilinx.com/zcu102>`__ / `ZCU104 <https://www.xilinx.com/zcu104>`__ / `Kria KV260 <https://www.xilinx.com/kria>`__
+
+
+**********
+Quickstart
+**********
+
+Clone the Vitis AI Repository
+=============================
+
+.. code-block:: Bash
+		
+	[Host] $ git clone https://github.com/Xilinx/Vitis-AI
+	[Host] $ cd Vitis-AI
+	  
+Install Docker
+==============
+
+Make sure that the Docker engine is installed according to the official Docker `documentation <https://docs.docker.com/engine/install/>`__.
+
+The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
+
+Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a "Hello World" message and exits. 
+
+.. code-block:: Bash
+	
+	[Host] $ docker run hello-world
+
+Finally, verify that the version of Docker that you have installed meets the minimum :doc:`Host System Requirements <../reference/system_requirements>` by running the following command
+
+.. code-block:: Bash
+	
+	[Host] $ docker --version
+
+Pull Vitis AI Docker
+====================
+
+For this quickstart tutorial we will simply use the pre-built Vitis AI PyTorch CPU Docker.  It is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the :doc:`Full Install Instructions <../install/install>` but we would recommend that new users start with this simpler first step.
+
+Pull and start the latest Vitis AI Docker using the following commands:
+
+.. code-block:: Bash
+		
+	[Host] $ docker pull xilinx/vitis-ai-pytorch-cpu:latest
+	[Host] $ ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+
+
+Setup the Host
+==============
+
+It will be useful to you later on to have the cross-compiler installed.  This will allow you to compile MPSoC applications on your host machine inside Docker.  Run the following commands to install the cross-compilation environment:
+
+.. code-block:: Bash
+
+    [Host] $ cd Vitis-AI/board_setup/mpsoc
+    [Host] $ ./host_cross_compiler_setup.sh
+	  
+.. note:: Perform these steps on your local host Linux operating system (not inside the docker container). By default, the cross compiler will be installed in ``~/petalinux_sdk_2022.2``.  The ~/petalinux_sdk_2022.2 path is recommended for the installation. Regardless of the path you choose for the installation, make sure the path has read-write permissions. In this quickstart, it is installed in ~/petalinux_sdk_2022.2
+
+
+When the installation is complete, follow the prompts and execute the following command:
+
+.. code-block:: Bash
+
+    [Host] $ source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
+
+.. note:: If you close the current terminal, you must re-execute the above instructions in the new terminal interface.
+	 
+
+Cross compile the sample taking resnet50 as an example:
+
+.. code-block:: Bash
+   
+    [Docker] $ cd Vitis-AI/examples/vai_runtime/resnet50
+    [Docker] $ bash –x build.sh
+
+If the compilation process does not report any error and the executable file resnet50 is generated, then the host environment is installed correctly.
+
+Setup the Target
+================
+
+The Vitis AI Runtime packages, VART samples, Vitis-AI-Library samples, and models are built into the board image, enhancing the user experience. Therefore, the user need not install Vitis AI Runtime packages and model packages on the board separately.
+
+
+1.  Make the target / host connections as shown in the images below.  Plug in the power adapter, ethernet cable, and a DisplayPort monitor (optional) and connect the USB-UART interface to the host.  If one is available, connect a USB webcam to the target.
+   
+	
+.. image:: ../reference/images/kria_setup.png
+	:width: 1300
+	
+	
+.. note:: The Kria KV260 can be leveraged with either HDMI or DisplayPort monitors.
+	
+2. Download the SD card image from the appropriate link:
+
+   - `ZCU102 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu102-dpu-v2022.2-v3.0.0.img.gz>`__
+   - `ZCU104 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-zcu104-dpu-v2022.2-v3.0.0.img.gz>`__
+   - `KV260 <https://www.xilinx.com/member/forms/download/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz>`__
+
+3.  Use BalenaEtcher to burn the image file onto the SD card.
+
+.. image:: ../reference/images/Etcher.png
+    :width: 1300
+    
+4.  Insert the imaged SD card into the target board.
+   
+5.  Log in to the board with your serial terminal application of choice, using the parameters listed below.
+   
+	- Baud Rate: 115200
+	- Data Bit: 8
+	- Stop Bit: 1
+	- No Parity
+
+6.  The IP address for the target can be found with the command below.
+ 
+.. code-block:: Bash
+   
+   [Target] $ ifconfig
+
+
+.. image:: ../reference/images/ifconfig.png
+    :width: 1300
+	
+If you are using a point-to-point connection or DHCP is not available, you can manually set the IP address:
+	
+.. code-block:: Bash
+
+	[Target] $ ifconfig eth0 [target_ip_address]
+	  	
+		
+7.  Next, connect to the board via SSH.  The password is 'root'
+
+.. code-block:: Bash
+
+    [Host] $ ssh -X root@[target_ip_address]
+   
+   
+8. 	If you have not connected a DisplayPort monitor, it is recommended that you export the display.  If you do not do so, the examples will not run as expected.
+
+.. code-block:: Bash
+
+    [Target] $ export DISPLAY=:0.0
+	
+   
+9.  Download the model.
+   
+You can now select a model from the Vitis AI Model Zoo `Vitis AI Model Zoo <../workflow-model-zoo.html>`__.  Navigate to the  `model-list subdirectory  <https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list>`__  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
+
+	a. Take the ResNet50 model as an example.
+
+	.. code-block:: Bash
+		
+		[Host] $ cd /workspace
+		[Host] $ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
+		
+		
+	b. Copy the downloaded file to the board using scp with the following command:
+		
+	.. code-block:: Bash
+
+		[Host] $ scp resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz root@IP_OF_BOARD:~/
+		
+		
+	c. Install the model package:
+
+	.. code-block:: Bash
+	   
+		[Target] $ tar -xzvf resnet50-zcu102_zcu104_kv260-r3.0.0.tar.gz
+		[Target] $ cp resnet50 /usr/share/vitis_ai_library/models -r
+
+	
+.. _mpsoc-run-vitis-ai-examples:
+
+
+Run the Vitis AI Examples
+=========================
+
+1. Download `vitis_ai_runtime_r3.0.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz>`__ to your host, and copy the file to the the target using scp:
+
+.. code-block:: Bash
+
+	[Host] $ scp vitis_ai_runtime_r3.0.*_image_video.tar.gz root@[IP_OF_BOARD]:~/
+	  
+
+2. Unzip the ``vitis_ai_runtime_r3.0.0_image_video.tar.gz`` package on the target.
+
+.. code-block:: Bash
+   
+	[Target] $ cd ~
+	[Target] $ tar -xzvf vitis_ai_runtime_r*3.0._image_video.tar.gz -C Vitis-AI/examples/vai_runtime
+	
+
+3. Navigate to the example directory on the target board. Take ``resnet50`` as an example.
+
+.. code-block:: Bash
+	
+	[Target] $ cd ~/Vitis-AI/examples/vai_runtime/resnet50
+	
+
+4. Run the example.
+
+.. code-block:: Bash
+	
+	[Target] $ ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+	
+		
+5. An image should appear on the display connected to the target and the console should reflect the following output: 
+
+.. code-block:: Bash	
+		
+	Image : 001.jpg
+	top[0] prob = 0.982662  name = brain coral
+	top[1] prob = 0.008502  name = coral reef
+	top[2] prob = 0.006621  name = jackfruit, jak, jack
+	top[3] prob = 0.000543  name = puffer, pufferfish, blowfish, globefish
+	top[4] prob = 0.000330  name = eel
+
+These results reflect the classification of a single test image located in the	``~/Vitis-AI/examples/vai_library/images``	directory.
+			
+
+****************
+PyTorch Tutorial
+****************
+This tutorial assumes that Vitis AI has been installed and that the MPSOC board has been configured, as explained in the installation instructions above. For additional information on the Vitis-AI Quantizer, Optimizer, or Compiler, please refer to the Vitis AI User Guide.
+
+Quantizing the Model
+====================
+
+Quantization reduces the precision of network weights and activations to optimize memory usage and computational efficiency while maintaining acceptable levels of accuracy. Inference is computationally expensive and requires high memory bandwidths to satisfy the
+low-latency and high-throughput requirements of Edge applications. Quantization and channel pruning techniques are employed to address these issues while achieving high performance and high energy efficiency with little degradation in accuracy. The Vitis AI Quantizer takes a 
+floating-point model as an input and performs pre-processing (folds batchnorms and removes nodes not required for inference), and finally quantizes the weights/biases and activations to the given bit width.
+
+
+1. In the Vitis AI PyTorch docker container, create a new workspace to store the test dataset, models, and python scripts required for quantization.
+
+.. code-block:: Bash	
+
+	[Docker] $ mkdir -p resnet18/model
+
+2. Download the pre-trained resnet18 model from PyTorch to the docker environment and store it in the  ``model``  folder . This is the floating point (FP32) model that will be quantized to INT8 precision for deployment on the target.
+
+.. code-block:: Bash	
+
+	[Docker] $ cd /workspace/resnet18/model
+	[Docker] $ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -O resnet18.pth
+
+.. note:: The `Vitis AI Model Zoo <../workflow-model-zoo.html>`__ also provides optimized deep learning models to speed up the deployment of deep learning inference on adaptable AMD platforms. For this tutorial we have chosen to use an open-source PyTorch model to showcase that models from the community can also be deployed.
+
+
+3. Copy the resnet18 quantization script to your workspace. This script contains the Quantizer API calls that will be executed in order to quantize the model.
+
+.. code-block:: Bash	
+
+	[Docker] $ cp src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py resnet18/
+
+
+4. Click the link to download the `ImageNet 1000 (mini) <https://www.kaggle.com/datasets/ifigotin/imagenetmini-1000/download?datasetVersionNumber=1>`__ dataset from Kaggle. Move the zip file into your workspace and unzip the dataset.
+
+.. code-block:: Bash	
+
+	[Docker] $ unzip archive.zip
+	
+- Your workspace directory should reflect the following: 
+
+::
+
+    ├── model 
+    │   └──_resnet18.pth           # ResNet18 floating point model downloaded from PyTorch.
+	│                                    
+    ├── imagenet-mini
+    │   ├── train                    # Training images folder. Will not be used in this tutorial. 
+    │   │   └───  n01440764          # Class folders to group images. 
+    │   └── val                      # Validation images that will be used for quantization and evaluation of the floating point model. 
+    │       └───  n01440764
+    │
+    └── resnet18_quant.py            # Quantization python script.
+                                                                  
+5. Modify the default file paths for ``data_dir`` and ``model_dir`` in ``resnet18_quant.py`` to point to the validation images and floating point model.
+
+.. image:: ../reference/images/quantize_p1.png
+    :width: 1300
+	
+
+6. Run the command below to start quantization. Generally, 100-1000 images are required for quantization and the number of iterations can be controlled through the the ``subset_len`` data loading argument. In this case, 200 images are forward propagated through the network for quantization. 
+
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode calib --subset_len 200
+
+
+If the command runs successfully, the output directory ``quantize_result`` will be generated, containing two important files:
+
+	-``ResNet.py``
+		The converted vai_q_pytorch format model.
+	-``Quant_info.json``
+		Quantization steps of tensors. Retain this file for evaluating quantized models.
+		
+		
+7. To evaluate the quantized model and generate the reference result, run the following command:
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode test
+
+8. To generate the quantized ``.xmodel`` file that will subsequently be compiled for the DPU, run the following command with ``batch_size`` and ``subset_len`` arguments set to 1 to avoid redundant iterations.
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode test --subset_len 1 --batch_size=1 --deploy
+
+
+Compile the model
+=================
+The Vitis AI Compiler compiles the graph operators as a set of micro-coded instructions that are executed by the DPU.  In this step, we will compile the ResNet18 model that we quantized in the previous step.
+
+
+1. The compiler takes the quantized ``INT8.xmodel`` and generates the deployable ``DPU.xmodel`` by running the command below.  Note that you must modify the command to specify the appropriate ``arch.json`` file for your target.
+
+.. code-block:: Bash
+	
+	[Docker] $ cd /workspace/resnet18
+	[Docker] $ vai_c_xir -x quantize_result/ResNet_int.xmodel -a /opt/vitis_ai/compiler/arch/DPUCZDX8G/<Target(ex:KV260)>/arch.json -o resnet18_pt -n resnet18_pt 
+
+- If compilation is successful, the ``resnet18_pt.xmodel`` file should be generated according to the specified DPU architecture. 
+
+2. Create a new file with your text editor of choice and name the file ``resnet18_pt.prototxt``. Copy and paste the following lines of code:
+
+.. code-block:: Bash
+
+	model {
+	   name : "resnet18_pt"
+	   kernel {
+		 name: "resnet18_pt_0"
+		 mean: 103.53
+		 mean: 116.28
+		 mean: 123.675
+		 scale: 0.017429
+		 scale: 0.017507
+		 scale: 0.01712475
+	   }
+	   model_type : CLASSIFICATION
+	   classification_param {
+		  top_k : 5
+		  test_accuracy : false
+		  preprocess_type : VGG_PREPROCESS
+	   }
+	}
+
+- The ``.prototxt`` file is a Vitis AI |trade| Library configuration file that facilitates the uniform configuration management of model parameters. Please refer to the Vitis AI User Guide to learn more.
+
+
+- We can now deploy the quantized and compiled model on the MPSOC target. 
+
+Model Deployment
+================
+
+1. Download the ``resnet18_pt`` folder from host to target using scp with the following command:
+
+.. code-block:: Bash
+
+	[Docker] $ scp -r resnet18_pt root@[IP_OF_BOARD]:/usr/share/vitis_ai_library/models/
+	
+2. The model will be located under the ``/usr/share/vitis_ai_library/models/`` folder along with the other Viitis-AI model examples. 
+
+
+3. Users can run real time inference using a USB web camera connected to the target with the command below:
+
+.. code-block:: Bash
+
+	[Target] $ cd Vitis-AI/examples/vai_library/samples/classification
+	[Target] $ ./test_video_classification resnet18_pt 0 -t 8
+
+- ``0`` corresponds to the first USB camera device node. If you have multiple USB cameras, the value is 1,2,3, etc.  ``-t`` corresponds to the number of threads.	
+
+.. note:: We recommend the Logitech BRIO for use with Vitis AI pre-built images.  The Logitech BRIO is capable of streaming RAW video at higher resolutions than most low-cost webcams.  When leveraging other low-cost webcams with the Vitis AI pre-built image, encoded video streams are actually decoded on the target's ARM APU which can reduce inference performance. If a video stream does not appear on the connected display, reboot the board and run the command again. 
+
+
+4. The output should be as follows:
+
+
+
+
+- Congratulations! You have successfully quantized, compiled, and deployed a pre-trained model onto the MPSOC target. 
+
+
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>What is a DPU? &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Vitis AI Model Zoo" href="workflow-model-zoo.html" />
+    <link rel="prev" title="First Steps" href="workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Quick Start Guide for VCK5000</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Quick Start Guide for VCK190</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">First Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What is a DPU?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about-the-dpu-ip">About the DPU IP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-nomenclature">DPU Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#historic-dpu-nomenclature">Historic DPU Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-options">DPU Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#zynq-trade-ultrascale-trade-mpsoc-dpuczdx8g">Zynq™ UltraScale+™ MPSoC: DPUCZDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versal-trade-ai-core-series-dpucvdx8g">Versal™ AI Core Series: DPUCVDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versal-trade-ai-core-series-dpucvdx8h">Versal™ AI Core Series: DPUCVDX8H</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versal-trade-ai-core-ai-edge-series-dpucv2dx8g">Versal™ AI Core / AI Edge Series: DPUCV2DX8G</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>What is a DPU?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/workflow-dpu.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-is-a-dpu">
+<span id="workflow-dpu"></span><h1>What is a DPU?<a class="headerlink" href="#what-is-a-dpu" title="Permalink to this heading">¶</a></h1>
+<section id="about-the-dpu-ip">
+<h2>About the DPU IP<a class="headerlink" href="#about-the-dpu-ip" title="Permalink to this heading">¶</a></h2>
+<p>AMD uses the acronym D-P-U to identify soft accelerators that target deep-learning inference. These “<strong>D</strong> eep Learning <strong>P</strong> rocessing <strong>U</strong> nits” are a vital component of the Vitis AI solution. This (perhaps overloaded) term can refer to one of several potential accelerator architectures covering multiple network topologies.</p>
+<p>A DPU comprises elements available in the AMD programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs, and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the AMD AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of programmable logic and AI Engine array resources.</p>
+<p>An example of the DPUCZ, targeting Zynq™ Ultrascale+™ devices is displayed in the following image:</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/DPUCZ.PNG"><img alt="../_images/DPUCZ.PNG" src="../_images/DPUCZ.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Features and Architecture of the Zynq Ultrascale+ DPUCZ</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Vitis AI provides the DPU IP and the required tools to deploy both standard and custom neural networks on AMD adaptable targets:</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/VAI-1000ft.PNG"><img alt="../_images/VAI-1000ft.PNG" src="../_images/VAI-1000ft.PNG" style="width: 1300px;" /></a>
+<figcaption>
+<p><span class="caption-text">Vitis AI 1000 Foot View</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Vitis AI DPUs are general-purpose AI inference accelerators. A single DPU instance in your design can enable you to deploy multiple CNNs simultaneously and process multiple streams simultaneously. The Processing depends on the DPU having sufficient parallelism to support the combination of the networks and the number of streams. Multiple DPU instances can be instantiated per device. The DPU can be scaled in size to accommodate the requirements of the user.</p>
+<p>The Vitis AI DPU architecture is called a “Matrix of (Heterogeneous) Processing Engines.”  While on the surface, Vitis AI DPU architectures have some visual similarity to a systolic array; the similarity ends there. DPU is a micro-coded processor with its Instruction Set Architecture. Each DPU architecture has its own instruction set, and the Vitis AI Compiler compiles an executable <code class="docutils literal notranslate"><span class="pre">.Xmodel</span></code> to deploy for each network. The DPU executes the compiled instructions in the <code class="docutils literal notranslate"><span class="pre">.Xmodel</span></code>. The Vitis AI Runtime addresses the underlying tasks of scheduling the inference of multiple networks, multiple streams, and even multiple DPU instances. The mix of processing engines in the DPU is heterogeneous, with the DPU having different engines specialized for different tasks. For instance, CONV2D operators are accelerated in a purpose-built PE, while another process depthwise convolutions.</p>
+<p>One advantage of this architecture is that there is no need to load a new bitstream or build a new hardware platform while changing the network.  This is an important differentiator from Data Flow accelerator architectures that are purpose-built for a single network.  That said, both the Matrix of Processing Engines and Data Flow architectures have a place in AMD designs.  If you need a highly optimized, specialized Data Flow accelerator for inference, refer to the <a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a> solutions.  Data Flow architectures based on FINN can support inference at line rates for high-speed communications and extremely high sample rates for inference in the RF domain.  Neither of these two applications is a great fit for Vitis AI.  The reality is that both of these flows are complementary, and support for both can play an essential role in customer product differentiation and future-proofing.</p>
+</section>
+<section id="dpu-nomenclature">
+<h2>DPU Nomenclature<a class="headerlink" href="#dpu-nomenclature" title="Permalink to this heading">¶</a></h2>
+<p>There are a variety of different DPUs available for different tasks and AMD platforms. The following decoder helps extract the features, characteristics, and target hardware platforms from a given DPU name.</p>
+<img alt="../_images/dpu_nomenclature_current.PNG" src="../_images/dpu_nomenclature_current.PNG" />
+</section>
+<section id="historic-dpu-nomenclature">
+<h2>Historic DPU Nomenclature<a class="headerlink" href="#historic-dpu-nomenclature" title="Permalink to this heading">¶</a></h2>
+<p>As of the Vitis™ 1.2 release, the historic DPUv1/v2/v3 nomenclature was deprecated. To better understand how these historic DPU names map into the current nomenclature, refer to the following table:</p>
+<img alt="../_images/dpu_nomenclature_legacy_mapping.PNG" src="../_images/dpu_nomenclature_legacy_mapping.PNG" />
+</section>
+<section id="dpu-options">
+<h2>DPU Options<a class="headerlink" href="#dpu-options" title="Permalink to this heading">¶</a></h2>
+<section id="zynq-trade-ultrascale-trade-mpsoc-dpuczdx8g">
+<h3>Zynq™ UltraScale+™ MPSoC: DPUCZDX8G<a class="headerlink" href="#zynq-trade-ultrascale-trade-mpsoc-dpuczdx8g" title="Permalink to this heading">¶</a></h3>
+<p>The DPUCZDX8G IP has been optimized for Zynq UltraScale+ MPSoC. You can integrate this IP
+as a block in the programmable logic (PL) of the selected Zynq UltraScale+ MPSoCs with direct
+connections to the processing system (PS). The DPU is user-configurable and exposes several
+parameters which can be specified to optimize PL resources or customize enabled features.</p>
+</section>
+<section id="versal-trade-ai-core-series-dpucvdx8g">
+<h3>Versal™ AI Core Series: DPUCVDX8G<a class="headerlink" href="#versal-trade-ai-core-series-dpucvdx8g" title="Permalink to this heading">¶</a></h3>
+<p>The DPUCVDX8G is a high-performance general CNN processing engine optimized for the
+Versal AI Core Series. The Versal devices can provide superior performance/watt over
+conventional FPGAs, CPUs, and GPUs. The DPUCVDX8G is composed of AI Engines and PL
+circuits. This IP is user-configurable and exposes several parameters which can be specified to
+optimize AI Engines and PL resources or customize features.</p>
+</section>
+<section id="versal-trade-ai-core-series-dpucvdx8h">
+<h3>Versal™ AI Core Series: DPUCVDX8H<a class="headerlink" href="#versal-trade-ai-core-series-dpucvdx8h" title="Permalink to this heading">¶</a></h3>
+<p>The DPUCVDX8H is a high-performance and high-throughput general CNN processing engine
+optimized for the Versal AI Core series. Besides traditional program logic, Versal devices integrate
+high performance AI engine arrays, high bandwidth NoCs, DDR/LPDDR controllers, and other
+high-speed interfaces that can provide superior performance/watt over conventional FPGAs,
+CPUs, and GPUs. The DPUCVDX8H is implemented on Versal devices to leverage these benefits.
+You can configure the parameters to meet your data center application requirements.</p>
+</section>
+<section id="versal-trade-ai-core-ai-edge-series-dpucv2dx8g">
+<h3>Versal™ AI Core / AI Edge Series: DPUCV2DX8G<a class="headerlink" href="#versal-trade-ai-core-ai-edge-series-dpucv2dx8g" title="Permalink to this heading">¶</a></h3>
+<p>The DPUCV2DX8G is a high-performance, general-purpose convolutional neural network(CNN)
+processing engine optimized for AMD Versal™ Adaptive SoC devices containing AI-ML tiles. This
+IP is user-configurable and exposes several parameters to configure the number of AI Engines
+used and programmable logic (PL) resource utilization.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="workflow.html" class="btn btn-neutral float-left" title="First Steps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-zoo.html" class="btn btn-neutral float-right" title="Vitis AI Model Zoo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on May 18, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

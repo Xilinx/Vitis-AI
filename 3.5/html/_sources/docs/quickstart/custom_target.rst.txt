@@ -1,0 +1,53 @@
+.. _custom_target:
+
+
+****************************
+Custom Board to Do
+****************************
+
+This is stuff that I pulled out of the MPSoC quickstart that is specific to custom boards.  We need to clean this up and make this a separate section as it doesn't fit with the MPSoC board.
+
+
+4. (Optional) How to leverage Vitis AI with PetaLinux 2022.2
+
+   You can install the Vitis AI libraries on the target either at build-time or at run-time:
+
+   		- Build-Time: Rebuild the system by configuring PetaLinux. For ``VAI3.0 Recipes``, refer to `Vitis-AI-Recipes <../petalinux-recipes.html>`__
+   		- Run-Time: Install Vitis AI online via `dnf`. Execute ``dnf install packagegroup-petalinux-vitisai`` to complete the installation on the target. For more details, refer `VAI3.0 Online Install <../petalinux-recipes.html>`__
+   
+5. (Optional) How to update Vitis AI Runtime on the target
+
+   If you have an updated version of the Vitis AI Runtime and wish to install the update to your target, follow these steps.
+
+   -  Copy the board_setup/mpsoc folder to the board using scp:
+
+      .. code-block:: Bash
+
+         scp -r board_setup/mpsoc root@IP_OF_BOARD:~/
+
+   -  Log in to the board using ssh. You can also use the serial port to login.
+   -  Now, install the Vitis AI Runtime. Execute the following commands:
+
+      ::
+		
+		cd ~/mpsoc
+		bash target_vart_setup.sh
+	
+
+
+
+
+2. (Optional) Run ``zynqmp_dpu_optimize.sh`` to optimize board settings.
+
+   The script runs automatically after the board boots up with the official image. But you can also find the ``dpu_sw_optimize.tar.gz`` in `DPUCZDX8G.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G.tar.gz>`__.
+
+   .. code-block:: Bash
+
+       cd ~/dpu_sw_optimize/zynqmp/
+       ./zynqmp_dpu_optimize.sh
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:
