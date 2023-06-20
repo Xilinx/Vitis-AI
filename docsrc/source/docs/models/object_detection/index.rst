@@ -7,4 +7,5 @@ Object Detection models
 
     SSD-Resnet34 <ssd_resnet34>
     YOLOv4 <yolov4>
+    YOLOvX-nano <yolox_nano>
 
