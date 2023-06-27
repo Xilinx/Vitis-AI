@@ -133,7 +133,7 @@ Use the following script:
 
 # Links
 
--  YOLOX: Exceeding YOLO Series in 2021: https://arxiv.org/abs/2107.08430
+- YOLOX: Exceeding YOLO Series in 2021: https://arxiv.org/abs/2107.08430
 - COCO dataset: https://cocodataset.org/
 - Object detection benchmark on the COCO (PapersWithCode): https://paperswithcode.com/sota/object-detection-on-coco
 

@@ -138,7 +138,6 @@ Use the following script:
 - Inception-V3 overview (PapersWithCode): https://paperswithcode.com/method/inception-v3
 - ImageNet dataset: https://www.image-net.org/
 - Going deeper with convolutions (Inception): https://arxiv.org/pdf/1409.4842
-- Benchmark on the CompCars (PapersWithCode): https://paperswithcode.com/dataset/compcars
 
 # Vitis AI Model Zoo Homepage
 
