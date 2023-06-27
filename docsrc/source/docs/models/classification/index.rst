@@ -8,3 +8,4 @@ Classification models
     InceptionV3 model <inceptionv3>
     Vehicle classification model <vehicle_make>
     EfficientNet-EdgeTPU-S model <efficientnet-edgetpu-s>
+    ResNet50 model <resnet50>
