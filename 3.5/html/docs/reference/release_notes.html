@@ -83,8 +83,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l2"><a class="reference internal" href="#profiler">Profiler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core">DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge / Core)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dpu-ip-zynq-ultrascale-dpuczdx8g">DPU IP - Zynq Ultrascale+ DPUCZDX8G</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-targets-dpucvdx8h">DPU IP - Versal AIE Targets DPUCVDX8H</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8g">DPU IP - CNN - Alveo Data Center DPUCVDX8G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-versal-aie-targets-dpucvdx8g">DPU IP - Versal AIE Targets DPUCVDX8G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h">DPU IP - CNN - Alveo Data Center DPUCVDX8H</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#wego">WeGO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#known-issues">Known Issues</a></li>
 </ul>
@@ -167,10 +167,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="documentation-and-github-repository">
 <h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Merged UG1313 into UG1414</p></li>
+<li><p>Merged UG1333 into UG1414</p></li>
 <li><p>Streamlined UG1414 to remove redundant content</p></li>
 <li><p>Streamlined UG1414 to focus exclusively on core tool usage.  Core tools such as the Optimizer, Quantizer and Compiler are now being utilized across multiple targets (ie Ryzen™ AI, EPYC™) and this change seeks to make UG1414 more portable to these targets</p></li>
-<li><p>Migrated Adaptable SoC and Alveo specific content from UG1414 to Github.IO</p></li>
+<li><p>Migrated Adaptive SoC and Alveo specific content from UG1414 to Github.IO</p></li>
 <li><p>New Github.IO Toctree structure</p></li>
 <li><p>Integrated VART Runtime APIs in Doxygen format</p></li>
 </ul>
@@ -185,8 +185,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="model-zoo">
 <h2>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Add more classic models without modification such as YOLO series and 2D Unet</p></li>
-<li><p>Provide model info card for each model and Jupyter Notebook tutorials for new models</p></li>
+<li><p>Added more classic models without modification such as YOLO series and 2D Unet</p></li>
+<li><p>Provided model info card for each model and Jupyter Notebook tutorials for new models</p></li>
 <li><p>New copyleft repo for GPL license models</p></li>
 </ul>
 </section>
@@ -195,27 +195,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul class="simple">
 <li><p>Initial release</p></li>
 <li><p>This is a new quantizer that supports the direct PTQ quantization of ONNX models for DPU. It is a plugin built for the ONNXRuntime native quantizer.</p></li>
-<li><p>Supports power-of-two quantization with both QDQ and QOP format.</p></li>
-<li><p>Supports Non-overflow and Min-MSE quantization methods.</p></li>
-<li><p>Supports various quantization configurations in power-of-two quantization in both QDQ and QOP format.</p></li>
-<li><p>Supports signed and unsigned configurations.</p></li>
-<li><p>Supports symmetry and asymmetry configurations.</p></li>
-<li><p>Supports per-tensor and per-channel configurations.</p></li>
-<li><p>Supports ONNX models in excess of 2GB.</p></li>
-<li><p>Supports the use of the CUDAExecutionProvider for calibration in quantization.</p></li>
+<li><p>Support for power-of-two quantization with both QDQ and QOP format.</p></li>
+<li><p>Support for Non-overflow and Min-MSE quantization methods.</p></li>
+<li><p>Support for various quantization configurations in power-of-two quantization in both QDQ and QOP format.</p></li>
+<li><p>Support for signed and unsigned configurations.</p></li>
+<li><p>Support for symmetry and asymmetry configurations.</p></li>
+<li><p>Support for per-tensor and per-channel configurations.</p></li>
+<li><p>Support for ONNX models in excess of 2GB.</p></li>
+<li><p>Support for the use of the CUDAExecutionProvider for calibration in quantization.</p></li>
 </ul>
 </section>
 <section id="pytorch-cnn-quantizer">
 <h2>PyTorch CNN Quantizer<a class="headerlink" href="#pytorch-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Pytorch 1.13 and 2.0 support</p></li>
-<li><p>Mixed precision quantization support, supporting float32/float16/bfloat16/intx mixed quantization</p></li>
-<li><p>Support of bit-wise accuracy cross check between quantizer and ONNX-runtime</p></li>
+<li><p>Support for Pytorch 1.13 and 2.0</p></li>
+<li><p>Support for mixed precision quantization, float32/float16/bfloat16/intx</p></li>
+<li><p>Support for bit-wise accuracy cross check between quantizer and ONNX-runtime</p></li>
 <li><p>Split and chunk operators were automatically converted to slicing</p></li>
-<li><p>Dict input/output support for model forward function</p></li>
-<li><p>Keywords argument support for model forward function</p></li>
-<li><p>Matmul subroutine support</p></li>
-<li><p>Add support for BFP data type quantization</p></li>
+<li><p>Dict input/output supports for model forward function</p></li>
+<li><p>Keywords argument supports for model forward function</p></li>
+<li><p>Support for matmul subroutine</p></li>
+<li><p>Added support for BFP data type quantization</p></li>
 <li><p>QAT supports training on mutiple GPUs</p></li>
 <li><p>QAT supports operations with multiple inputs or outputs</p></li>
 </ul>
@@ -223,34 +223,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="tensorflow-2-cnn-quantizer">
 <h2>TensorFlow 2 CNN Quantizer<a class="headerlink" href="#tensorflow-2-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Updated to support Tensorflow 2.12 and Python 3.8.</p></li>
-<li><p>Adds support for quantizing subclass models.</p></li>
-<li><p>Adds support for mix precision, supports layer-wise data type configuration, supports float32, float16, bfloat16, and int quantization.</p></li>
-<li><p>Adds support for BFP datatypes, and add a new quantize strategy called ‘bfp’.</p></li>
-<li><p>Adds support to quantize Keras nested models.</p></li>
-<li><p>Adds experimental support for quantizing the frozen pb format model in TensorFlow 2.x.</p></li>
-<li><p>Adds a new ‘gpu’ quantize strategy which uses float scale quantization and is used in GPU deployment scenarios.</p></li>
-<li><p>Adds support to exporting the quantized model to frozen pb format or onnx format.</p></li>
-<li><p>Adds support to exporting the quantized model with power-of-two scales to frozen pb format with “FixNeuron” inside, to be compatible with some compilers with pb format input.</p></li>
-<li><p>Adds support for splitting Avgpool and Maxpool with large kernel sizes into smaller kernel sizes.</p></li>
+<li><p>Updated to support for Tensorflow 2.12 and Python 3.8.</p></li>
+<li><p>Support for quantizing subclass models.</p></li>
+<li><p>Support for mix precision, supports layer-wise data type configuration, supports float32, float16, bfloat16, and int quantization.</p></li>
+<li><p>Support for BFP datatypes, and add a new quantize strategy called ‘bfp’.</p></li>
+<li><p>Support for quantize Keras nested models.</p></li>
+<li><p>Experimental support for quantizing the frozen pb format model in TensorFlow 2.x.</p></li>
+<li><p>Added a new ‘gpu’ quantize strategy which uses float scale quantization and is used in GPU deployment scenarios.</p></li>
+<li><p>Support for exporting the quantized model to frozen pb format or onnx format.</p></li>
+<li><p>Support for exporting the quantized model with power-of-two scales to frozen pb format with “FixNeuron” inside, to be compatible with some compilers with pb format input.</p></li>
+<li><p>Support for splitting Avgpool and Maxpool with large kernel sizes into smaller kernel sizes.</p></li>
 </ul>
-<p>Bug Fixes:
-1.      Fixes a gradient bug in the ‘pof2s_tqt’ quantize strategy.
-2.      Fixes a bug of quantization position change introduced by the fast fine-tuning process after the PTQ.
-3.      Fixes a graph transformation bug when a TFOpLambda op has multiple inputs.</p>
+<p>Bug Fixed:
+1.      Fixed a gradient bug in the ‘pof2s_tqt’ quantize strategy.
+2.      Fixed a bug of quantization position change introduced by the fast fine-tuning process after the PTQ.
+3.      Fixed a graph transformation bug when a TFOpLambda op has multiple inputs.</p>
 </section>
 <section id="tensorflow-1-cnn-quantizer">
 <h2>TensorFlow 1 CNN Quantizer<a class="headerlink" href="#tensorflow-1-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Adds support for fast fine-tuning that improves PTQ accuracy.</p></li>
-<li><p>Adds support for folding Reshape and ResizeNearestNeighbor operators.</p></li>
-<li><p>Adds support for splitting Avgpool and Maxpool with large kernel sizes into smaller kernel sizes.</p></li>
-<li><p>Adds support for quantizing Sum, StridedSlice, and Maximum operators.</p></li>
-<li><p>Adds support for setting the input shape of the model, which is useful in the deployment of models with undefined input shapes.</p></li>
-<li><p>Adds support for setting the opset version in exporting onnx format.</p></li>
+<li><p>Support for fast fine-tuning that improves PTQ accuracy.</p></li>
+<li><p>Support for folding Reshape and ResizeNearestNeighbor operators.</p></li>
+<li><p>Support for splitting Avgpool and Maxpool with large kernel sizes into smaller kernel sizes.</p></li>
+<li><p>Support for quantizing Sum, StridedSlice, and Maximum operators.</p></li>
+<li><p>Support for setting the input shape of the model, which is useful in the deployment of models with undefined input shapes.</p></li>
+<li><p>Support for setting the opset version in exporting onnx format.</p></li>
 </ul>
-<p>Bug Fixes:
-1.      Fixes a bug where the AddV2 operation is misunderstood as a BiasAdd.</p>
+<p>Bug Fixed:
+1.      Fixed a bug where the AddV2 operation is misunderstood as a BiasAdd.</p>
 </section>
 <section id="compiler">
 <h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h2>
@@ -263,9 +263,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul class="simple">
 <li><p>Removed requirement for license purchase</p></li>
 <li><p>Migrated to Github open-source</p></li>
-<li><p>Supports PyTorch 1.11, 1.12 and 1.13</p></li>
-<li><p>Supports pruning of grouped convolution</p></li>
-<li><p>Supports setting the number of channels to be a multiple of the specified number after pruning</p></li>
+<li><p>Support for PyTorch 1.11, 1.12 and 1.13</p></li>
+<li><p>Support for pruning of grouped convolution</p></li>
+<li><p>Support for setting the number of channels to be a multiple of the specified number after pruning</p></li>
 </ul>
 </section>
 <section id="tensorflow-2-optimizer">
@@ -273,28 +273,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul class="simple">
 <li><p>Removed requirement for license purchase</p></li>
 <li><p>Migrated to Github open-source</p></li>
-<li><p>Supports TensorFlow 2.11 and 2.12</p></li>
-<li><p>Supports pruning of tf.keras.layers.SeparableConv2D</p></li>
+<li><p>Support for TensorFlow 2.11 and 2.12</p></li>
+<li><p>Support for pruning of tf.keras.layers.SeparableConv2D</p></li>
 <li><p>Fixed tf.keras.layers.Conv2DTranspose pruning bug</p></li>
-<li><p>Supports setting the number of channels to be a multiple of the specified number after pruning</p></li>
+<li><p>Support for setting the number of channels to be a multiple of the specified number after pruning</p></li>
 </ul>
 </section>
 <section id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Supports Versal AI Edge VEK280 evalustion kit</p></li>
-<li><p>Buffer optimization for multi-batches to improve performance</p></li>
-<li><p>Add new tensor buffer interface to enhance zero copy</p></li>
+<li><p>Supports Versal AI Edge VEK280 evaluation kit</p></li>
+<li><p>Buffer optimized for multi-batches to improve performance</p></li>
+<li><p>Added new tensor buffer interface to enhance zero copy</p></li>
 </ul>
 </section>
 <section id="vitis-onnx-runtime-execution-provider-voe">
 <h2>Vitis ONNX Runtime Execution Provider (VOE)<a class="headerlink" href="#vitis-onnx-runtime-execution-provider-voe" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Supports ONNX Opset version 18, ONNX Runtime 1.16.0 and ONNX version 1.13</p></li>
-<li><p>Supports both C++ and Python APIs(Python version 3)</p></li>
-<li><p>Supports VitisAI EP and other EPs to work together to deploy the model</p></li>
-<li><p>Provide Onnx examples based on C++ and Python APIs</p></li>
-<li><p>VitisAI EP is open source and upstreamed to ONNX public repo on Github</p></li>
+<li><p>Support for ONNX Opset version 18, ONNX Runtime 1.16.0 and ONNX version 1.13</p></li>
+<li><p>Support for both C++ and Python APIs(Python version 3)</p></li>
+<li><p>Support for Vitis AI EP and other EPs to work together to deploy the model</p></li>
+<li><p>Provided Onnx examples based on C++ and Python APIs</p></li>
+<li><p>Vitis AI EP is open sourced and upstreamed to ONNX public repo on Github</p></li>
 </ul>
 </section>
 <section id="library">
@@ -318,54 +318,49 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core">
 <h2>DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge / Core)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>First general access release</p></li>
+<li><p>General access release for the Versal AI Edge device VE2802, Versal AI Core device VC2802 and Alveo V70 card</p></li>
 <li><p>Configurable from C20B1 to C20B14</p></li>
-<li><p>Support most 2D operators required to deploy models found in the Model Zoo</p></li>
-<li><p>General support for the VE2802/VC2802 and V70</p></li>
-<li><p>Early access support for the VE2302 via <a class="reference external" href="https://www.xilinx.com/member/vitis-ai-vek280.html">this lounge</a></p></li>
+<li><p>Support most 2D operators based on models in the Model Zoo</p></li>
 </ul>
 </section>
 <section id="dpu-ip-zynq-ultrascale-dpuczdx8g">
 <h2>DPU IP - Zynq Ultrascale+ DPUCZDX8G<a class="headerlink" href="#dpu-ip-zynq-ultrascale-dpuczdx8g" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>IP has reached maturity</p></li>
-<li><p>No updates for this release</p></li>
-<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
-<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+<li><p>No DPU IP updates in  3.5 release</p></li>
+<li><p>No DPU reference design updates in 3.5 release</p></li>
+<li><p>No pre-built board image updates in 3.5 release</p></li>
 </ul>
 </section>
-<section id="dpu-ip-versal-aie-targets-dpucvdx8h">
-<h2>DPU IP - Versal AIE Targets DPUCVDX8H<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8h" title="Permalink to this heading">¶</a></h2>
+<section id="dpu-ip-versal-aie-targets-dpucvdx8g">
+<h2>DPU IP - Versal AIE Targets DPUCVDX8G<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8g" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>IP has reached maturity</p></li>
-<li><p>No updates for this release</p></li>
-<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
-<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+<li><p>No DPU IP updates in 3.5 release</p></li>
+<li><p>No DPU reference design updates in 3.5 release</p></li>
+<li><p>No pre-built board image updates in 3.5 release</p></li>
 </ul>
 </section>
-<section id="dpu-ip-cnn-alveo-data-center-dpucvdx8g">
-<h2>DPU IP - CNN - Alveo Data Center DPUCVDX8G<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8g" title="Permalink to this heading">¶</a></h2>
+<section id="dpu-ip-cnn-alveo-data-center-dpucvdx8h">
+<h2>DPU IP - CNN - Alveo Data Center DPUCVDX8H<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>IP has reached maturity</p></li>
-<li><p>No updates for this release</p></li>
-<li><p>No updated reference design (DPU TRD) will be published for minor (ie x.5) releases</p></li>
-<li><p>No updated pre-built board image will be published for minor (ie x.5) releases</p></li>
+<li><p>No DPU IP updates in 3.5 release</p></li>
+<li><p>No DPU reference design  updates in 3.5 release</p></li>
+<li><p>No pre-built board image updates in 3.5 release</p></li>
 </ul>
 </section>
 <section id="wego">
 <h2>WeGO<a class="headerlink" href="#wego" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Enhanced WeGO to support V70 DPU GA release.</p></li>
-<li><p>Upgraded WeGO to provide support for PyTorch 1.13.1 and TensorFlow r2.12.</p></li>
+<li><p>Support for Alveo V70 DPU GA release.</p></li>
+<li><p>Support for PyTorch 1.13.1 and TensorFlow r2.12.</p></li>
 <li><p>Enhanced WeGO-Torch to support PyTorch 2.0 as a preview feature.</p></li>
-<li><p>Introduced new C++ API support for WeGO-Torch in addition to Python APIs.</p></li>
+<li><p>Introduced new C++ API that supports for WeGO-Torch</p></li>
 <li><p>Implemented WeGO-TF1 and WeGO-TF2 as out-of-tree plugins.</p></li>
 </ul>
 </section>
 <section id="known-issues">
 <h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Engineering to add comments</p></li>
+<li><p>To be announced ASAP</p></li>
 </ul>
 <p>AMD, the AMD Arrow logo, and combinations thereof are trademarks of Advanced Micro Devices, Inc.</p>
 </section>

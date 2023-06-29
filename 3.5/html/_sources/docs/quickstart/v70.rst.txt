@@ -35,12 +35,12 @@ Clone the Vitis AI Repository
         [Host] $ git clone https://github.com/Xilinx/Vitis-AI
 
 
-Versal V70 Setup
+Alveo V70 Setup
 ================
 
 A script is provided to drive the V70 card setup process.
 
-.. note:: You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis |trade| AI 3.5 specifically leverages the 2023.1 versions of the Vitis tools, V70 platform, XRT and XRM.
+.. note:: You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis |trade| AI 3.5 specifically leverages the 2022.2 versions of the Vitis tools, V70 platform, XRT and XRM.  No, that is not a typo - 2022 is correct.
 
 This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.
 
@@ -96,6 +96,7 @@ In order to simplify this quickstart tutorial, we will utilize the Vitis-AI PyTo
 Pull and start the latest Vitis AI Docker using the following commands:
 
 .. code-block:: Bash
+
 	[Host] $ docker pull xilinx/vitis-ai-pytorch-cpu:latest
 	[Host] $ cd <Vitis-AI install path>/Vitis-AI/
 	[Host] $ ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
@@ -143,7 +144,7 @@ Run the Vitis AI Examples
 
 .. code-block:: Bash
 
-	[Docker] $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /worksapce/examples/vai_runtime
+	[Docker] $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /w/examples/vai_runtime
 	
 3. Navigate to the example directory.
 
@@ -397,8 +398,8 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 
 	.. code-block:: Bash
 	
-		[Target] $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C ~/Vitis-AI/examples/vai_library/
-		[Target] $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C ~/Vitis-AI/examples/vai_library/
+		[Docker] $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C /workspace/examples/vai_library/
+		[Docker] $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C /workspace/examples/vai_library/
 
 3. Enter the directory of the sample and then compile it.
 

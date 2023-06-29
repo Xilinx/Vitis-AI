@@ -79,7 +79,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#clone-the-vitis-ai-repository">Clone the Vitis AI Repository</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#versal-v70-setup">Versal V70 Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alveo-v70-setup">Alveo V70 Setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-docker">Install Docker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#verify-docker-installation">Verify Docker Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pull-vitis-ai-docker">Pull Vitis AI Docker</a></li>
@@ -186,12 +186,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </pre></div>
 </div>
 </section>
-<section id="versal-v70-setup">
-<h3>Versal V70 Setup<a class="headerlink" href="#versal-v70-setup" title="Permalink to this heading">¶</a></h3>
+<section id="alveo-v70-setup">
+<h3>Alveo V70 Setup<a class="headerlink" href="#alveo-v70-setup" title="Permalink to this heading">¶</a></h3>
 <p>A script is provided to drive the V70 card setup process.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis™ AI 3.5 specifically leverages the 2023.1 versions of the Vitis tools, V70 platform, XRT and XRM.</p>
+<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis™ AI 3.5 specifically leverages the 2022.2 versions of the Vitis tools, V70 platform, XRT and XRM.  No, that is not a typo - 2022 is correct.</p>
 </div>
 <p>This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.</p>
 <p>Execute this script as follows:</p>
@@ -237,6 +237,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h3>Pull Vitis AI Docker<a class="headerlink" href="#pull-vitis-ai-docker" title="Permalink to this heading">¶</a></h3>
 <p>In order to simplify this quickstart tutorial, we will utilize the Vitis-AI PyTorch CPU Docker to assess pre-built Vitis-AI examples, and subsequently perform quantization and compilation of our own model. The CPU docker image is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the <a class="reference internal" href="../install/install.html"><span class="doc">Full Install Instructions</span></a> but we would recommend that new users start with this simpler first step.
 Pull and start the latest Vitis AI Docker using the following commands:</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ docker pull xilinx/vitis-ai-pytorch-cpu:latest
+<span class="o">[</span>Host<span class="o">]</span> $ <span class="nb">cd</span> &lt;Vitis-AI install path&gt;/Vitis-AI/
+<span class="o">[</span>Host<span class="o">]</span> $ ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+</pre></div>
+</div>
 </section>
 <section id="docker-container-environment-variable-setup">
 <h3>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h3>
@@ -274,7 +279,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 <ol class="arabic simple" start="2">
 <li><p>Extract the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r3.5.0_image_video.tar.gz</span></code> package.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /worksapce/examples/vai_runtime
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /w/examples/vai_runtime
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -518,8 +523,8 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 <ol class="loweralpha simple" start="2">
 <li><p>Untar the files.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C ~/Vitis-AI/examples/vai_library/
-<span class="o">[</span>Target<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C ~/Vitis-AI/examples/vai_library/
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C /workspace/examples/vai_library/
+<span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C /workspace/examples/vai_library/
 </pre></div>
 </div>
 </div></blockquote>
