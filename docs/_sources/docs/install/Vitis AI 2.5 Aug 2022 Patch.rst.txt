@@ -21,7 +21,7 @@ New Packages
 -  `vart-2.5.0-py37h07a2524_202.tar.bz2 <https://www.xilinx.com/bin/public/openDownload?filename=vart-2.5.0-py37h07a2524_202.tar.bz2>`__
 
 Installation
-------------
+~~~~~~~~~~~~
 
 Download the packages from the link above. Apply the conda patch to the conda environment (Machine Learning
 framework) that you wish to update in this format.

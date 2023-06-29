@@ -1,7 +1,9 @@
+:orphan:
+
 X11 Support for Running Vitis AI Docker with Alveo
 ====================================================
 
-If you are running Vitis™ AI docker with Alveo™ card and want to use X11 support for graphics (for example, some demo applications in VART and Vitis AI Library for Alveo need to display images or video), add the following line into the *docker_run_params* variable definition in ``docker_run.sh`` script:
+If you are running Vitis |trade| AI docker with Alveo |trade| card and want to use X11 support for graphics (for example, some demo applications in VART and Vitis AI Library for Alveo need to display images or video), add the following line into the *docker_run_params* variable definition in ``docker_run.sh`` script:
 
 .. code-block::
 

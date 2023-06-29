@@ -48,8 +48,8 @@ designs. With Vitis AI, ML and AI developers can have a familiar and consistent 
 Are all the components of Vitis AI free?
 ----------------------------------------
 
-Everything except Vitis AI Optimizer is free. The Vitis AI Optimizer does require a separate license. Additional details surrounding this
-license can be found in the Optimizer :ref:`introduction <model_optimization>`.
+Yes.  For releases <=3.5, the Vitis AI Optimizer does require a separate license which can be obtained free-of-charge upon request. Additional details surrounding this
+license can be found in the Optimizer :ref:`introduction <model-optimization>`.
 
 Is Vitis AI a separate download?
 --------------------------------
@@ -117,7 +117,7 @@ Quantization is a very old concept. The idea is to map a range of real   numbers
 Can I leverage Vitis™ AI on a pure FPGA target with or without a Microblaze™ processor? 
 ---------------------------------------------------------------------------------------
 
-The Vitis AI integrated development environment (IDE) supports SoC targets (Zynq™UltraScale+™ MPSoC, Versal™ ACAP) and Alveo™ platforms (AMD64 host). It does not claim to support FPGA-class devices including Spartan™, Artix™, Kintex™, or Virtex™ FPGAs.  While it is possible to enable and run Vitis AI IDE firmware components on the MicroBlaze processor, this is not a documented and supported flow for mainstream development. Officially, the AMD Xilinx “Space deep-learning processor unit (DPU)” project leverages the MicroBlaze processor targeting Kintex UltraScale-class devices. For deployment in standard commercial applications, we do have an experimental flow that we can potentially share, but it has limitations, and the expectation is that the developer will need to invest additional time in optimization. If you have a strong need for this, please reach out to us directly, and we can discuss your use case further.
+The Vitis AI integrated development environment (IDE) supports SoC targets (Zynq™ UltraScale+™ MPSoC, Versal™ adaptive SoCs) and Alveo™ platforms (AMD64 host). It does not claim to support FPGA-class devices including Spartan™, Artix™, Kintex™, or Virtex™ FPGAs.  While it is possible to enable and run Vitis AI IDE firmware components on the MicroBlaze processor, this is not a documented and supported flow for mainstream development. Officially, the AMD Xilinx “Space deep-learning processor unit (DPU)” project leverages the MicroBlaze processor targeting Kintex UltraScale-class devices. For deployment in standard commercial applications, we do have an experimental flow that we can potentially share, but it has limitations, and the expectation is that the developer will need to invest additional time in optimization. If you have a strong need for this, please reach out to us directly, and we can discuss your use case further.
 
 Is it possible to use the DPU without PetaLinux? 
 ------------------------------------------------

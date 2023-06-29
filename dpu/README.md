@@ -9,7 +9,7 @@
 
 The purpose of this page is to distribute DPU IP and reference designs.
 
-Today, Xilinx&reg; DPU IPs are not incorporated into the standard Vivado&trade; IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
+Today, AMD DPU IPs are not incorporated into the standard Vivado&trade; IP catalog and instead, the DPU IP is released asynchronous to Vivado in two forms:
 
 - The DPU IP is released as a reference design that is available to download from the links provided in the table below.  Users can start with the reference design and modify it to suit their requirements.
 - The DPU is released as a separate IP download that can be incorporated into a new or existing design by the developer.  
@@ -18,13 +18,13 @@ The reference designs are fully functional and can be used as a template for IP 
 
 ## Version and Compatibility
 
-As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP on this page are specific to Vitis AI v3.0 and were verified with Vivado and Vitis 2022.2.  If you are using a different version of Vitis or Vivado, please refer to [IP and Tool Version Compatibility](https://xilinx.github.io/Vitis-AI/docs/reference/version_compatibility.html) for additional information.
+As the user must incorporate the IP into the Vivado IP catalog themselves, it is very important to understand that the designs and IP on this page are specific to Vitis AI v3.0 and were verified with Vivado and Vitis 2022.2.  If you are using a different version of Vitis or Vivado, please refer to [IP and Tool Version Compatibility](https://xilinx.github.io/Vitis-AI/3.0/html/docs/reference/version_compatibility.html) for additional information.
 
 ## Introduction
 
 The table below associates currently available DPU IP with the supported target, and provides links to download the reference design and documentation.  For convenience, a separate IP repo is provided for users who do not wish to download the reference design.  The IP is thus included both in the reference design, but also is available as a separate download.  
 
-Please refer to [DPU Nomenclature](https://xilinx.github.io/Vitis-AI/docs/reference/dpu_nomenclature.html) for detailed information on the capabilities and device targets for Xilinx DPUs.
+Please refer to [DPU Nomenclature](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow-system-integration.html#dpu-nomenclature) for detailed information on the capabilities and device targets for AMD DPUs.
 
 
 ### Edge IP
@@ -96,7 +96,7 @@ Please refer to [DPU Nomenclature](https://xilinx.github.io/Vitis-AI/docs/refere
   <tr>
     <td align="center">DPUCVDX8H_2pe_miscdwc</td>
     <td rowspan="5" align="center">VCK5000</td>
-    <td rowspan="5" align="center">High throughput CNN inference 7nm DPU for ACAP platforms. All computing engines are implemented with FPGA AIE cores.  Support Xilinx shell integration.</td>
+    <td rowspan="5" align="center">High throughput CNN inference 7nm DPU for ACAP platforms. All computing engines are implemented with FPGA AIE cores.  Supports AMD shell integration.</td>
     <td align="center"><a href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCVDX8H_2pe_miscdwc_VAI_v3.0.tar.gz">Download</a></td>
     <td rowspan="5" align="center"><a href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h">PG403</a></td>
   </tr>

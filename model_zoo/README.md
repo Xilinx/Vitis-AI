@@ -8,7 +8,7 @@
 
 # Vitis AI Model Zoo
 
-As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance benchmarks have migrated to Github.IO.  **[YOU MAY ACCESS THE MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/docs/workflow-model-zoo)** or **[OFFLINE](../docs/docs/workflow-model-zoo.html)**.
+As of the 3.0 release of Vitis AI, the Model Zoo documentation and performance benchmarks have migrated to Github.IO.  **[YOU MAY ACCESS THE MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow-model-zoo)** or **[OFFLINE](../docs/docs/workflow-model-zoo.html)**.
 
 
 
@@ -18,6 +18,6 @@ We welcome community contributions. When contributing to this repository, first 
 
 -  [GitHub Issues](https://github.com/Xilinx/Vitis-AI/issues)
 -  [Vitis AI Forums](https://forums.xilinx.com/t5/AI-and-Vitis-AI/bd-p/AI)
--  <a href="mailto:xilinx_ai_model_zoo@xilinx.com">Email</a>
+-  <a href="mailto:xilinx_ai_model_zoo@amd.com">Email</a>
 
 You can also submit a pull request with details on how to improve the product. Prior to submitting your pull request, ensure that you can build the product and run all the demos with your patch. In case of a larger feature, provide a relevant demo.

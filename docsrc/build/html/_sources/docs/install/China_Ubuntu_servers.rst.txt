@@ -1,7 +1,9 @@
+:orphan:
+
 Access to Ubuntu Mirrors from within China
 ==========================================
 
-Vitis™ AI Docker images leverage Ubuntu Bionic 18.04. In your Ubuntu installation, the file **/etc/apt/sources.list** specifies the default server location for Ubuntu packages. For example:
+Vitis |trade| AI Docker images leverage Ubuntu 20.04. In your Ubuntu installation, the file **/etc/apt/sources.list** specifies the default server location for Ubuntu packages. For example:
 
 .. code-block::
 
@@ -47,3 +49,8 @@ Next, modify your Ubuntu **/etc/apt/sources.list** to point to mirrors located i
      deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 
 In addition, multiple alternative mirrors are `here <https://momane.com/change-ubuntu-18-04-source-to-china-mirror>`__.
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

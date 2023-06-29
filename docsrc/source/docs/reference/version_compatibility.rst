@@ -1,9 +1,20 @@
 .. _version-compatibility:
 
 IP and Tool Version Compatibility
-===================================
+=================================
 
-This page provides information on the compatibility between tools, IP, and Vitis™ AI release versions. Ensure that you are using aligned versions of all components.
+This page provides information on the compatibility between tools, IP, and Vitis |trade| AI release versions. Ensure that you are using aligned versions of all components.
+
+Current Release
+---------------
+
+Vitis AI v3.0 and the DPU IP released with the v3.0 branch of this repository are verified as compatible with Vitis, Vivado |trade|, and PetaLinux version 2022.2. If you are using a previous release of Vitis AI, please refer to the table below release.
+
+
+Previous Releases
+-----------------
+
+
 
 .. list-table::
    :widths: 40 30 30
@@ -98,3 +109,7 @@ This page provides information on the compatibility between tools, IP, and Vitis
      - Early Access
      - v3.0
 
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:

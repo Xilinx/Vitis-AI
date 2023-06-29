@@ -1,6 +1,6 @@
-=================================
-Release Documentation
-=================================
+=========================================
+Vitis AI User Guides / DPU Product Guides
+=========================================
 
 .. list-table:: Developer User Guides
    :widths: 30 70

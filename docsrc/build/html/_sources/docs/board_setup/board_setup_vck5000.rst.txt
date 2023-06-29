@@ -1,7 +1,9 @@
+:orphan:
+
 Setting up a Versal Accelerator Card
 ====================================
 
-The Xilinx |reg| **DPUCVDX8H** for the Versal VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.
+The AMD **DPUCVDX8H** for the Versal |trade| VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.
 
 As a first step, it is recommended that you select the appropriate DPU configuration for your application:
 
