@@ -85,7 +85,10 @@ Bug Fixed:
 
 Compiler
 --------
-- Release notes to be announced ASAP
+- New operators supported: Broadcast add/mul, Bilinear downsample, Trilinear downsample, Group conv2d, Strided-slice
+- Performance improved on XV2DPU
+- Error message improved
+- Compilation time speed up
 
 PyTorch Optimizer
 -----------------
