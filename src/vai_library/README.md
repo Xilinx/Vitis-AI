@@ -109,7 +109,7 @@ If you want to support video data in other formats, you need to install the rele
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
+For `V70` Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) to set up the host.
 
 ### <div id="idu50"></div>Running Vitis AI Library Examples on V70
 

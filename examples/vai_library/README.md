@@ -162,7 +162,7 @@ For the performance and accuracy test, refer to `readme` under examples.
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
+For `V70` Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) to set up the host.
 
 ### Running Vitis AI Library Examples
 Follow [Running Vitis AI Library Examples on V70](../../src/vai_library/README.md#running-vitis-ai-library-examples-on-v70) section to run Vitis AI Library examples.

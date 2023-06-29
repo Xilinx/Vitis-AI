@@ -17,7 +17,7 @@ Using WeGO provides a straightforward transition from training to inference for 
 # Preparation
 
 ## Setup Host Environment for Cloud
-Before running the examples, please follow [setup for V70](https://github.com/Xilinx/Vitis-AI/tree/master/board_setup/v70) for instructions on how to set up the host environment for V70 and make sure you have entered the Vitis-AI CPU docker container successfully and the DPU IP has been selected properly.
+Before running the examples, please follow [setup for V70](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) for instructions on how to set up the host environment for V70 and make sure you have entered the Vitis-AI CPU docker container successfully and the DPU IP has been selected properly.
 
 > Note:
 >

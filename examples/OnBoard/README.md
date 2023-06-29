@@ -21,7 +21,7 @@ OnBoard is a new experimental tool introduced in the Vitis™ AI 3.5.0 release. 
 
 ### Setup Host Environment For V70
 
-Before running the examples, please follow [setup for V70](../../board_setup/v70) to set up the host env for V70 and make sure you have entered the Vitis AI CPU docker container successfully and the DPU IP has been selected properly.
+Before running the examples, please follow [setup for V70](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) to set up the host env for V70 and make sure you have entered the Vitis AI CPU docker container successfully and the DPU IP has been selected properly.
 
 > Note: Currently the OnBoard tool only support PyTorch and TensorFlow 2 frameworks, make sure the right docker image is used for the corresponding examples running purpose(i.e. PyTorch docker for PyTorch examples, TensorFlow 2.x docker for TensorFlow 2.x examples). 
 

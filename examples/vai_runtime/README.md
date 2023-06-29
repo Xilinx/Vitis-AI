@@ -82,7 +82,7 @@ fi
 ## Quick Start For Data Center
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
+For `V70` Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) to set up the host.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take `resnet50` as an example.
