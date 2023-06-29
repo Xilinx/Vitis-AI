@@ -101,7 +101,7 @@ framework: tensorflow
 prune: '0.43'
 version: 3.5
 files:
-- name: tf_vgg16_0.43_3.5                      	
+- name: tf_vgg16_0.43_3.5
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_vgg16_0.43_3.5.zip

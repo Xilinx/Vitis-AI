@@ -101,7 +101,7 @@ framework: tensorflow 2.x
 prune: 'no'
 version: 3.5
 files:
-- name: tf2_inceptionv3_3.5                    	
+- name: tf2_inceptionv3_3.5
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_inceptionv3_3.5.zip

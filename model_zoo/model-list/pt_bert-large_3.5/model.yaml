@@ -21,7 +21,7 @@ framework: pytorch
 prune: 'no'
 version: 3.5
 files:
-- name: pt_bert-large_3.5                        	
+- name: pt_bert-large_3.5
   type: float & quantized
   board: GPU
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_bert-large_3.5.zip
