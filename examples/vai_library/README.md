@@ -102,10 +102,10 @@ vai_library
 
 ## Quick Start For Edge
 ### Setting Up the Host
-For `VEK280`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vek280.html#step-1-setup-cross-compiler) to set up the host for edge.
+For `VEK280`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-host) to set up the host for edge.
 
 ### Setting Up the Target
-For `VEK280`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vek280.html#step-2-setup-the-target) to set up the target.
+For `VEK280`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-target) to set up the target.
 	 	  
 ### Running vai_library Examples
 Follow [Running Vitis AI Library Examples](../../src/vai_library/README.md#running-vitis-ai-library-examples) to run Vitis AI Library examples.
@@ -162,7 +162,7 @@ For the performance and accuracy test, refer to `readme` under examples.
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
+For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
 
 ### Running Vitis AI Library Examples
 Follow [Running Vitis AI Library Examples on V70](../../src/vai_library/README.md#running-vitis-ai-library-examples-on-v70) section to run Vitis AI Library examples.

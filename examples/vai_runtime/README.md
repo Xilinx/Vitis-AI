@@ -59,14 +59,14 @@ vai_runtime
 
 ## Quick Start For Embedded
 ### Setting Up the Host
-For `VEK280`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vek280.html#step-1-setup-cross-compiler) to set up the host for embedded.
+For `VEK280`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-host) to set up the host for embedded.
 
 ### Setting Up the Target 
-For `VEK280`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vek280.html#step-2-setup-the-target) to set up the target.
+For `VEK280`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-target) to set up the target.
 	  
 ### Running Vitis AI Examples
 
-Follow [Running Vitis AI Examples](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples) to run Vitis AI examples.
+Follow [Running Vitis AI Examples](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#run-the-vitis-ai-examples) to run Vitis AI examples.
 
 Note: When you update from VAI1.3 to VAI2.0, VAI2.5, VAI3.0 or VAI3.5, refer to the following to modify your compilation options.
 1. For Petalinux 2021.1 and above, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
@@ -82,7 +82,7 @@ fi
 ## Quick Start For Data Center
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
+For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take `resnet50` as an example.

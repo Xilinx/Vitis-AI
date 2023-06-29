@@ -9,7 +9,7 @@
  
 The VART libraries and Vitis-AI applications are typically cross-compiled on the host, leveraging a Vitis-AI specific sysroot and SDK.
 
-Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [board_setup](../../board_setup/vai_install_to_target/README.md).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
+Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [board_setup](../../board_setup/README.md).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
 
 Outside of the petalinux-build flow, users should follow the below simple instructions to create the required sysroot and SDK on the host.
 

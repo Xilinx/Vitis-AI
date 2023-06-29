@@ -53,7 +53,7 @@ cd ~/Vitis-AI/src/vai_library
 ```
 
 ### Setting Up the Target  
-For `VEK280`, follow steps in [Setting Up the Target](https://pages.gitenterprise.xilinx.com/linqiang/vitis-ai-staging/docs/quickstart/vek280.html#setup-the-target) to set up the target.  
+For `VEK280`, follow steps in [Setting Up the Target](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-target) to set up the target.  
 
 ### Running Vitis AI Library Examples
 
@@ -103,13 +103,13 @@ If you want to support video data in other formats, you need to install the rele
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
-8. To test the accuracy of model, the user needs to prepare the test data by themselves, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/3_0/ug1354-xilinx-ai-sdk.pdf) section "Model Accuracy Test" for more detail.
+8. To test the accuracy of model, the user needs to prepare the test data by themselves, please refer to [vitis-ai-library-user-guide](https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk) section "Model Accuracy Test" for more detail.
 
 
 ## Quick Start For Cloud
 ### Setting Up the Host
 
-For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/docs/v70.html#versal-v70-setup) to set up the host.
+For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
 
 ### <div id="idu50"></div>Running Vitis AI Library Examples on V70
 
@@ -169,7 +169,7 @@ Video_input.mp4: The video file's name for input. The user needs to prepare the 
 -t: <num_of_threads>
 -s: <num_of_seconds>
 ```
-7. To test the accuracy of model, the user needs to prepare the test data by themselves, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/3_0/ug1354-xilinx-ai-sdk.pdf) section "Model Accuracy Test" for more detail.
+7. To test the accuracy of model, the user needs to prepare the test data by themselves, please refer to [vitis-ai-library-user-guide](https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk) section "Model Accuracy Test" for more detail.
 
 
 ## Tools
@@ -219,4 +219,4 @@ xdputil run_op <xmodel> <op_name> [-r REF_DIR] [-d DUMP_DIR]
 For more usage of `xdputil`, execute `xdputil -h`.
 
 ## Reference
-For more information, please refer to [vitis-ai-library-user-guide](https://www.xilinx.com/support/documentation/sw_manuals/vitis_ai/master/ug1354-xilinx-ai-sdk.pdf).
+For more information, please refer to [vitis-ai-library-user-guide](https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk).
