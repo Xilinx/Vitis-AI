@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: e765e9a7a9b9eb3799cefe9a988ace7a
+- name: squeezenet
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=squeezenet-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 112d907390c97a8976f749b4a71450aa
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

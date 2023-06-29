@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,4 +48,9 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=solo_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
   checksum: 60669cb41a3225a572c6e5a92e640e9a
+- name: solo_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=solo_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: e010b06816e776cff1e7270a3c7e6997
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,4 +48,9 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
   checksum: 0cd963a5964e0023e94a9e96436c2bab
+- name: yolov4_leaky_512_tf
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: a6cc41d5af7ec039bec759353ec0575b
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

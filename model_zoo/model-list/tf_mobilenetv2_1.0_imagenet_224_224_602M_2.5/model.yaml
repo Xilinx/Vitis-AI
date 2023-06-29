@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,4 +58,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_1_0_224_tf-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 299b957bb5e5e1762df7d848ba7ff2ac
+- name: mobilenet_v2_1_0_224_tf
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_1_0_224_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: cf9173783a5e3c8a01f6ada6aa1522bc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 258a5a0efc8ef1230b7680038721e5e7
+- name: drunet_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=drunet_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: a3dbf07c1d2a641444d40f3b3aa82a02
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

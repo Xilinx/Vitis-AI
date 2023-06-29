@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -138,4 +139,19 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semanticfpn_nuimage_576_320_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 8a6d4270bc8f9032122b0d00bf128007
+- name: ppointpainting_nuscenes_40000_64_0_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: download link
+  checksum: md5sum value
+- name: pointpainting_nuscenes_40000_64_1_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpainting_nuscenes_40000_64_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 91dad0c95453b4b7cacea8e5a7be699a
+- name: semanticfpn_nuimage_576_320_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semanticfpn_nuimage_576_320_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: ac9dea8848d5c883fdeb441fd6332f7b
 license: license link

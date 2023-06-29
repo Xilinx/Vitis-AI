@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,4 +65,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 3fb81fcebdd3e89629b9d53dcaea4a4b
+- name: face-quality
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=face-quality-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: f24982cb82625873eb11c1a7fb4ea417
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

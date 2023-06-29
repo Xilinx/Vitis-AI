@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: e70035992896d4a407c173bb14009af1
+- name: unet_chaos-CT_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 6651915742174fe1c49af1a7121a05e8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

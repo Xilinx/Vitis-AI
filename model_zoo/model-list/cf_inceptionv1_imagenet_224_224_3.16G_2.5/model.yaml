@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: c148e46abc23b85ba9c47cbeaa9a2488
+- name: inception_v1
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 448ca048b16da4a4922755ceae59e76c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

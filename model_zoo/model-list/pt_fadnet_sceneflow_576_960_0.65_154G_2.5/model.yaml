@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,4 +88,19 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
   checksum: 0747471f99f331b7a0899a206abfcf88
+- name: FADNet_pruned_0_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 404fa8d590915f848530373940938438
+- name: FADNet_pruned_1_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: befd977698f46a248beec0cce5666064
+- name: FADNet_pruned_2_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_pruned_2_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: ad9e8cb961b30318ba3b63f6a584affd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

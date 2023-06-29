@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 1bb9b451694e22b422cb193a805d5348
+- name: yolov3_bdd
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: d3d9bfec5081e33f93a5f1c8c0478ed0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

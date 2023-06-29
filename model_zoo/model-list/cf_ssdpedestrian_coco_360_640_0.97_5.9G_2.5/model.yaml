@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 07e20fa97075dfbe72a01613fa10e359
+- name: ssd_pedestrian_pruned_0_97
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_pedestrian_pruned_0_97-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 496927542ef3f42baedce0081e10e505
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

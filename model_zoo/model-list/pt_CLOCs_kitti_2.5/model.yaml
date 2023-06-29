@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -117,4 +118,24 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
   checksum: b4504f822aabafb176d1f258f9d4f5a3
+- name: clocs_pointpillars_kitti_0_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: af38fb767e4998c6f8833409076b5b65
+- name: clocs_pointpillars_kitti_1_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_pointpillars_kitti_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: a9d7047ebb065a08034772bcb6aae5c7
+- name: clocs_yolox_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_yolox_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 126ef24ebe849e7a5957fcc703f2986d
+- name: clocs_fusion_cnn_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=clocs_fusion_cnn_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 0b82567594f83b6900c34f3185aab0ab
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

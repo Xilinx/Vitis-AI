@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,4 +53,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: ad1a375d7c5f6ec466162b9c9d7f3e4e
+- name: ssdlite_mobilenet_v2_coco_tf
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssdlite_mobilenet_v2_coco_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: eafba93782a5458b9c65327185671b0f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

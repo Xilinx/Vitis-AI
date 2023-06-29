@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 34b90cd8c866e436ccab190a8968de1a
+- name: ofa_yolo_pruned_0_50_pt
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 34a11fab6c08ca7e70cc4199d1baabcd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

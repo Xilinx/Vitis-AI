@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 29001371233d2da70151b2f2d6c32a9f
+- name: refinedet_VOC_tf
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: bffb10c4b46609d551fc173748ef0cd8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

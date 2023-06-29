@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: f07c12bb84f8f2837c29b0828b7085ed
+- name: semantic_seg_citys_tf2
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 3096c3b0d2754a0ffda9af108da82c5f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

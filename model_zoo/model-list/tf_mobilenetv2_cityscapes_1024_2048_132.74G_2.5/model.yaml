@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,4 +48,9 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieDWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r2.5.0.tar.gz
   checksum: 3c969b3aca08bdb7ec1cfc77db314f4a
+- name: mobilenet_v2_cityscapes_tf
+  type: xmodel
+  board: kv260_DPUCZDX8G_ISA1_B3136
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v2_cityscapes_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 6c756c4417058208b2ff1d886fe9491e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
