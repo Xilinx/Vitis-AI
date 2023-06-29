@@ -13,7 +13,6 @@ DEPENDS = "glog boost"
 
 PACKAGECONFIG[test] = "-DBUILD_TEST=ON,-DBUILD_TEST=OFF,,"
 PACKAGECONFIG[python] = ",,,"
-#PACKAGECONFIG[python] = "-DBUILD_PYTHON=ON -DPYTHON_INSTALL_DIR=${PYTHON_DIR},-DBUILD_PYTHON=OFF,python3-pybind11 python3,"
 
 inherit cmake
 

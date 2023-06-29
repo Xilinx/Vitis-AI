@@ -7,8 +7,6 @@ S = "${WORKDIR}/git/src/vai_runtime/xir"
 
 DEPENDS = "protobuf-native protobuf boost unilog"
 
-PACKAGECONFIG[protobuf] = "-DProtobuf_USE_STATIC_LIBS=ON,,protobuf-native protobuf,"
-
 PACKAGECONFIG[test] = "-DBUILD_TEST=ON,-DBUILD_TEST=OFF,,"
 PACKAGECONFIG[python] = "-DBUILD_PYTHON=ON -DPYTHON_INSTALL_DIR=${PYTHON_DIR},-DBUILD_PYTHON=OFF,python3-pybind11,"
 
