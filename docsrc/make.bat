@@ -20,7 +20,7 @@ if "%1" == "github" (
 	cd ../..
 	echo.Build HTML docs
 	%SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
-    copy %SOURCEDIR%\docs\reference\ModelZoo_VAI_Github.htm %BUILDDIR%\html\docs\reference\ModelZoo_VAI_Github_web.htm
+    copy %SOURCEDIR%\docs\reference\ModelZoo_Github.htm %BUILDDIR%\html\docs\reference\ModelZoo_Github_web.htm
 	copy %SOURCEDIR%\docs\404.html %BUILDDIR%\html\404.html
 	rm ../docs -r
 	robocopy %BUILDDIR%/html ../docs /E > nul

@@ -525,11 +525,6 @@ Out of memory: Killed process
 <p class="admonition-title">Note</p>
 <p>Some large networks may have additional registers (for example, <code class="docutils literal notranslate"><span class="pre">REG_4</span></code>, <code class="docutils literal notranslate"><span class="pre">REG_5</span></code>). The <code class="docutils literal notranslate"><span class="pre">context</span> <span class="pre">type</span></code> indicates the kind of space required.  If additional registers are listed, the developer must incorporate these into their assessment.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the previous example, <cite>xdputil</cite> reports that <code class="docutils literal notranslate"><span class="pre">REG_3</span></code> will use 1024 bytes. However, the <em>actual memory requirement may be implementation and kernel dependent</em>.  The exercise of understanding the use of the Linux Contiguous Memory Allocator for their specific kernel and implementation is left for the user.  Below is a simple example that illustrates some of the factors that the user may need to consider.</p>
-</div>
-<p>Let’s consider an implementation in which the minimum CMA page size is 4096 bytes.  This allocation for <code class="docutils literal notranslate"><span class="pre">REG_3</span></code> may be achieved using PAGE_ALIGN(1024). The <cite>PAGE_ALIGN</cite> function rounds up an address or memory size to the next multiple of 4096 (or the PAGE_SIZE), adds 4095, and clears the low 12 bits.</p>
 <p>For the formulas provided below, the following additional terms must be defined:</p>
 <ul class="simple">
 <li><p><cite>T</cite> threads represent the number of model instances (usually 1 instance per thread).</p></li>
@@ -538,11 +533,11 @@ Out of memory: Killed process
 <p><cite>dpu_cores</cite> = min (number of dpu cores, number of single model instances)</p>
 <p>In the formulas below, note that:</p>
 <ul class="simple">
-<li><p><cite>const_space</cite> = <cite>PAGE_ALIGN</cite> (<code class="docutils literal notranslate"><span class="pre">CONST</span></code> space)</p></li>
-<li><p><cite>work_space</cite> = sum of all <cite>PAGE_ALIGN</cite> (each <code class="docutils literal notranslate"><span class="pre">WORKSPACE</span></code> space)</p></li>
-<li><p><cite>in_space</cite> = sum of all <cite>PAGE_ALIGN</cite> (each <code class="docutils literal notranslate"><span class="pre">DATA_LOCAL_INPUT</span></code> space)</p></li>
-<li><p><cite>out_space</cite> = sum of all <cite>PAGE_ALIGN</cite> (each <code class="docutils literal notranslate"><span class="pre">DATA_LOCAL_OUTPUT</span></code> space)</p></li>
-<li><p><cite>instr_space</cite> = <cite>PAGE_ALIGN</cite> (<code class="docutils literal notranslate"><span class="pre">instruction</span> <span class="pre">reg</span></code> space)</p></li>
+<li><p><cite>const_space</cite> = <code class="docutils literal notranslate"><span class="pre">CONST</span></code> space</p></li>
+<li><p><cite>work_space</cite> = sum of all <code class="docutils literal notranslate"><span class="pre">WORKSPACE</span></code> space</p></li>
+<li><p><cite>in_space</cite> = sum of all <code class="docutils literal notranslate"><span class="pre">DATA_LOCAL_INPUT</span></code> values</p></li>
+<li><p><cite>out_space</cite> = sum of all <code class="docutils literal notranslate"><span class="pre">DATA_LOCAL_OUTPUT</span></code> values</p></li>
+<li><p><cite>instr_space</cite> = <code class="docutils literal notranslate"><span class="pre">instruction</span> <span class="pre">reg</span></code> space</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

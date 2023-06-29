@@ -9,7 +9,7 @@ Vitis |trade| AI v3.5 and the DPU IP released with the v3.5 branch of this repos
 
 Documentation and Github Repository
 -----------------------------------
-- Merged UG1313 into UG1414
+- Merged UG1333 into UG1414
 - Streamlined UG1414 to remove redundant content
 - Streamlined UG1414 to focus exclusively on core tool usage.  Core tools such as the Optimizer, Quantizer and Compiler are now being utilized across multiple targets (ie Ryzen |trade| AI, EPYC |trade|) and this change seeks to make UG1414 more portable to these targets
 - Migrated Adaptive SoC and Alveo specific content from UG1414 to Github.IO
@@ -142,20 +142,20 @@ DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge / Core)
 DPU IP - Zynq Ultrascale+ DPUCZDX8G
 -----------------------------------
 - No DPU IP updates in  3.5 release
-- No DPU TRD udpates in 3.5 release
-- No pre-build board image updates in 3.5 release
+- No DPU reference design updates in 3.5 release
+- No pre-built board image updates in 3.5 release
 
-DPU IP - Versal AIE Targets DPUCVDX8H
+DPU IP - Versal AIE Targets DPUCVDX8G
 -------------------------------------
 - No DPU IP updates in 3.5 release
-- No DPU TRD updates in 3.5 release
-- No pre-build board image updates in 3.5 release																					 
+- No DPU reference design updates in 3.5 release
+- No pre-built board image updates in 3.5 release																					 
 
-DPU IP - CNN - Alveo Data Center DPUCVDX8G 
+DPU IP - CNN - Alveo Data Center DPUCVDX8H
 ------------------------------------------
 - No DPU IP updates in 3.5 release
-- No DPU TRD updates in 3.5 release
-- No pre-build board image updates in 3.5 release																					 
+- No DPU reference design  updates in 3.5 release
+- No pre-built board image updates in 3.5 release																					 
 
 WeGO
 ------------------------------------------
@@ -167,7 +167,7 @@ WeGO
 
 Known Issues
 ------------
-- Release notes to be announced ASAP
+- To be announced ASAP
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

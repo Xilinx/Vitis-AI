@@ -407,10 +407,6 @@ The ``instruction reg`` value represents the space required by the DPU (Deep Lea
 
 .. note:: Some large networks may have additional registers (for example, ``REG_4``, ``REG_5``). The ``context type`` indicates the kind of space required.  If additional registers are listed, the developer must incorporate these into their assessment.
 
-.. note:: In the previous example, `xdputil` reports that ``REG_3`` will use 1024 bytes. However, the *actual memory requirement may be implementation and kernel dependent*.  The exercise of understanding the use of the Linux Contiguous Memory Allocator for their specific kernel and implementation is left for the user.  Below is a simple example that illustrates some of the factors that the user may need to consider.
-
-Let's consider an implementation in which the minimum CMA page size is 4096 bytes.  This allocation for ``REG_3`` may be achieved using PAGE_ALIGN(1024). The `PAGE_ALIGN` function rounds up an address or memory size to the next multiple of 4096 (or the PAGE_SIZE), adds 4095, and clears the low 12 bits. 
-
 For the formulas provided below, the following additional terms must be defined:
 
 •	`T` threads represent the number of model instances (usually 1 instance per thread).
@@ -420,11 +416,11 @@ For the formulas provided below, the following additional terms must be defined:
 
 In the formulas below, note that:
 
-•	`const_space` = `PAGE_ALIGN` (``CONST`` space)
-•	`work_space` = sum of all `PAGE_ALIGN` (each ``WORKSPACE`` space)
-•	`in_space` = sum of all `PAGE_ALIGN` (each ``DATA_LOCAL_INPUT`` space)
-•	`out_space` = sum of all `PAGE_ALIGN` (each ``DATA_LOCAL_OUTPUT`` space)
-•	`instr_space` = `PAGE_ALIGN` (``instruction reg`` space)
+•	`const_space` = ``CONST`` space
+•	`work_space` = sum of all ``WORKSPACE`` space
+•	`in_space` = sum of all ``DATA_LOCAL_INPUT`` values
+•	`out_space` = sum of all ``DATA_LOCAL_OUTPUT`` values
+•	`instr_space` = ``instruction reg`` space
 
 .. note:: When using the DPUCZDX8G IP, am additional fixed chunk of 5MB CMA memory is required if the user enables hardware Softmax.
 

@@ -14,7 +14,7 @@ Vitis AI v3.5 and the DPU IP released with the v3.5 branch of this repository ar
 All Releases
 ------------
 
-Versal |trade| AI Edge
+Versal |trade| AI Edge with AIE-ML
 
 .. list-table::
    :widths: 25 25 25 25
@@ -27,12 +27,34 @@ Versal |trade| AI Edge
 	 
    * - v3.5
      - 1.0
-     - Vitis / PetaLinux 2023.1
+     - Vivado / Vitis / PetaLinux 2023.1
      - 6.1	 
 	 
    * - v3.0
      - Early Access
-     - Vitis / PetaLinux 2022.2
+     - Vivado / Vitis / PetaLinux 2022.2
+     - 5.15
+
+	 
+Alveo V70
+
+.. list-table::
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Vitis AI Release Version
+     - DPUCV2DX8G IP Version
+     - Software Tools Version
+     - Linux Kernel Version Tested
+	 
+   * - v3.5
+     - 1.0
+     - Vivado / Vitis 2022.2
+     - 5.15	 
+	 
+   * - v3.0
+     - Early Access
+     - Vivado / Vitis 2022.2
      - 5.15
 
 Zynq |trade| Ultrascale+ |trade|
@@ -106,7 +128,7 @@ Zynq |trade| Ultrascale+ |trade|
      - Vivado / Vitis / PetaLinux 2018.1
      - 4.14
 
-Versal |trade| AI Core
+Versal |trade| AI Core with AIE-ML
 
 .. list-table::
    :widths: 25 25 25 25
@@ -119,20 +141,23 @@ Versal |trade| AI Core
 
    * - v3.5
      - 1.0
-     - Vitis 2022.2
-     - 5.15
+     - Vivado / Vitis / PetaLinux 2023.1
+     - 6.1
 
    * - v3.0
      - Early Access
-     - Vitis 2022.2
+     - Vivado / Vitis / PetaLinux 2022.2
      - 5.15
+
+
+Versal |trade| AI Core with AIE
 
 .. list-table::
    :widths: 25 25 25 25
    :header-rows: 1
 
    * - Vitis AI Release Version
-     - DPUCVDX8H IP Version
+     - DPUCVDX8G IP Version
      - Software Tools Version
      - Linux Kernel Version Tested
 

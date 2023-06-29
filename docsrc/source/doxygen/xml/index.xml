@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.7" xml:lang="en-US">
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.6" xml:lang="en-US">
   <compound refid="classvart_1_1_base_runner" kind="class"><name>vart::BaseRunner</name>
     <member refid="classvart_1_1_base_runner_1a677e6d7a70447e9a747d1f955c490d40" kind="function"><name>~BaseRunner</name></member>
     <member refid="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" kind="function"><name>execute_async</name></member>
@@ -115,25 +115,25 @@
     <member refid="structvart_1_1_xcl_bo_1a07108878c9f9a4459ea2f61bdff2e76f" kind="variable"><name>bo_handle</name></member>
   </compound>
   <compound refid="namespacecreate__graph__runner" kind="namespace"><name>create_graph_runner</name>
-    <member refid="namespacecreate__graph__runner_1a7d3dc31000dc6f8f07c63b12ff8653eb" kind="function"><name>create_graph_runner</name></member>
+    <member refid="namespacecreate__graph__runner_1a2bea18181818f7bf916d2f4404cd2a60" kind="function"><name>create_graph_runner</name></member>
   </compound>
   <compound refid="namespacecreate__runner" kind="namespace"><name>create_runner</name>
-    <member refid="namespacecreate__runner_1a193166e2ab3849ed53a8f05b150dbe6d" kind="function"><name>create_runner</name></member>
+    <member refid="namespacecreate__runner_1a93db456895557acbffc49fc0f456caf1" kind="function"><name>create_runner</name></member>
   </compound>
   <compound refid="namespaceexecute__async" kind="namespace"><name>execute_async</name>
-    <member refid="namespaceexecute__async_1a9343c2de55549abc41959649eb50ca2b" kind="function"><name>execute_async</name></member>
+    <member refid="namespaceexecute__async_1a86fe3b77f5cae3905e2b8d466e3e84de" kind="function"><name>execute_async</name></member>
   </compound>
   <compound refid="namespaceget__input__tensors" kind="namespace"><name>get_input_tensors</name>
-    <member refid="namespaceget__input__tensors_1a90cf14f9034ee6ac6a081db034bc67a1" kind="function"><name>get_input_tensors</name></member>
+    <member refid="namespaceget__input__tensors_1a5b7225356f90e6629dfe9e562cecee4b" kind="function"><name>get_input_tensors</name></member>
   </compound>
   <compound refid="namespaceget__inputs" kind="namespace"><name>get_inputs</name>
-    <member refid="namespaceget__inputs_1a6c36d0087f6a1ec18a438204bbcb01ff" kind="function"><name>get_inputs</name></member>
+    <member refid="namespaceget__inputs_1ab79639cd851862be030a2a10968b6ae8" kind="function"><name>get_inputs</name></member>
   </compound>
   <compound refid="namespaceget__output__tensors" kind="namespace"><name>get_output_tensors</name>
-    <member refid="namespaceget__output__tensors_1a3d0bbdfb1a80867865b8e89583f9ba7e" kind="function"><name>get_output_tensors</name></member>
+    <member refid="namespaceget__output__tensors_1a12c176a11fe6c515045a6b8fd33299fe" kind="function"><name>get_output_tensors</name></member>
   </compound>
   <compound refid="namespaceget__outputs" kind="namespace"><name>get_outputs</name>
-    <member refid="namespaceget__outputs_1aa5a4b5dbfba1fb50a4b67b8d8322f74f" kind="function"><name>get_outputs</name></member>
+    <member refid="namespaceget__outputs_1a9a2b5c42fef709f884ca51b4dc4e73e5" kind="function"><name>get_outputs</name></member>
   </compound>
   <compound refid="namespacerunner__example" kind="namespace"><name>runner_example</name>
   </compound>
@@ -146,37 +146,37 @@
     <member refid="runner__ext_8hpp_1a0b14c48cfb263e47cd0652bb2eb9e6a8" kind="function"><name>get_output_scale</name></member>
   </compound>
   <compound refid="namespacewait" kind="namespace"><name>wait</name>
-    <member refid="namespacewait_1a9dd979228e0a14a50ef3e2ee0206a5f6" kind="function"><name>wait</name></member>
+    <member refid="namespacewait_1ab4220d0d78dc393e22655b60ac4b74f4" kind="function"><name>wait</name></member>
   </compound>
   <compound refid="namespacexir" kind="namespace"><name>xir</name>
   </compound>
   <compound refid="create__graph__runner_8py" kind="file"><name>create_graph_runner.py</name>
-    <member refid="namespacecreate__graph__runner_1a7d3dc31000dc6f8f07c63b12ff8653eb" kind="function"><name>create_graph_runner</name></member>
+    <member refid="namespacecreate__graph__runner_1a2bea18181818f7bf916d2f4404cd2a60" kind="function"><name>create_graph_runner</name></member>
   </compound>
   <compound refid="create__runner_8py" kind="file"><name>create_runner.py</name>
-    <member refid="namespacecreate__runner_1a193166e2ab3849ed53a8f05b150dbe6d" kind="function"><name>create_runner</name></member>
+    <member refid="namespacecreate__runner_1a93db456895557acbffc49fc0f456caf1" kind="function"><name>create_runner</name></member>
   </compound>
   <compound refid="execute__async_8py" kind="file"><name>execute_async.py</name>
-    <member refid="namespaceexecute__async_1a9343c2de55549abc41959649eb50ca2b" kind="function"><name>execute_async</name></member>
+    <member refid="namespaceexecute__async_1a86fe3b77f5cae3905e2b8d466e3e84de" kind="function"><name>execute_async</name></member>
   </compound>
   <compound refid="get__input__tensors_8py" kind="file"><name>get_input_tensors.py</name>
-    <member refid="namespaceget__input__tensors_1a90cf14f9034ee6ac6a081db034bc67a1" kind="function"><name>get_input_tensors</name></member>
+    <member refid="namespaceget__input__tensors_1a5b7225356f90e6629dfe9e562cecee4b" kind="function"><name>get_input_tensors</name></member>
   </compound>
   <compound refid="get__inputs_8py" kind="file"><name>get_inputs.py</name>
-    <member refid="namespaceget__inputs_1a6c36d0087f6a1ec18a438204bbcb01ff" kind="function"><name>get_inputs</name></member>
+    <member refid="namespaceget__inputs_1ab79639cd851862be030a2a10968b6ae8" kind="function"><name>get_inputs</name></member>
   </compound>
   <compound refid="get__output__tensors_8py" kind="file"><name>get_output_tensors.py</name>
-    <member refid="namespaceget__output__tensors_1a3d0bbdfb1a80867865b8e89583f9ba7e" kind="function"><name>get_output_tensors</name></member>
+    <member refid="namespaceget__output__tensors_1a12c176a11fe6c515045a6b8fd33299fe" kind="function"><name>get_output_tensors</name></member>
   </compound>
   <compound refid="get__outputs_8py" kind="file"><name>get_outputs.py</name>
-    <member refid="namespaceget__outputs_1aa5a4b5dbfba1fb50a4b67b8d8322f74f" kind="function"><name>get_outputs</name></member>
+    <member refid="namespaceget__outputs_1a9a2b5c42fef709f884ca51b4dc4e73e5" kind="function"><name>get_outputs</name></member>
   </compound>
   <compound refid="runner__example_8py" kind="file"><name>runner_example.py</name>
   </compound>
   <compound refid="runnerext__example_8py" kind="file"><name>runnerext_example.py</name>
   </compound>
   <compound refid="wait_8py" kind="file"><name>wait.py</name>
-    <member refid="namespacewait_1a9dd979228e0a14a50ef3e2ee0206a5f6" kind="function"><name>wait</name></member>
+    <member refid="namespacewait_1ab4220d0d78dc393e22655b60ac4b74f4" kind="function"><name>wait</name></member>
   </compound>
   <compound refid="runner_8hpp" kind="file"><name>runner.hpp</name>
   </compound>

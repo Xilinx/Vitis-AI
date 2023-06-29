@@ -9,13 +9,13 @@ Vitis AI User Guides / DPU Product Guides
    * - Document Title
      - Description
 
-   * - `Vitis AI User Guide (UG1414) <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai>`__
+   * - `Vitis™ AI User Guide (UG1414) <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai>`__
      - Describes the Vitis™ AI Development Kit, a full-stack deep learning SDK for the Deep-learning Processor Unit (DPU).
 
-   * - Vitis AI Optimizer User Guide (deprecated)
+   * - Vitis™ AI Optimizer User Guide (deprecated)
      - Merged into UG1414 for this release
 
-   * - `Vitis AI Library User Guide (UG1354) <https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk>`__
+   * - `Vitis™ AI Library User Guide (UG1354) <https://docs.xilinx.com/r/en-US/ug1354-xilinx-ai-sdk>`__
      - Documents libraries that simplify and enhance the deployment of models in Vitis AI.
 
 
@@ -26,7 +26,7 @@ Vitis AI User Guides / DPU Product Guides
    * - Supported Platform
      - Product Guide
 
-   * - Versal Edge, Core, VEK280
+   * - Versal™ AI Edge / AI Core with AIE-ML, VEK280
      - `DPUCV2DX8G (PG425) <https://docs.xilinx.com/r/en-US/pg425-dpucv2>`__
 
    * - Alveo V70
@@ -35,10 +35,10 @@ Vitis AI User Guides / DPU Product Guides
    * - Zynq™ Ultrascale+™, Kria™, ZCU102, ZCU104, K26 SOM
      - `DPUCZDX8G (PG338) <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
 	 
-   * - Versal Embedded VCK190
+   * - Versal™ AI Core with AIE, VCK190
      - `DPUCVDX8G (PG389) <https://docs.xilinx.com/r/en-US/pg389-dpucvdx8g>`__
 
-   * - Versal VCK5000
+   * - Versal™ AI Core with AIE, VCK5000
      - `DPUCVDX8H (PG403) <https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h>`__
 
 

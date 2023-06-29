@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="namespaceget__outputs" kind="namespace" language="Python">
     <compoundname>get_outputs</compoundname>
       <sectiondef kind="func">
-      <memberdef kind="function" id="namespaceget__outputs_1aa5a4b5dbfba1fb50a4b67b8d8322f74f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>get_outputs</definition>
+      <memberdef kind="function" id="namespaceget__outputs_1a9a2b5c42fef709f884ca51b4dc4e73e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def get_outputs</definition>
         <argsstring>()</argsstring>
         <name>get_outputs</name>
         <qualifiedname>get_outputs.get_outputs</qualifiedname>

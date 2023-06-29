@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="namespacewait" kind="namespace" language="Python">
     <compoundname>wait</compoundname>
       <sectiondef kind="func">
-      <memberdef kind="function" id="namespacewait_1a9dd979228e0a14a50ef3e2ee0206a5f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>wait</definition>
+      <memberdef kind="function" id="namespacewait_1ab4220d0d78dc393e22655b60ac4b74f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def wait</definition>
         <argsstring>(jobid_time)</argsstring>
         <name>wait</name>
         <qualifiedname>wait.wait</qualifiedname>

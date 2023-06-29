@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="get__input__tensors_8py" kind="file" language="Python">
     <compoundname>get_input_tensors.py</compoundname>
     <innernamespace refid="namespaceget__input__tensors">get_input_tensors</innernamespace>
       <sectiondef kind="func">
-      <memberdef kind="function" id="namespaceget__input__tensors_1a90cf14f9034ee6ac6a081db034bc67a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type></type>
-        <definition>get_input_tensors</definition>
+      <memberdef kind="function" id="namespaceget__input__tensors_1a5b7225356f90e6629dfe9e562cecee4b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def get_input_tensors</definition>
         <argsstring>()</argsstring>
         <name>get_input_tensors</name>
         <qualifiedname>get_input_tensors.get_input_tensors</qualifiedname>

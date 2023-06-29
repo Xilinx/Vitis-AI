@@ -33,10 +33,10 @@ Vitis |trade| AI 3.5 supports the following targets for evaluation.
      - Supported Devices
 
    * - Versal AI Edge
-     - `VEK280 <https://www.xilinx.com/member/vitis-ai-vek280.html>`__ 
+     - `VEK280 <https://www.xilinx.com/vek280.html>`__ 
 
    * - Alveo Data Center Acceleration Cards
-     - `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
+     - `V70 <https://www.xilinx.com/applications/data-center/v70.html>`__
 
 
 Vitis |trade| AI 3.5 supports Zynq |trade| Ultrascale+ |trade| and Versal |trade| AI Core architectures, however the IP for these devices is now considered mature and will not be updated with each release. Users should understand that we will continue to support these targets into the future and Vitis AI will update the pre-built board images and reference designs for these architectures with each major release (ie, 4.0).

@@ -105,7 +105,7 @@ It will be useful to you later on to have the cross-compiler installed.  This wi
 
 .. code-block:: Bash
 
-    [Host] $ cd Vitis-AI/board_setup/VEK280
+    [Host] $ cd Vitis-AI/board_setup/vek280
     [Host] $ sudo chmod u+r+x host_cross_compiler_setup.sh
     [Host] $ ./host_cross_compiler_setup.sh
 	  
