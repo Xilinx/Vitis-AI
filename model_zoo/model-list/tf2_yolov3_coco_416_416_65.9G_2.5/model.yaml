@@ -70,7 +70,7 @@ files:
   checksum: 569db7276e82b719d3477db083725fd1
 - name: yolov3_coco_416_tf2
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 1b8daf5a6df9efebfeac569542ef83cd
 license: license link

@@ -55,7 +55,7 @@ files:
   checksum: 9568af7df0f07de60c59e3dedfe2921b
 - name: mobilenet_1_0_224_tf2
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_1_0_224_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 7a9761ffd4acf79a6bbc3babfacfafb6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

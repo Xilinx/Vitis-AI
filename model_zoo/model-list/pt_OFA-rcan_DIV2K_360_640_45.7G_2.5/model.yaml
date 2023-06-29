@@ -70,7 +70,7 @@ files:
   checksum: c52ab026f4bb38fe46b97d51779e94f0
 - name: ofa_rcan_latency_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_rcan_latency_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: b94f00847b1706e769aabc8717a49563
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

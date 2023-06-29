@@ -65,7 +65,7 @@ files:
   checksum: 436a7401d2816e9c145e10a2f2a50269
 - name: facerec-resnet20_mixed_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facerec-resnet20_mixed_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: e9d45b2bd84813e70a539ab890ddd818
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

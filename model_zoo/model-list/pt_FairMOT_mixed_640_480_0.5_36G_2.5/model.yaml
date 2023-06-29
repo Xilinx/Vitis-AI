@@ -70,7 +70,7 @@ files:
   checksum: ba5e266c2839897d8ef6490f69cc9a6c
 - name: FairMot_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FairMot_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 083e28df60bbe6630d5ecc25cb2d1a93
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

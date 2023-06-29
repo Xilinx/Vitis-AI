@@ -65,7 +65,7 @@ files:
   checksum: e7016cca0a90f7a5721ee3077283fd7c
 - name: plate_num
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_num-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: bc75c0f1ba7025b5a646accf690c67ae
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

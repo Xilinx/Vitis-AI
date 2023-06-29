@@ -65,7 +65,7 @@ files:
   checksum: 34b90cd8c866e436ccab190a8968de1a
 - name: ofa_yolo_pruned_0_50_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 34a11fab6c08ca7e70cc4199d1baabcd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -40,7 +40,7 @@ files:
   checksum: c1d2a3b5caa24e9a7fc6f7b6ecd5e786
 - name: superpoint_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=superpoint_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: bb24d090acdd24a4e0f7fc86511a0fdc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

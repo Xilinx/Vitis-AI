@@ -65,7 +65,7 @@ files:
   checksum: 05f7ad988d2ecd1ee3ef5159dfd965fa
 - name: vpgnet_pruned_0_99
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=vpgnet_pruned_0_99-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 9fa6397ab79fc0852fd8560a60fbf982
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

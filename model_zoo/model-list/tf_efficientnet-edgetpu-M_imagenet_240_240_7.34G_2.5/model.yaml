@@ -60,7 +60,7 @@ files:
   checksum: bc0a3ab4ac0ca769fce03e8792d51631
 - name: efficientNet-edgetpu-M_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-M_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 5f5d4bf3049677b931a7ef7096c85218
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

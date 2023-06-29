@@ -55,7 +55,7 @@ files:
   checksum: 998ebc8aa3109fcf2a79ee12d50f67c1
 - name: ssd_mobilenet_v2_coco_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v2_coco_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: b9c1ee4e9c6261182879ec52ad2ecc20
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

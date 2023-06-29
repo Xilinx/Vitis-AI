@@ -45,7 +45,7 @@ files:
   checksum: 614f6f98bd85d976e1f135793d7315d1
 - name: resnet_v2_101_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet_v2_101_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 6b42977cb1d1fc63e5846308352b7ae4
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

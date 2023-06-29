@@ -65,7 +65,7 @@ files:
   checksum: b903718bfad98b6672e75ba4548305a3
 - name: resnet50
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=resnet50-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 4f86c98fd984187e6b6cf4207c5c3407
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

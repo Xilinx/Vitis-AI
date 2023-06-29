@@ -56,7 +56,7 @@ files:
   checksum: c0097b3694aa18d4b30cd4f4c6518b24
 - name: multi_task_v3_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=multi_task_v3_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: c9d069295ff8dfc3e45ad31d139989d8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

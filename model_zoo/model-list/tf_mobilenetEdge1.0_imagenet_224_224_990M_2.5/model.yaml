@@ -60,7 +60,7 @@ files:
   checksum: 6baa147412aec6e00a40f7eb446a1e82
 - name: mobilenet_edge_1_0_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_edge_1_0_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: d803cec75a267c7b7189c858d03deccc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

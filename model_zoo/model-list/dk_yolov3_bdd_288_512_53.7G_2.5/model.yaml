@@ -65,7 +65,7 @@ files:
   checksum: 1bb9b451694e22b422cb193a805d5348
 - name: yolov3_bdd
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_bdd-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: d3d9bfec5081e33f93a5f1c8c0478ed0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

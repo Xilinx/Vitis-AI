@@ -65,7 +65,7 @@ files:
   checksum: 74a2a9c2dd2bdded6775f1468b70c709
 - name: facereid-large_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=facereid-large_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 789365798e8acbb7e36887efce4cb2de
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

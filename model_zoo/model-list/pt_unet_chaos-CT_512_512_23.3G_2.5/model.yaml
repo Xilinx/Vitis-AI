@@ -70,7 +70,7 @@ files:
   checksum: e70035992896d4a407c173bb14009af1
 - name: unet_chaos-CT_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=unet_chaos-CT_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 6651915742174fe1c49af1a7121a05e8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

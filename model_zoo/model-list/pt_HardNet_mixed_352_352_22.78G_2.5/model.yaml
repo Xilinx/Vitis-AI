@@ -45,7 +45,7 @@ files:
   checksum: 230e72d562dc3e02744fea55aac7d14b
 - name: HardNet_MSeg_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=HardNet_MSeg_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 17a8455c40b5147359de1d8a52cd60dc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

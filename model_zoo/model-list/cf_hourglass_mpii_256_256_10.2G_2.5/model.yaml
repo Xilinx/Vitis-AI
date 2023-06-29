@@ -50,7 +50,7 @@ files:
   checksum: 7ad22e994e821ea3c23905dfdd2f3d99
 - name: hourglass-pe_mpii
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=hourglass-pe_mpii-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 776c980f2a19462e6bc666634c811258
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

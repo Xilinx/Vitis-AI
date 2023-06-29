@@ -65,7 +65,7 @@ files:
   checksum: 32a49d8f19aca4dfcf9286e51ac66b1d
 - name: yolov2_voc_pruned_0_66
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov2_voc_pruned_0_66-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 132a46b63a4ffe0a1f2357cbbff8e1b1
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -70,7 +70,7 @@ files:
   checksum: 29001371233d2da70151b2f2d6c32a9f
 - name: refinedet_VOC_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_VOC_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: bffb10c4b46609d551fc173748ef0cd8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

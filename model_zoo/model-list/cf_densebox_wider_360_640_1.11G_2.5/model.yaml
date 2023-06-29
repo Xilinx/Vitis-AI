@@ -65,7 +65,7 @@ files:
   checksum: 9e0c04649c257a73097a05d48130f881
 - name: densebox_640_360
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_640_360-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 21e8e3644be9e7f638ae2d660582ef99
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

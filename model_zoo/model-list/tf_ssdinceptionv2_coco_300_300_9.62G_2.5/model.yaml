@@ -55,7 +55,7 @@ files:
   checksum: cc3f62c55ad07e8dcedccac6866cf20d
 - name: ssd_inception_v2_coco_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_inception_v2_coco_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: fe823dde9578d305ece207a02ba8be87
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

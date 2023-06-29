@@ -65,7 +65,7 @@ files:
   checksum: 5147c63f5ac5376f37d8d4d0b705c939
 - name: reid
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 9216ddf0302b16f8046c9fe44a543683
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

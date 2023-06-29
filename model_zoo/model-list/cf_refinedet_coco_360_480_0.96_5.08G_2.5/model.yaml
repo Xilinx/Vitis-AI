@@ -65,7 +65,7 @@ files:
   checksum: bcefdd81c7d24f7e7351917fbf96694d
 - name: refinedet_pruned_0_96
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_pruned_0_96-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 506c438812fee2c092ee302d1ff2abf5
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

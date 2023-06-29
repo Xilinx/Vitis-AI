@@ -70,7 +70,7 @@ files:
   checksum: b7662ffda14c13c1f19bb6a25bf9a229
 - name: inception_resnet_v2_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_resnet_v2_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 615f0d1a8d999a996794c7652ace727f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

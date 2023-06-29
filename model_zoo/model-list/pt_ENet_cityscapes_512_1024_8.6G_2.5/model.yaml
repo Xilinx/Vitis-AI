@@ -70,7 +70,7 @@ files:
   checksum: 794699452801029f6b824083c4d4e918
 - name: ENet_cityscapes_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ENet_cityscapes_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: e31ce45dec643d72a8e7b990e115c2e1
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

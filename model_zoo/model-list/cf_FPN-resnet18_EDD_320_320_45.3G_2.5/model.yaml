@@ -65,7 +65,7 @@ files:
   checksum: a27036ee174629c012a4036a154561d2
 - name: FPN_Res18_Medical_segmentation
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FPN_Res18_Medical_segmentation-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 4dc6f901a52f738c3bc058aa996632c6
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

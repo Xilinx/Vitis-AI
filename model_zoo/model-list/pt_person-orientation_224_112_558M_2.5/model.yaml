@@ -65,7 +65,7 @@ files:
   checksum: f2a4df0b4cf86eb4bd95cdda07a2c1ee
 - name: person-orientation_pruned_558m_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=person-orientation_pruned_558m_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: a1d27337378f8b3488028f55ebc481dc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

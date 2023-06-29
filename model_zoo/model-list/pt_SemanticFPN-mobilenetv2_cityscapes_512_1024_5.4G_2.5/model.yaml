@@ -55,7 +55,7 @@ files:
   checksum: 32e4eaac8505742138132e857b2e9624
 - name: SemanticFPN_Mobilenetv2_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=SemanticFPN_Mobilenetv2_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: a07ba2f2f7afe402b76c04aaa7193014
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -146,12 +146,12 @@ files:
   checksum: md5sum value
 - name: pointpainting_nuscenes_40000_64_1_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpainting_nuscenes_40000_64_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 91dad0c95453b4b7cacea8e5a7be699a
 - name: semanticfpn_nuimage_576_320_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semanticfpn_nuimage_576_320_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: ac9dea8848d5c883fdeb441fd6332f7b
 license: license link

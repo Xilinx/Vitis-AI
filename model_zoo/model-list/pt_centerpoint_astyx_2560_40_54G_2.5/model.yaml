@@ -70,12 +70,12 @@ files:
   checksum: db4b873c0000704962b28a36e6ce93a5
 - name: centerpoint_0_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 4e61d4053052ce5bdb6b554ac4c3a506
 - name: centerpoint_1_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=centerpoint_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: d62b587e7f0d1e65421c0fc975bf7056
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

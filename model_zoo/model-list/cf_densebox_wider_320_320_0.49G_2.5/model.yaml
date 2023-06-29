@@ -65,7 +65,7 @@ files:
   checksum: bd05427405b6fc80a590c492d743032d
 - name: densebox_320_320
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=densebox_320_320-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: f9542b43ffa7489d22b44f1cec74cf41
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

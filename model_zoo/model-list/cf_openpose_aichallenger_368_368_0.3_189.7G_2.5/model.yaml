@@ -65,7 +65,7 @@ files:
   checksum: a6c4631e8e95fd0c9a5f687c25383a84
 - name: openpose_pruned_0_3
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=openpose_pruned_0_3-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 6c2fe2bef80eccbfc87ff28fdc89cd55
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

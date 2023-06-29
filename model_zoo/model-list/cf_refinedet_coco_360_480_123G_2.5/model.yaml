@@ -65,7 +65,7 @@ files:
   checksum: 2509cb798a46057f2f64869d0035d847
 - name: refinedet_baseline
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 77099b32d71a5631723f5b147d071db3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

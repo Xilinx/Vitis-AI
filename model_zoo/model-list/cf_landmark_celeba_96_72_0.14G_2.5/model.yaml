@@ -66,7 +66,7 @@ files:
   checksum: cee91d93fc0de07f116b30be620c2b32
 - name: face_landmark
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=face_landmark-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 64e038f83da24433e5b023f716ff083c
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

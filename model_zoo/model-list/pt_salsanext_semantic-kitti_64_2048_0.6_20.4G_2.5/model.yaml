@@ -70,7 +70,7 @@ files:
   checksum: 056ee3c68092890598b255fde7fbf1f8
 - name: salsanext_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=salsanext_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: cacbdebfc88bb1ec6d9f4fd04c2d8d57
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -60,7 +60,7 @@ files:
   checksum: 650b9f7fc53071d5122d1b9f3d7ca64a
 - name: inception_v3
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=inception_v3-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: dfee0903b1a1e1eb61fe6c193adec1a0
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

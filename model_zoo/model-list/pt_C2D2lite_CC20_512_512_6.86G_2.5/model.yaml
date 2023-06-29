@@ -80,12 +80,12 @@ files:
   checksum: 57e2637cf66c922cb8a911b9aab3ace8
 - name: C2D2_Lite_0_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=C2D2_Lite_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: b16a4da8a23c1fce0cbd777d90c7bb01
 - name: C2D2_Lite_1_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=C2D2_Lite_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 903c46fc3de564a6a0dedaeaf9f59d95
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

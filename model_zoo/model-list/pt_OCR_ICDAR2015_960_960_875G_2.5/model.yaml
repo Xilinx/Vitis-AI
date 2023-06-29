@@ -70,7 +70,7 @@ files:
   checksum: 2f69d330307c2f4e4f21e25710485b48
 - name: ocr_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ocr_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: d1f55446cc3c317c49c534d95052d7d7
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

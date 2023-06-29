@@ -65,7 +65,7 @@ files:
   checksum: 4efb7c28ddb215feaa972a0f7348740b
 - name: ssd_traffic_pruned_0_9
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_traffic_pruned_0_9-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 35053f832870cb7b3364bb9fcd3259de
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

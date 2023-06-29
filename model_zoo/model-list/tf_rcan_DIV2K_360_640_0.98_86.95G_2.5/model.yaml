@@ -70,7 +70,7 @@ files:
   checksum: ac5e4ad69dc3aeee2c673a8a829193bb
 - name: rcan_pruned_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 4f63048e5ae6a4781401deb05f645d89
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

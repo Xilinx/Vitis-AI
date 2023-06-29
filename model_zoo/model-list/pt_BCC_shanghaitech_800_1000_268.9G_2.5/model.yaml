@@ -55,7 +55,7 @@ files:
   checksum: e4f439e6086fb936c5a26ef07d60ec2d
 - name: bcc_pt
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=bcc_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: a483a9b11c5df7211d7ea6b3b653e896
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

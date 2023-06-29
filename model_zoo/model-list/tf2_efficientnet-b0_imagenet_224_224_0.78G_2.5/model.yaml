@@ -45,7 +45,7 @@ files:
   checksum: e5cf620f1edb0ccfdb594d63accbef72
 - name: efficientnet-b0_tf2
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientnet-b0_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: e62fa988a0c8268515b215ebc5ebd4fc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

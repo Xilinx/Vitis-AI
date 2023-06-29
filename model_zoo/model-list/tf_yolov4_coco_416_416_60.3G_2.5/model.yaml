@@ -50,7 +50,7 @@ files:
   checksum: 21085d5e4185438957b6617af2dc3bfb
 - name: yolov4_leaky_416_tf
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_416_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: a94116aa5618e69e23b40eb698b1f6af
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

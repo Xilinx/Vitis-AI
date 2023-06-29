@@ -65,7 +65,7 @@ files:
   checksum: cc1d46c7549fca18193c4cad4e8ac2ef
 - name: sp_net
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 0a91a7caac8416f1cd30d609ea2b98bc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

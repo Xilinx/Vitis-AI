@@ -65,7 +65,7 @@ files:
   checksum: af80ca0433cc8f1744dc3c98dbaf29b2
 - name: plate_detect
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=plate_detect-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 23bdd842a3e40d19591bcfe9c0ff0f91
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

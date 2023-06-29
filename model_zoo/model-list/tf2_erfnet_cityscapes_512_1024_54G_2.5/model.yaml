@@ -70,7 +70,7 @@ files:
   checksum: f07c12bb84f8f2837c29b0828b7085ed
 - name: semantic_seg_citys_tf2
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=semantic_seg_citys_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: 3096c3b0d2754a0ffda9af108da82c5f
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

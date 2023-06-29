@@ -70,7 +70,7 @@ files:
   checksum: bcd585dee0469d3bc760dba0aa4bc4f2
 - name: medical_seg_cell_tf2
   type: xmodel
-  board: kv260
+  board: kv260_DPUCZDX8G_ISA1_B3136
   download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
   checksum: f9b9699cf5f823a79a23fc1bc93337a8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
