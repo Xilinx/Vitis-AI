@@ -19,7 +19,7 @@ In the early phases of development, it is highly recommended that the developer 
 
 For more information on the Model Inspector, see the following resources:
 
--  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb>`__ and `TensorFlow <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2>`__.
+-  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb>`__ and `TensorFlow <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2>`__.
 
 -  If your graph uses operators that are not natively supported by your specific DPU target, see the :ref:`Operator Support <operator-support>` section.
 
@@ -32,9 +32,9 @@ Several paths are available to leverage an operator not supported for accelerati
 
 .. important:: A high-level list of the supported operators is provided in the :doc:`reference/release_documentation`. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result is the ordering of layers in the graph is as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -> ReLU -> Batchnorm, the outcome is quite different from `CONV -> Batchnorm -> ReLU <https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US>`__. In this context, it is always an excellent idea to review the structure of similar AMD :doc:`Model Zoo<workflow-model-zoo>` models to understand how to design your graph for optimum results.
 
-For Zynq |trade| UltraScale+ |trade| MPSoC and Versal |trade| adaptive SoC embedded applications, AMD supports an official flow which you can use to add support for these custom operators. More details can be found `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/custom_operator>`__.
+For Zynq |trade| UltraScale+ |trade| MPSoC and Versal |trade| adaptive SoC embedded applications, AMD supports an official flow which you can use to add support for these custom operators. More details can be found `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/custom_operator>`__.
 
-For Alveo |trade| cards, the `Whole Graph Optimizer <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/wego>`__ (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.
+For Alveo |trade| cards, the `Whole Graph Optimizer <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/wego>`__ (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.
 
 Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the AMD Versal |trade| and Zynq |trade| UltraScale+ |trade| MPSoC APUs, or the AMD64 (or x64) host processor (Alveo |trade| targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “**V** itis AI **O** NNX Runtime **E** ngine”.  Users should refer to the section "Programming with VOE" in :doc:`UG1414 <../docs/reference/release_documentation>` for additional information on this powerful workflow.
 
@@ -91,13 +91,13 @@ In addition to channel pruning, a technique coined “Once-for-All” training i
 NAS and AI Optimizer Related Resources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Sample scripts for channel pruning can be found in `examples <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_optimizer>`__
+- Sample scripts for channel pruning can be found in `examples <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_optimizer>`__
 
 - For additional details on channel pruning leveraging the Vitis AI Optimizer, refer to `Vitis AI Optimizer User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1333-ai-optimizer>`__.
 
 - For information on AMD NAS / Once-for-All, refer to the Once-for-All (OFA) section in the `Vitis AI Optimizer User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1333-ai-optimizer>`__ .
 
-- Once-for-All examples can be found `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/ofa>`__.
+- Once-for-All examples can be found `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/ofa>`__.
 
 An excellent overview of the advantages of OFA is available on the `AMD Developer website <https://www.xilinx.com/developer/articles/advantages-of-using-ofa.html>`__.
 
@@ -126,7 +126,7 @@ With certain network topologies, the developer may experience excessive accuracy
    Vitis AI Quantizer Workflow
 
 The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
-`open-source <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer>`__.
+`open-source <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer>`__.
 
 Quantization Related Resources
 """"""""""""""""""""""""""""""
@@ -134,12 +134,12 @@ Quantization Related Resources
 - For additional details on the Vitis AI Quantizer, refer to Chapter 3 "Quantizing the Model" in the `Vitis AI User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai>`__.
 
 - TensorFlow 2.x examples are available as follows:
-   - `TF2 Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md>`__
-   - `TF2 Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md>`__
+   - `TF2 Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md>`__
+   - `TF2 Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md>`__
 
 - PyTorch examples are available as follows:
-   - `PT Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py>`__
-   - `PT Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py>`__
+   - `PT Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py>`__
+   - `PT Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py>`__
 
 .. _model-compilation:
 
@@ -170,7 +170,7 @@ Compiler Related Resources
 
 - For more information on Vitis AI Compiler and XIR refer to Chapter 4 in the `Vitis AI User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai>`__.
 - PyXIR, which supports TVM and ONNXRuntime integration is available as `open source <https://github.com/Xilinx/pyxir>`__.
-- XIR source code is released as a `component of VART <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/xir>`__.
+- XIR source code is released as a `component of VART <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_runtime/xir>`__.
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

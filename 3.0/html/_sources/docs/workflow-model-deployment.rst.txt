@@ -59,7 +59,7 @@ If you prefer to use the Vitis AI Runtime APIs directly, the code examples provi
 Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>`__ will offer an excellent starting point.
 
 -  For more information on Vitis AI Libraries, refer to *Vitis AI Library User Guide* (`UG1354 <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1354-xilinx-ai-sdk>`__).
--  The Vitis AI Library quick start guide and open-source is `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_library>`__.
+-  The Vitis AI Library quick start guide and open-source is `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_library>`__.
 
 .. _vitis-ai-runtime:
 
@@ -77,9 +77,9 @@ For more information on Vitis AI Runtime, refer to the following documentation:
 
 -  For the Vitis AI Runtime API reference, see `VART Programming APIs <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=erl1576053489624.html>`__ and `Deploying and Running the Model <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=zgy1576168058789.html>`__ in the Vitis AI User Guide.
 
--  A quick-start example to assist you in deploying VART on embedded devices is available `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/quick_start_for_embedded.md>`__.
+-  A quick-start example to assist you in deploying VART on embedded devices is available `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_runtime/quick_start_for_embedded.md>`__.
 
--  The Vitis AI Runtime is also provided as `open-source <https://github.com/Xilinx/Vitis-AI/tree/v3.0/src>`__.
+-  The Vitis AI Runtime is also provided as `open-source <https://github.com/Xilinx/Vitis-AI/tree/3.0/src>`__.
 
 .. _whole-application-acceleration:
 
@@ -101,7 +101,7 @@ In addition, many real-world applications for machine learning do not simply emp
    Typical Cascaded CNN Pre-Processing Pipeline
 
 These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end
-application. This makes “Whole Application Acceleration” or WAA a very important aspect of AMD machine learning solutions. All developers leveraging AMD adaptable devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/waa>`__.
+application. This makes “Whole Application Acceleration” or WAA a very important aspect of AMD machine learning solutions. All developers leveraging AMD adaptable devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/waa>`__.
 
 Explore the relevance and capabilities of `AMD Vitis Video Analytics (VVAS)
 SDK <https://xilinx.github.io/VVAS/>`__, which, while not part of Vitis AI, offers many important features for developing end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS also applies to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage `GStreamer <https://gstreamer.freedesktop.org/>`__ commands to interact with the video pipeline.
@@ -118,7 +118,7 @@ The Vitis AI Profiler is a component of the Vitis AI toolchain installed in the 
 -  For more information on Vitis AI Profiler see the `Profiling the Model <https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai&resourceid=kdu1570699882179.html>`__ section in the Vitis AI User Guide.
 
 -  Examples and additional detail for the Vitis AI Profiler can be found
-   `here <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_profiler>`__.
+   `here <https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_profiler>`__.
 
 -  A tutorial that provides additional insights on the capabilities of the Vitis AI Profiler is available
    `here <https://github.com/Xilinx/Vitis-AI-Tutorials/blob/1.4/Design_Tutorials/16-profiler_introduction/README.md>`__.

@@ -38,7 +38,7 @@ Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for
    Vitis-AI Integration With ONNX Runtime (Data Center)
 
 
-As a reference, for AMD adaptable Data Center targets, Vitis AI Execution Provider support was also previously published as a `workflow reference <https://github.com/Xilinx/Vitis-AI/tree/v3.0/third_party/onnxruntime>`__.  The details of the Vitis AI Execution Provider used in this previous release can be found `here <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>`__.  Our expectation is that the VOE workflow will supercede this historic workflow for most use cases.
+As a reference, for AMD adaptable Data Center targets, Vitis AI Execution Provider support was also previously published as a `workflow reference <https://github.com/Xilinx/Vitis-AI/tree/3.0/third_party/onnxruntime>`__.  The details of the Vitis AI Execution Provider used in this previous release can be found `here <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>`__.  Our expectation is that the VOE workflow will supercede this historic workflow for most use cases.
 
 
 TensorFlow Lite
@@ -48,7 +48,7 @@ TensorFlow Lite has been a preferred inference solution for TensorFlow users in 
 
 With the addition of `TensorFlow Delegates <https://www.tensorflow.org/lite/performance/delegates>`__, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.
 
-Vitis AI Delegate support is integrated as an `experimental flow <https://github.com/Xilinx/Vitis-AI/tree/v3.0/third_party/tflite>`__ in recent releases.
+Vitis AI Delegate support is integrated as an `experimental flow <https://github.com/Xilinx/Vitis-AI/tree/3.0/third_party/tflite>`__ in recent releases.
 
 .. figure:: reference/images/VAI_3rd_party_TFLite.PNG
    :width: 1300

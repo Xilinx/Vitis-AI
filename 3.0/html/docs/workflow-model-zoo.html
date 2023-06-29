@@ -36,7 +36,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Developing a Model" href="workflow-model-development.html" />
-    <link rel="prev" title="What is a DPU?" href="workflow-dpu.html" /> 
+    <link rel="prev" title="DPU IP Details and System Integration" href="workflow-system-integration.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -67,15 +67,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Quick Start Guide for VCK5000</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Quick Start Guide for VCK190</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Zynq Ultrascale+</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Versal VCK5000 Development Card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Versal AI Core VCK190</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-dpu.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Vitis AI Model Zoo</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-zoo-details-and-performance">Model Zoo Details and Performance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#model-file-nomenclature">Model File Nomenclature</a><ul>
@@ -95,7 +97,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
@@ -151,15 +152,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>The Vitis™ AI Model Zoo, incorporated into the Vitis AI repository, includes optimized deep learning models to speed up the deployment of deep learning inference on AMD platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, and so on. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.</p>
 <section id="model-zoo-details-and-performance">
 <h2>Model Zoo Details and Performance<a class="headerlink" href="#model-zoo-details-and-performance" title="Permalink to this heading">¶</a></h2>
-<p>All the models in the Model Zoo are deployed on AMD adaptable hardware with <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI</a> and the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library">Vitis AI Library</a>. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.</p>
+<p>All the models in the Model Zoo are deployed on AMD adaptable hardware with <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI</a> and the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_library">Vitis AI Library</a>. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.</p>
 <p>To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet and an online table that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including links to the original papers and datasets, source framework, input size, computational cost (GOPs), and float and quantized accuracy. <strong>You can download the spreadsheet</strong> <a class="reference download internal" download="" href="../_downloads/08f25862a0dd85eb493ab84edb004a0e/ModelZoo_VAI3.0_Github.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 <a href="reference/ModelZoo_VAI3.0_Github_web.htm"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Please note that if the models are marked as “Non-Commercial Use Only”, users must comply with this <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/Xilinx-license-agreement-for-non-commercial-models.md">AMD license agreement</a></p>
+<p>Please note that if the models are marked as “Non-Commercial Use Only”, users must comply with this <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/AMD-license-agreement-for-non-commercial-models.md">AMD license agreement</a></p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table’s header. Free download of Vitis AI and Vitis AI Library from <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library">Vitis AI Library Github</a>.</p>
+<p>The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table’s header. Free download of Vitis AI and Vitis AI Library from <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_library">Vitis AI Library Github</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -327,7 +328,7 @@ files:
           
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="workflow-dpu.html" class="btn btn-neutral float-left" title="What is a DPU?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-system-integration.html" class="btn btn-neutral float-left" title="DPU IP Details and System Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="workflow-model-development.html" class="btn btn-neutral float-right" title="Developing a Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

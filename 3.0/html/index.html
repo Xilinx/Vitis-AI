@@ -66,18 +66,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="docs/reference/release_notes_3.0.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/vck5000.html">Quick Start Guide for VCK5000</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/vck190.html">Quick Start Guide for VCK190</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/mpsoc.html">Zynq Ultrascale+</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/vck5000.html">Versal VCK5000 Development Card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/quickstart/vck190.html">Versal AI Core VCK190</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="docs/workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/workflow-dpu.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/workflow-model-development.html">Developing a Model for Vitis AI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docs/workflow-system-integration.html">Integrating the DPU</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
@@ -139,7 +140,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </figure>
 <p>The Vitis™ AI solution consists of three primary components:</p>
 <ul class="simple">
-<li><p>The deep-learning processor unit (DPU), a hardware engine for optimized the inferencing of ML models</p></li>
+<li><p>The Deep-Learning Processor unit (DPU), a hardware engine for optimized the inferencing of ML models</p></li>
 <li><p>Model development tools, to compile and optimize ML models for the DPU</p></li>
 <li><p>Model deployment libraries and APIs, to integrate and execute the ML models on the DPU engine from a SW application</p></li>
 </ul>
@@ -154,7 +155,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h1>Vitis AI Key Components<a class="headerlink" href="#vitis-ai-key-components" title="Permalink to this heading">¶</a></h1>
 <section id="deep-learning-processor-unit">
 <h2>Deep-Learning Processor Unit<a class="headerlink" href="#deep-learning-processor-unit" title="Permalink to this heading">¶</a></h2>
-<p>The <a class="reference internal" href="docs/workflow-dpu.html#workflow-dpu"><span class="std std-ref">deep-learning processor unit (DPU)</span></a> is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others.</p>
+<p>The <a class="reference internal" href="docs/workflow-system-integration.html#workflow-dpu"><span class="std std-ref">Deep-learning Processor Unit (DPU)</span></a> is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others.</p>
 <p>The DPU supports on AMD Zynq™ UltraScale+™ MPSoCs, the Kria™ KV260, Versal™ and Alveo cards. It scales to meet the requirements of many diverse applications in terms of throughput, latency, scalability, and power.</p>
 <p>AMD provides pre-built platforms integrating the DPU engine for both edge and data-center cards. These pre-built platforms allow data-scientists to start developping and testing their models without any need for HW development expertise.</p>
 <p>For embedded applications, the DPU needs to be integrated in a custom platform along with the other programmable logic functions going in the FPGA or adaptive SoC device. HW designers can <a class="reference internal" href="docs/workflow-system-integration.html#integrating-the-dpu"><span class="std std-ref">integrate the DPU in a custom platform</span></a> using either the Vitis flow or the Vivado™ Design Suite.</p>
@@ -205,6 +206,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="vitis-ai-profiler">
 <h3>Vitis AI Profiler<a class="headerlink" href="#vitis-ai-profiler" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="docs/workflow-model-deployment.html#vitis-ai-profiler"><span class="std std-ref">Vitis AI Profiler</span></a> profiles and visualizes AI applications to find bottlenecks and allocates computing resources among different devices. It is easy to use and requires no code changes. It can trace function calls and run time, and also collect hardware information, including CPU, DPU, and memory utilization.</p>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">

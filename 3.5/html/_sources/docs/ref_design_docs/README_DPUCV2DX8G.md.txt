@@ -15,7 +15,7 @@ The reference design associated with this document [is found here](https://www.x
     - [4.1 Design Components](#41-design-components)
 - [5 Tutorials](#5-tutorials)
 	- [5.1 Board Setup](#51-board-setup)
-	- [5.2 Build and Run TRD Flow](#52-build-and-run-trd-flow)
+	- [5.2 Build and Run The Reference Design](#52-build-and-run-the-reference-design)
 		- [5.2.1 Build the DPU](#521-build-the-dpu)
 		- [5.2.2 Get Json File](#522-get-json-file)
 		- [5.2.3 Run ResNet50 Example](#523-run-resnet50-example)
@@ -29,11 +29,11 @@ The reference design associated with this document [is found here](https://www.x
 
 ## 1 Revision History
 
-Vitis3.5 Change log:
-- Update platform to rev-B ES board, and support vitis 2023.1.
+Vitis AI 3.5 change log:
+- Update platform to B01 board with ES silicon, and support Vitis 2023.1.
 - Support multi-batch setting
 
-Vitis3.0 Change log:
+VitisAI 3.0 change log:
 - Initial early access version
 
 ------
@@ -45,9 +45,9 @@ It includes a set of highly optimized instructions, and supports most convolutio
 
 This tutorial contains information about:
 
-- How to set up the VEK280 evaluation board.
-- How to build and run the DPUCV2DX8G TRD with VEK280 platform in Vitis environment.
-- How to change platform. 
+- How to setup the VEK280 evaluation board.
+- How to build and run the DPUCV2DX8G reference design with VEK280 platform in Vitis environment.
+- How to modify the platform. 
 ------
 
 ## 3 Software Tools and System Requirements
@@ -56,13 +56,13 @@ This tutorial contains information about:
 
 Required:
 
-- ES version of the VEK280 evaluation board
+- Revision B01 VEK280 evaluation board
 
 - USB type-C cable, connected to a PC for the terminal emulator
 
 - SD card 
 
-**Note:**  if you only have rev-A ES board, a USB Ethernet Adapter is also required
+**Note:**  if you only have only the A01 board, a USB Ethernet Adapter is also required
 
 ### 3.2 Software
 
@@ -107,11 +107,11 @@ The top-level directory structure shows the the major design components.
 
 ###### Board jumper and switch settings:
 
-Make sure the board is set as booting from SD card :
+Configure the Versal Boot Mode switch SW1 to boot from SD Card: 
 
-- SW1[4:1]- [OFF,OFF,OFF,ON].
+- SW1[1:4]- [ON,OFF,OFF,OFF].
 
-### 5.2 Build and Run TRD Flow
+### 5.2 Build and Run The Reference Design
 
 The following tutorials assume that the '$TRD_HOME' environment variable is set as shown below.
 
@@ -121,10 +121,10 @@ The following tutorials assume that the '$TRD_HOME' environment variable is set 
 
 **Step1:** Build VEK280 platform 
 
-Firstly, build the VEK280 platform in the folder '$TRD_HOME/vek280_platform', following the instructions in '$TRD_HOME/vek280_platform/README.md".
+First, build the VEK280 platform in the folder '$TRD_HOME/vek280_platform', following the instructions in '$TRD_HOME/vek280_platform/README.md".
 
 
-**Step2:** Setup environment for building DPUCV2DX8G
+**Step2:** Setup the environment for building the DPUCV2DX8G IP and kernel
 
 When platform is ready, set the Vitis environment variable as given below.
 
@@ -136,8 +136,9 @@ Open a linux terminal. Set the linux as Bash mode.
 
 #### 5.2.1 Build the DPU
 
-The default architecture of DPUCV2DX8G is C20B1 (CU_N=1, BATCH_SingleCU=1, 16 AIE-ML cores for Convolution, 4 AIE-ML cores for Non-Convolution), PL clock frequency is 300 MHz. For this vesion TRD, it only supports CU_N=1, but can supports BATCH_SingleCU to 1~14. Modify file '$TRD_HOME/vitis_prj/xv2dpu_config.mk' can change the parameters.
+The default architecture of DPUCV2DX8G is C20B1 (CU_N=1, BATCH_SingleCU=1, 16 AIE-ML cores for Convolution, 4 AIE-ML cores for Non-Convolution), PL clock frequency is 300 MHz. This version of the reference design only supports CU_N=1, but can support BATCH_SingleCU to 1~14. You can modify the file '$TRD_HOME/vitis_prj/xv2dpu_config.mk' to change these parameters.
 
+Execute the following command to build the project:
 
 ```
 % cd $TRD_HOME/vitis_prj
@@ -145,23 +146,20 @@ The default architecture of DPUCV2DX8G is C20B1 (CU_N=1, BATCH_SingleCU=1, 16 AI
 % make all
 ```
 
-The generated SD card image:  $TRD_HOME/vitis_prj/package_out/sd_card.img.gz
+Upon completion, you will find the generated SD card image here '$TRD_HOME/vitis_prj/package_out/sd_card.img.gz' and the implemented Vivado project here '$TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.xpr'
 
-The implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.xpr
+**Note1:** You can execute 'make help' to see more detailed information. 
 
-**Note1:** With 'make help' to see more detailed information about the commands. 
+**Note2:** The implementation strategy may be changed by editing the file '$TRD_HOME/vitis_prj/scripts/system.cfg'. The default strategy is " prop=run.impl_1.strategy=Performance_ExploreWithRemap ".
 
-**Note2:** The implementation strategy is set in the file '$TRD_HOME/vitis_prj/scripts/system.cfg', the default strategy is " prop=run.impl_1.strategy=Performance_ExploreWithRemap ".
-           The implementation strategy may be changed by editing `system.cfg`.  
-
-**Note3:** With same configuration of DPUCV2DX8G, 'libadf.a' file of AI Engine can be reused. Comment out the last line of '$TRD_HOME/vitis_prj/Makefile', to save compile time for re-building the hardware design.
+**Note3:** If you are not modifying the configuration of the DPUCV2DX8G the compiled AIE Engine archive 'libadf.a' can be reused. If you wish to skip compilation, comment out the last line of '$TRD_HOME/vitis_prj/Makefile', which will save time when re-building the hardware design.
 ```
 # -@rm -rf aie
 ```
 		   
 #### 5.2.2 Get Json File
 
-The 'arch.json' file is an important file required by Vitis AI. It works together with Vitis AI compiler to support model compilation with various DPUCV2DX8G configurations. The 'arch.json' file will be generated by Vitis during the compilation of DPUCV2DX8G TRD, it can be found in '$TRD_HOME/vitis_prj/package_out/sd_card' .
+The 'arch.json' file is an important file required by Vitis AI. It works together with the Vitis AI compiler to support model compilation with various DPUCV2DX8G configurations. The 'arch.json' file will be generated by Vitis during the compilation of DPUCV2DX8G reference design, it can be found in '$TRD_HOME/vitis_prj/package_out/sd_card' .
 
 It can also be found in the following path:
 ```
@@ -170,12 +168,12 @@ $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/
 
 #### 5.2.3 Run ResNet50 Example
 
-The TRD project has generated the matching model file in '$TRD_HOME/app' path for the default settings. If the settings of DPUCV2DX8G are modified, the model needs to be created according to the fingerprint in 'arch.json'.
+The reference design project has generated the matching model file in '$TRD_HOME/app' path, pre-configured with default settings. If the configuration of the DPUCV2DX8G is modified, the model needs to be compiled with the new fingerprint file, 'arch.json'.
 
-This section is about how to run the ResNet50 example.
+In this section, we will execute this example.
 
-Use the balenaEtcher tool to flash '$TRD_HOME/vitis_prj/package_out/sd_card.img.gz' into SD card, insert the SD card with the image into the destination board and power-on it.
-After Linux booting on board, copy the folder '$TRD_HOME/app' in this TRD to the target folder "~/", and run the following commands:
+Use the balenaEtcher tool to flash '$TRD_HOME/vitis_prj/package_out/sd_card.img.gz' into SD card, insert the SD card with the image into the destination board and power up the board.
+After Linux boots, copy the folder '$TRD_HOME/app' in this reference design to the target folder "~/", and run the following commands:
 
 ```
 % cd ~/app/model/
@@ -204,7 +202,7 @@ I1123 04:09:22.478579  1127 performance_test.hpp:96] BYEBYE
 ### 5.3 Change the Configuration 
 
 The DPUCV2DX8G IP provides some user-configurable parameters, refer to the document PG425 'Xilinx Versal DPU (DPUCV2DX8G) Product Guide'.
-In this TRD, user-configurable parameters are in the file '$TRD_HOME/vitis_prj/xv2dpu_config.mk'. They are:
+In this reference design, user-configurable parameters are in the file '$TRD_HOME/vitis_prj/xv2dpu_config.mk'. They are:
 - CU_N        -- Compute Unit (CU) number (only support 1 for now).
 - CPB_N       -- number of AI Engine cores for Convolution per batch handler (only support 16).
 - BATCH_SingleCU -- number of batch engine integrated in DPUCV2DX8G IP for CU_N=1. Support 1 to 14.
@@ -221,13 +219,13 @@ The DPUCV2DX8G ports are listed as below.
 
 | Ports                      | Descriptions |
 | -------------------------- | ------------ |
-| m*_\<wgt\|img\|instr\>_axi | Master AXI interfaces, connected with NOC to access DDR (cips_noc in this TRD platform) |
+| m*_\<wgt\|img\|instr\>_axi | Master AXI interfaces, connected with NOC to access DDR (cips_noc in this reference design platform) |
 | m*_\<data\|ctrl\>_axis     | Master AXI-stream interface, connected with AI Engine (ai_engine_0). |
 | s*_\<data\|done\>_axis     | Slave AXI-stream interface, connected with AI Engine (ai_engine_0). |
-| m_axi_clk                  | Input clock used for DPUCV2DX8G general logic, AXI and AXI-stream interface. Default frequency is 300M Hz in this TRD. |
+| m_axi_clk                  | Input clock used for DPUCV2DX8G general logic, AXI and AXI-stream interface. Default frequency is 300M Hz in this reference design. |
 | m_axi_aresetn              | Active-Low reset for DPUCV2DX8G general logic. |
 | s_axi_control              | AXI lite interface for controlling DPUCV2DX8G registers, connected with CIPS through AXI_Smartconnect_IP. |
-| s_axi_aclk                 | Input clock for S_AXI_CONTROL. Default frequency is 150M Hz in this TRD. |
+| s_axi_aclk                 | Input clock for S_AXI_CONTROL. Default frequency is 150M Hz in this reference design. |
 | s_axi_aresetn              | Active-Low reset for S_AXI_CONTROL. |
 | interrupt                  | Interrupt signal generated by DPUCV2DX8G. |
 
@@ -236,7 +234,7 @@ DPUCV2DX8G's connection with AI Engine array and NOC are all defined in the '$TR
 
 For the clock design, make sure that:
 - s_axi_aclk for 's_axi_control' should use clock with lower frequency (e.g. 150M Hz) to get better timing.
-- 'AI Engine Core Frequency' should be 4 times of DPUCV2DX8G's m_axi_clk, or the maximum AI Engine frequency. In this TRD, it is 1250M Hz (the maximum AI Engine frequency of XCVE2802-2MP device on the VEK280 board). The value of 'AI Engine Core Frequency' can be set in the platform design files or 'vitis_prj/scripts/postlink.tcl'.
+- 'AI Engine Core Frequency' should be 4 times of DPUCV2DX8G's m_axi_clk, or the maximum AI Engine frequency. In this reference, it is 1250MHz (the maximum AI Engine frequency of XCVE2802-2MP device on the VEK280 board). The value of 'AI Engine Core Frequency' can be set in the platform design files or 'vitis_prj/scripts/postlink.tcl'.
 
 ### 6.2 Changing the Platform
 
@@ -259,7 +257,7 @@ Changing platform needs to modify 1 files: 'vitis_prj/Makefile'.
 
 ## 7 Instructions for Adding Other Kernels
 
-Vitis kernels developed for Versal devices, could be RTL kernel (only use PL resouces), AIE kernel (only uses AI Engine tiles), or kernel including both PL and AIE. The basic instructions for adding other kernels in this TRD are shown below.
+Vitis kernels developed for Versal devices, could be RTL kernel (only use PL resouces), AIE kernel (only uses AI Engine tiles), or kernel including both PL and AIE. The basic instructions for adding other kernels in this reference design are shown below.
 
 
 ### 7.1 RTL Kernel
@@ -284,11 +282,11 @@ result += "nk=<kernel name>:<number>:<cu_name>.<cu_name>...\n"
 
 ## 8 Known Issues 
 
-1) This TRD has updated to support rev-B ES vek280 board, if you want to use it on rev-A board, the Ethernet will not work, you can use a USB Ethernet Adapter to workaround this issue.
+1) This reference design has updated to support rev-B ES vek280 board, if you want to use it on rev-A board, Ethernet will not work, however you can use a USB Ethernet Adapter to workaround this issue.
 
-2) For this version trd, it only can support part of the Modelzoo.
+2) This version of the reference design supports only a subset of the Vitis AI Model Zoo models.
 
-3) The app/model/resnet50.xmodel only support the default arch setting(BATCH_SingleCU=1), for other batch setting, it is needed to compile the corresponding xmodel.
+3) The app/model/resnet50.xmodel only support the default arch setting(BATCH_SingleCU=1).  To enable alternative batch settings, it is necessary to compile the corresponding xmodel with a new arch.json file.
 
 4) It is suggested to add the following line to your tcl scripts '$HOME/.Xilinx/Vivado/Vivado_init.tcl'. For details about 'Vivado_init.tcl', please refer to the link page 'https://docs.xilinx.com/r/en-US/ug894-vivado-tcl-scripting/Initializing-Tcl-Scripts'. This setting can help to optimize the ddr r/w performance by preplacing the NoC netlist.
 

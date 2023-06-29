@@ -35,7 +35,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Integrating the DPU" href="workflow-system-integration.html" />
+    <link rel="next" title="Deploying a Model" href="workflow-model-deployment.html" />
     <link rel="prev" title="Vitis AI Model Zoo" href="workflow-model-zoo.html" /> 
 </head>
 
@@ -67,15 +67,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Quick Start Guide for VCK5000</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Quick Start Guide for VCK190</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Zynq Ultrascale+</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Versal VCK5000 Development Card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Versal AI Core VCK190</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-dpu.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developing a Model for Vitis AI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#model-inspector">Model Inspector</a><ul>
@@ -101,7 +103,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
@@ -170,7 +171,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </figure>
 <p>For more information on the Model Inspector, see the following resources:</p>
 <ul class="simple">
-<li><p>When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb">PyTorch</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2">TensorFlow</a>.</p></li>
+<li><p>When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb">PyTorch</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2">TensorFlow</a>.</p></li>
 <li><p>If your graph uses operators that are not natively supported by your specific DPU target, see the <a class="reference internal" href="#operator-support"><span class="std std-ref">Operator Support</span></a> section.</p></li>
 </ul>
 <section id="operator-support">
@@ -180,8 +181,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p class="admonition-title">Important</p>
 <p>A high-level list of the supported operators is provided in the <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Vitis AI User Guides / DPU Product Guides</span></a>. Both the Vitis AI quantizer and compiler implement layer fusion using a pattern-match algorithm. The net result is the ordering of layers in the graph is as important as the operators used. For instance, if you implement a layer ordering scheme such as CONV -&gt; ReLU -&gt; Batchnorm, the outcome is quite different from <a class="reference external" href="https://support.xilinx.com/s/question/0D52E00006hpW23SAE/resolving-debugging-shiftcut0-tensorflow?language=en_US">CONV -&gt; Batchnorm -&gt; ReLU</a>. In this context, it is always an excellent idea to review the structure of similar AMD <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Model Zoo</span></a> models to understand how to design your graph for optimum results.</p>
 </div>
-<p>For Zynq™ UltraScale+™ MPSoC and Versal™ adaptive SoC embedded applications, AMD supports an official flow which you can use to add support for these custom operators. More details can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/custom_operator">here</a>.</p>
-<p>For Alveo™ cards, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/wego">Whole Graph Optimizer</a> (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.</p>
+<p>For Zynq™ UltraScale+™ MPSoC and Versal™ adaptive SoC embedded applications, AMD supports an official flow which you can use to add support for these custom operators. More details can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/custom_operator">here</a>.</p>
+<p>For Alveo™ cards, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/wego">Whole Graph Optimizer</a> (WeGO) automatically performs subgraph partitioning for models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the DPU compatible subgraphs. The remaining partitions of the graph are dispatched to the native framework for CPU execution.</p>
 <p>Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the AMD Versal™ and Zynq™ UltraScale+™ MPSoC APUs, or the AMD64 (or x64) host processor (Alveo™ targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “<strong>V</strong> itis AI <strong>O</strong> NNX Runtime <strong>E</strong> ngine”.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this powerful workflow.</p>
 <figure class="align-default" id="id8">
 <a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" src="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" style="width: 1300px;" /></a>
@@ -227,10 +228,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="nas-and-ai-optimizer-related-resources">
 <h3>NAS and AI Optimizer Related Resources<a class="headerlink" href="#nas-and-ai-optimizer-related-resources" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Sample scripts for channel pruning can be found in <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_optimizer">examples</a></p></li>
+<li><p>Sample scripts for channel pruning can be found in <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_optimizer">examples</a></p></li>
 <li><p>For additional details on channel pruning leveraging the Vitis AI Optimizer, refer to <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1333-ai-optimizer">Vitis AI Optimizer User Guide</a>.</p></li>
 <li><p>For information on AMD NAS / Once-for-All, refer to the Once-for-All (OFA) section in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1333-ai-optimizer">Vitis AI Optimizer User Guide</a> .</p></li>
-<li><p>Once-for-All examples can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/ofa">here</a>.</p></li>
+<li><p>Once-for-All examples can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/ofa">here</a>.</p></li>
 </ul>
 <p>An excellent overview of the advantages of OFA is available on the <a class="reference external" href="https://www.xilinx.com/developer/articles/advantages-of-using-ofa.html">AMD Developer website</a>.</p>
 </section>
@@ -251,23 +252,23 @@ memory footprint, and data path bandwidth required for inference.</p>
 </figcaption>
 </figure>
 <p>The Vitis AI Quantizer is a component of the Vitis AI toolchain, installed in the VAI Docker, and is also provided as
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer">open-source</a>.</p>
+<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer">open-source</a>.</p>
 <section id="quantization-related-resources">
 <h4>Quantization Related Resources<a class="headerlink" href="#quantization-related-resources" title="Permalink to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>For additional details on the Vitis AI Quantizer, refer to Chapter 3 “Quantizing the Model” in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
 <li><dl class="simple">
 <dt>TensorFlow 2.x examples are available as follows:</dt><dd><ul>
-<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md">TF2 Post-Training Quantization</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md">TF2 Quantization Aware Training</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md">TF2 Post-Training Quantization</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md">TF2 Quantization Aware Training</a></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>PyTorch examples are available as follows:</dt><dd><ul>
-<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py">PT Post-Training Quantization</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py">PT Quantization Aware Training</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py">PT Post-Training Quantization</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py">PT Quantization Aware Training</a></p></li>
 </ul>
 </dd>
 </dl>
@@ -299,7 +300,7 @@ memory footprint, and data path bandwidth required for inference.</p>
 <ul class="simple">
 <li><p>For more information on Vitis AI Compiler and XIR refer to Chapter 4 in the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
 <li><p>PyXIR, which supports TVM and ONNXRuntime integration is available as <a class="reference external" href="https://github.com/Xilinx/pyxir">open source</a>.</p></li>
-<li><p>XIR source code is released as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/xir">component of VART</a>.</p></li>
+<li><p>XIR source code is released as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_runtime/xir">component of VART</a>.</p></li>
 </ul>
 </section>
 </section>
@@ -312,7 +313,7 @@ memory footprint, and data path bandwidth required for inference.</p>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="workflow-model-zoo.html" class="btn btn-neutral float-left" title="Vitis AI Model Zoo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="workflow-system-integration.html" class="btn btn-neutral float-right" title="Integrating the DPU" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="workflow-model-deployment.html" class="btn btn-neutral float-right" title="Deploying a Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

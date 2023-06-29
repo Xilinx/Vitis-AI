@@ -3,13 +3,11 @@ Host Installation Instructions
 
 The purpose of this page is to provide the developer with guidance on the installation of Vitis |trade| AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in the Quickstart tutorials.
 
-There are three primary options for installation:
+There are two primary options for installation:
 
 **[Option1]** Directly leverage pre-built Docker containers available from Docker Hub: `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/>`__.
 
 **[Option2]** Build a custom container to target your local host machine.
-
-**[Option3]** Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on :doc:`AWS <install_on_aws>`, or :doc:`Azure <install_on_azure>`.
 
 
 In addition, Vitis AI supports three host types: 
@@ -169,9 +167,10 @@ You are now ready to start working with the Vitis AI Docker container.  At this 
 
 Starting with the Vitis AI 3.0 release, pre-built Docker containers are framework specific.  Furthermore, we have extended support to include AMD ROCm enabled GPUs.
 Users thus now have three options for the host Docker:
-	- CPU-only
-	- CUDA-capable GPUs
-	- ROCm-capable GPUs
+
+#. CPU-only
+#. CUDA-capable GPUs
+#. ROCm-capable GPUs
 
 CUDA-capable GPUs are not supported by pre-built containers, and thus the developer must :ref:`build the container from scripts <build-docker-from-scripts>`.
 

@@ -1,5 +1,8 @@
+Overview
+--------
+
 First Steps
------------
+~~~~~~~~~~~
 
 So, you are a new user wondering where to start. In general, there are two primary starting points. Most users will want to start by evaluating the toolchain and running a few examples.  AMD recommends that all users start by downloading and running examples on a supported target platform, and then move on to installation and evaluation of the tools.
 
@@ -18,7 +21,7 @@ If you are not familiar with AMD's Adaptable SoC offerings, you may need better 
 
 
 Supported Evaluation Targets
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Vitis |trade| AI 3.5 supports the following targets for evaluation.
 
@@ -36,20 +39,22 @@ Vitis |trade| AI 3.5 supports the following targets for evaluation.
      - `V70 <https://www.xilinx.com/member/v70.html#vitis_ai>`__
 
 
-Vitis |trade| AI 3.5 supports Zynq |trade| Ultrascale+ |trade| and Versal |trade| AI Core architectures, however the IP for these devices is now considered mature. Vitis AI will only update pre-built board images and reference designs for these architecture with each major release (ie, 4.0).  
+Vitis |trade| AI 3.5 supports Zynq |trade| Ultrascale+ |trade| and Versal |trade| AI Core architectures, however the IP for these devices is now considered mature and will not be updated with each release. Users should understand that we will continue to support these targets into the future and Vitis AI will update the pre-built board images and reference designs for these architectures with each major release (ie, 4.0).
 
-Users wishing to leverage these architectures have two choices:
+For minor releases (x.5), users wishing to leverage these architectures have two choices:
 
 #. Leverage Vitis |trade| AI 3.0 for initial evaluation and development.
-#. Build a custom board image for their target leveraging the Vitis AI 3.5 runtime and libraries.
+#. Build a custom board Petalinux image for their target leveraging the Vitis AI 3.5 runtime and libraries.
 
-Vitis AI support for the `U200 16nm DDR <https://www.xilinx.com/U200>`__, `U250 16 nm DDR <https://www.xilinx.com/U250>`__, `U280 16 nm HBM <https://www.xilinx.com/U280>`__, `U55C 16 nm HBM <https://www.xilinx.com/U55C>`__, `U50 16 nm HBM <https://www.xilinx.com/U50>`__, and `U50LV 16 nm HBM <https://www.xilinx.com/U50LV>`__ has been discontinued. Please leverage a previous release for these targets or contact your local sales team for additional guidance.  
+Vitis AI support for the `VCK5000 <https://www.xilinx.com/VCK5000>`__ was discontinued in the 3.5 release.  Please use Vitis AI 3.0 for this target.
+
+Vitis AI support for the Uxxx Alveo targets was discontinued in the 3.0 release.  Please use Vitis AI 2.5 for those targets.
 
 When you are ready to start with one of these platforms, you should refer to the Quickstart documentation. Quickstart instructions guide users to download a pre-built board image to launch deployment examples that leverage Vitis AI Model Zoo. This is a crucial first step to becoming familiar with Vitis AI.
 
 In addition, developers with access to suitable available hardware platforms can experience pre-built demonstrations available for download through the `Vitis AI Developer page <https://www.xilinx.com/developer/products/vitis-ai.html#demos>`__. Contact your local FAE to arrange a live demonstration.
 
-Last but not least, embedded in the Vitis AI Github repo, there is a folder that in which we may publish demonstrations from time-to-time. You can access the `demos here <https://github.com/Xilinx/Vitis-AI/tree/v3.5/demos>`__.
+Last but not least, embedded in the Vitis AI Github repo, there is a folder in which we may publish demonstrations from time-to-time. You can access the `demos here <https://github.com/Xilinx/Vitis-AI/tree/v3.5/demos>`__.
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

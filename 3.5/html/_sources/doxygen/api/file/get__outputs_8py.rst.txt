@@ -1,4 +1,4 @@
-File get_outputs.py
-===================
+get_outputs
+===========
 
 .. doxygenfile:: get_outputs.py

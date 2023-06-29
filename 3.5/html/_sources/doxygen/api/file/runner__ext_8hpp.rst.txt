@@ -1,4 +1,4 @@
-File runner_ext.hpp
-===================
+runner_ext
+==========
 
 .. doxygenfile:: runner_ext.hpp

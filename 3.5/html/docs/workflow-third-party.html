@@ -67,27 +67,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="reference/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vek280.html">Quick Start Guide for VEK280</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/v70.html">Quick Start Guide for V70</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/custom_target.html">Quick Start Guide for Custom Targets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vek280.html">Versal AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/v70.html">Alveo V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">What is a DPU?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html#vitis-ai-dpu-ip-and-reference-designs">Vitis AI DPU IP and Reference Designs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html#integrating-the-dpu">Integrating the DPU</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ref_design_docs/README_DPUCV2DX8G.html">VEK280 DPUCV2DX8G Reference Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/classlist.html">Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/filelist.html">File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/namespacelist.html">Namespace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/classlist.html">C++ API Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/pythonlist.html">Python APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul class="current">
@@ -96,6 +93,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Third-party Inference Stack Integration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tvm">TVM</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#onnx-runtime">ONNX Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-lite">TensorFlow Lite</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
@@ -168,9 +166,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </figcaption>
 </figure>
 <p>For Ryzen™ AI targets which leverage the AMD XDNA™ adaptable AI architecture, the Vitis AI Execution Provider is published <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.</p>
-<p>TensorFlow Lite
-TensorFlow Lite
-—————-</p>
+</section>
+<section id="tensorflow-lite">
+<h2>TensorFlow Lite<a class="headerlink" href="#tensorflow-lite" title="Permalink to this heading">¶</a></h2>
 <p>TensorFlow Lite has been a preferred inference solution for TensorFlow users in the embedded space for many years. TensorFlow Lite provides support for embedded ARM processors, as well as NEON tensor acceleration. TensorFlow Lite provides the benefit of runtime interpretation of models trained in TensorFlow Lite, implying that no compilation is required to execute the model on target. This has made TensorFlow Lite a convenient solution for embedded and mobile MCU targets which did not incorporate purpose-built tensor acceleration cores.</p>
 <p>With the addition of <a class="reference external" href="https://www.tensorflow.org/lite/performance/delegates">TensorFlow Delegates</a>, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.</p>
 <p>Vitis AI Delegate support is integrated as an <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/third_party/tflite">experimental flow</a> in recent releases.</p>

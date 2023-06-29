@@ -34,9 +34,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Vitis AI Model Zoo" href="../workflow-model-zoo.html" />
-    <link rel="prev" title="What is a DPU?" href="../workflow-system-integration.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -67,68 +65,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="../reference/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Quick Start Guide for VEK280</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Quick Start Guide for V70</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/custom_target.html">Quick Start Guide for Custom Targets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">What is a DPU?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vitis-ai-dpu-ip-and-reference-designs">Vitis AI DPU IP and Reference Designs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#integrating-the-dpu">Integrating the DPU</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">VEK280 DPUCV2DX8G Reference Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#revision-history">1 Revision History</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#overview">2 Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#software-tools-and-system-requirements">3 Software Tools and System Requirements</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hardware">3.1 Hardware</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#software">3.2 Software</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#note-bash-is-used-during-the-build-but-some-csh-scripts-are-used"><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">bash</span></code> is used during the build but some <code class="docutils literal notranslate"><span class="pre">csh</span></code> scripts are used.</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#design-files">4 Design Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#design-components">4.1 Design Components</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#tutorials">5 Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#board-setup">5.1 Board Setup</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#board-jumper-and-switch-settings">Board jumper and switch settings:</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#build-and-run-trd-flow">5.2 Build and Run TRD Flow</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#build-the-dpu">5.2.1 Build the DPU</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-json-file">5.2.2 Get Json File</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#run-resnet50-example">5.2.3 Run ResNet50 Example</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#change-the-configuration">5.3 Change the Configuration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#instructions-for-changing-the-platform">6 Instructions for Changing the Platform</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dpucv2dx8g-ports">6.1 DPUCV2DX8G Ports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#changing-the-platform">6.2 Changing the Platform</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#instructions-for-adding-other-kernels">7 Instructions for Adding Other Kernels</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#rtl-kernel">7.1 RTL Kernel</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#known-issues">8 Known Issues</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/classlist.html">Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/filelist.html">File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/namespacelist.html">Namespace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/classlist.html">C++ API Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/pythonlist.html">Python APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -170,7 +124,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>VEK280 DPUCV2DX8G Reference Design</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/docs/ref_design_docs/README_DPUCV2DX8G.md.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/docs/ref_design_docs/README_DPUCV2DX8G.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -180,14 +134,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
              
   <section id="vek280-dpucv2dx8g-reference-design">
 <h1>VEK280 DPUCV2DX8G Reference Design<a class="headerlink" href="#vek280-dpucv2dx8g-reference-design" title="Permalink to this heading">¶</a></h1>
-<p><strong>Note:</strong> This design is based on the B01 version of the VEK280 evaluation board.  It can also be leveraged with the A01 version of the board with specific limitations that are outlined below.</p>
-<p>The reference design associated with this document <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCV2DX8G_VAI_v3.5.tar.gz">is found here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Until the release of Versal™ AI Edge production speed files (currently targeted with release of Vivado 2023.2.1), PDI generation for Versal AI Edge will require an early enablement license that can be requested via the Versal AI Edge Errata Secure Site.  Also, the reference design archive does include a pre-compiled AIE object <code class="docutils literal notranslate"><span class="pre">libadf.a</span></code> for this specific DPU configuration, however, if the user wishes to reconfigure and recompile the DPUCV2DX8G, access to an AIE-ML Compiler early enablement license is required and can be obtained from the AIE Compiler Early Access Lounge.  Finally, the user will also want to have access to documentation such as the VEK280 schematics, user guide and BSPs which are provided in the VEK280 Early Access Lounge.  Please contact your local AMD sales or FAE contact to request access.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This design is based on the B01 version of the VEK280 evaluation board. It can also be leveraged with the A01 version of the board with specific limitations that are outlined below.</p>
+</div>
+<p>The reference design associated with this document <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCV2DX8G_VAI_v3.5.tar.gz">is found
+here</a>.</p>
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="#1-revision-history">1 Revision History</a></p></li>
 <li><p><a class="reference external" href="#2-overview">2 Overview</a></p></li>
-<li><p><a class="reference external" href="#3-software-tools-and-system-requirements">3 Software Tools and System Requirements</a></p>
+<li><p><a class="reference external" href="#3-software-tools-and-system-requirements">3 Software Tools and System
+Requirements</a></p>
 <ul>
 <li><p><a class="reference external" href="#31-hardware">3.1 Hardware</a></p></li>
 <li><p><a class="reference external" href="#32-software">3.2 Software</a></p></li>
@@ -201,7 +164,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p><a class="reference external" href="#5-tutorials">5 Tutorials</a></p>
 <ul>
 <li><p><a class="reference external" href="#51-board-setup">5.1 Board Setup</a></p></li>
-<li><p><a class="reference external" href="#52-build-and-run-trd-flow">5.2 Build and Run TRD Flow</a></p>
+<li><p><a class="reference external" href="#52-build-and-run-the-reference-design">5.2 Build and Run The Reference
+Design</a></p>
 <ul>
 <li><p><a class="reference external" href="#521-build-the-dpu">5.2.1 Build the DPU</a></p></li>
 <li><p><a class="reference external" href="#522-get-json-file">5.2.2 Get Json File</a></p></li>
@@ -211,56 +175,59 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p><a class="reference external" href="#53-change-the-configuration">5.3 Change the Configuration</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="#6-instructions-for-changing-the-platform">6 Instructions for Changing the Platform</a></p>
+<li><p><a class="reference external" href="#6-instructions-for-changing-the-platform">6 Instructions for Changing the
+Platform</a></p>
 <ul>
 <li><p><a class="reference external" href="#61-dpucv2dx8g-ports">6.1 DPUCV2DX8G Ports</a></p></li>
 <li><p><a class="reference external" href="#62-changing-the-platform">6.2 Changing the Platform</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="#7-instructions-for-adding-other-kernels">7 Instructions for Adding Other Kernels</a></p>
+<li><p><a class="reference external" href="#7-instructions-for-adding-other-kernels">7 Instructions for Adding Other
+Kernels</a></p>
 <ul>
 <li><p><a class="reference external" href="#71-rtl-kernel">7.1 RTL Kernel</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="#8-known-issues">8 Known Issues </a></p></li>
+<li><p><a class="reference external" href="#8-known-issues">8 Known Issues</a></p></li>
 </ul>
 </section>
 <section id="revision-history">
 <h2>1 Revision History<a class="headerlink" href="#revision-history" title="Permalink to this heading">¶</a></h2>
-<p>Vitis3.5 Change log:</p>
-<ul class="simple">
-<li><p>Update platform to rev-B ES board, and support vitis 2023.1.</p></li>
-<li><p>Support multi-batch setting</p></li>
-</ul>
-<p>Vitis3.0 Change log:</p>
-<ul class="simple">
-<li><p>Initial early access version</p></li>
-</ul>
+<p>Vitis AI 3.5 change log: - Update platform to B01 board with ES silicon,
+and support Vitis 2023.1. - Support multi-batch setting</p>
+<p>VitisAI 3.0 change log: - Initial early access version</p>
 </section>
 <hr class="docutils" />
 <section id="overview">
 <h2>2 Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
-<p>The Xilinx Versal Deep Learning Processing Unit (DPUCV2DX8G) is a computation engine optimized for convolutional neural networks.
-It includes a set of highly optimized instructions, and supports most convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, MobileNet, and others.</p>
+<p>The Xilinx Versal Deep Learning Processing Unit (DPUCV2DX8G) is a
+computation engine optimized for convolutional neural networks. It
+includes a set of highly optimized instructions, and supports most
+convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO,
+SSD, MobileNet, and others.</p>
 <p>This tutorial contains information about:</p>
-<ul class="simple">
-<li><p>How to set up the VEK280 evaluation board.</p></li>
-<li><p>How to build and run the DPUCV2DX8G TRD with VEK280 platform in Vitis environment.</p></li>
-<li><p>How to change platform.</p></li>
+<ul>
+<li><p>How to setup the VEK280 evaluation board.</p></li>
+<li><p>How to build and run the DPUCV2DX8G reference design with VEK280
+platform in Vitis environment.</p></li>
+<li><p class="rubric" id="how-to-modify-the-platform">How to modify the platform.</p>
+</li>
 </ul>
 </section>
-<hr class="docutils" />
 <section id="software-tools-and-system-requirements">
 <h2>3 Software Tools and System Requirements<a class="headerlink" href="#software-tools-and-system-requirements" title="Permalink to this heading">¶</a></h2>
 <section id="hardware">
 <h3>3.1 Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h3>
 <p>Required:</p>
 <ul class="simple">
-<li><p>ES version of the VEK280 evaluation board</p></li>
+<li><p>Revision B01 VEK280 evaluation board</p></li>
 <li><p>USB type-C cable, connected to a PC for the terminal emulator</p></li>
 <li><p>SD card</p></li>
 </ul>
-<p><strong>Note:</strong>  if you only have rev-A ES board, a USB Ethernet Adapter is also required</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the target is an A01 board, a USB Ethernet Adapter is also required.</p>
+</div>
 </section>
 <section id="software">
 <h3>3.2 Software<a class="headerlink" href="#software" title="Permalink to this heading">¶</a></h3>
@@ -270,12 +237,12 @@ It includes a set of highly optimized instructions, and supports most convolutio
 <li><p>Python (version 2.7.5 or 3.6.8)</p></li>
 <li><p>csh</p></li>
 </ul>
-<section id="note-bash-is-used-during-the-build-but-some-csh-scripts-are-used">
-<h4><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">bash</span></code> is used during the build but some <code class="docutils literal notranslate"><span class="pre">csh</span></code> scripts are used.<a class="headerlink" href="#note-bash-is-used-during-the-build-but-some-csh-scripts-are-used" title="Permalink to this heading">¶</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">bash</span></code> is used during the build but some <code class="docutils literal notranslate"><span class="pre">csh</span></code> scripts are used.</p>
+</div>
 </section>
 </section>
-</section>
-<hr class="docutils" />
 <section id="design-files">
 <h2>4 Design Files<a class="headerlink" href="#design-files" title="Permalink to this heading">¶</a></h2>
 <section id="design-components">
@@ -284,13 +251,13 @@ It includes a set of highly optimized instructions, and supports most convolutio
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── app
 ├── README.md
 ├── vek280_platform                        # VEK280 platform folder
-│   ├── LICENSE            
-│   ├── Makefile 
-│   ├── hw 
-│   ├── sw 
+│   ├── LICENSE
+│   ├── Makefile
+│   ├── hw
+│   ├── sw
 │   ├── platform
 │   ├── platform.mk
-│   └── README.md 
+│   └── README.md
 ├── vitis_prj                              # Vitis project folder
 │   ├── Makefile
 │   ├── scripts
@@ -308,23 +275,23 @@ It includes a set of highly optimized instructions, and supports most convolutio
 <h2>5 Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this heading">¶</a></h2>
 <section id="board-setup">
 <h3>5.1 Board Setup<a class="headerlink" href="#board-setup" title="Permalink to this heading">¶</a></h3>
-<section id="board-jumper-and-switch-settings">
-<h4>Board jumper and switch settings:<a class="headerlink" href="#board-jumper-and-switch-settings" title="Permalink to this heading">¶</a></h4>
-<p>Make sure the board is set as booting from SD card :</p>
+<p>Board jumper and switch settings:</p>
+<p>Configure the Versal Boot Mode switch SW1 to boot from SD Card:</p>
 <ul class="simple">
-<li><p>SW1[4:1]- [OFF,OFF,OFF,ON].</p></li>
+<li><p>SW1[1:4]- [ON,OFF,OFF,OFF].</p></li>
 </ul>
 </section>
-</section>
-<section id="build-and-run-trd-flow">
-<h3>5.2 Build and Run TRD Flow<a class="headerlink" href="#build-and-run-trd-flow" title="Permalink to this heading">¶</a></h3>
-<p>The following tutorials assume that the ‘$TRD_HOME’ environment variable is set as shown below.</p>
+<section id="build-and-run-the-reference-design">
+<h3>5.2 Build and Run The Reference Design<a class="headerlink" href="#build-and-run-the-reference-design" title="Permalink to this heading">¶</a></h3>
+<p>The following tutorials assume that the <cite>$TRD_HOME</cite> environment variable
+is set as shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">export</span> <span class="n">TRD_HOME</span> <span class="o">=&lt;</span><span class="n">Vitis</span> <span class="n">AI</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">reference_design</span><span class="o">/</span><span class="n">DPUCV2DX8G</span><span class="o">-</span><span class="n">TRD</span>
 </pre></div>
 </div>
 <p><strong>Step1:</strong> Build VEK280 platform</p>
-<p>Firstly, build the VEK280 platform in the folder ‘$TRD_HOME/vek280_platform’, following the instructions in ‘$TRD_HOME/vek280_platform/README.md”.</p>
-<p><strong>Step2:</strong> Setup environment for building DPUCV2DX8G</p>
+<p>First, build the VEK280 platform in the folder <cite>$TRD_HOME/vek280_platform</cite>, following the instructions in <cite>$TRD_HOME/vek280_platform/README.md</cite>.</p>
+<p><strong>Step2:</strong> Setup the environment for building the DPUCV2DX8G IP and
+kernel</p>
 <p>When platform is ready, set the Vitis environment variable as given below.</p>
 <p>Open a linux terminal. Set the linux as Bash mode.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">vitis</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">/</span><span class="mf">2023.1</span><span class="o">/</span><span class="n">settings64</span><span class="o">.</span><span class="n">sh</span>
@@ -332,25 +299,43 @@ It includes a set of highly optimized instructions, and supports most convolutio
 </div>
 <section id="build-the-dpu">
 <h4>5.2.1 Build the DPU<a class="headerlink" href="#build-the-dpu" title="Permalink to this heading">¶</a></h4>
-<p>The default architecture of DPUCV2DX8G is C20B1 (CU_N=1, BATCH_SingleCU=1, 16 AIE-ML cores for Convolution, 4 AIE-ML cores for Non-Convolution), PL clock frequency is 300 MHz. For this vesion TRD, it only supports CU_N=1, but can supports BATCH_SingleCU to 1~14. Modify file ‘$TRD_HOME/vitis_prj/xv2dpu_config.mk’ can change the parameters.</p>
+<p>The default architecture of DPUCV2DX8G is C20B1 (<cite>CU_N=1</cite>,
+<cite>BATCH_SingleCU=1</cite>, 16 AIE-ML cores for Convolution, 4 AIE-ML cores for
+Non-Convolution), PL clock frequency is 300 MHz. This version of the
+reference design only supports <cite>CU_N=1</cite>, but can support <cite>BATCH_SingleCU</cite> to
+1~14. You can modify the file <cite>$TRD_HOME/vitis_prj/xv2dpu_config.mk</cite> to
+change these parameters.</p>
+<p>Execute the following command to build the project:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% cd $TRD_HOME/vitis_prj
 
 % make all
 </pre></div>
 </div>
-<p>The generated SD card image:  $TRD_HOME/vitis_prj/package_out/sd_card.img.gz</p>
-<p>The implemented Vivado project: $TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.xpr</p>
-<p><strong>Note1:</strong> With ‘make help’ to see more detailed information about the commands.</p>
-<p><strong>Note2:</strong> The implementation strategy is set in the file ‘$TRD_HOME/vitis_prj/scripts/system.cfg’, the default strategy is “ prop=run.impl_1.strategy=Performance_ExploreWithRemap “.
-The implementation strategy may be changed by editing <code class="docutils literal notranslate"><span class="pre">system.cfg</span></code>.</p>
-<p><strong>Note3:</strong> With same configuration of DPUCV2DX8G, ‘libadf.a’ file of AI Engine can be reused. Comment out the last line of ‘$TRD_HOME/vitis_prj/Makefile’, to save compile time for re-building the hardware design.</p>
+<p>Upon completion, you will find the generated SD card image here</p>
+<p><cite>$TRD_HOME/vitis_prj/package_out/sd_card.img.gz</cite> and the implemented Vivado project here <cite>$TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.xpr</cite></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can execute <cite>make help</cite> to see more detailed information.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The implementation strategy may be changed by editing the file <cite>$TRD_HOME/vitis_prj/scripts/system.cfg</cite>. The default strategy is <code class="docutils literal notranslate"><span class="pre">prop=run.impl_1.strategy=Performance_ExploreWithRemap</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are not modifying the configuration of the DPUCV2DX8G the compiled AIE Engine archive <cite>libadf.a</cite> can be reused. If you wish to skip compilation, comment out the last line of <cite>$TRD_HOME/vitis_prj/Makefile</cite>, which will save time when re-building the hardware design.</p>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># -@rm -rf aie</span>
 </pre></div>
 </div>
 </section>
 <section id="get-json-file">
 <h4>5.2.2 Get Json File<a class="headerlink" href="#get-json-file" title="Permalink to this heading">¶</a></h4>
-<p>The ‘arch.json’ file is an important file required by Vitis AI. It works together with Vitis AI compiler to support model compilation with various DPUCV2DX8G configurations. The ‘arch.json’ file will be generated by Vitis during the compilation of DPUCV2DX8G TRD, it can be found in ‘$TRD_HOME/vitis_prj/package_out/sd_card’ .</p>
+<p>The <cite>arch.json</cite> file is an important file required by Vitis AI. It works
+together with the Vitis AI compiler to support model compilation with
+various DPUCV2DX8G configurations. The <cite>arch.json</cite> file will be
+generated by Vitis during the compilation of DPUCV2DX8G reference
+design, it can be found in <cite>$TRD_HOME/vitis_prj/package_out/sd_card</cite>.</p>
 <p>It can also be found in the following path:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$TRD_HOME/vitis_prj/hw/binary_container_1/link/vivado/vpl/prj/prj.gen/sources_1/bd/*/ip/*_DPUCV2DX8G_*/arch.json
 </pre></div>
@@ -358,10 +343,13 @@ The implementation strategy may be changed by editing <code class="docutils lite
 </section>
 <section id="run-resnet50-example">
 <h4>5.2.3 Run ResNet50 Example<a class="headerlink" href="#run-resnet50-example" title="Permalink to this heading">¶</a></h4>
-<p>The TRD project has generated the matching model file in ‘$TRD_HOME/app’ path for the default settings. If the settings of DPUCV2DX8G are modified, the model needs to be created according to the fingerprint in ‘arch.json’.</p>
-<p>This section is about how to run the ResNet50 example.</p>
-<p>Use the balenaEtcher tool to flash ‘$TRD_HOME/vitis_prj/package_out/sd_card.img.gz’ into SD card, insert the SD card with the image into the destination board and power-on it.
-After Linux booting on board, copy the folder ‘$TRD_HOME/app’ in this TRD to the target folder “~/”, and run the following commands:</p>
+<p>The reference design project has generated the matching model file in
+<cite>$TRD_HOME/app</cite> path, pre-configured with default settings. If the
+configuration of the DPUCV2DX8G is modified, the model needs to be
+compiled with the new fingerprint file, <cite>arch.json</cite>.</p>
+<p>In this section, we will execute this example.</p>
+<p>Use the balenaEtcher tool to flash
+<cite>$TRD_HOME/vitis_prj/package_out/sd_card.img.gz</cite> into SD card, insert the SD card with the image into the destination board and power up the board. After Linux boots, copy the folder <cite>$TRD_HOME/app</cite> in this reference design to the target folder <code class="docutils literal notranslate"><span class="pre">~/</span></code>, and run the following commands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cd</span> <span class="o">~/</span><span class="n">app</span><span class="o">/</span><span class="n">model</span><span class="o">/</span>
 
 <span class="o">%</span> <span class="n">xdputil</span> <span class="n">benchmark</span> <span class="n">resnet50</span><span class="o">.</span><span class="n">xmodel</span> <span class="mi">1</span>
@@ -379,22 +367,27 @@ After Linux booting on board, copy the folder ‘$TRD_HOME/app’ in this TRD to
 <span class="n">I1123</span> <span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">22.478495</span>  <span class="mi">1127</span> <span class="n">performance_test</span><span class="o">.</span><span class="n">hpp</span><span class="p">:</span><span class="mi">85</span><span class="p">]</span> <span class="n">thread</span><span class="o">-</span><span class="mi">0</span> <span class="n">processes</span> <span class="mi">20225</span> <span class="n">frames</span>
 <span class="n">I1123</span> <span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">22.478528</span>  <span class="mi">1127</span> <span class="n">performance_test</span><span class="o">.</span><span class="n">hpp</span><span class="p">:</span><span class="mi">93</span><span class="p">]</span> <span class="n">it</span> <span class="n">takes</span> <span class="mi">2299</span> <span class="n">us</span> <span class="k">for</span> <span class="n">shutdown</span>
 <span class="n">I1123</span> <span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">22.478543</span>  <span class="mi">1127</span> <span class="n">performance_test</span><span class="o">.</span><span class="n">hpp</span><span class="p">:</span><span class="mi">94</span><span class="p">]</span> <span class="n">FPS</span><span class="o">=</span> <span class="mf">337.061</span> <span class="n">number_of_frames</span><span class="o">=</span><span class="mi">20225</span> <span class="n">time</span><span class="o">=</span> <span class="mf">60.0039</span> <span class="n">seconds</span><span class="o">.</span>
-<span class="n">I1123</span> <span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">22.478579</span>  <span class="mi">1127</span> <span class="n">performance_test</span><span class="o">.</span><span class="n">hpp</span><span class="p">:</span><span class="mi">96</span><span class="p">]</span> <span class="n">BYEBYE</span> 
+<span class="n">I1123</span> <span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">22.478579</span>  <span class="mi">1127</span> <span class="n">performance_test</span><span class="o">.</span><span class="n">hpp</span><span class="p">:</span><span class="mi">96</span><span class="p">]</span> <span class="n">BYEBYE</span>
 </pre></div>
 </div>
-<p><strong>Note:</strong> For running other networks, refer to the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For running other networks, refer to the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide</a>.</p>
+</div>
 </section>
 </section>
 <section id="change-the-configuration">
 <h3>5.3 Change the Configuration<a class="headerlink" href="#change-the-configuration" title="Permalink to this heading">¶</a></h3>
-<p>The DPUCV2DX8G IP provides some user-configurable parameters, refer to the document PG425 ‘Xilinx Versal DPU (DPUCV2DX8G) Product Guide’.
-In this TRD, user-configurable parameters are in the file ‘$TRD_HOME/vitis_prj/xv2dpu_config.mk’. They are:</p>
+<p>The DPUCV2DX8G IP provides some user-configurable parameters, refer to
+the document <a class="reference external" href="https://docs.xilinx.com/r/en-US/pg425-dpu">PG425</a>.</p>
+<p>In this reference design, user-configurable parameters are in the file <cite>$TRD_HOME/vitis_prj/xv2dpu_config.mk</cite>.</p>
+<p>They are:</p>
 <ul class="simple">
-<li><p>CU_N        – Compute Unit (CU) number (only support 1 for now).</p></li>
-<li><p>CPB_N       – number of AI Engine cores for Convolution per batch handler (only support 16).</p></li>
-<li><p>BATCH_SingleCU – number of batch engine integrated in DPUCV2DX8G IP for CU_N=1. Support 1 to 14.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CU_N</span></code> – Compute Unit (CU) number (only a value of 1 is supported in the current IP).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CPB_N</span></code> – number of AI Engine cores for Convolution per batch handler (only a value of 16 is supported for this design).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BATCH_SingleCU</span></code> – number of batch engine integrated in DPUCV2DX8G IP for CU_N=1. Values supported are 1 through 14.</p></li>
 </ul>
-<p>After changing ‘$TRD_HOME/vitis_prj/xv2dpu_config.mk’, type ‘make all’ to build the design.</p>
+<p>After changing <cite>$TRD_HOME/vitis_prj/xv2dpu_config.mk</cite>, execute <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">all</span></code> to build the design.</p>
 </section>
 </section>
 <hr class="docutils" />
@@ -403,76 +396,109 @@ In this TRD, user-configurable parameters are in the file ‘$TRD_HOME/vitis_prj
 <section id="dpucv2dx8g-ports">
 <h3>6.1 DPUCV2DX8G Ports<a class="headerlink" href="#dpucv2dx8g-ports" title="Permalink to this heading">¶</a></h3>
 <p>The DPUCV2DX8G ports are listed as below.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <thead>
-<tr>
-<th>Ports</th>
-<th>Descriptions</th>
+<tr class="row-odd"><th class="head"><p>Ports</p></th>
+<th class="head"><p>Descriptions</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>m*_\&lt;wgt|img|instr&gt;_axi</td>
-<td>Master AXI interfaces, connected with NOC to access DDR (cips_noc in this TRD platform)</td>
+<tr class="row-even"><td><p>m*_&lt;wgt|img|instr&gt;_axi</p></td>
+<td><p>Master AXI
+interfaces,
+connected with NOC
+to access DDR
+(cips_noc in this
+reference design
+platform)</p></td>
 </tr>
-<tr>
-<td>m*_\&lt;data|ctrl&gt;_axis</td>
-<td>Master AXI-stream interface, connected with AI Engine (ai_engine_0).</td>
+<tr class="row-odd"><td><p>m*_&lt;data|ctrl&gt;_axis</p></td>
+<td><p>Master AXI-stream
+interface,
+connected with AI
+Engine
+(ai_engine_0).</p></td>
 </tr>
-<tr>
-<td>s*_\&lt;data|done&gt;_axis</td>
-<td>Slave AXI-stream interface, connected with AI Engine (ai_engine_0).</td>
+<tr class="row-even"><td><p>s*_&lt;data|done&gt;_axis</p></td>
+<td><p>Slave AXI-stream
+interface,
+connected with AI
+Engine
+(ai_engine_0).</p></td>
 </tr>
-<tr>
-<td>m_axi_clk</td>
-<td>Input clock used for DPUCV2DX8G general logic, AXI and AXI-stream interface. Default frequency is 300M Hz in this TRD.</td>
+<tr class="row-odd"><td><p>m_axi_clk</p></td>
+<td><p>Input clock used
+for DPUCV2DX8G
+general logic, AXI
+and AXI-stream
+interface. Default
+frequency is 300M
+Hz in this
+reference design.</p></td>
 </tr>
-<tr>
-<td>m_axi_aresetn</td>
-<td>Active-Low reset for DPUCV2DX8G general logic.</td>
+<tr class="row-even"><td><p>m_axi_aresetn</p></td>
+<td><p>Active-Low reset
+for DPUCV2DX8G
+general logic.</p></td>
 </tr>
-<tr>
-<td>s_axi_control</td>
-<td>AXI lite interface for controlling DPUCV2DX8G registers, connected with CIPS through AXI_Smartconnect_IP.</td>
+<tr class="row-odd"><td><p>s_axi_control</p></td>
+<td><p>AXI lite interface
+for controlling
+DPUCV2DX8G
+registers,
+connected with CIPS
+through
+A
+XI_Smartconnect_IP.</p></td>
 </tr>
-<tr>
-<td>s_axi_aclk</td>
-<td>Input clock for S_AXI_CONTROL. Default frequency is 150M Hz in this TRD.</td>
+<tr class="row-even"><td><p>s_axi_aclk</p></td>
+<td><p>Input clock for
+S_AXI_CONTROL.
+Default frequency
+is 150M Hz in this
+reference design.</p></td>
 </tr>
-<tr>
-<td>s_axi_aresetn</td>
-<td>Active-Low reset for S_AXI_CONTROL.</td>
+<tr class="row-odd"><td><p>s_axi_aresetn</p></td>
+<td><p>Active-Low reset
+for S_AXI_CONTROL.</p></td>
 </tr>
-<tr>
-<td>interrupt</td>
-<td>Interrupt signal generated by DPUCV2DX8G.</td>
+<tr class="row-even"><td><p>interrupt</p></td>
+<td><p>Interrupt signal
+generated by
+DPUCV2DX8G.</p></td>
 </tr>
 </tbody>
-</table><p>DPUCV2DX8G’s connection with AI Engine array and NOC are all defined in the ‘$TRD_HOME/vitis_prj/scripts/xv2dpu_aie_noc.cfg’ (generated by ‘xv2dpu_aie_noc.py’).</p>
+</table>
+<p>DPUCV2DX8G’s connection with AI Engine array and NOC are all defined in
+the <cite>$TRD_HOME/vitis_prj/scripts/xv2dpu_aie_noc.cfg</cite> (generated by <cite>xv2dpu_aie_noc.py</cite>).</p>
 <p>For the clock design, make sure that:</p>
 <ul class="simple">
-<li><p>s_axi_aclk for ‘s_axi_control’ should use clock with lower frequency (e.g. 150M Hz) to get better timing.</p></li>
-<li><p>‘AI Engine Core Frequency’ should be 4 times of DPUCV2DX8G’s m_axi_clk, or the maximum AI Engine frequency. In this TRD, it is 1250M Hz (the maximum AI Engine frequency of XCVE2802-2MP device on the VEK280 board). The value of ‘AI Engine Core Frequency’ can be set in the platform design files or ‘vitis_prj/scripts/postlink.tcl’.</p></li>
+<li><p>s_axi_aclk for <cite>s_axi_control</cite> should use clock with lower frequency (e.g. 150MHz) to get better timing.</p></li>
+<li><p><cite>AI Engine Core Frequency</cite> should be 4 times of DPUCV2DX8G’s <cite>m_axi_clk</cite>, or the maximum AI Engine frequency. In this reference, it is 1250MHz (the maximum AI Engine frequency of XCVE2802-2MP device on the VEK280 board). The value of <cite>AI Engine Core Frequency</cite> can be set in the platform design files or <cite>vitis_prj/scripts/postlink.tcl</cite>.</p></li>
 </ul>
 </section>
 <section id="changing-the-platform">
 <h3>6.2 Changing the Platform<a class="headerlink" href="#changing-the-platform" title="Permalink to this heading">¶</a></h3>
-<p>Changing platform needs to modify 1 files: ‘vitis_prj/Makefile’.</p>
-<p><strong>Note:</strong> This target platform is based on ES device.</p>
-<ol class="simple">
-<li><p>‘vitis_prj/Makefile’:</p></li>
+<p>Changing platform needs to modify 1 files: <cite>vitis_prj/Makefile</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This target platform is based on ES device.</p>
+</div>
+<ol class="arabic simple">
+<li><p><cite>vitis_prj/Makefile</cite>:</p></li>
 </ol>
 <ul class="simple">
-<li><p>Change the path of ‘xpfm’ file for the varibale ‘PLATFORM’</p></li>
+<li><p>Change the path of <cite>xpfm</cite> file for the varibale <cite>PLATFORM</cite></p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">PLATFORM</span>           <span class="o">=</span> <span class="o">*/*.</span><span class="n">xpfm</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PLATFORM</span>           <span class="o">=</span> <span class="o">*/*.</span><span class="n">xpfm</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Change the path of ‘rootfs.exts’ and ‘Image’ in the package section (at the bottom of Makefile)</p></li>
+<li><p>Change the path of <cite>rootfs.exts</cite> and <cite>Image</cite> in the package section
+(at the bottom of Makefile)</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">--</span><span class="n">package</span><span class="o">.</span><span class="n">rootfs</span>     <span class="o">*/</span><span class="n">rootfs</span><span class="o">.</span><span class="n">ext4</span> \
-  <span class="o">--</span><span class="n">package</span><span class="o">.</span><span class="n">sd_file</span>    <span class="o">*/</span><span class="n">Image</span> \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">package</span><span class="o">.</span><span class="n">rootfs</span>     <span class="o">*/</span><span class="n">rootfs</span><span class="o">.</span><span class="n">ext4</span> \
+<span class="o">--</span><span class="n">package</span><span class="o">.</span><span class="n">sd_file</span>    <span class="o">*/</span><span class="n">Image</span> \
 </pre></div>
 </div>
 </section>
@@ -480,63 +506,84 @@ In this TRD, user-configurable parameters are in the file ‘$TRD_HOME/vitis_prj
 <hr class="docutils" />
 <section id="instructions-for-adding-other-kernels">
 <h2>7 Instructions for Adding Other Kernels<a class="headerlink" href="#instructions-for-adding-other-kernels" title="Permalink to this heading">¶</a></h2>
-<p>Vitis kernels developed for Versal devices, could be RTL kernel (only use PL resouces), AIE kernel (only uses AI Engine tiles), or kernel including both PL and AIE. The basic instructions for adding other kernels in this TRD are shown below.</p>
+<p>Vitis kernels developed for Versal devices, could be RTL kernel (only
+use PL resouces), AIE kernel (only uses AI Engine tiles), or kernel
+including both PL and AIE. The basic instructions for adding other
+kernels in this reference design are shown below.</p>
 <section id="rtl-kernel">
 <h3>7.1 RTL Kernel<a class="headerlink" href="#rtl-kernel" title="Permalink to this heading">¶</a></h3>
-<p>Package the RTL kernel as XO file. Then modify 2 files: ‘vitis_prj/Makefile’, and ‘vitis_prj/scripts/xv2dpu_aie_noc.py’,</p>
-<ol class="simple">
-<li><p>‘vitis_prj/Makefile’:</p></li>
+<p>Package the RTL kernel as XO file. Then modify 2 files:
+<cite>vitis_prj/Makefile</cite>, and <cite>vitis_prj/scripts/xv2dpu_aie_noc.py</cite>,</p>
+<ol class="arabic simple">
+<li><p><cite>vitis_prj/Makefile</cite>:</p></li>
 </ol>
 <ul class="simple">
-<li><p>Add the name of XO files in the parameters ‘BINARY_CONTAINER_1_OBJS’ by adding following command</p></li>
+<li><p>Add the name of XO files in the parameters <cite>BINARY_CONTAINER_1_OBJS</cite>
+by adding following command</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BINARY_CONTAINER_1_OBJS</span>   <span class="o">+=</span> <span class="n">xxx</span><span class="o">.</span><span class="n">xo</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>In the v++ linking command line, specify the clock frequency for the clock soure of RTL kernel.</p></li>
+<li><p>In the v++ linking command line, specify the clock frequency for the
+clock soure of RTL kernel.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">clock</span><span class="o">.</span><span class="n">freqHz</span> <span class="o">&lt;</span><span class="n">freqHz</span><span class="o">&gt;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">kernelName</span><span class="o">.</span><span class="n">clk_name</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<ol class="simple">
-<li><p>‘vitis_prj/scripts/xvdpu_aie_noc.py’:</p></li>
+<ol class="arabic simple" start="2">
+<li><p><cite>vitis_prj/scripts/xvdpu_aie_noc.py</cite>:</p></li>
 </ol>
 <ul class="simple">
-<li><p>Create instance for the RTL kernel, and map kernel ports to memory (NOC)</p></li>
+<li><p>Create instance for the RTL kernel, and map kernel ports to memory
+(NOC)</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;nk=&lt;kernel name&gt;:&lt;number&gt;:&lt;cu_name&gt;.&lt;cu_name&gt;...</span><span class="se">\n</span><span class="s2">&quot;</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;nk=&lt;kernel name&gt;:&lt;number&gt;:&lt;cu_name&gt;.&lt;cu_name&gt;...</span><span class="se">\n</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-<p><strong>Note:</strong> For support with adding AI Engine kernel or RTL + AI Engine kernels to this design, please reach out to us for support.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For support with adding AI Engine kernel or RTL + AI Engine kernels to this design, please reach out to us for support.</p>
+</div>
 </section>
 </section>
 <section id="known-issues">
 <h2>8 Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
-<ol class="simple">
-<li><p>This TRD has updated to support rev-B ES vek280 board, if you want to use it on rev-A board, the Ethernet will not work, you can use a USB Ethernet Adapter to workaround this issue.</p></li>
-<li><p>For this version trd, it only can support part of the Modelzoo.</p></li>
-<li><p>The app/model/resnet50.xmodel only support the default arch setting(BATCH_SingleCU=1), for other batch setting, it is needed to compile the corresponding xmodel.</p></li>
-<li><p>It is suggested to add the following line to your tcl scripts ‘$HOME/.Xilinx/Vivado/Vivado_init.tcl’. For details about ‘Vivado_init.tcl’, please refer to the link page ‘https://docs.xilinx.com/r/en-US/ug894-vivado-tcl-scripting/Initializing-Tcl-Scripts’. This setting can help to optimize the ddr r/w performance by preplacing the NoC netlist.</p></li>
+<ol class="arabic simple">
+<li><p>This reference design has updated to support rev-B ES vek280 board,
+if you want to use it on rev-A board, Ethernet will not work, however
+you can use a USB Ethernet Adapter to workaround this issue.</p></li>
+<li><p>This version of the reference design supports only a subset of the
+Vitis AI Model Zoo models.</p></li>
+<li><p>The app/model/resnet50.xmodel only support the default arch
+setting(BATCH_SingleCU=1). To enable alternative batch settings, it
+is necessary to compile the corresponding xmodel with a new arch.json
+file.</p></li>
+<li><p>It is suggested to add the following line to your tcl scripts
+<cite>$HOME/.Xilinx/Vivado/Vivado_init.tcl</cite>. For details about
+<cite>Vivado_init.tcl</cite>, please refer to the link page
+<cite>https://docs.xilinx.com/r/en-US/ug894-vivado-tcl-scripting/Initializing-Tcl-Scripts</cite>.
+This setting can help to optimize the ddr r/w performance by
+preplacing the NoC netlist.</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">set_param</span> <span class="n">place</span><span class="o">.</span><span class="n">preplaceNOC</span> <span class="n">true</span>
 </pre></div>
 </div>
 <!--
-                                                                         
-* Copyright 2019 Xilinx Inc.                                               
-*                                                                          
-* Licensed under the Apache License, Version 2.0 (the "License");          
-* you may not use this file except in compliance with the License.         
-* You may obtain a copy of the License at                                  
-*                                                                          
-*    http://www.apache.org/licenses/LICENSE-2.0                            
-*                                                                          
-* Unless required by applicable law or agreed to in writing, software      
-* distributed under the License is distributed on an "AS IS" BASIS,        
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-* See the License for the specific language governing permissions and      
-* limitations under the License.                                           
+
+* Copyright 2019 Xilinx Inc.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
 
 --></section>
 </section>
@@ -546,10 +593,7 @@ In this TRD, user-configurable parameters are in the file ‘$TRD_HOME/vitis_prj
           </div>
           
 				  
-				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../workflow-system-integration.html" class="btn btn-neutral float-left" title="What is a DPU?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../workflow-model-zoo.html" class="btn btn-neutral float-right" title="Vitis AI Model Zoo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+				  <footer>
 
   <hr/>
 

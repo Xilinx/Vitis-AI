@@ -36,8 +36,7 @@ For Ryzen |trade| AI targets which leverage the AMD XDNA |trade| adaptable AI ar
 
 
 TensorFlow Lite
-TensorFlow Lite
-----------------
+---------------
 
 TensorFlow Lite has been a preferred inference solution for TensorFlow users in the embedded space for many years. TensorFlow Lite provides support for embedded ARM processors, as well as NEON tensor acceleration. TensorFlow Lite provides the benefit of runtime interpretation of models trained in TensorFlow Lite, implying that no compilation is required to execute the model on target. This has made TensorFlow Lite a convenient solution for embedded and mobile MCU targets which did not incorporate purpose-built tensor acceleration cores.
 

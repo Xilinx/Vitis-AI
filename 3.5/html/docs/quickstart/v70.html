@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>Quick Start Guide for Versal V70 &mdash; Vitis™ AI 3.5 documentation</title>
+  <title>Quick Start Guide for Alveo V70 &mdash; Vitis™ AI 3.5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
@@ -35,7 +35,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Custom Board to Do" href="custom_target.html" />
+    <link rel="next" title="Overview" href="../workflow.html" />
     <link rel="prev" title="Quick Start Guide for Versal™ AI Edge VEK280" href="vek280.html" /> 
 </head>
 
@@ -63,54 +63,52 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vek280.html">Quick Start Guide for VEK280</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide for V70</a><ul>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="vek280.html">Versal AI Edge VEK280</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Alveo V70</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#applicable-targets">Applicable Targets</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installation-procedure">Installation Procedure</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#versal-v70-setup">Versal V70 Setup</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#clone-the-vitis-ai-repository">Clone the Vitis AI Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versal-v70-setup">Versal V70 Setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-docker">Install Docker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pull-vitis-ai-docker">Pull Vitis AI Docker</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#docker-container-environment-variable-setup">Docker Container Environment Variable Setup</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#verify-docker-installation">Verify Docker Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-vitis-ai-docker">Pull Vitis AI Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-container-environment-variable-setup">Docker Container Environment Variable Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vitis-ai-model-zoo">Vitis-AI Model Zoo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-the-vitis-ai-examples">Run the Vitis AI Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#quantize-compile-deploy-a-model">Quantize, Compile, Deploy a Model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#working-with-the-vitis-ai-library">Working with the Vitis AI Library</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pytorch-tutorial">PyTorch Tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quantizing-the-model">Quantizing the Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-the-model">Compile the Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-deployment">Model Deployment</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="custom_target.html">Quick Start Guide for Custom Targets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">What is a DPU?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#vitis-ai-dpu-ip-and-reference-designs">Vitis AI DPU IP and Reference Designs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html#integrating-the-dpu">Integrating the DPU</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ref_design_docs/README_DPUCV2DX8G.html">VEK280 DPUCV2DX8G Reference Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/classlist.html">Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/filelist.html">File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/namespacelist.html">Namespace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/classlist.html">C++ API Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doxygen/api/pythonlist.html">Python APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -150,7 +148,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Quick Start Guide for Versal V70</li>
+      <li>Quick Start Guide for Alveo V70</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/docs/quickstart/v70.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -160,9 +158,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="quick-start-guide-for-versal-v70">
-<h1>Quick Start Guide for Versal V70<a class="headerlink" href="#quick-start-guide-for-versal-v70" title="Permalink to this heading">¶</a></h1>
-<p>The AMD <strong>DPUCV2DX8G</strong> for the Versal™  V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support V70.</p>
+  <section id="quick-start-guide-for-alveo-v70">
+<h1>Quick Start Guide for Alveo V70<a class="headerlink" href="#quick-start-guide-for-alveo-v70" title="Permalink to this heading">¶</a></h1>
+<p>The AMD <strong>DPUCV2DX8G</strong> for the Alveo™ V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support V70.</p>
+<a class="reference internal image-reference" href="../../_images/V70.PNG"><img alt="../../_images/V70.PNG" src="../../_images/V70.PNG" style="width: 1300px;" /></a>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <section id="system-requirements">
@@ -181,19 +180,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </section>
 <section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
-<section id="installation-procedure">
-<h3>Installation Procedure<a class="headerlink" href="#installation-procedure" title="Permalink to this heading">¶</a></h3>
+<section id="clone-the-vitis-ai-repository">
+<h3>Clone the Vitis AI Repository<a class="headerlink" href="#clone-the-vitis-ai-repository" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ git clone https://github.com/Xilinx/Vitis-AI
+</pre></div>
+</div>
+</section>
 <section id="versal-v70-setup">
-<h4>Versal V70 Setup<a class="headerlink" href="#versal-v70-setup" title="Permalink to this heading">¶</a></h4>
+<h3>Versal V70 Setup<a class="headerlink" href="#versal-v70-setup" title="Permalink to this heading">¶</a></h3>
 <p>A script is provided to drive the V70 card setup process.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis AI 3.5 specifically leverages the 2022.2 versions of the Vitis tools, V70 platform, XRT and XRM.</p>
+<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis™ AI 3.5 specifically leverages the 2023.1 versions of the Vitis tools, V70 platform, XRT and XRM.</p>
 </div>
 <p>This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.</p>
 <p>Execute this script as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">v70</span>
-<span class="n">source</span> <span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[Host] $ cd &lt;Vitis-AI install path&gt;/Vitis-AI/board_setup/v70
+[Host] $ source ./install.sh
 </pre></div>
 </div>
 <p>The following installation steps are performed by this script:</p>
@@ -204,217 +207,349 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p>Installation of the DPU xclbin for the V70 platform.</p></li>
 </ol>
 <p>After the script is executed successfully, use the XRT <cite>xbutil</cite> command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">xilinx</span><span class="o">/</span><span class="n">xrt</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">xbutil</span> <span class="n">examine</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[Host] $ /opt/xilinx/xrt/bin/xbutil examine
 </pre></div>
 </div>
-</section>
-</section>
-<section id="clone-the-vitis-ai-repository">
-<h3>Clone the Vitis AI Repository<a class="headerlink" href="#clone-the-vitis-ai-repository" title="Permalink to this heading">¶</a></h3>
-<blockquote>
-<div><div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Xilinx/Vitis-AI
-<span class="nb">cd</span> Vitis-AI
-</pre></div>
-</div>
-</div></blockquote>
 </section>
 <section id="install-docker">
 <h3>Install Docker<a class="headerlink" href="#install-docker" title="Permalink to this heading">¶</a></h3>
-<p>Make sure that the Docker engine is installed according to the official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a>.</p>
-<p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p>
-<p>Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a “Hello World” message and exits.</p>
-<blockquote>
-<div><div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>docker run hello-world
+<ul class="simple">
+<li><p>Make sure that the Docker engine is installed according to the official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a>.</p></li>
+<li><p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p></li>
+</ul>
+</section>
+<section id="verify-docker-installation">
+<h3>Verify Docker Installation<a class="headerlink" href="#verify-docker-installation" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a “Hello World” message and exits.</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ docker run hello-world
 </pre></div>
 </div>
-</div></blockquote>
-<p>Finally, verify that the version of Docker that you have installed meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> by running the following command</p>
-<blockquote>
-<div><div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>docker --version
+<ul class="simple">
+<li><p>Finally, verify that the version of Docker that you have installed meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> by running the following command</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ docker --version
 </pre></div>
 </div>
-</div></blockquote>
 </section>
 <section id="pull-vitis-ai-docker">
 <h3>Pull Vitis AI Docker<a class="headerlink" href="#pull-vitis-ai-docker" title="Permalink to this heading">¶</a></h3>
-<p>For this quickstart tutorial we will simply use the CPU Docker.  It is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the <a class="reference internal" href="../install/install.html"><span class="doc">Full Install Instructions</span></a> but we would recommend that new users start with this simpler first step.</p>
-<p>Pull and start the latest Vitis AI Docker using the following commands:</p>
-<blockquote>
-<div><div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>docker pull xilinx/vitis-ai-pytorch-cpu:latest
-./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
-</pre></div>
-</div>
-</div></blockquote>
+<p>In order to simplify this quickstart tutorial, we will utilize the Vitis-AI PyTorch CPU Docker to assess pre-built Vitis-AI examples, and subsequently perform quantization and compilation of our own model. The CPU docker image is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the <a class="reference internal" href="../install/install.html"><span class="doc">Full Install Instructions</span></a> but we would recommend that new users start with this simpler first step.
+Pull and start the latest Vitis AI Docker using the following commands:</p>
+</section>
 <section id="docker-container-environment-variable-setup">
-<h4>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h4>
-<p>First, ensure that you have cloned Vitis AI, entered the Vitis AI directory.  Start Docker.</p>
+<h3>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h3>
 <p>From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory prior to execution. Select the xclbin that matches your chosen DPU configuration.</p>
-<ul>
-<li><p>For the Versal V70:</p>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">v70</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCV2DX8G_v70</span>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">source</span> /workspace/board_setup/v70/setup.sh DPUCV2DX8G_v70
 </pre></div>
 </div>
-</div></blockquote>
-</li>
+</section>
+<section id="vitis-ai-model-zoo">
+<h3>Vitis-AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Permalink to this heading">¶</a></h3>
+<p>You can now select a model from the Vitis AI Model Zoo <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
+<ul class="simple">
+<li><p>Take the ResNet50 model as an example.</p></li>
 </ul>
-</section>
-</section>
-<section id="run-the-vitis-ai-examples">
-<h3>Run the Vitis AI Examples<a class="headerlink" href="#run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h3>
-<p>In the docker system, <code class="docutils literal notranslate"><span class="pre">/workspace/examples/vai_runtime/</span></code> is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> as an example.</p>
-<ol class="arabic simple">
-<li><p>Download the <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz">vitis_ai_runtime_r3.5.0_image_video.tar.gz</a> package and unzip it:</p></li>
-</ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /workspace/examples
-wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
-tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
+<span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -C /usr/share/vitis_ai_library/models/
 </pre></div>
 </div>
-<ol class="arabic simple">
-<li><p>Download the <code class="docutils literal notranslate"><span class="pre">resnet50</span></code> model.</p></li>
-</ol>
 <ul class="simple">
 <li><p>If the <code class="docutils literal notranslate"><span class="pre">/usr/share/vitis_ai_library/models</span></code> folder does not exist, create it first.</p></li>
 </ul>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>sudo mkdir /usr/share/vitis_ai_library/models
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ sudo mkdir /usr/share/vitis_ai_library/models
+</pre></div>
+</div>
+</section>
+<section id="run-the-vitis-ai-examples">
+<h3>Run the Vitis AI Examples<a class="headerlink" href="#run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Download <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz">vitis_ai_runtime_r3.5.0_image_video.tar.gz</a> to your host.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> ~
+<span class="o">[</span>Docker<span class="o">]</span> $ wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>vitis_ai_runtime_r3.5.0_image_video.tar.gz -O vitis_ai_runtime_r3.5.0_image_video.tar.gz
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Extract the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r3.5.0_image_video.tar.gz</span></code> package.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /worksapce/examples/vai_runtime
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Navigate to the example directory.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> /workspace/examples/vai_runtime/resnet50
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Compile the example.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ bash -x build.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Run the example.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>The console should reflect the following output:</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>Image : <span class="m">001</span>.jpg
+top<span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="nv">prob</span> <span class="o">=</span> <span class="m">0</span>.982662  <span class="nv">name</span> <span class="o">=</span> brain coral
+top<span class="o">[</span><span class="m">1</span><span class="o">]</span> <span class="nv">prob</span> <span class="o">=</span> <span class="m">0</span>.008502  <span class="nv">name</span> <span class="o">=</span> coral reef
+top<span class="o">[</span><span class="m">2</span><span class="o">]</span> <span class="nv">prob</span> <span class="o">=</span> <span class="m">0</span>.006621  <span class="nv">name</span> <span class="o">=</span> jackfruit, jak, jack
+top<span class="o">[</span><span class="m">3</span><span class="o">]</span> <span class="nv">prob</span> <span class="o">=</span> <span class="m">0</span>.000543  <span class="nv">name</span> <span class="o">=</span> puffer, pufferfish, blowfish, globefish
+top<span class="o">[</span><span class="m">4</span><span class="o">]</span> <span class="nv">prob</span> <span class="o">=</span> <span class="m">0</span>.000330  <span class="nv">name</span> <span class="o">=</span> eel
+</pre></div>
+</div>
+<p>These results reflect the classification of a single test image located in the <code class="docutils literal notranslate"><span class="pre">Vitis-AI/examples/vai_library/images</span></code> directory.</p>
+</section>
+</section>
+<section id="pytorch-tutorial">
+<h2>PyTorch Tutorial<a class="headerlink" href="#pytorch-tutorial" title="Permalink to this heading">¶</a></h2>
+<p>This tutorial assumes that Vitis AI has been installed and that the board has been configured as explained in the installation instructions above. For additional information on the Vitis AI Quantizer, Optimizer, or Compiler, please refer to the Vitis AI User Guide.</p>
+<section id="quantizing-the-model">
+<h3>Quantizing the Model<a class="headerlink" href="#quantizing-the-model" title="Permalink to this heading">¶</a></h3>
+<p>Quantization reduces the precision of network weights and activations to optimize memory usage and computational efficiency while maintaining acceptable levels of accuracy. Inference is computationally expensive and requires high memory bandwidths to satisfy the
+low-latency and high-throughput requirements of Edge applications. Quantization and channel pruning techniques are employed to address these issues while achieving high performance and high energy efficiency with little degradation in accuracy. The Vitis AI Quantizer takes a
+floating-point model as an input and performs pre-processing (folds batchnorms and removes nodes not required for inference), and finally quantizes the weights/biases and activations to the given bit width.</p>
+<ol class="arabic simple">
+<li><p>Navigate to the cloned Vitis-AI directory and create a new workspace for your project.  Here you will store the test dataset, models, and python scripts required for quantization.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ <span class="nb">cd</span> ~/Vitis-AI
+<span class="o">[</span>Host<span class="o">]</span> $ mkdir -p resnet18/model
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Download the <a class="reference external" href="https://www.kaggle.com/datasets/ifigotin/imagenetmini-1000/download?datasetVersionNumber=1">ImageNet 1000 (mini)</a> dataset from Kaggle. This dataset is subset of the ILSVRC 2012-2017 dataset and comprises 1000 object classes, and contains 1,281,167 training, 50,000 validation, and 100,000 test images.  You will need to create a Kaggle account to access this dataset.  Move the downloaded Archive.zip file into the created /Vitis-AI/resnet18 folder and unzip the dataset.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ <span class="nb">cd</span> resnet18
+<span class="o">[</span>Host<span class="o">]</span> $ unzip Archive.zip
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>For V70 DPU IP, install the model package as follows.</p></li>
+<li><p>Your workspace directory should reflect the following:</p></li>
 </ul>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
-tar -xzvf resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
-sudo cp resnet50 /usr/share/vitis_ai_library/models -r
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── Archive.zip
+│
+├── model
+│
+└── imagenet-mini
+        ├── train                    # Training images folder. Will not be used in this tutorial.
+        │   └─── n01440764           # Class folders to group images.
+        └── val                      # Validation images that will be used for quantization and evaluation of the floating point model.
+            └─── n01440764
 </pre></div>
 </div>
-<ol class="arabic simple">
-<li><p>Navigate to the example directory in docker container.</p></li>
+<ol class="arabic simple" start="3">
+<li><p>Navigate to the Vitis-AI directory and execute the following command to start Docker.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ~/Vitis-AI/examples/vai_runtime/resnet50
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ <span class="nb">cd</span> ..
+<span class="o">[</span>Host<span class="o">]</span> ./docker_run.sh vitis-ai-pytorch-cpu:latest
 </pre></div>
 </div>
-<ol class="arabic simple">
-<li><p>Compile the example.</p></li>
-</ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>bash -x build.sh
+<ul class="simple">
+<li><p>Note that when you start Docker appropriate as shown above, your <code class="docutils literal notranslate"><span class="pre">/workspace</span></code> folder will correspond to <code class="docutils literal notranslate"><span class="pre">/Vitis-AI</span></code> and your initial path in Docker will be <code class="docutils literal notranslate"><span class="pre">/workspace</span></code>.  If you inspect <code class="docutils literal notranslate"><span class="pre">docker_run.sh</span></code> you can see that the -v option is leveraged which links the Docker file system to your Host file system.  Verify that you see the created <code class="docutils literal notranslate"><span class="pre">/resnet18</span></code> subfolder in your workspace:</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ls
 </pre></div>
 </div>
-<ol class="arabic simple">
-<li><p>Run the example.</p></li>
+<ol class="arabic simple" start="4">
+<li><p>Download the pre-trained resnet18 model from PyTorch to the docker environment and store it in the  <code class="docutils literal notranslate"><span class="pre">model</span></code>  folder . This is the floating point (FP32) model that will be quantized to INT8 precision for deployment on the target.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> resnet18/model
+<span class="o">[</span>Docker<span class="o">]</span> $ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -O resnet18.pth
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Different DPU IP correspond to different model files, which cannot be used alternately.</p>
+<p>The <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a> also provides optimized deep learning models to speed up the deployment of deep learning inference on adaptable AMD platforms. For this tutorial we have chosen to use an open-source PyTorch model to showcase that models from the community can also be deployed.</p>
 </div>
-<p>For the examples with video input, only <code class="docutils literal notranslate"><span class="pre">webm</span></code> and <code class="docutils literal notranslate"><span class="pre">raw</span></code> format are supported by default with the official system image. If you want to support video data in other formats, you need to install the relevant packages on the system.</p>
-</section>
-<section id="quantize-compile-deploy-a-model">
-<h3>Quantize, Compile, Deploy a Model<a class="headerlink" href="#quantize-compile-deploy-a-model" title="Permalink to this heading">¶</a></h3>
-<p><em>Oops….the below is written for TF1.1 but needs to be updated to PyTorch so that it aligns with pulling the pre-built PyTorch CPU container as done above.  Aidan, can you build this out further?</em></p>
-<p>This tutorial assumes that Vitis AI has been installed and that the MPSoC target has been configured, as explained in the installation instructions above.</p>
-<ol class="arabic">
-<li><p>Download the calibration images (the full dataset is from <a class="reference external" href="http://image-net.org/download-images">ImageNet</a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=Imagenet_calib.tar.gz -O Imagenet_calib.tar.gz
-tar -xzvf Imagenet_calib.tar.gz -C tf_resnetv1_50_imagenet_224_224_6.97G_3.0/data
-</pre></div>
-</div>
-</li>
-<li><p>Download the sample images used by the example application:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /workspace/examples
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
-tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
-</pre></div>
-</div>
-</li>
-<li><p>Activate the Conda “vitis-ai-tensorflow” environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">tensorflow</span>
-</pre></div>
-</div>
-</li>
-<li><p>Configure the quantization process: edit the <code class="docutils literal notranslate"><span class="pre">/workspace/tf_resnetv1_50_imagenet_224_224_6.97G_3.0/code/quantize/config.ini</span></code> file and set the <code class="docutils literal notranslate"><span class="pre">CALIB_BATCH_SIZE</span></code> option to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p></li>
-<li><p>Quantize the floating-point model:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span><span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">quantize</span>
-<span class="n">bash</span> <span class="n">quantize</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</li>
-<li><p>Compile the quantized model:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>
-<span class="n">vai_c_tensorflow</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">quantized</span><span class="o">/</span><span class="n">quantize_eval_model</span><span class="o">.</span><span class="n">pb</span> <span class="o">-</span><span class="n">a</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">vitis_ai</span><span class="o">/</span><span class="n">compiler</span><span class="o">/</span><span class="n">arch</span><span class="o">/</span><span class="n">DPUCVDX8H</span><span class="o">/</span><span class="n">VCK50008PE</span><span class="o">/</span><span class="n">arch</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="o">./</span><span class="n">compiled</span> <span class="o">-</span><span class="n">n</span> <span class="n">resnet50_tf</span>
-</pre></div>
-</div>
-</li>
-<li><p>Cross-compile the example application (<em>details to be added</em>)
-Note: the example is already pre-compiled in the standard board image, but I feel it is important to show the cross-compilation steps as this is something people will have to do routinely.</p></li>
-<li><p>Transfer compiled example to MPSoC board (<em>details to be added</em>)</p></li>
-<li><p>Execute example (<em>details to be added</em>)</p></li>
+<ol class="arabic simple" start="5">
+<li><p>Copy the example Vitis AI ResNet18 quantization script to your workspace. This script contains the Quantizer API calls that will be executed in order to quantize the model.</p></li>
 </ol>
-</section>
-<section id="working-with-the-vitis-ai-library">
-<h3>Working with the Vitis AI Library<a class="headerlink" href="#working-with-the-vitis-ai-library" title="Permalink to this heading">¶</a></h3>
-<p>Suppose you have downloaded <code class="docutils literal notranslate"><span class="pre">Vitis-AI</span></code>, entered <code class="docutils literal notranslate"><span class="pre">Vitis-AI</span></code> directory, and then started Docker image. Thus, <code class="docutils literal notranslate"><span class="pre">vai_libray</span></code> examples are located in the path of <code class="docutils literal notranslate"><span class="pre">/workspace/examples/vai_library/</span></code> in the docker system. To run an example for the Versal V70 card, use these steps:</p>
-<ol class="arabic">
-<li><dl>
-<dt>Select the model for your platforms.</dt><dd><p>For each model, there will be a yaml file which is used for describe all the details about the model. In the yaml file, you will find the model’s download links for different platforms. Please choose the corresponding model and download it. Click [Xilinx AI Model Zoo](<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list</a>) to view all the models. Take [pytorch resnet50 yaml file](<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.5/model.yaml">https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.5/model.yaml</a>) as an example.</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> ..
+<span class="o">[</span>Docker<span class="o">]</span> $ cp ../src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py ./
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Your <code class="docutils literal notranslate"><span class="pre">workspace/resnet18</span></code> directory should reflect the following:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── Archive.zip
+│
+├── model
+│   └── resnet18.pth             # ResNet18 floating point model downloaded from PyTorch.
+│
+├── imagenet-mini
+│   ├── train                    # Training images folder. Will not be used in this tutorial.
+│   │   └─── n01440764           # Class folders to group images.
+│   └── val                      # Validation images that will be used for quantization and evaluation of the floating point model.
+│       └─── n01440764
+│
+└── resnet18_quant.py            # Quantization python script.
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Inspect <code class="docutils literal notranslate"><span class="pre">resnet18_quant.py</span></code>.  Observe the parser arguments that can be passed to the script via command line switches <code class="docutils literal notranslate"><span class="pre">subset_len</span></code> <code class="docutils literal notranslate"><span class="pre">quant_mode</span></code> <code class="docutils literal notranslate"><span class="pre">data_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">model_dir</span></code>.  We will set the <code class="docutils literal notranslate"><span class="pre">data_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">model_dir</span></code> arguments to align with our directory structure.  If you wish to avoid extraneous typing and are manually entering these commands, you can simply edit the script to suit your use case.</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ vim resnet18_quant.py
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Use the sequence <code class="docutils literal notranslate"><span class="pre">&lt;esc&gt;</span> <span class="pre">:q!</span></code> to exit vim without saving.</p></li>
+</ul>
+<ol class="arabic simple" start="6">
+<li><p>Run the command below to evaluate the accuracy of the floating point model.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ python resnet18_quant.py --quant_mode float --data_dir imagenet-mini --model_dir model
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>You should observe that the accuracy reported is similar to  <code class="docutils literal notranslate"><span class="pre">top-1</span> <span class="pre">/</span> <span class="pre">top-5</span> <span class="pre">accuracy:</span> <span class="pre">69.9975</span> <span class="pre">/</span> <span class="pre">88.7586</span></code></p></li>
+</ul>
+<ol class="arabic simple" start="7">
+<li><p>Next, let’s activate the pytorch conda env and run the Model Inspector to confirm that this model should be compatible with the target DPU architecture.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ conda activate vitis-ai-pytorch
+<span class="o">[</span>Docker<span class="o">]</span> $ python resnet18_quant.py --quant_mode float --inspect --target DPUCV2DX8G_ISA1_C20B14 --model_dir model
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p>Run the command below to start quantization. Generally, 100-1000 images are required for quantization and the number of iterations can be controlled through the the <code class="docutils literal notranslate"><span class="pre">subset_len</span></code> data loading argument. In this case, 200 images are forward propagated through the network, and these images are chosen randomly from the validation image set.  Note that the displayed loss and accuracy that are output from this process are not representative of final model accuracy.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ python resnet18_quant.py --quant_mode calib --data_dir imagenet-mini --model_dir model --subset_len <span class="m">200</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>On most host machines this command should complete in less than 1 minute even with the CPU-only Docker.  If you leverage the CUDA or ROCm Dockers on a compatible machine, the Quantization process will be accelerated considerably.  Let’s take a look at the output:</p></li>
+</ul>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> quantize_result
+<span class="o">[</span>Docker<span class="o">]</span> $ ls
+</pre></div>
+</div>
 <ul>
-<li><p>If the <cite>/usr/share/vitis_ai_library/models</cite> folder does not exist, create it first:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vitis_ai_library</span><span class="o">/</span><span class="n">models</span>
-</pre></div>
-</div>
-</li>
-<li><p>For DPUCV2DX8G DPU IP of V70 card, install the model package as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
-tar -xzvf resnet50-pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
-sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
-</pre></div>
-</div>
+<li><p>If the command ran successfully, the output directory <code class="docutils literal notranslate"><span class="pre">quantize_result</span></code> will be generated, containing two important files:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>-<code class="docutils literal notranslate"><span class="pre">ResNet.py</span></code></dt><dd><p>The quantized vai_q_pytorch format model.</p>
+</dd>
+<dt>-<code class="docutils literal notranslate"><span class="pre">Quant_info.json</span></code></dt><dd><p>Quantization steps of tensors. Retain this file for evaluation of the quantized model./</p>
+</dd>
+</dl>
+</div></blockquote>
 </li>
 </ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Download the [vitis_ai_library_r3.5.0_images.tar.gz](<a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz">https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz</a>) and [vitis_ai_library_r3.5.0_video.tar.gz](<a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz">https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz</a>) packages and untar them::</dt><dd><p>cd /workspace
-wget <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz">https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz</a> -O vitis_ai_library_r3.5.0_images.tar.gz
-wget <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz">https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz</a> -O vitis_ai_library_r3.5.0_video.tar.gz
-tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C examples/vai_library/
-tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C examples/vai_library/</p>
-</dd>
-</dl>
-</li>
-<li><p>Enter the directory of the sample and then compile it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">vai_library</span><span class="o">/</span><span class="n">samples</span><span class="o">/</span><span class="n">classification</span>
-<span class="n">bash</span> <span class="o">-</span><span class="n">x</span> <span class="n">build</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</li>
-<li><p>Run the image test mode:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">test_jpeg_classification</span> <span class="n">resnet50_pt</span> <span class="n">sample_classification</span><span class="o">.</span><span class="n">jpg</span>
-</pre></div>
-</div>
-</li>
-<li><p>To run the video example, run the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">test_video_classification</span> <span class="n">resnet50_pt</span> <span class="o">&lt;</span><span class="n">video_input</span><span class="o">.</span><span class="n">mp4</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">t</span> <span class="mi">8</span>
-</pre></div>
-</div>
-</li>
+<ol class="arabic simple" start="9">
+<li><p>To evaluate the accuracy of the quantized model, return to the <code class="docutils literal notranslate"><span class="pre">/resnet18</span></code> directory run the following commands.  Note that on CPU-only host machines this command will take some time to complete (~20 minutes).  If you are in a hurry, you can skip this step and move to the next.</p></li>
 </ol>
-<p>Here, video_input.mp4 is the video file that you have to prepare for input and -t is the
-number of threads.</p>
-<ol class="arabic" start="6">
-<li><p>To test the performance of the model, run the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">test_performance_classification</span> <span class="n">resnet50_pt</span>
-<span class="n">test_performance_classification</span><span class="o">.</span><span class="n">list</span> <span class="o">-</span><span class="n">t</span> <span class="mi">8</span> <span class="o">-</span><span class="n">s</span> <span class="mi">60</span>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> ..
+<span class="o">[</span>Docker<span class="o">]</span> $ python resnet18_quant.py --model_dir model --data_dir imagenet-mini --quant_mode <span class="nb">test</span>
 </pre></div>
 </div>
-</li>
+<p>You should observe that the accuracy reported will be similar to <code class="docutils literal notranslate"><span class="pre">top-1</span> <span class="pre">/</span> <span class="pre">top-5</span> <span class="pre">accuracy:</span> <span class="pre">69.1308</span> <span class="pre">/</span> <span class="pre">88.7076</span></code>.  The net accuracy loss due to quantization is less than 1%.</p>
+<ol class="arabic simple" start="10">
+<li><p>To generate the quantized <code class="docutils literal notranslate"><span class="pre">.xmodel</span></code> file that will subsequently be compiled for the DPU, run the following command with <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> and <code class="docutils literal notranslate"><span class="pre">subset_len</span></code> arguments set to 1 to avoid redundant iterations.</p></li>
 </ol>
-<p>Here, -t is the number of threads and -s is the number of seconds. To view a complete listing of command line options for the executable, run the command with the ‘-h’ switch.</p>
-<p>Note: The performance test program is automatically run in batch mode</p>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ python resnet18_quant.py --quant_mode <span class="nb">test</span> --subset_len <span class="m">1</span> --batch_size<span class="o">=</span><span class="m">1</span> --model_dir model --data_dir imagenet-mini --deploy
+</pre></div>
+</div>
+</section>
+<section id="compile-the-model">
+<h3>Compile the Model<a class="headerlink" href="#compile-the-model" title="Permalink to this heading">¶</a></h3>
+<p>The Vitis AI Compiler compiles the graph operators as a set of micro-coded instructions that are executed by the DPU.  In this step, we will compile the ResNet18 model that we quantized in the previous step.</p>
+<ol class="arabic simple">
+<li><p>The compiler takes the quantized <code class="docutils literal notranslate"><span class="pre">INT8.xmodel</span></code> and generates the deployable <code class="docutils literal notranslate"><span class="pre">DPU.xmodel</span></code> by running the command below.  Note that you must modify the command to specify the appropriate <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file for your target.  For V70 targets, these are located in the folder <code class="docutils literal notranslate"><span class="pre">/opt/vitis_ai/compiler/arch/DPUCV2DX8G</span></code> inside the Docker container.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> /workspace/resnet18
+<span class="o">[</span>Docker<span class="o">]</span> $ vai_c_xir -x quantize_result/ResNet_int.xmodel -a /opt/vitis_ai/compiler/arch/DPUCV2DX8G/V70/arch.json -o resnet18_pt -n resnet18_pt
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>If compilation is successful, the <code class="docutils literal notranslate"><span class="pre">resnet18_pt.xmodel</span></code> file should be generated according to the specified DPU architecture.</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Create a new file with your text editor of choice and name the file <code class="docutils literal notranslate"><span class="pre">resnet18_pt.prototxt</span></code>. Copy and paste the following lines of code:</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span>model <span class="o">{</span>
+   name : <span class="s2">&quot;resnet18_pt&quot;</span>
+   kernel <span class="o">{</span>
+         name: <span class="s2">&quot;resnet18_pt_0&quot;</span>
+         mean: <span class="m">103</span>.53
+         mean: <span class="m">116</span>.28
+         mean: <span class="m">123</span>.675
+         scale: <span class="m">0</span>.017429
+         scale: <span class="m">0</span>.017507
+         scale: <span class="m">0</span>.01712475
+   <span class="o">}</span>
+   model_type : CLASSIFICATION
+   classification_param <span class="o">{</span>
+          top_k : <span class="m">5</span>
+          test_accuracy : <span class="nb">false</span>
+          preprocess_type : VGG_PREPROCESS
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">.prototxt</span></code> file is a Vitis™ AI configuration file that facilitates the uniform configuration management of model parameters. Please refer to the Vitis AI User Guide to learn more.</p></li>
+<li><p>We can now deploy the quantized and compiled model on the V70 accelerator card.</p></li>
+</ul>
+</section>
+<section id="model-deployment">
+<h3>Model Deployment<a class="headerlink" href="#model-deployment" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Locate the <code class="docutils literal notranslate"><span class="pre">resnet18_pt</span></code> folder <code class="docutils literal notranslate"><span class="pre">/usr/share/vitis_ai_library/models/</span></code> folder along with the other Viitis AI model examples.</p></li>
+</ol>
+<p>2. The <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz">vitis_ai_library_r3.5.0_images.tar.gz</a> and <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz">vitis_ai_library_r3.5.0_video.tar.gz</a> packages
+contain test images and videos that can be leveraged to evaluate our quantized model and other pre-built Vitis-AI Library examples.</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Download the packages.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> /workspace
+<span class="o">[</span>Docker<span class="o">]</span> $ wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>vitis_ai_library_r3.5.0_images.tar.gz -O vitis_ai_library_r3.5.0_images.tar.gz
+<span class="o">[</span>Docker<span class="o">]</span> $ wget https://www.xilinx.com/bin/public/openDownload?filename<span class="o">=</span>vitis_ai_library_r3.5.0_video.tar.gz -O vitis_ai_library_r3.5.0_video.tar.gz
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>Untar the files.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C ~/Vitis-AI/examples/vai_library/
+<span class="o">[</span>Target<span class="o">]</span> $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C ~/Vitis-AI/examples/vai_library/
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Enter the directory of the sample and then compile it.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> /workspace/examples/vai_library/samples/classification
+<span class="o">[</span>Docker<span class="o">]</span> $ ./build.sh
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Execute the single-image test application.</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ./test_jpeg_classification resnet18_pt /workspace/examples/vai_library/samples/classification/images/002.jpg
+</pre></div>
+</div>
+<p>If you wish to do so, you can review the <cite>result.jpg</cite> file.  OpenCV function calls have been used to overlay the predictions.</p>
+<ol class="arabic simple" start="5">
+<li><p>To run the video example, run the following command:</p></li>
+</ol>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ./test_video_classification resnet18_pt /workspace/examples/vai_library/apps/pose_960_540.avi -t <span class="m">8</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>The output should be as follows:</p></li>
+</ol>
+<a class="reference internal image-reference" href="../../_images/Wallace.png"><img alt="../../_images/Wallace.png" src="../../_images/Wallace.png" style="width: 1300px;" /></a>
+<ul class="simple">
+<li><p>Congratulations! You have successfully quantized, compiled, and deployed a pre-trained model onto the V70 accelerator card.</p></li>
+</ul>
 </section>
 </section>
 </section>
@@ -426,7 +561,7 @@ number of threads.</p>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="vek280.html" class="btn btn-neutral float-left" title="Quick Start Guide for Versal™ AI Edge VEK280" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="custom_target.html" class="btn btn-neutral float-right" title="Custom Board to Do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../workflow.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

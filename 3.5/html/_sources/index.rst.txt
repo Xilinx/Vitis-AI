@@ -116,18 +116,23 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    Release Notes <docs/reference/release_notes>
    System Requirements <docs/reference/system_requirements>
    Host Install Instructions <docs/install/install>
-   Quick Start Guide for VEK280 <docs/quickstart/vek280>
-   Quick Start Guide for V70 <docs/quickstart/v70>
-   Quick Start Guide for Custom Targets <docs/quickstart/custom_target>
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Quick Start Guides
+   :hidden:
+
+   Versal AI Edge VEK280 <docs/quickstart/vek280>
+   Alveo V70 <docs/quickstart/v70>
+
 
 .. toctree::
    :maxdepth: 3
    :caption: Workflow and Components
    :hidden:
 
-   First Steps <docs/workflow>
-   Integrating the DPU <docs/workflow-system-integration>
-   VEK280 DPUCV2DX8G Reference Design <docs/ref_design_docs/README_DPUCV2DX8G>
+   Overview <docs/workflow>
+   DPU IP Details and System Integration <docs/workflow-system-integration>
    Vitis AI Model Zoo <docs/workflow-model-zoo>
    Developing a Model for Vitis AI <docs/workflow-model-development>
    Deploying a Model with Vitis AI <docs/workflow-model-deployment>
@@ -137,17 +142,8 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    :caption: Runtime API Documentation
    :hidden:
  
-   Class <doxygen/api/classlist>
-   File <doxygen/api/filelist>
-   Namespace <doxygen/api/namespacelist>
-
-.. toctree::
-   :maxdepth: 3
-   :caption: Reference Designs
-   :hidden:
-
-..   Zynq MPSoC / Kria K26 <ref_design_docs/README_DPUCZDX8G.md>
-..   Versal / VCK190 <ref_design_docs/README_DPUCVDX8G.md>
+   C++ API Class <doxygen/api/classlist>
+   Python APIs <doxygen/api/pythonlist>
 
 .. toctree::
    :maxdepth: 3

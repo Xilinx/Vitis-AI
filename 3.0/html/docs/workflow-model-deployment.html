@@ -36,7 +36,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Vitis AI User Guides / DPU Product Guides" href="reference/release_documentation.html" />
-    <link rel="prev" title="Integrating the DPU" href="workflow-system-integration.html" /> 
+    <link rel="prev" title="Developing a Model" href="workflow-model-development.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -67,18 +67,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Quick Start Guide for VCK5000</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Quick Start Guide for VCK190</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Quick Start Guide for MPSOC</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Zynq Ultrascale+</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck5000.html">Versal VCK5000 Development Card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Versal AI Core VCK190</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-dpu.html">What is a DPU?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Deploying a Model with Vitis AI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#workflow-for-deploying-a-model">Workflow for Deploying a Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#embedded-versus-data-center-workflows">Embedded versus Data Center Workflows</a></li>
@@ -188,7 +189,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 Tutorials</a> will offer an excellent starting point.</p>
 <ul class="simple">
 <li><p>For more information on Vitis AI Libraries, refer to <em>Vitis AI Library User Guide</em> (<a class="reference external" href="https://docs.xilinx.com/access/sources/dita/map?isLatest=true&amp;ft:locale=en-US&amp;url=ug1354-xilinx-ai-sdk">UG1354</a>).</p></li>
-<li><p>The Vitis AI Library quick start guide and open-source is <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_library">here</a>.</p></li>
+<li><p>The Vitis AI Library quick start guide and open-source is <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_library">here</a>.</p></li>
 </ul>
 </section>
 <section id="vitis-ai-runtime">
@@ -203,8 +204,8 @@ Tutorials</a> will offer an excellent starting point.</p>
 <p>For more information on Vitis AI Runtime, refer to the following documentation:</p>
 <ul class="simple">
 <li><p>For the Vitis AI Runtime API reference, see <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=erl1576053489624.html">VART Programming APIs</a> and <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=zgy1576168058789.html">Deploying and Running the Model</a> in the Vitis AI User Guide.</p></li>
-<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
-<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src">open-source</a>.</p></li>
+<li><p>A quick-start example to assist you in deploying VART on embedded devices is available <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/vai_runtime/quick_start_for_embedded.md">here</a>.</p></li>
+<li><p>The Vitis AI Runtime is also provided as <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src">open-source</a>.</p></li>
 </ul>
 </section>
 <section id="whole-application-acceleration">
@@ -224,7 +225,7 @@ Tutorials</a> will offer an excellent starting point.</p>
 </figcaption>
 </figure>
 <p>These pre-, intermediate, and post-processing operations can significantly impact the overall efficiency of the end-to-end
-application. This makes “Whole Application Acceleration” or WAA a very important aspect of AMD machine learning solutions. All developers leveraging AMD adaptable devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/waa">here</a>.</p>
+application. This makes “Whole Application Acceleration” or WAA a very important aspect of AMD machine learning solutions. All developers leveraging AMD adaptable devices for high-performance machine learning applications should learn and understand the benefits of WAA. An excellent starting point for this can be found <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/waa">here</a>.</p>
 <p>Explore the relevance and capabilities of <a class="reference external" href="https://xilinx.github.io/VVAS/">AMD Vitis Video Analytics (VVAS)
 SDK</a>, which, while not part of Vitis AI, offers many important features for developing end-to-end video analytics pipelines that employ multi-stage (cascaded) AI pipelines. VVAS also applies to designs that leverage video decoding, transcoding, RTSP streaming, and CMOS sensor interfaces. Another important differentiator of VVAS is that it directly enables software developers to leverage <a class="reference external" href="https://gstreamer.freedesktop.org/">GStreamer</a> commands to interact with the video pipeline.</p>
 </section>
@@ -235,7 +236,7 @@ SDK</a>, which, while not part of Vitis AI, offers many important features for d
 <ul class="simple">
 <li><p>For more information on Vitis AI Profiler see the <a class="reference external" href="https://docs.xilinx.com/access/sources/dita/topic?isLatest=true&amp;ft:locale=en-US&amp;url=ug1414-vitis-ai&amp;resourceid=kdu1570699882179.html">Profiling the Model</a> section in the Vitis AI User Guide.</p></li>
 <li><p>Examples and additional detail for the Vitis AI Profiler can be found
-<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_profiler">here</a>.</p></li>
+<a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_profiler">here</a>.</p></li>
 <li><p>A tutorial that provides additional insights on the capabilities of the Vitis AI Profiler is available
 <a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials/blob/1.4/Design_Tutorials/16-profiler_introduction/README.md">here</a>.</p></li>
 </ul>
@@ -248,7 +249,7 @@ SDK</a>, which, while not part of Vitis AI, offers many important features for d
           
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="workflow-system-integration.html" class="btn btn-neutral float-left" title="Integrating the DPU" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-development.html" class="btn btn-neutral float-left" title="Developing a Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="reference/release_documentation.html" class="btn btn-neutral float-right" title="Vitis AI User Guides / DPU Product Guides" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

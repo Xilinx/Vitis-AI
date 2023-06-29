@@ -67,25 +67,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/reference/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Quick Start Guide for VEK280</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Quick Start Guide for V70</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/custom_target.html">Quick Start Guide for Custom Targets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow.html">First Steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow.html#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-system-integration.html">What is a DPU?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-system-integration.html#vitis-ai-dpu-ip-and-reference-designs">Vitis AI DPU IP and Reference Designs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-system-integration.html#integrating-the-dpu">Integrating the DPU</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../docs/ref_design_docs/README_DPUCV2DX8G.html">VEK280 DPUCV2DX8G Reference Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-system-integration.html">DPU IP Details and System Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../classlist.html">Class</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../classlist.html">C++ API Class</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="classvart_1_1_base_runner.html">Class vart::BaseRunner</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Class vart::Runner</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classvart_1_1_runner_ext.html">Class vart::RunnerExt</a></li>
@@ -93,8 +91,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l2"><a class="reference internal" href="classvart_1_1_tensor_buffer_ext.html">Class vart::TensorBufferExt</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../filelist.html">File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../namespacelist.html">Namespace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pythonlist.html">Python APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
@@ -134,7 +131,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../classlist.html">Class list</a> &raquo;</li>
+          <li><a href="../classlist.html">C++ API Class</a> &raquo;</li>
       <li>Class vart::Runner</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/doxygen/api/class/classvart_1_1_runner.rst.txt" rel="nofollow"> View page source</a>
@@ -206,7 +203,7 @@ for (auto&amp; output : output_tensor_buffers) {
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>pair&lt;jodid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
+<dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +295,7 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4vart6Runner13execute_asyncE9InputType10OutputType">
 <span id="_CPPv3N4vart6Runner13execute_asyncE9InputType10OutputType"></span><span id="_CPPv2N4vart6Runner13execute_asyncE9InputType10OutputType"></span><span id="vart::Runner::execute_async__InputType.OutputType"></span><span class="target" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint32_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute_async</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">InputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">input</span></span>, <span class="n"><span class="pre">OutputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N4vart6Runner13execute_asyncE9InputType10OutputType" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="../namespace/namespaceexecute__async.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
+<dd><p><a class="reference internal" href="../python/execute__async_8py.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -307,7 +304,7 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>pair&lt;jodid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
+<dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
 </dd></dl>

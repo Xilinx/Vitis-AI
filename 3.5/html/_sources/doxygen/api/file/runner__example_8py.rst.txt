@@ -1,4 +1,4 @@
-File runner_example.py
-======================
+runner_example
+==============
 
 .. doxygenfile:: runner_example.py

@@ -1,4 +1,4 @@
-File wait.py
-============
+wait
+====
 
 .. doxygenfile:: wait.py

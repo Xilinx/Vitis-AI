@@ -1,15 +1,13 @@
 Host Installation Instructions
 ==============================
 
-The purpose of this page is to provide the developer with guidance on the installation of Vitis |trade| AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in :doc:`../board_setup/board_setup`.
+The purpose of this page is to provide the developer with guidance on the installation of Vitis |trade| AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in the Quickstart documentation for the respective target.
 
-There are three primary options for installation:
+There are two primary options for installation:
 
 **[Option1]** Directly leverage pre-built Docker containers available from Docker Hub: `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/>`__.
 
 **[Option2]** Build a custom container to target your local host machine.
-
-**[Option3]** Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on :doc:`AWS <install_on_aws>`, or :doc:`Azure <install_on_azure>`.
 
 
 In addition, Vitis AI supports three host types: 

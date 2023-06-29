@@ -27,7 +27,7 @@ AMD Vitis™ AI is an integrated development environment that can be leveraged t
 
 The Vitis |trade| AI solution consists of three primary components:
 
-- The deep-learning processor unit (DPU), a hardware engine for optimized the inferencing of ML models
+- The Deep-Learning Processor unit (DPU), a hardware engine for optimized the inferencing of ML models
 - Model development tools, to compile and optimize ML models for the DPU 
 - Model deployment libraries and APIs, to integrate and execute the ML models on the DPU engine from a SW application
 
@@ -45,7 +45,7 @@ Vitis AI Key Components
 Deep-Learning Processor Unit
 ****************************
 
-The :ref:`deep-learning processor unit (DPU) <workflow-dpu>` is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others. 
+The :ref:`Deep-learning Processor Unit (DPU) <workflow-dpu>` is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others. 
 
 The DPU supports on AMD Zynq |trade| UltraScale+ |trade| MPSoCs, the Kria |trade| KV260, Versal |trade| and Alveo cards. It scales to meet the requirements of many diverse applications in terms of throughput, latency, scalability, and power.
 
@@ -116,22 +116,29 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    Release Notes <docs/reference/release_notes_3.0>
    System Requirements <docs/reference/system_requirements>
    Host Install Instructions <docs/install/install>
-   Quick Start Guide for VCK5000 <docs/quickstart/vck5000>
-   Quick Start Guide for VCK190 <docs/quickstart/vck190>
-   Quick Start Guide for MPSOC <docs/quickstart/mpsoc>
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Quick Start Guides
+   :hidden:
+
+   Zynq Ultrascale+ <docs/quickstart/mpsoc>
+   Versal VCK5000 Development Card <docs/quickstart/vck5000>
+   Versal AI Core VCK190 <docs/quickstart/vck190>
+ 
+
 
 .. toctree::
    :maxdepth: 3
    :caption: Workflow and Components
    :hidden:
 
-   First Steps <docs/workflow>
-   What is a DPU? <docs/workflow-dpu>
+   Overview <docs/workflow>
+   DPU IP Details and System Integration <docs/workflow-system-integration>
    Vitis AI Model Zoo <docs/workflow-model-zoo>
    Developing a Model for Vitis AI <docs/workflow-model-development>
-   Integrating the DPU <docs/workflow-system-integration>
    Deploying a Model with Vitis AI <docs/workflow-model-deployment>
-
+   
 .. toctree::
    :maxdepth: 3
    :caption: Reference Designs
