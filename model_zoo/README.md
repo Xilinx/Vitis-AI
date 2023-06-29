@@ -8,7 +8,7 @@
 
 # Vitis AI Model Zoo
 
-As of the 3.5 release of Vitis AI, the Model Zoo documentation and performance benchmarks were migrated to Github.IO.  **[YOU MAY ACCESS THE LATEST MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/docs/workflow-model-zoo)** or **[OPEN THE OFFLINE DOCUMENTATION IN YOUR BROWSER](../docs/docs/workflow-model-zoo.html)**.
+As of the 3.5 release of Vitis AI, the Model Zoo documentation and performance benchmarks were migrated to Github.IO.  **[YOU MAY ACCESS THE LATEST MODEL ZOO DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/3.5/html/docs/workflow-model-zoo.html))** or **[OPEN THE OFFLINE DOCUMENTATION IN YOUR BROWSER](../docs/docs/workflow-model-zoo.html)**.
 
 
 ## Contributing
