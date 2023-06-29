@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,14 @@ files:
   board: vck5000-DPUCVDX8H-6pe-aieMISC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r2.5.0.tar.gz
   checksum: 967f4271e3b9ee9b18082b39fc6c1bd1
+- name: pointpillars_kitti_12000_0_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 9afcc5881e1dfb73e067d731b7b49d59
+- name: pointpillars_kitti_12000_1_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pointpillars_kitti_12000_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: c79e06c3c702aa799759664ea2f8c144
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

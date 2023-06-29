@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,4 +68,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=textmountain_pt-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 43426b8b84aa86d434a6afa780bc6370
+- name: textmountain_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=textmountain_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 5b4aadf141a84179f4bfadec12655d6d
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

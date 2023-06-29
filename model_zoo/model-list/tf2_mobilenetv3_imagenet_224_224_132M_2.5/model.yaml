@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,4 +43,9 @@ files:
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v3_small_1_0_tf2-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
   checksum: bfacde3922c097898967092efa3e386f
+- name: mobilenet_v3_small_1_0_tf2
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=mobilenet_v3_small_1_0_tf2-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: d8005aa7a479c8411f87c2269eea2db3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

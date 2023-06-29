@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 2509cb798a46057f2f64869d0035d847
+- name: refinedet_baseline
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=refinedet_baseline-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 77099b32d71a5631723f5b147d071db3
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

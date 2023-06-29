@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 9057a237ee952df0805fc06b15a6ae0b
+- name: tiny_yolov3_vmss
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tiny_yolov3_vmss-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 7597a3d2d7b916e5a39d712bcace427e
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 5147c63f5ac5376f37d8d4d0b705c939
+- name: reid
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=reid-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 9216ddf0302b16f8046c9fe44a543683
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

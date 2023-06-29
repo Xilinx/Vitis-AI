@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -147,4 +148,19 @@ files:
   board: u50lv-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: 16a76a92d44c3dcd526a02c8c83994c4
+- name: FADNet_0_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_0_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 1dddda429699b2e170eb4a447519d9ba
+- name: FADNet_1_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_1_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 87a09871bfbc6f3cc29f8b4a8a9dab5e
+- name: FADNet_2_pt
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_2_pt-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 7031eba1719888d8cb42493210737153
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

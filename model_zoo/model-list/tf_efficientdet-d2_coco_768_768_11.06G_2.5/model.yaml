@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,4 +38,9 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-vck190-r2.5.0.tar.gz
   checksum: 7b37f81878e397b021910adaf4102a6e
+- name: efficientdet_d2_tf
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: db2a85d59d35816ade977c9b9bb429cd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

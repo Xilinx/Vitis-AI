@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,4 +38,9 @@ files:
   board: vck190
   download link: https://www.xilinx.com/bin/public/openDownload?filename=hfnet_tf-vck190-r2.5.0.tar.gz
   checksum: 3de8c06d323f4018d0ed77f1da80678f
+- name: hfnet_tf
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=hfnet_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: d138b31fb0d23a94254ad316f5571b88
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

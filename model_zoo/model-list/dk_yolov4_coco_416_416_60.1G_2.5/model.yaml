@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,4 +58,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: dcf413b166c25cf867f96f3c1f692abb
+- name: yolov4_leaky_spp_m
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_spp_m-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 15c02f2963129ce8f58915b39bea31a8
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

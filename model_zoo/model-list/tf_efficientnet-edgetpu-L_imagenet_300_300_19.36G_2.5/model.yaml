@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,4 +43,9 @@ files:
   board: vck5000-DPUCVDX8H-4pe
   download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-vck5000-DPUCVDX8H-4pe-r2.5.0.tar.gz
   checksum: 0615c234ae7fa29d1590a60984612d8b
+- name: efficientNet-edgetpu-L_tf
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientNet-edgetpu-L_tf-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 7c97cffdecef3f5a66066baa6206b6dd
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

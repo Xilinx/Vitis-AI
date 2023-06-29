@@ -1,4 +1,5 @@
 
+
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,4 +63,9 @@ files:
   board: u50lv-DPUCAHX8H-DWC & u55c-DPUCAHX8H-DWC
   download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-u55c-u50lv-DPUCAHX8H-DWC-r2.5.0.tar.gz
   checksum: cc1d46c7549fca18193c4cad4e8ac2ef
+- name: sp_net
+  type: xmodel
+  board: kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=sp_net-kv260_DPUCZDX8G_ISA1_B3136-r2.5.0.tar.gz
+  checksum: 0a91a7caac8416f1cd30d609ea2b98bc
 license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE
