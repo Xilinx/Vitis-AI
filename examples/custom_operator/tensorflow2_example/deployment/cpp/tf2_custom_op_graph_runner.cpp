@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ static void get_image_files(const std::string& img_path,
 
 static void print_result(void* data1, size_t size) {
   const float* score = (const float*)data1;
-  for (auto i = 0; i < size; ++i) {
+  for (auto i = 0; i < (int)size; ++i) {
     std::cout << std::setiosflags(std::ios::left) << std::setw(11)
               << "\tscore[" + std::to_string(i) + "]"
               << " =  " << std::setw(12) << score[i]
@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
   auto num = files.size();
   auto loop_num = num / batchsize;
 
-  for (auto i = 0; i < loop_num; ++i) {
+  for (auto i = 0; i < (int)loop_num; ++i) {
     auto file_index = i * batchsize;
     // preprocess
     preprocess_tf2_custom_op(files, file_index, input_tensor_buffers);

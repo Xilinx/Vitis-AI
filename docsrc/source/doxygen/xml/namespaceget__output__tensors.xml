@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="namespaceget__output__tensors" kind="namespace" language="Python">
+    <compoundname>get_output_tensors</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceget__output__tensors_1a3d0bbdfb1a80867865b8e89583f9ba7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>get_output_tensors</definition>
+        <argsstring>()</argsstring>
+        <name>get_output_tensors</name>
+        <qualifiedname>get_output_tensors.get_output_tensors</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/get_output_tensors.py" line="14" column="1" bodyfile="pydoc/get_output_tensors.py" bodystart="14" bodyend="16"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Get all output tensors of runner. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="return"><para>List[xir.Tensor], all output tensors. A vector of raw pointer to the output tensor.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal">outputTensors<sp/>=<sp/>runner.get_output_tensors()</highlight></codeline>
+<codeline><highlight class="normal">shapeOut<sp/>=<sp/>tuple(outputTensors[0].dims)</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="pydoc/get_output_tensors.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

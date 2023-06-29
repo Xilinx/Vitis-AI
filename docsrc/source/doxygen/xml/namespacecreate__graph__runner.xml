@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="namespacecreate__graph__runner" kind="namespace" language="Python">
+    <compoundname>create_graph_runner</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacecreate__graph__runner_1a7d3dc31000dc6f8f07c63b12ff8653eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>create_graph_runner</definition>
+        <argsstring>(graph)</argsstring>
+        <name>create_graph_runner</name>
+        <qualifiedname>create_graph_runner.create_graph_runner</qualifiedname>
+        <param>
+          <type>graph</type>
+          <defname>graph</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/create_graph_runner.py" line="22" column="1" bodyfile="pydoc/create_graph_runner.py" bodystart="22" bodyend="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Factory function to create an instance of runner by graph and attributes. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>xir.Graph, XIR Graph runners on the same graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>vart.RunnerExt. An instance of runner.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="comment">#<sp/>create<sp/>graph<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">graph<sp/>=<sp/>xir.Graph.deserialize(xmodel_file)</highlight></codeline>
+<codeline><highlight class="normal">runner<sp/>=<sp/>vitis_ai_library.GraphRunner.create_graph_runner(graph)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>get<sp/>input<sp/>and<sp/>output<sp/>tensor<sp/>buffers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">input_tensor_buffers<sp/>=<sp/>runner.get_inputs()</highlight></codeline>
+<codeline><highlight class="normal">output_tensor_buffers<sp/>=<sp/>runner.get_outputs()</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>run<sp/>graph<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>runner.execute_async(input_tensor_buffers,<sp/>output_tensor_buffers)</highlight></codeline>
+<codeline><highlight class="normal">runner.wait(v)</highlight></codeline>
+<codeline><highlight class="normal">output_data<sp/>=<sp/>np.asarray(output_tensor_buffers[0])</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="pydoc/create_graph_runner.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="namespaceget__input__tensors" kind="namespace" language="Python">
+    <compoundname>get_input_tensors</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceget__input__tensors_1a90cf14f9034ee6ac6a081db034bc67a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>get_input_tensors</definition>
+        <argsstring>()</argsstring>
+        <name>get_input_tensors</name>
+        <qualifiedname>get_input_tensors.get_input_tensors</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/get_input_tensors.py" line="22" column="1" bodyfile="pydoc/get_input_tensors.py" bodystart="22" bodyend="25"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Get all input tensors of runner. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="return"><para>List[xir.Tensor]. A list of DPU runner inputs, each of which have type xir.Tensor.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="comment">#<sp/>Each<sp/>element<sp/>of<sp/>the<sp/>list<sp/>returned<sp/>by<sp/>get_input_tensors()<sp/>corresponds<sp/>to<sp/>a<sp/>DPU<sp/>runner<sp/>input.<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>Each<sp/>list<sp/>element<sp/>has<sp/>a<sp/>number<sp/>of<sp/>class<sp/>attributes<sp/>which<sp/>can<sp/>be<sp/>displayed<sp/>like<sp/>this:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">inputTensors<sp/>=<sp/>dpu_runner.get_input_tensors()</highlight></codeline>
+<codeline><highlight class="normal">print(dir(inputTensors[0])</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>The<sp/>most<sp/>useful<sp/>of<sp/>these<sp/>attributes<sp/>are<sp/>name,<sp/>dims<sp/>and<sp/>dtype:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>inputTensor<sp/></highlight><highlight class="keywordflow">in</highlight><highlight class="normal"><sp/>inputTensors:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>print(inputTensor.name)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>print(inputTensor.dims)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>print(inputTensor.dtype)</highlight></codeline>
+</programlisting></para>
+<para>Note that the dimensions (.dim) of an input tensor are in the form NHWC (batchsize, height,width,channels). </para>
+    </detaileddescription>
+    <location file="pydoc/get_input_tensors.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

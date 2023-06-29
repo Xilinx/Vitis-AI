@@ -40,6 +40,7 @@ limitations under the License.
 #include "known_patterns.h"
 #include "transform_utils.h"
 #include "tensorflow/core/framework/graph.pb.h"
+#include "tensorflow/core/framework/node_def_util.h"
 #include "tensorflow/core/lib/core/status.h"
 
 namespace tensorflow {
@@ -161,7 +162,7 @@ Status AdjustHardSwishComputeOrder(const GraphDef& input_graph_def,
 
 // Convert the graph to simulate DPU behaviour, such as avgpooling and leakyrelu
 Status SimulateDPU(const GraphDef& input_graph_def, GraphDef* output_graph_def,
-                   const int scale_all_avgpool, const int replace_softmax, const int replace_sigmoid);
+                   const int scale_all_avgpool, const int replace_sigmoid);
 
 // replace sigmoid with (add(3) + relu6) * 1/6
 Status ReplaceSigmoidWithHardSigmoid(const GraphDef &input_graph_def,
@@ -205,6 +206,12 @@ Status SaveNodeGroupsToFile(const std::set<NodeGroup>& node_groups,
 // Load node groups infomation from file
 Status LoadNodeGroupsFromFile(std::set<NodeGroup>& node_groups,
                               const string& output_dir);
+// Save inspect results to file
+Status SaveInspectMessageToFile(const InspectMessage& insp_msg,
+                            const string& output_dir);
+
+// get splited avgpool kernel size, get factors of similar magnitude
+Status GetFactors(const int org_num, int &factor_1, int &factor_2);
 
 }  // namespace decent_q
 }  // namespace tensorflow

@@ -1,0 +1,738 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="classvart_1_1_tensor_buffer_ext" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>vart::TensorBufferExt</compoundname>
+    <basecompoundref refid="classvart_1_1_tensor_buffer" prot="public" virt="non-virtual">TensorBuffer</basecompoundref>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_ext_1aa378b9f42da947d187705a004773ca1e" prot="protected" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>TensorBufferExt</definition>
+        <argsstring>(const xir::Tensor *tensor)</argsstring>
+        <name>TensorBufferExt</name>
+        <qualifiedname>vart::TensorBufferExt::TensorBufferExt</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>tensor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="279" column="12" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="279" bodyend="279"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_ext_1ac508b42955b0c1b619756a1add10d30d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="pure-virtual">
+        <type>XclBo</type>
+        <definition>virtual XclBo get_xcl_bo</definition>
+        <argsstring>(int batch_index) const =0</argsstring>
+        <name>get_xcl_bo</name>
+        <qualifiedname>vart::TensorBufferExt::get_xcl_bo</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>batch_index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="282" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a5879f4dcf612d462baa1bdfcf2f5387f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>std::string</type>
+        <definition>virtual std::string to_string</definition>
+        <argsstring>() const</argsstring>
+        <name>to_string</name>
+        <qualifiedname>vart::TensorBuffer::to_string</qualifiedname>
+        <briefdescription>
+<para>for fancy log messages </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="262" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::pair&lt; std::uint64_t, std::size_t &gt;</type>
+        <definition>virtual std::pair&lt; std::uint64_t, std::size_t &gt; data</definition>
+        <argsstring>(const std::vector&lt; std::int32_t &gt; idx={})=0</argsstring>
+        <name>data</name>
+        <qualifiedname>vart::TensorBuffer::data</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::int32_t &gt;</type>
+          <declname>idx</declname>
+          <defval>{}</defval>
+        </param>
+        <briefdescription>
+<para>Get the data address of the index and the size of the data available for use. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>idx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The index of the data to be accessed, its dimension same as the tensor shape. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A pair of the data address of the index and the size of the data available for use in byte unit.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb;</highlight></codeline>
+<codeline><highlight class="normal">std::tie(data_addr,<sp/>tensor_size)<sp/>=<sp/>tb-&gt;<ref refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" kindref="member">data</ref>({0,0,0,0});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="143" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1ab76cae37dd5bd473d2e89d064e4c8b4f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type><ref refid="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9" kindref="member">location_t</ref></type>
+        <definition>virtual location_t get_location</definition>
+        <argsstring>() const</argsstring>
+        <name>get_location</name>
+        <qualifiedname>vart::TensorBuffer::get_location</qualifiedname>
+        <briefdescription>
+<para>Get where the tensor buffer located. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>the tensor buffer location, a location_t enum type value: HOST_VIRT/HOST_PHY/DEVICE_*.</para>
+</simplesect>
+Sample code: <linebreak/>
+</para>
+<para><programlisting><codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal"><sp/>(tb-&gt;<ref refid="classvart_1_1_tensor_buffer_1ab76cae37dd5bd473d2e89d064e4c8b4f" kindref="member">get_location</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a488fb959c5a8390af58b46d0207ff471" kindref="member">vart::TensorBuffer::location_t::HOST_VIRT</ref>:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>nothing</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/><ref refid="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9aebed6be82db01b4b596de362f48f266c" kindref="member">vart::TensorBuffer::location_t::HOST_PHY</ref>:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>nothing</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>nothing</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="166" column="22" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="166" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>std::pair&lt; uint64_t, size_t &gt;</type>
+        <definition>virtual std::pair&lt; uint64_t, size_t &gt; data_phy</definition>
+        <argsstring>(const std::vector&lt; std::int32_t &gt; idx)</argsstring>
+        <name>data_phy</name>
+        <qualifiedname>vart::TensorBuffer::data_phy</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::int32_t &gt;</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+<para>Get the data physical address of the index and the size of the data available for use. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>idx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The index of the data to be accessed, its dimension same to the tensor shape. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A pair of the data physical address of the index and the size of the data available for use in byte unit.</para>
+</simplesect>
+Sample code: <linebreak/>
+</para>
+<para><programlisting><codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb;</highlight></codeline>
+<codeline><highlight class="normal">std::tie(phy_data,<sp/>phy_size)<sp/>=<sp/>tb-&gt;<ref refid="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" kindref="member">data_phy</ref>({0,<sp/>0});</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="182" column="21" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="182" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a9057a559781ab9afc2a3d9b11ee2dc52" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void sync_for_read</definition>
+        <argsstring>(uint64_t offset, size_t size)</argsstring>
+        <name>sync_for_read</name>
+        <qualifiedname>vart::TensorBuffer::sync_for_read</qualifiedname>
+        <param>
+          <type>uint64_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Invalid cache for reading Before read, it is no-op in case <ref refid="classvart_1_1_tensor_buffer_1ab76cae37dd5bd473d2e89d064e4c8b4f" kindref="member">get_location()</ref> returns DEVICE_ONLY or HOST_VIRT. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The start offset address. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The data size. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>void</para>
+</simplesect>
+Sample code: <linebreak/>
+</para>
+<para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>output<sp/>:<sp/>output_tensor_buffers)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>output-&gt;sync_for_read(0,<sp/>output-&gt;get_tensor()-&gt;get_data_size()<sp/>/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>output-&gt;get_tensor()-&gt;get_shape()[0]);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="203" column="16" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="203" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a7cf59f4ee46d7bd356af8a8d2f00ae80" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void sync_for_write</definition>
+        <argsstring>(uint64_t offset, size_t size)</argsstring>
+        <name>sync_for_write</name>
+        <qualifiedname>vart::TensorBuffer::sync_for_write</qualifiedname>
+        <param>
+          <type>uint64_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Flush cache for writing after write, it is no-op in case <ref refid="classvart_1_1_tensor_buffer_1ab76cae37dd5bd473d2e89d064e4c8b4f" kindref="member">get_location()</ref> returns DEVICE_ONLY or HOST_VIRT. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The start offset address. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The data size. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>void</para>
+</simplesect>
+Sample code: <linebreak/>
+</para>
+<para><programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>input<sp/>:<sp/>input_tensor_buffers)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>input-&gt;sync_for_write(0,<sp/>input-&gt;get_tensor()-&gt;get_data_size()<sp/>/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>input-&gt;get_tensor()-&gt;get_shape()[0]);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="220" column="16" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="220" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a781dbc662ce87afedf825aebf94eb2ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void copy_from_host</definition>
+        <argsstring>(size_t batch_idx, const void *buf, size_t size, size_t offset)</argsstring>
+        <name>copy_from_host</name>
+        <qualifiedname>vart::TensorBuffer::copy_from_host</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>batch_idx</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>copy data from source buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>batch_idx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the batch index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>source buffer start address. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data size to be copied. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the start offset to be copied. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>void </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="229" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a04f040c860de3c9f54f96e661aabef60" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void copy_to_host</definition>
+        <argsstring>(size_t batch_idx, void *buf, size_t size, size_t offset)</argsstring>
+        <name>copy_to_host</name>
+        <qualifiedname>vart::TensorBuffer::copy_to_host</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>batch_idx</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>copy data to destination buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>batch_idx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the batch index. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>buf</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>destination buffer start address. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data size to be copied. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the start offset to be copied. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>void</para>
+</simplesect>
+Sample code: <linebreak/>
+</para>
+<para><programlisting><codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb_from;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb_to;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>batch<sp/>=<sp/>0u;<sp/>batch<sp/>&lt;<sp/>batch_size;<sp/>++batch)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::tie(<ref refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" kindref="member">data</ref>,<sp/>tensor_size)<sp/>=<sp/>tb_to-&gt;<ref refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" kindref="member">data</ref>({(int)batch,<sp/>0,<sp/>0,<sp/>0});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tb_from-&gt;<ref refid="classvart_1_1_tensor_buffer_1a04f040c860de3c9f54f96e661aabef60" kindref="member">copy_to_host</ref>(batch,<sp/></highlight><highlight class="keyword">reinterpret_cast&lt;</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(<ref refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" kindref="member">data</ref>),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>tensor_size,<sp/>0u);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="251" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a3c53b20e0e7b58a4c5d18baa10a3f0b6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const xir::Tensor *</type>
+        <definition>const xir::Tensor * get_tensor</definition>
+        <argsstring>() const</argsstring>
+        <name>get_tensor</name>
+        <qualifiedname>vart::TensorBuffer::get_tensor</qualifiedname>
+        <briefdescription>
+<para>Get tensor of <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>A pointer to the tensor. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="259" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>location_t</name>
+        <qualifiedname>vart::TensorBuffer::location_t</qualifiedname>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a488fb959c5a8390af58b46d0207ff471" prot="public">
+          <name>HOST_VIRT</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+<para>Host only <ref refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" kindref="member">data()</ref> should return a valid pair (0,Nonzero_u); <ref refid="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" kindref="member">data_phy()</ref> should return an invalid pair (0,0u);. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9aebed6be82db01b4b596de362f48f266c" prot="public">
+          <name>HOST_PHY</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+<para>continuous physicial memory, shared among host and device. </para>
+          </briefdescription>
+          <detaileddescription>
+<para>both data () and <ref refid="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" kindref="member">data_phy()</ref> should return a valid pair. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9aef02403e51abd6922be8b6d5aa58710b" prot="public">
+          <name>DEVICE_0</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+<para>data () should return an invalid pair (0,0u); <ref refid="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" kindref="member">data_phy()</ref> should return a valid pair. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a46bec86a7db59fdbd3e5d3936dc23df1" prot="public">
+          <name>DEVICE_1</name>
+          <initializer>= 3</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9aa6e06f60a3a0b92730f683218d752e41" prot="public">
+          <name>DEVICE_2</name>
+          <initializer>= 4</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a291c66e584bee580b14653972d052b50" prot="public">
+          <name>DEVICE_3</name>
+          <initializer>= 5</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a42dc9549394297d2324b552573d54fd7" prot="public">
+          <name>DEVICE_4</name>
+          <initializer>= 6</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9a035241fbbb71ab130f557dc14cd3eaad" prot="public">
+          <name>DEVICE_5</name>
+          <initializer>= 7</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9adf9d5617218fa668257faf6fe5f928f7" prot="public">
+          <name>DEVICE_6</name>
+          <initializer>= 8</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9ad0b840e119a7f48a283b29faf269045d" prot="public">
+          <name>DEVICE_7</name>
+          <initializer>= 9</initializer>
+          <briefdescription>
+<para>only accessiable by device. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="42" column="3" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="42" bodyend="71"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classvart_1_1_tensor_buffer_1a863acb675cc2c20c6598bd146b3cee54" prot="protected" static="no" mutable="no">
+        <type>const xir::Tensor *</type>
+        <definition>const xir::Tensor* tensor_</definition>
+        <argsstring></argsstring>
+        <name>tensor_</name>
+        <qualifiedname>vart::TensorBuffer::tensor_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="265" column="21" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="265" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a245a56dd22db5aa7c9804aaa427fc123" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string to_string</definition>
+        <argsstring>(location_t value)</argsstring>
+        <name>to_string</name>
+        <qualifiedname>vart::TensorBuffer::to_string</qualifiedname>
+        <param>
+          <type><ref refid="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9" kindref="member">location_t</ref></type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>for <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> location message </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="73" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a9d8516b7a6303b98e7aeebdb7cebeb55" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void copy_tensor_buffer</definition>
+        <argsstring>(vart::TensorBuffer *tb_from, vart::TensorBuffer *tb_to)</argsstring>
+        <name>copy_tensor_buffer</name>
+        <qualifiedname>vart::TensorBuffer::copy_tensor_buffer</qualifiedname>
+        <param>
+          <type><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref> *</type>
+          <declname>tb_from</declname>
+        </param>
+        <param>
+          <type><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref> *</type>
+          <declname>tb_to</declname>
+        </param>
+        <briefdescription>
+<para>copy <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> from one to another. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tb_from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the source <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tb_to</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the destination <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>void</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb_from;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref>*<sp/>tb_to;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classvart_1_1_tensor_buffer_1a9d8516b7a6303b98e7aeebdb7cebeb55" kindref="member">vart::TensorBuffer::copy_tensor_buffer</ref>(tb_from.get(),<sp/>tb_to.get());</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="88" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_tensor_buffer_1a945c798b96ee1f351e7474db08bb379a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::unique_ptr&lt; <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> &gt;</type>
+        <definition>static std::unique_ptr&lt; TensorBuffer &gt; create_unowned_device_tensor_buffer</definition>
+        <argsstring>(const xir::Tensor *tensor, uint64_t batch_addr[], size_t addr_arrsize)</argsstring>
+        <name>create_unowned_device_tensor_buffer</name>
+        <qualifiedname>vart::TensorBuffer::create_unowned_device_tensor_buffer</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>tensor</declname>
+        </param>
+        <param>
+          <type>uint64_t</type>
+          <declname>batch_addr</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>addr_arrsize</declname>
+        </param>
+        <briefdescription>
+<para>create unowned device tensor buffer with device physical addresses for a tensor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>There are some limitations on the arguments:<orderedlist>
+<listitem><para>The addr_arrsize must NOT be greater than the tensor batch.</para>
+</listitem><listitem><para>The tensor must have attribute ddr_addr whose value must be 0.</para>
+</listitem></orderedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tensor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR tensor pointer </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>batch_addr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array which contains device physical address for each batch </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>addr_arrsize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The array size of batch_addr </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Unique pointer of created tensor buffer.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart::RunnerExt::create_runner</ref>(subgraph,<sp/>attrs);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input_tensors<sp/>=<sp/>runner-&gt;get_input_tensors();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output_tensors<sp/>=<sp/>runner-&gt;get_output_tensors();</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vart::TensorBuffer*&gt;<sp/>input_tensor_buffers;</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;vart::TensorBuffer*&gt;<sp/>output_tensor_buffers;</highlight></codeline>
+<codeline><highlight class="normal">uint64_t<sp/>in_batch_addr[1];</highlight></codeline>
+<codeline><highlight class="normal">uint64_t<sp/>out_batch_addr[1];</highlight></codeline>
+<codeline><highlight class="normal">in_batch_addr[0]<sp/>=<sp/>DEVICE_PHY_ADDRESS_IN;</highlight></codeline>
+<codeline><highlight class="normal">out_batch_addr[0]<sp/>=<sp/>DEVICE_PHY_ADDRESS_OUT;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input_tb<sp/>=<sp/><ref refid="classvart_1_1_tensor_buffer_1a945c798b96ee1f351e7474db08bb379a" kindref="member">vart::TensorBuffer::create_unowned_device_tensor_buffer</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>input_tensors[0],<sp/>in_batch_addr,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output_tb<sp/>=<sp/><ref refid="classvart_1_1_tensor_buffer_1a945c798b96ee1f351e7474db08bb379a" kindref="member">vart::TensorBuffer::create_unowned_device_tensor_buffer</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output_tensors[0],<sp/>out_batch_addr,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">input_tensor_buffers.emplace_back(input_tb.get());</highlight></codeline>
+<codeline><highlight class="normal">output_tensor_buffers.emplace_back(output_tb.get());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>v<sp/>=<sp/>runner-&gt;execute_async(input_tensor_buffers,<sp/>output_tensor_buffers);</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="124" column="26"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>TensorBufferExt</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>TensorBuffer</label>
+        <link refid="classvart_1_1_tensor_buffer"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>TensorBufferExt</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>TensorBuffer</label>
+        <link refid="classvart_1_1_tensor_buffer"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="277" column="1" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" bodystart="277" bodyend="283"/>
+    <listofallmembers>
+      <member refid="classvart_1_1_tensor_buffer_1a781dbc662ce87afedf825aebf94eb2ba" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>copy_from_host</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a9d8516b7a6303b98e7aeebdb7cebeb55" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>copy_tensor_buffer</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a04f040c860de3c9f54f96e661aabef60" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>copy_to_host</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a945c798b96ee1f351e7474db08bb379a" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>create_unowned_device_tensor_buffer</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a0267b7ff6fd5270bd293571626e9e777" prot="public" virt="pure-virtual"><scope>vart::TensorBufferExt</scope><name>data</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1ac3e8852bfa0c6889aa0db8cc3aaa4e7b" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>data_phy</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1ab76cae37dd5bd473d2e89d064e4c8b4f" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>get_location</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a3c53b20e0e7b58a4c5d18baa10a3f0b6" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>get_tensor</name></member>
+      <member refid="classvart_1_1_tensor_buffer_ext_1ac508b42955b0c1b619756a1add10d30d" prot="public" virt="pure-virtual"><scope>vart::TensorBufferExt</scope><name>get_xcl_bo</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a31881b9c15f11383074babe029080ca9" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>location_t</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a9057a559781ab9afc2a3d9b11ee2dc52" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>sync_for_read</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a7cf59f4ee46d7bd356af8a8d2f00ae80" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>sync_for_write</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a863acb675cc2c20c6598bd146b3cee54" prot="protected" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>tensor_</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1adb3eb183951d0aca87182b6c1ca13e98" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>TensorBuffer</name></member>
+      <member refid="classvart_1_1_tensor_buffer_ext_1aa378b9f42da947d187705a004773ca1e" prot="protected" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>TensorBufferExt</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a245a56dd22db5aa7c9804aaa427fc123" prot="public" virt="non-virtual"><scope>vart::TensorBufferExt</scope><name>to_string</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a5879f4dcf612d462baa1bdfcf2f5387f" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>to_string</name></member>
+      <member refid="classvart_1_1_tensor_buffer_1a4d8905146faaa3b500043ffcad995c15" prot="public" virt="virtual"><scope>vart::TensorBufferExt</scope><name>~TensorBuffer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

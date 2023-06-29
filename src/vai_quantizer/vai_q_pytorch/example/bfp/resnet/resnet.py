@@ -1,3 +1,48 @@
+# Copyright 2023 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# BSD 3-Clause License
+#
+# Copyright (c) Soumith Chintala 2016,
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 import argparse
 import os
 import shutil
@@ -10,17 +55,22 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 
 from pytorch_nndct.nn.modules import functional
+from pytorch_nndct.quantization import bfp
 
 torch.backends.cudnn.deterministic = True
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Inference')
 parser.add_argument('--model', default='resnet50', type=str)
 parser.add_argument(
+    '--data_dir',
+    default='/group/dataset/imagenet/pytorch',
+    help='Data set directory.')
+parser.add_argument(
     '--config_file',
-    default='config.json',
+    default='config.yaml',
     type=str,
     help='Configuration file path.')
-parser.add_argument('--epochs', default=1, type=int, help='between 1-10')
+parser.add_argument('--epochs', default=0, type=int, help='between 1-10')
 parser.add_argument(
     '--lr',
     '--learning-rate',
@@ -47,11 +97,9 @@ parser.add_argument(
     help='Run validation every n iters during training.')
 parser.add_argument('--num', default=10, type=int, help='count')
 parser.add_argument('--optim', default='AdamW', type=str, help='SGD or AdamW')
-parser.add_argument('--use_pre', default=0, type=int, help='')
-parser.add_argument('--use_best_cur', default=0, type=int, help='')
 parser.add_argument(
     '--pretrained',
-    default="/group/modelzoo/compression/pretrained",
+    default="/group/modelzoo/compression/pretrained/resnet50.pth",
     type=str,
     help='Directory of pretrained weights')
 parser.add_argument('--acc', default=76.012, type=int, help='fp32')
@@ -229,8 +277,6 @@ class ResNet(nn.Module):
     x = self.conv1(x)
 
     x = self.bn1(x)
-    #print('bn1 output:', x.sum())
-    #print(x)
     x = self.relu(x)
     x = self.maxpool(x)
 
@@ -244,8 +290,6 @@ class ResNet(nn.Module):
 
     x = torch.flatten(x, 1)
     x = self.fc(x)
-    #print('fc output:', x.sum())
-    #print(x)
 
     return x
 
@@ -266,10 +310,12 @@ def load_imagenet(batch_size):
   normalize = transforms.Normalize(
       mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
-  # print(torchvision.get_image_backend()) //PIL
+  train_dir = os.path.join(args.data_dir, 'train')
+  val_dir = os.path.join(args.data_dir, 'val')
+
   train_loader = torch.utils.data.DataLoader(
       datasets.ImageFolder(
-          '/group/dphi_gpu_scratch/yuwang/dataset/imagenet/pytorch/train',
+          train_dir,
           transforms.Compose([
               transforms.RandomResizedCrop(224),
               transforms.RandomHorizontalFlip(),
@@ -283,7 +329,7 @@ def load_imagenet(batch_size):
 
   val_loader = torch.utils.data.DataLoader(
       datasets.ImageFolder(
-          '/group/dphi_gpu_scratch/yuwang/dataset/imagenet/pytorch/val',
+          val_dir,
           transforms.Compose([
               transforms.Resize(256),
               transforms.CenterCrop(224),
@@ -297,8 +343,8 @@ def load_imagenet(batch_size):
 
   return train_loader, val_loader
 
-def train(train_loader, val_loader, model, criterion, optimizer, epoch, args,
-          best_acc1):
+def train(train_loader, val_loader, model, criterion, optimizer, epoch, device,
+          best_acc1, args):
   batch_time = AverageMeter('Time', ':6.3f')
   data_time = AverageMeter('Data', ':6.3f')
   losses = AverageMeter('Loss', ':.4e')
@@ -316,8 +362,8 @@ def train(train_loader, val_loader, model, criterion, optimizer, epoch, args,
     # measure data loading time
     data_time.update(time.time() - end)
 
-    images = images.cuda()
-    target = target.cuda()
+    images = images.to(device, non_blocking=True)
+    target = target.to(device, non_blocking=True)
 
     # compute output
     output = model(images)
@@ -343,7 +389,7 @@ def train(train_loader, val_loader, model, criterion, optimizer, epoch, args,
 
     if i != 0 and i % args.val_freq_iters == 0:
       # evaluate on validation set
-      acc1 = validate(val_loader, model, criterion, args)
+      acc1 = validate(val_loader, model, criterion, device, args)
 
       # remember best acc@1 and save checkpoint
       is_best = acc1 > best_acc1
@@ -360,9 +406,6 @@ def train(train_loader, val_loader, model, criterion, optimizer, epoch, args,
               'optimizer': optimizer.state_dict(),
           }, is_best, args)
 
-    if i == args.num * args.val_freq_iters:
-      break
-
   return best_acc1
 
 def adjust_learning_rate(optimizer, epoch, args):
@@ -371,7 +414,7 @@ def adjust_learning_rate(optimizer, epoch, args):
   for param_group in optimizer.param_groups:
     param_group['lr'] = lr
 
-def validate(val_loader, model, criterion, args):
+def validate(val_loader, model, criterion, device, args):
 
   batch_time = AverageMeter('Time', ':6.3f')
   losses = AverageMeter('Loss', ':.4e')
@@ -386,8 +429,8 @@ def validate(val_loader, model, criterion, args):
   with torch.no_grad():
     end = time.time()
     for i, (images, target) in enumerate(val_loader):
-      images = images.cuda()
-      target = target.cuda()
+      images = images.to(device, non_blocking=True)
+      target = target.to(device, non_blocking=True)
 
       # compute output
       output = model(images)
@@ -406,8 +449,6 @@ def validate(val_loader, model, criterion, args):
 
       if i % args.val_display_freq == 0:
         progress.display(i)
-
-    # TODO: this should also be done with the ProgressMeter
 
     print(
         ' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f} '.format(
@@ -484,34 +525,39 @@ def accuracy(output, target, topk=(1,)):
 
 if __name__ == '__main__':
 
+  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  #device = torch.device('cpu')
+
   # create model
   if args.model == 'resnet50':
-    model = resnet50().cuda()
+    model = resnet50()
     args.acc = 76.012
   elif args.model == 'resnet101':
-    model = resnet101().cuda()
+    model = resnet101()
     args.acc = 77.314
   elif args.model == 'resnet152':
-    model = resnet152().cuda()
+    model = resnet152()
     args.acc = 78.250
   else:
     raise NotImplementedError('Model not implemented')
 
-  # initialize parameters
-  state_dict = torch.load(os.path.join(args.pretrained, args.model + '.pth'))
-  model.load_state_dict(state_dict, strict=False)
+  model = model.to(device)
+  model.load_state_dict(torch.load(args.pretrained))
 
   # data loading
   train_loader, val_loader = load_imagenet(args.batch_size)
   # define loss function (criterion) and optimizer
-  criterion = nn.CrossEntropyLoss().cuda()
+  criterion = nn.CrossEntropyLoss().to(device)
 
-  from pytorch_nndct.quantization import bfp
   inputs = torch.randn([args.batch_size, 3, 224, 224],
-                       dtype=torch.float32).cuda()
-  model = bfp.quantize_model(model, inputs, args.config_file)
+                       dtype=torch.float32,
+                       device=device)
+  # Two built-in data types: mx6 and mx9
+  model = bfp.quantize_model(model, inputs, dtype='mx9')
+  # Or you can use config file
+  # model = bfp.quantize_model(model, inputs, config_file='bfp.yaml')
 
-  best_acc1 = validate(val_loader, model, criterion, args)
+  best_acc1 = validate(val_loader, model, criterion, device, args)
 
   if args.optim == 'SGD':
     optimizer = torch.optim.SGD(
@@ -537,7 +583,7 @@ if __name__ == '__main__':
     # train for one epoch
     with torch.autograd.set_detect_anomaly(True):
       best_acc1 = train(train_loader, val_loader, model, criterion, optimizer,
-                        epoch, args, best_acc1)
+                        epoch, device, best_acc1, args)
 
   if args.epochs > 0:
-    validate(val_loader, model, criterion, args)
+    validate(val_loader, model, criterion, device, args)

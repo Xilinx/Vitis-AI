@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #pragma once
-#include <core/providers/vitisai/vitisai_provider_factory.h>
 #include <core/session/experimental_onnxruntime_cxx_api.h>
 #include <vitis/ai/env_config.hpp>
 #include "getbatch.hpp"
@@ -22,6 +21,7 @@
 
 DEF_ENV_PARAM(DEBUG_ONNX_TASK, "0")
 
+#if 0
 static void CheckStatus(OrtStatus* status) {
   if (status != NULL) {
     const char* msg = Ort::GetApi().GetErrorMessage(status);
@@ -30,7 +30,7 @@ static void CheckStatus(OrtStatus* status) {
     exit(1);
   }
 }
-
+#endif
 // pretty prints a shape dimension vector
 static std::string print_shape(const std::vector<int64_t>& v) {
   std::stringstream ss("");
@@ -46,16 +46,23 @@ class OnnxTask {
         env_(ORT_LOGGING_LEVEL_WARNING, model_name_.c_str()),
         session_options_(Ort::SessionOptions()) {
     ::get_batch();
-
-    CheckStatus(
-        OrtSessionOptionsAppendExecutionProvider_VITISAI(session_options_, ""));
-
+    
+    auto options = std::unordered_map<std::string,std::string>({});
+    options["config_file"] = "/usr/bin/vaip_config.json";
+    // optional, eg: cache path and cache key: /tmp/my_cache/abcdefg
+    // options["CacheDir"] = "/tmp/my_cache";
+    // options["CacheKey"] = "abcdefg";
+    
+    session_options_.AppendExecutionProvider("VitisAI", options );
+    
     session_.reset(
         new Ort::Experimental::Session(env_, model_name_, session_options_));
     input_shapes_ = session_->GetInputShapes();
-    input_shapes_[0][0] = g_batchnum;
     output_shapes_ = session_->GetOutputShapes();
-    output_shapes_[0][0] = g_batchnum;
+    if (input_shapes_[0][0] == -1) {
+      input_shapes_[0][0] = g_batchnum;
+      output_shapes_[0][0] = g_batchnum;
+    }
   }
 
   OnnxTask(const OnnxTask&) = delete;
@@ -78,6 +85,25 @@ class OnnxTask {
 
   std::vector<std::vector<int64_t>> get_output_shapes() {
     return output_shapes_;
+  }
+
+  void set_input_image_rgb(const cv::Mat& image, float* data, const std::vector<float>& mean, const  std::vector<float>& scale) {
+     return set_input_image_internal(image, data, mean, scale, true);
+  }
+  void set_input_image_bgr(const cv::Mat& image, float* data, const std::vector<float>& mean, const  std::vector<float>& scale) {
+     return set_input_image_internal(image, data, mean, scale, false);
+  }
+  void set_input_image_internal(const cv::Mat& image, float* data, const std::vector<float>& mean, const  std::vector<float>& scale, bool btrans) {
+    // BGR->RGB (maybe) and HWC->CHW
+    for (int c = 0; c < 3; c++) {
+      for (int h = 0; h < image.rows; h++) {
+        for (int w = 0; w < image.cols; w++) {
+          auto c_t = btrans? abs(c - 2): c;
+          auto image_data = (image.at<cv::Vec3b>(h, w)[c_t] - mean[c_t]) * scale[c_t];
+          data[c * image.rows * image.cols + h * image.cols + w] = (float)image_data;
+        }
+      }
+    }
   }
 
   std::vector<Ort::Value> convert_input(

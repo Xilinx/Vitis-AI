@@ -51,6 +51,41 @@ def get_name_to_nodes_map(graph_def):
     name_to_nodes[node.name] = node
   return name_to_nodes
 
+
+def get_name_to_input_nodes(graph_def):
+  name_to_inputnodes = {}
+  for node in graph_def.node:
+    input_nodes = []
+    for nodex in graph_def.node:
+      if nodex.name in node.input:
+        input_nodes.append(nodex)
+      elif nodex.op == "Switch":
+        nodex_name_0 = nodex.name + ":0"
+        nodex_name_1 = nodex.name + ":1"
+        if (nodex_name_0 in node.input) or \
+           (nodex_name_1 in node.input):
+          input_nodes.append(nodex)
+    name_to_inputnodes[node.name] = input_nodes
+  return name_to_inputnodes
+
+
+def get_name_to_output_nodes(graph_def):
+  name_to_outputnodes = {}
+  for node in graph_def.node:
+    output_nodes = []
+    for nodex in graph_def.node:
+      if node.name in nodex.input:
+        output_nodes.append(nodex)
+      elif node.op == "Switch":
+        node_name_0 = node.name + ":0"
+        node_name_1 = node.name + ":1"
+        if (node_name_0 in nodex.input) or \
+           (node_name_1 in nodex.input):
+          output_nodes.append(nodex)
+    name_to_outputnodes[node.name] = output_nodes
+  return name_to_outputnodes
+
+
 def check_node_names(graph_def, node_names):
   """Check if graph_def has node names"""
   if not isinstance(node_names, list):

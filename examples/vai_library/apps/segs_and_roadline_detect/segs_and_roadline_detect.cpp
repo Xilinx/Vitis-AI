@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <glog/logging.h>
 
 #include <eigen3/Eigen/Dense>
@@ -20,7 +21,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/demo.hpp>
+#include <vitis/ai/demo_b1.hpp>
 #include <vitis/ai/lanedetect.hpp>
 #include <vitis/ai/multitask.hpp>
 #include <vitis/ai/ssd.hpp>
@@ -66,6 +67,17 @@ static cv::Mat process_result_multitask(
   return image;
 }
 
+std::vector<cv::Mat> process_result_multitask_batch(
+    std::vector<cv::Mat>& images,
+    const std::vector<vitis::ai::MultiTaskResult>& results, bool is_jpeg) {
+  size_t size = std::min(images.size(), results.size());
+  std::vector<cv::Mat> image_results(size);
+  for (auto i = 0u; i < size; ++i) {
+    image_results[i] = process_result_multitask(images[i], results[i], is_jpeg);
+  }
+  return image_results;
+}
+
 using namespace cv;
 
 // This function is used to process the roadline result and show on the image
@@ -90,6 +102,17 @@ cv::Mat process_result_roadline(cv::Mat& image,
   return image;
 }
 
+std::vector<cv::Mat> process_result_roadline_batch(
+    std::vector<cv::Mat>& images,
+    const std::vector<vitis::ai::RoadLineResult>& results, bool is_jpeg) {
+  size_t size = std::min(images.size(), results.size());
+  std::vector<cv::Mat> image_results(size);
+  for (auto i = 0u; i < size; ++i) {
+    image_results[i] = process_result_roadline(images[i], results[i], is_jpeg);
+  }
+  return image_results;
+}
+
 int main(int argc, char* argv[]) {
   // set the layout
   //
@@ -102,9 +125,7 @@ int main(int argc, char* argv[]) {
                   {seg_px, seg_py + 288, 512, 288},
                   {seg_px + 512, seg_py + 288, 512, 288},
                   {1200, 252, 640, 480}};
-  // assign to Lvalue : set background image
-  //
-  gui_background() = cv::imread("/usr/share/weston/logo.jpg");
+
   // init each dpu filter and process instance, using video demo framework
   return vitis::ai::main_for_video_demo_multiple_channel(
       argc, argv,

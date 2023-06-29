@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <mutex>
 #include <vitis/ai/env_config.hpp>
 #ifndef _WIN32
-#include <vitis/ai/trace.hpp>
+#  include <vitis/ai/trace.hpp>
 #endif
 #include "./dpu_edge.hpp"
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
@@ -103,6 +103,12 @@ static std::string dump_gen_reg(const std::vector<uint64_t>& gen_reg) {
   }
   return str.str();
 }
+static bool check_reg_addr(uint64_t addr) {
+  if (addr == 0xFFFFFFFFFFFFFFFF) return true;
+  if ((addr & 0xFFFFFF0000000000) == 0) return true;
+
+  return false;
+}
 
 void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
                                const std::vector<uint64_t>& gen_reg) {
@@ -139,6 +145,11 @@ void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
       auto offset = XDPU_CONTROL_ADDR_0_L / 4;
       auto size = 8u;
       for (auto i = 0u; i < gen_reg.size() && i < size; ++i) {
+        CHECK(check_reg_addr(gen_reg[i]))                             //
+            << "invalid gen_reg 0x" << std::hex << gen_reg[i]         //
+            << std::dec << " at reg_id=" << i                         //
+            << ", only the low 40bits of physical address are valid"  //
+            << ", high 24bits should be 0";
         ecmd->data[offset] = gen_reg[i] & 0xFFFFFFFF;
         ecmd->data[offset + 1] = (gen_reg[i] >> 32) & 0xFFFFFFFF;
         offset = offset + 2;
@@ -164,6 +175,11 @@ void DpuControllerXrtEdge::run(size_t core_idx, const uint64_t code,
       auto offset = XDPU_CONTROL_ADDR_0_L / 4;
       auto size = 8u;
       for (auto i = 0u; i < gen_reg.size() && i < size; ++i) {
+        CHECK(check_reg_addr(gen_reg[i]))                             //
+            << "invalid gen_reg 0x" << std::hex << gen_reg[i]         //
+            << std::dec << " at reg_id=" << i                         //
+            << ", only the low 40bits of physical address are valid"  //
+            << ", high 24bits should be 0";
         ecmd->data[p++] = offset * 4;
         ecmd->data[p++] = gen_reg[i] & 0xFFFFFFFF;
         ecmd->data[p++] = (offset + 1) * 4;
@@ -210,7 +226,8 @@ size_t DpuControllerXrtEdge::get_core_id(size_t device_core_id) const {
 uint64_t DpuControllerXrtEdge::get_fingerprint(size_t device_core_id) const {
   return xrt_cu_->get_fingerprint(device_core_id);
 }
-uint64_t  DpuControllerXrtEdge::get_device_hwconuter(size_t device_core_id) const {
+uint64_t DpuControllerXrtEdge::get_device_hwconuter(
+    size_t device_core_id) const {
   uint32_t cycle_l_addr = 0x1A0;
   uint32_t cycle_h_addr = 0x1A4;
   auto value_l = xrt_cu_->read_register(device_core_id, cycle_l_addr);
@@ -228,6 +245,3 @@ std::string DpuControllerXrtEdge::get_instance_name(
     size_t device_core_id) const {
   return xrt_cu_->get_instance_name(device_core_id);
 }
-
-
-

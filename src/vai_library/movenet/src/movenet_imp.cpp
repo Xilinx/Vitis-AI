@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ MovenetResult movenet_post_process(
         input_tensors,
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors_unsorted,
-    const vitis::ai::proto::DpuModelParam& config, int iw, int ih,
+    const vitis::ai::proto::DpuModelParam& config, int iw_in, int ih_in,
     size_t batch_idx) {
   int sWidth = input_tensors[0][0].width;
   int sHeight = input_tensors[0][0].height;
@@ -184,7 +184,7 @@ MovenetResult movenet_post_process(
       ret_x = -1;
       ret_y = -1;
     }
-    poses.push_back(Point2f(ret_x * iw, ret_y * ih));
+    poses.push_back(Point2f(ret_x * iw_in, ret_y * ih_in));
   }
   MovenetResult result{sWidth, sHeight, poses};
   return result;
@@ -238,7 +238,7 @@ vector<MovenetResult> MovenetImp::run(const vector<cv::Mat>& input_images) {
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
   auto size = cv::Size(sWidth, sHeight);
-  for (auto input_image : input_images) {
+  for (auto& input_image : input_images) {
     Mat image;
     if (size != input_image.size()) {
       cv::resize(input_image, image, size);

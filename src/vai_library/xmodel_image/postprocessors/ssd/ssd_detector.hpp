@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,16 @@ namespace ai {
 namespace dpssd {
 
 struct SSDOutputInfo {
-  int8_t output_tensor_index;  // output tensor index
-  int8_t type;                 // conf = 1; bbox = 2;
-  uint32_t order;              // order of bbox layer or conf layer
-  float* base_ptr;            // original ptr
-  float* ptr;                 // ptr for batch
-  uint32_t index_begin;        // index for prior boxes
-  uint32_t index_size;
-  float scale;
-  uint32_t size;
-  uint32_t bbox_single_size;  // usualy 4, but sometimes 6 and last 2 number not
+  int8_t output_tensor_index=0;  // output tensor index
+  int8_t type=0;                 // conf = 1; bbox = 2;
+  uint32_t order=0;              // order of bbox layer or conf layer
+  float* base_ptr=NULL;            // original ptr
+  float* ptr=NULL;                 // ptr for batch
+  uint32_t index_begin=0;        // index for prior boxes
+  uint32_t index_size=0;
+  float scale=0.0;
+  uint32_t size=0;
+  uint32_t bbox_single_size=0;  // usualy 4, but sometimes 6 and last 2 number not
                               // valid
 };
 
@@ -86,25 +86,25 @@ class SSDdetector {
 
   std::map<int, std::vector<float>> decoded_bboxes_;
 
-  const unsigned int num_classes_;
+  const unsigned int num_classes_=0;
   // int background_label_id_;
   CodeType code_type_;
-  bool variance_encoded_in_target_;
-  unsigned int keep_top_k_;
+  bool variance_encoded_in_target_=false;
+  unsigned int keep_top_k_=0;
   std::vector<float> confidence_threshold_;
-  float nms_confidence_;
-  unsigned int nms_top_k_;
-  float nms_threshold_;
-  float eta_;
+  float nms_confidence_=0.0;
+  unsigned int nms_top_k_=0;
+  float nms_threshold_=0.0;
+  float eta_=0.0;
 
   const std::vector<std::shared_ptr<std::vector<float>>>& priors_;
-  bool if_tfmodel_;
-  bool is_mlperf_;
-  float scale_;
+  bool if_tfmodel_=false;
+  bool is_mlperf_=false;
+  float scale_=0.0;
 
-  bool clip_;
+  bool clip_=false;
 
-  int num_priors_;
+  int num_priors_=0;
 };
 
 std::unique_ptr<SSDdetector> CreateSSDUniform(

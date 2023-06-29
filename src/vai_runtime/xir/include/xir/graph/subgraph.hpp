@@ -439,7 +439,13 @@ class XIR_DLLESPEC Subgraph {
    */
   template <typename Dtype>
   const Dtype get_attr(const std::string& key) const {
-    return stdx::any_cast<Dtype>(this->get_attr(key));
+    // suppress coverity complain
+    try{
+      return stdx::any_cast<Dtype>(this->get_attr(key));
+    }catch(std::exception & e){
+      std::cerr <<"Should never run here with exception " << e.what() <<"\n";
+      abort();
+    }
   }
 
   /**

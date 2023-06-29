@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,10 +61,10 @@ simple_tensor_buffer_t<T> simple_tensor_buffer_t<T>::create(
   uint64_t data = 0u;
   size_t size = 0u;
   std::tie(data, size) = t->data(idx);
-  if (t->get_tensor()->get_data_size() != (int)size) {
+  if (t->get_tensor()->get_data_size() != size) {
     std::tie(data, size) = t->data(idx);
   }
-  CHECK_EQ(t->get_tensor()->get_data_size(), (int)size)
+  CHECK_EQ(t->get_tensor()->get_data_size(), size)
       << "only support tensor buffer with continuous memory region:"
       << t->to_string();
   CHECK(type_matcher_t<T>::match(t->get_tensor()->get_data_type()))

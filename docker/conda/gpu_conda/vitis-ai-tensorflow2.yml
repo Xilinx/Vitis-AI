@@ -2,15 +2,14 @@ name: vitis-ai-tensorflow2
 
 channels:
   - conda-forge
-  - anaconda
 
 dependencies:
-  - python=3.7
+  - python=3.8
+  - vai_optimizer_tensorflow2_gpu
+  - vai_q_tensorflow2_gpu
   - vaic
-  - dpuv3-pycompiler
   - xnnc
   - xcompiler
-  - tensorflow-onnx
+  - tensorflow-onnx_gpu
   - vart
   - rt-engine
-  - vai_utf

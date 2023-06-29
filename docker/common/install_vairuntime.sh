@@ -2,6 +2,8 @@
   
 set -ex
 
+echo ' Acquire::http::Timeout "600";' |tee -a /etc/apt/apt.conf.d/99timeout &&
+echo ' Acquire::Retries "3";' | tee -a /etc/apt/apt.conf.d/99timeout
 if [[ "${XRT_URL}" =~ ".deb" ]]; then
    cd /tmp && wget --progress=dot:mega -O xrt.deb ${XRT_URL} \
     && apt-get update -y \

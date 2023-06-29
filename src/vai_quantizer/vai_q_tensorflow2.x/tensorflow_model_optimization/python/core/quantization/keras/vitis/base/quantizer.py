@@ -85,6 +85,7 @@ class Quantizer(object):
     Returns: Dictionary of constructed weights. This dictionary will be
       passed to the quantizer's __call__ function as a `weights` dictionary.
     """
+    self.tensor_shape = tensor_shape
 
   @abc.abstractmethod
   def __call__(self, inputs, training, weights, **kwargs):

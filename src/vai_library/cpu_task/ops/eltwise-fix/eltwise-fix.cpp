@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -233,7 +233,7 @@ struct MyOpImp : public vart::experimental::OpImpBase {
  public:
   // op attr
   enum EltwiseType type_ { ADD };
-  vitis::ai::cpu_task::util::NONLINEAR nonlinear_;
+  vitis::ai::cpu_task::util::NONLINEAR nonlinear_ = vitis::ai::cpu_task::util::NONLINEAR::NONE;
 
   // output shape and dim stride size
   std::vector<int> output_shape_;
@@ -248,9 +248,9 @@ struct MyOpImp : public vart::experimental::OpImpBase {
 
   // scales of input and output
   std::vector<float> input_scale_vec_;
-  float output_scale_;
+  float output_scale_=0.0;
   // for ReLU6
-  float six_as_output_;
+  float six_as_output_=0.0;
 };
 }  // namespace
 

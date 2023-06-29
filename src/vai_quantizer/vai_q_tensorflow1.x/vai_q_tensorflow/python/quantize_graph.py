@@ -47,6 +47,7 @@ class QuantizeConfig:
                nodes_bit=[],
                nodes_method=[],
                method=1,
+               target_type="",
                calib_iter=100,
                output_dir="./quantize_results",
                align_concat=0,
@@ -59,6 +60,7 @@ class QuantizeConfig:
                replace_relu6=1,
                replace_sigmoid=0,
                fold_bn_only=0,
+               fold_reshape=0,
                replace_softmax=0):
     if not (isinstance(input_nodes, list)):
       raise TypeError('input_nodes should be list(str)')
@@ -78,6 +80,7 @@ class QuantizeConfig:
     self.nodes_bit = nodes_bit
     self.nodes_method = nodes_method
     self.method = method
+    self.target_type = target_type
     self.calib_iter = calib_iter
     self.output_dir = output_dir
     self.align_concat = align_concat
@@ -90,6 +93,7 @@ class QuantizeConfig:
     self.replace_relu6 = replace_relu6
     self.replace_sigmoid = replace_sigmoid
     self.fold_bn_only = fold_bn_only
+    self.fold_reshape = fold_reshape
     self.replace_softmax = replace_softmax
 
   def to_string(self):
@@ -112,6 +116,7 @@ class QuantizeConfig:
     config_string += 'weight_bit,' + str(self.weight_bit) + ','
     config_string += 'activation_bit,' + str(self.activation_bit) + ','
     config_string += 'method,' + str(self.method) + ','
+    config_string += 'target_type,' + str(self.target_type) + ','
     config_string += 'calib_iter,' + str(self.calib_iter) + ','
     config_string += 'output_dir,' + str(self.output_dir) + ','
     config_string += 'align_concat,' + str(self.align_concat) + ','
@@ -124,6 +129,7 @@ class QuantizeConfig:
     config_string += 'replace_relu6,' + str(self.replace_relu6) + ','
     config_string += 'replace_sigmoid,' + str(self.replace_sigmoid) + ','
     config_string += 'fold_bn_only,' + str(self.fold_bn_only) + ','
+    config_string += 'fold_reshape,' + str(self.fold_reshape) + ','
     config_string += 'replace_softmax,' + str(self.replace_softmax) + ','
     return tf.compat.as_bytes(config_string)
 

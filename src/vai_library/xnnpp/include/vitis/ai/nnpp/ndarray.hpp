@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,12 +37,12 @@
 template <class T>
 class Ndarray {
 private:
-  size_t capacity;
+  size_t capacity=0;
   // std::vector<T> data;
 public:
   std::vector<T> data;
   std::vector<size_t> shape;
-  size_t dim;
+  size_t dim=0;
 
   Ndarray() = default;
 
@@ -126,11 +126,11 @@ public:
     }
   }
 
-  const size_t size() const {
+  size_t size() const {
     return capacity;
   }
 
-  const size_t get_dim() const {
+  size_t get_dim() const {
     return dim;
   }
 

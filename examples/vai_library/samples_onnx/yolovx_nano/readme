@@ -1,0 +1,57 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+  ./test_yolovx_nano_onnx, ./test_performance_yolovx_nano_onnx, ./test_accuracy_yolovx_nano_onnx first param followed must be with model name.
+  Valid model name:
+    yolox_nano_onnx_pt.onnx
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+        ./test_yolovx_nano_onnx <model_name> <test_image> 
+
+    sample :  ./test_yolovx_nano_onnx yolox_nano_onnx_pt.onnx demo.jpg
+   
+RESULT: 56      294.902039      220.782181      357.405670      323.833221      0.683070
+RESULT: 56      377.978973      217.705246      440.482605      320.756287      0.630719
+RESULT: 58      210.881912      176.429443      266.041168      214.339813      0.399093
+RESULT: 58      230.275604      176.429443      268.185974      214.339813      0.357953
+RESULT: 58      337.741547      178.738007      363.796936      227.415878      0.339589
+RESULT: 62      6.569267        163.859100      156.507660      266.910156      0.778800
+RESULT: 62      549.913513      136.794968      640.855713      217.051208      0.508907
+RESULT: 62      558.333435      206.125519      638.589661      276.951416      0.447413
+RESULT: 74      447.482941      120.623253      463.286316      140.915207      0.422761
+
+
+Performance: 
+    ./test_performance_yolovx_nano_onnx <model_name> test_performance_yolovx_nano.list -s 60 -t <thread> 
+
+    sample:
+    ./test_performance_yolovx_nano_onnx yolox_nano_onnx_pt.onnx test_performance_yolovx_nano.list -s 60 -t 1
+
+
+Accuracy:
+    ./test_accuracy_yolovx_nano_onnx <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_yolovx_nano_onnx yolox_nano_onnx_pt.onnx image.list result.txt -t 2

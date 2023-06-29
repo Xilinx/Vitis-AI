@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ std::string TensorBufferLinker::to_string() {
   std::ostringstream str;
   str << "linker{master=" << master_->get()->to_string() << "; slaves=[";
   int c = 0;
-  for (auto s : slaves_) {
+  for (auto& s : slaves_) {
     if (c != 0) {
       str << ",";
     }
@@ -71,7 +71,7 @@ void TensorBufferLinker::finalize() {
 void TensorBufferLinker::after_invoke_runner(const xir::Subgraph* subgraph) {
   // LOG(WARNING) << " not so efficient, too much copying";
   UNI_LOG_WARNING << " not so efficient, too much copying";
-  for (auto s : slaves_) {
+  for (auto& s : slaves_) {
     LOG_IF(INFO, ENV_PARAM(DEEPHI_PROFILING))
         << "ZERO_COPY = 0  tensor name : "
         << s.first->get()->get_tensor()->get_name()  //

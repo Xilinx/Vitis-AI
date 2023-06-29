@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="create__graph__runner_8py" kind="file" language="Python">
+    <compoundname>create_graph_runner.py</compoundname>
+    <innernamespace refid="namespacecreate__graph__runner">create_graph_runner</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacecreate__graph__runner_1a7d3dc31000dc6f8f07c63b12ff8653eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>create_graph_runner</definition>
+        <argsstring>(graph)</argsstring>
+        <name>create_graph_runner</name>
+        <qualifiedname>create_graph_runner.create_graph_runner</qualifiedname>
+        <param>
+          <type>graph</type>
+          <defname>graph</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/create_graph_runner.py" line="22" column="1" bodyfile="pydoc/create_graph_runner.py" bodystart="22" bodyend="24"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespacecreate__graph__runner" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@brief</highlight><highlight class="normal"><sp/>Factory<sp/>function<sp/>to<sp/>create<sp/>an<sp/>instance<sp/>of<sp/>runner<sp/>by<sp/>graph<sp/></highlight><highlight class="keywordflow">and</highlight><highlight class="normal"><sp/>attributes</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@param</highlight><highlight class="normal"><sp/>graph<sp/><sp/>xir.Graph,<sp/><sp/>XIR<sp/>Graph<sp/>runners<sp/>on<sp/>the<sp/>same<sp/>graph.</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@return</highlight><highlight class="normal"><sp/>vart.RunnerExt.<sp/><sp/>An<sp/>instance<sp/>of<sp/>runner.</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/>Sample<sp/>code:</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>create<sp/>graph<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>graph<sp/>=<sp/>xir.Graph.deserialize(xmodel_file)</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>runner<sp/>=<sp/>vitis_ai_library.GraphRunner.create_graph_runner(graph)</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>get<sp/>input<sp/>and<sp/>output<sp/>tensor<sp/>buffers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>input_tensor_buffers<sp/>=<sp/>runner.get_inputs()</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>output_tensor_buffers<sp/>=<sp/>runner.get_outputs()</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>run<sp/>graph<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>v<sp/>=<sp/>runner.execute_async(input_tensor_buffers,<sp/>output_tensor_buffers)</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>runner.wait(v)</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>output_data<sp/>=<sp/>np.asarray(output_tensor_buffers[0])</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@endcode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;</highlight></codeline>
+<codeline lineno="22"><highlight class="stringliteral">def<sp/>create_graph_runner(<sp/>graph):</highlight></codeline>
+<codeline lineno="23"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">pass</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/create_graph_runner.py"/>
+  </compounddef>
+</doxygen>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,11 +50,11 @@ class Segmentation3DImp : public vitis::ai::TConfigurableDpuTask<Segmentation3D>
   V1F proj_unfold;
   V1F proj_unfold2;
   V2I idx_list;  // should be V2I with batch
-  std::shared_ptr<float> k2_distances;
+  std::unique_ptr<float> k2_distances;
   V1F unproj_unfold_1_argmax;
   V1I knn_idx;
   V1F knn_argmax;
-  std::shared_ptr<float> knn_argmax_onehot;
+  std::unique_ptr<float> knn_argmax_onehot;
   std::vector<int8_t*> input_ptr;
   V1F sensor_std_scale;
   V1F sensor_mean_std_scale;

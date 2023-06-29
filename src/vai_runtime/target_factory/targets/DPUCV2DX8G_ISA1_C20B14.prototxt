@@ -1,0 +1,96 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "DPUCV2DX8G_ISA1_C20B14"
+type: "DPUCV2DX8G"
+isa_version: 0x01
+feature_code: 0x400044000E44
+bank_group {
+  name: "VB0"
+  type: "Virtual"
+  base_id: 0
+  bank_num: 1
+  bank_width: 32
+  bank_depth: 65528
+}
+bank_group {
+  name: "CONVW"
+  type: "Param"
+  base_id: 1
+  bank_num: 4
+  bank_width: 16
+  bank_depth: 32768
+}
+load_engine {
+  channel_parallel: 32
+  output_bank: "VB0"
+}
+save_engine {
+  channel_parallel: 32
+  input_bank: "VB0"
+  argmax: true
+}
+conv_engine {
+  input_channel_parallel: 32
+  output_channel_parallel: 32
+  pixel_parallel: 4
+  input_bank: "VB0"
+  output_bank: "VB0"
+  weight_bank: "CONVW"
+  bias_bank: "CONVW"
+  channel_augmentation {
+    channel_num: 64
+  }
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: leaky_relu
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+    nonlinear_type: relu_six
+  }
+  conv_limit {
+    kernel_size: "1-16"
+    stride: "1-16"
+  }
+}
+alu_engine {
+  channel_parallel: 32
+  pixel_parallel: 2
+  input_bank: "VB0"
+  output_bank: "VB0"
+  weight_bank: "CONVW"
+  bias_bank: "CONVW"
+  alu_type: macc_temp
+  alu_type: comp_temp
+  alu_type: elew_add
+  alu_type: elew_mult
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: leaky_relu
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+    nonlinear_type: relu_six
+  }
+  alu_limit {
+    kernel_size: "1-256"
+    stride: "1-256"
+  }
+  pad_limit {
+    pad_left: "0-15"
+    pad_right: "0-255"
+    pad_top: "0-15"
+    pad_bottom: "0-255"
+  }
+}
+batch: 14

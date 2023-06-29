@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,9 +181,9 @@ static float vector_mul(const int8_t* input1, const int8_t* input2, float scale,
 }
 #endif
 
-static void cost_volume(vitis::ai::library::OutputTensor input_l,
-                 vitis::ai::library::OutputTensor input_r, 
-                 vitis::ai::library::InputTensor output) {
+static void cost_volume(vitis::ai::library::OutputTensor& input_l,
+                 vitis::ai::library::OutputTensor& input_r, 
+                 vitis::ai::library::InputTensor& output) {
   __TIC__(FIRST_CHANNEL)
   CHECK_EQ(input_l.size, input_r.size) << "The two inputs' size not same, please check.";
   LOG_IF(INFO, ENV_PARAM(DEBUG_FADNET))
@@ -354,8 +354,8 @@ static void shift_and_copy(int8_t* output, int8_t* input, size_t size, int shift
 #endif
 
 static void copy_into_tensor (
-               const vitis::ai::library::InputTensor input,
-               vitis::ai::library::InputTensor tensor) {
+               const vitis::ai::library::InputTensor& input,
+               vitis::ai::library::InputTensor& tensor) {
   __TIC__(COPY_INPUT)
   int i_fixpos = tensor.fixpos;
   int o_fixpos = input.fixpos;
@@ -401,8 +401,8 @@ static void copy_into_tensor (
 }
 
 static void copy_into_tensor (
-               const vitis::ai::library::OutputTensor input,
-               vitis::ai::library::InputTensor tensor) {
+               const vitis::ai::library::OutputTensor& input,
+               vitis::ai::library::InputTensor& tensor) {
   __TIC__(COPY_INPUT)
   int i_fixpos = tensor.fixpos;
   int o_fixpos = input.fixpos;

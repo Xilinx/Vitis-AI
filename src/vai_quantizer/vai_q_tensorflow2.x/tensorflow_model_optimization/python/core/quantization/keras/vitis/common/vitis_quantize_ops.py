@@ -18,6 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import sys
 import enum
 import functools
@@ -46,10 +47,16 @@ class QuantizeMethod(enum.Enum):
 
   PERCENTILE = 3
 
+def get_perm(n_dim, axis):
+  perm = [i for i in range(n_dim)]
+  perm[-1] = perm[axis]
+  perm[axis] = n_dim - 1
+  return perm
 
 def sym_quantize(inputs, scale, q_min, q_max, round_mode):
   """Symmetry Quantize Kernel.  Q(x) = q_min + round[(x * scale]."""
   with tf.name_scope("SymQuantize"):
+    inputs = tf.cast(inputs, tf.float32)
     rounded = vitis_round.round(inputs * scale, round_mode)
     quantized = tf.clip_by_value(rounded, q_min, q_max)
   return quantized
@@ -58,6 +65,7 @@ def sym_quantize(inputs, scale, q_min, q_max, round_mode):
 def asym_quantize(inputs, scale, shift, q_min, q_max, round_mode):
   """Asymmetry Quantize Kernel.  Q(x) = q_min + round[(x - shift) * scale]."""
   with tf.name_scope("AsymQuantize"):
+    inputs = tf.cast(inputs, tf.float32)
     rounded = vitis_round.round((inputs - shift) * scale, round_mode)
     quantized = tf.clip_by_value(q_min + rounded, q_min, q_max)
   return quantized
@@ -69,6 +77,41 @@ def quantize(inputs, scale, shift, q_min, q_max, round_mode, symmetry):
     return sym_quantize(inputs, scale, q_min, q_max, round_mode)
   else:
     return asym_quantize(inputs, scale, shift, q_min, q_max, round_mode)
+
+def bfp_quantize(inputs, scale, round_mode, min_v, max_v):
+  with tf.name_scope("BFPQuantize"):
+    rounded = vitis_round.round(inputs/scale, round_mode) * scale
+    quantized = tf.clip_by_value(rounded, min_v, max_v)
+  return quantized
+
+def bfp_dequantize(inputs, shape, axis, tmp_shape):
+  """Transform block-wised tensor to given `shape` and remove padded blocks if it has.
+      For example, given a block-wised tensor with shape [N*W*H, L, B],
+      shape=[N, H, W, C] and axis=3. The function first reshape it to [N*W*H, L*B] 
+      and remove padded blocks to [N*W*H, C], then transform it to given shape [N, H, W, C].
+
+      Args:
+        inputs: A tensor in block-wised format.
+        shape: The shape of the output tensor.
+        axis: The axis where the channels is located in the `shape`.
+        tmp_shape: The shape of the origin tensor that the channel dimension has been transformed to last dimension.
+
+      Returns:
+        A transposed and de-padded tensor with given `shape`.
+  """
+  with tf.name_scope("BFPDequantize"):
+    origin_n_dim = shape.shape[0]
+    _, L, B = inputs.shape
+    # [N*W*H, L, B] -> [N*H*W, L*B] -> [N*W*H, C]
+    inputs = tf.reshape(inputs, [-1, L*B])
+    inputs = tf.slice(inputs, [0,0], [-1, shape[axis]])
+    if axis == -1 or axis == origin_n_dim-1: 
+      dequantized = tf.reshape(inputs, shape)
+    else:
+      perm = get_perm(origin_n_dim, axis)
+      dequantized = tf.reshape(inputs, tmp_shape)
+      dequantized = tf.transpose(dequantized, perm=perm)
+  return dequantized
 
 
 def sym_dequantize(inputs, scale, q_min, q_max):
@@ -159,6 +202,8 @@ def get_min_max(inputs,
     else:
       # Use full range of bit_width, the negative range is slightly larger than the positive range.
       min_max_ratio = -((1 << bit_width) - 2) / (1 << bit_width)
+      batch_max = tf.cast(batch_max, tf.float32)
+      batch_min = tf.cast(batch_min, tf.float32)
       range_min = tf.minimum(batch_min, batch_max / min_max_ratio)
       range_max = tf.maximum(batch_max, batch_min * min_max_ratio)
   else:
@@ -393,6 +438,7 @@ class Pof2SFakeQuantize(object):
                round_mode,
                symmetry,
                per_channel,
+               use_fixneuron_quant=0,
                unsigned=False,
                narrow_range=False,
                reduce_dims=None):
@@ -404,6 +450,8 @@ class Pof2SFakeQuantize(object):
       round_mode: Int Enum value of the rounding mode. 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
       symmetry: Bool, whether to use symmetry quantization.
       per_channel: Bool, whether to use per-channel quantization.
+      use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+        1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
       unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -426,6 +474,50 @@ class Pof2SFakeQuantize(object):
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.reduce_dims = reduce_dims
+    self.use_fixneuron_quant = use_fixneuron_quant
+
+    # fixneuron only supports limited settings
+    if self.use_fixneuron_quant:
+      if self.bit_width != 8 or self.unsigned or self.narrow_range or \
+         (self.method != QuantizeMethod.NON_OVERFLOW and \
+          self.method != QuantizeMethod.MIN_MSE) or \
+         self.symmetry == False or self.per_channel:
+        logger.warning('Disable fixneuron because of unsupported settings:'
+          'bit_width {}, unsigned {}, narrow_range {}, method {}, '
+          'symmetry {}, per_channel {}'.format(self.bit_width, self.unsigned,
+          self.narrow_range, self.method, self.symmetry, self.per_channel)
+        )
+        self.use_fixneuron_quant = 0
+
+    # Prepare output directory for fixneuron
+    self.fixneuron_output_dir = './'
+    if self.use_fixneuron_quant:
+      temp_path = os.path.join(self.fixneuron_output_dir, "temp")
+      if not os.path.exists(temp_path):
+        os.makedirs(temp_path)
+
+  def fixneuron_pof2s_fake_quant(self, inputs, quantize_pos, quantize_phase):
+    """The power-of-2 scale fake quantization by fixneuron.
+
+    Args:
+      inputs: a tensor containing values to be quantized.
+      quantize_pos: the quantize position.
+      quantize_phase: the quantize phase. 0: Calibration 1: Evaluation, 2: Training
+    Returns:
+      a tensor containing quantized values.
+    """
+    fixneuron_bit_width = self.bit_width
+    fixneuron_method = 0 if self.method == QuantizeMethod.NON_OVERFLOW else 1
+
+    fixneuron_mode = 1 if self.use_fixneuron_quant == 2 else 0
+    fixneuron_quantize_pos = tf.keras.backend.get_value(quantize_pos)
+
+    from tensorflow_model_optimization.python.core.quantization.keras.vitis.vai_q_tensorflow import FixNeuron
+    return FixNeuron(input=inputs, bit_width=fixneuron_bit_width,
+                     method=fixneuron_method,
+                     mode=fixneuron_mode, phase=quantize_phase,
+                     output_dir=self.fixneuron_output_dir,
+                     quantize_pos=fixneuron_quantize_pos)
 
   @tf.custom_gradient
   def pof2s_fake_quant(self, inputs, quantize_pos, f_min, f_max):
@@ -513,19 +605,23 @@ class Pof2SFakeQuantize(object):
     else:
       logger.error('Invalid method: {}'.format(self.method))
 
-  def call(self, inputs, quantize_pos, f_min, f_max):
+  def call(self, inputs, quantize_pos, quantize_phase, f_min, f_max):
     """The fake quantization operation kernel.
 
     Args:
       inputs: a tensor containing values to be quantized.
       quantize_pos: the quantize position.
+      quantize_phase: the quantize phase (used by fixneuron).
       f_min: the minimum input value.
       f_max: the maximum input value.
     Returns:
       a tensor containing quantized values.
     """
     with tf.name_scope("Pof2SFakeQuantize"):
-      return self.pof2s_fake_quant(inputs, quantize_pos, f_min, f_max)
+      if self.use_fixneuron_quant:
+        return self.fixneuron_pof2s_fake_quant(inputs, quantize_pos, quantize_phase)
+      else:
+        return self.pof2s_fake_quant(inputs, quantize_pos, f_min, f_max)
 
 
 class TQTFakeQuantize(object):
@@ -537,6 +633,7 @@ class TQTFakeQuantize(object):
                round_mode,
                symmetry,
                per_channel,
+               use_fixneuron_quant=0,
                unsigned=False,
                narrow_range=False,
                reduce_dims=None):
@@ -548,6 +645,8 @@ class TQTFakeQuantize(object):
       round_mode: Int Enum value of the rounding mode. 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
       symmetry: Bool, whether to use symmetry quantization.
       per_channel: Bool, whether to use per-channel quantization.
+      use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+        1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
       unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -573,6 +672,11 @@ class TQTFakeQuantize(object):
     if self.per_channel:
       logger.error('Per_channel tqt quantize is not supported now.')
     self.reduce_dims = reduce_dims
+    self.use_fixneuron_quant = use_fixneuron_quant
+
+    # fixneuron does not support tqt quantization
+    if self.use_fixneuron_quant:
+      logger.warning('The tqt quantize does not support using fixneuron.')
 
   @tf.custom_gradient
   def tqt_fake_quant(self, inputs, log_th, f_min, f_max):
@@ -608,12 +712,10 @@ class TQTFakeQuantize(object):
       grad_wrt_log_th = ln2 * q_min / s,        if [x * s] < q_min
                               q_max / s,        if [x * s] > q_max
       """
-      if self.symmetry:
-        _f_min, _f_max = f_min, f_max
-      else:
-        _f_min, _f_max = new_f_min, new_f_max
+      scaled = inputs * scale
+      rounded = vitis_round.round(scaled, self.round_mode)
+      between_min_max = (rounded >= self.q_min) & (rounded <= self.q_max)
 
-      between_min_max = (inputs >= _f_min) & (inputs <= _f_max)
       ones = tf.ones_like(dy)
       zeros = tf.zeros_like(dy)
       grad_wrt_inputs = dy * tf.where(between_min_max, ones, zeros)
@@ -747,7 +849,7 @@ def FSQuantize(
       assign_max = tf_compat.assign(max_var, batch_max, name='assign_max')
       return tf.identity(inputs, name='identity')
 
-    if is_training or mode == 'QCB':
+    if (is_training and mode == 'QAT') or mode == 'QCB':
       # Training and calibration branch
       batch_min = None
       batch_max = None
@@ -875,7 +977,7 @@ def MAFSQuantize(inputs,
           name='assign_max_ema')
       return tf.identity(inputs, name='identity')
 
-    if is_training or mode == 'QCB':
+    if (is_training and mode == 'QAT') or mode == 'QCB':
       # Training and calibration branch
       batch_min, batch_max = get_min_max(
           inputs,
@@ -915,6 +1017,7 @@ def Pof2SQuantize(inputs,
                   symmetry,
                   per_channel,
                   channel_axis,
+                  use_fixneuron_quant=0,
                   unsigned=False,
                   narrow_range=False,
                   name_scope="Pof2SQuantize"):
@@ -935,6 +1038,8 @@ def Pof2SQuantize(inputs,
     per_channel: Bool, whether to apply per_channel quantization.
     channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
       regarded as channel axis and other dimension will be reduces by default.
+    use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+      1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
     unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -948,6 +1053,14 @@ def Pof2SQuantize(inputs,
       input_dims = len(inputs.get_shape())
       reduce_dims = convert_channel_axis_to_reduce_dims(input_dims,
                                                         channel_axis)
+    quantize_phase = 1
+    if use_fixneuron_quant:
+      if is_training:
+        quantize_phase = 2
+      elif mode == 'QCB':
+        quantize_phase = 0
+      else:  # mode == 'ANALYSE' or 'QAT'
+        quantize_phase = 1
 
     quantize_kernel = Pof2SFakeQuantize(
         bit_width=bit_width,
@@ -955,6 +1068,7 @@ def Pof2SQuantize(inputs,
         round_mode=round_mode,
         symmetry=symmetry,
         per_channel=per_channel,
+        use_fixneuron_quant=use_fixneuron_quant,
         unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
@@ -973,7 +1087,7 @@ def Pof2SQuantize(inputs,
       assign_max = tf_compat.assign(max_var, batch_max, name='assign_max')
       return tf.identity(inputs, name='identity')
 
-    if is_training or mode == 'QCB':
+    if (is_training and mode == 'QAT') or mode == 'QCB':
       # Training and calibration branch
       batch_min, batch_max = get_min_max(
           inputs,
@@ -991,11 +1105,12 @@ def Pof2SQuantize(inputs,
           inputs, assign_min, assign_max)
       assign_quantize_pos = tf_compat.assign(
           quant_pos_var, batch_quantize_pos, name="assign_quantize_pos")
-      return quantize_kernel.call(inputs, assign_quantize_pos, assign_min,
-                                  assign_max)
+      return quantize_kernel.call(inputs, assign_quantize_pos, quantize_phase,
+                                  assign_min, assign_max)
     else:
       # Evaluation branch
-      return quantize_kernel.call(inputs, quant_pos_var, min_var, max_var)
+      return quantize_kernel.call(inputs, quant_pos_var, quantize_phase,
+                                  min_var, max_var)
 
 
 def TQTQuantize(inputs,
@@ -1010,6 +1125,7 @@ def TQTQuantize(inputs,
                 symmetry,
                 per_channel,
                 channel_axis,
+                use_fixneuron_quant=0,
                 unsigned=False,
                 narrow_range=False,
                 name_scope="TQTQuantize"):
@@ -1029,6 +1145,8 @@ def TQTQuantize(inputs,
     per_channel: Bool, whether to apply per_channel quantization.
     channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
       regarded as channel axis and other dimension will be reduces by default.
+    use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+      1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
     unsigned: Bool, whether to use unsigned integer for quantization.
     narrow_range: Bool, whether to use the narrow quantization range
       [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -1049,6 +1167,7 @@ def TQTQuantize(inputs,
         round_mode=round_mode,
         symmetry=symmetry,
         per_channel=per_channel,
+        use_fixneuron_quant=use_fixneuron_quant,
         unsigned=unsigned,
         narrow_range=narrow_range,
         reduce_dims=reduce_dims)
@@ -1067,7 +1186,7 @@ def TQTQuantize(inputs,
       assign_max = tf_compat.assign(max_var, batch_max, name='assign_max')
       return tf.identity(inputs, name='identity')
 
-    if is_training or mode == 'QCB':
+    if (is_training and mode == 'QAT') or mode == 'QCB':
       # Training and calibration branch
       batch_min, batch_max = get_min_max(
           inputs,
@@ -1092,3 +1211,280 @@ def TQTQuantize(inputs,
     else:
       # Evaluation branch
       return quantize_kernel.call(inputs, log_th_var, min_var, max_var)
+
+
+def BFPQuantize(
+    inputs,
+    tensor_shape,
+    data_format,
+    bit_width,
+    round_mode,
+    axis,
+    tile_size,
+    is_training,
+    name_scope="BFPQuantize",
+):
+  """Float scale quantize op.
+
+  Args:
+    inputs: Input values.
+    data_format: "bfp"/"bf16"/"fp32"
+    bit_width: Number of bits to use for bfp, must be bigger than 8.
+    axis: The axis where the channels is located in the `shape`.
+    tile_size: The number of tensors in a block.
+    method: method of quantize valued of inputs,
+    round_mode: Int, the mode of rounding function, 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
+    mode: String, the mode of quantization, available modes are ['ANALYSE', 'QCB', 'QCBEV', 'QAT']
+    is_training: Bool, whether in training phase.
+    symmetry: Bool, whether to apply symmetry quantization.
+    per_channel: Bool, whether to apply per_channel quantization.
+    channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
+      regarded as channel axis and other dimension will be reduces by default.
+    use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom
+      quantize kernel will be used.
+    narrow_range: Bool, whether to use the narrow quantization range
+      [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
+
+  Return:
+    Quantized inputs.
+  """
+  with tf.name_scope(name_scope):
+
+    quantize_kernel = BFPFakeQuantize(
+        tensor_shape=tensor_shape,
+        data_format=data_format,
+        bit_width=bit_width,
+        round_mode=round_mode,
+        axis=axis,
+        tile_size=tile_size,
+        is_training=is_training)
+
+    return quantize_kernel.call(inputs)
+
+class BFPFakeQuantize(object):
+  """The fake quantization with dataformat operation kernel."""
+
+  def __init__(self,
+               tensor_shape=None,
+               data_format="bfp",
+               bit_width=16,
+               round_mode=0,
+               axis=-1,
+               tile_size=8,
+               epsilon=tf.math.pow(tf.constant(2.0), -23),
+               is_training=False):
+    """Initialize the fake quantize with dataformat operation kernel.
+    For "MSFP" data format, block_size=16, exponent_bits=8, sub-block_size=2, sub-block_shift_bits=1, mantissa_bits=bit_width-exponent_bits-sub_block_shift_bits.
+
+    Args:
+      data_format: "bfp"/"bf16"/"fp32"/"msfp"
+      bit_width: Number of bits to use for bfp, must be bigger than 8. Or number of bits to use for msfp, must be 16/13/11.
+      round_mode: Int Enum value of the rounding mode. 0 for HALF_TO_EVEN, 1 for HALF_UP, 2 for HALF_AWAY_FROM_ZERO.
+      axis: The axis where the channels is located in the `shape`.
+      tile_size: The number of tensors in a block.
+      is_training: Bool, whether in training phase.
+    """
+    self.tensor_shape = tensor_shape
+    self.data_format = data_format
+    self.bit_width = bit_width
+    self.round_mode = vitis_round.RoundMode(round_mode)
+    self.axis = axis
+    self.tile_size = tile_size
+    self.is_training = is_training
+    self.epsilon = epsilon
+    if self.data_format == 'msfp':
+      assert bit_width in [16, 13, 11], 'Number of bits used for MSFP must be 16/13/11.'
+      self.block_size = 12
+      sub_block_size = 2
+      self.tile_size = sub_block_size
+      self.round_mode = vitis_round.RoundMode(2)
+
+  def _transform_to_block_wise(self, inputs):
+    """Transform input tensor to block-wised format (i.e. the block in last dimension) at given asix with paddings if needed.
+
+    For example, given a input tensor with shape [N, C, H, W], axis=1.
+    The tensor will be transposed to [N*W*H, L, B], where B equals to `tile_size`. 
+    The channels will be padded with zeros before transpose to make it divisble by `tile_size`.
+
+    Args:
+      inputs: Input tensor.
+
+    Returns:
+      A transposed and padded tensor in block-wised format.
+    """
+
+    tmp_shape = None
+    #C = inputs.shape[self.axis]
+    #n_dim = inputs.shape.ndims
+    C = self.tensor_shape[self.axis]
+    n_dim = self.tensor_shape.ndims
+    assert np.abs(self.axis) <= n_dim 
+    if self.axis != -1 and self.axis != n_dim-1:
+      perm = get_perm(n_dim, self.axis)
+      inputs = tf.transpose(inputs, perm=perm)
+      tmp_shape = tf.shape(inputs)
+    # [N, W, H, C] -> [N*W*H, C]
+    inputs = tf.reshape(inputs, [-1, C])
+    padded_channels = self.tile_size - C % self.tile_size
+    if padded_channels != self.tile_size:
+      inputs = tf.pad(inputs, tf.constant([[0,0,], [0,padded_channels]]), "CONSTANT")
+    # [N*W*H, C] -> [N*W*H, L, B]
+    #_, C = inputs.shape
+    #return tf.reshape(inputs, [-1, int(C/self.tile_size), self.tile_size]), tmp_shape
+    C = tf.shape(inputs)[-1]
+    return tf.reshape(inputs, [-1, tf.divide(C, self.tile_size), self.tile_size]), tmp_shape
+
+  def _get_exponent(self, inputs):
+    t = tf.abs(inputs)
+    # use fp32's 1.mantissa_bits
+    max_t = tf.math.reduce_max(t, axis=-1, keepdims=True)
+    max_exp = tf.math.floor(tf.math.log(max_t + self.epsilon) / tf.math.log(2.0))
+    t_exp = tf.math.floor(tf.math.log(t + self.epsilon) / tf.math.log(2.0))
+    return max_exp, t_exp
+
+  def _get_shared_exponent(self, sub_max_exp):
+    # sub_max_exp:  maximum exponent in one sub-block
+    n = int(self.block_size / self.tile_size)
+    C = sub_max_exp.shape[-2]
+    t = tf.squeeze(sub_max_exp, [-1])
+    padded_channels = n - C % n
+    if padded_channels != n:
+      t = tf.pad(t, tf.constant([[0,0,], [0,padded_channels]]), "CONSTANT", constant_values=tf.float32.min)
+      C = t.shape[-1]
+    convert_t = tf.reshape(t, [-1,int(C/n),n])
+    convert_t = tf.tile(convert_t, [1,1,n])
+    convert_t = tf.reshape(convert_t, [-1,C,n])
+    # shared_max_exp: maximum expoment in one block
+    shared_max_exp = tf.math.reduce_max(convert_t, axis=-1, keepdims=True)
+    if padded_channels != n:
+      shape = tf.shape(shared_max_exp)
+      shared_max_exp = tf.slice(shared_max_exp, [0,0,0], [shape[0], shape[1]-padded_channels, 1])      
+    return shared_max_exp
+
+  def _get_exponent_with_shift(self, shared_exp, sub_exp):
+    # d: number of bits in the MSFP' sub-block shift field
+    d = 1
+    threshold = tf.cast(tf.pow(2, d) - 1, tf.float32)
+    less = tf.less(tf.subtract(shared_exp, sub_exp), threshold)
+    max_exp = tf.where(less, sub_exp, tf.subtract(shared_exp, threshold))
+    return max_exp
+
+  def _get_smallest_and_largest(self, exp):
+    # sign bits: 1, exponent bits: 8, no implicit leading 1
+    mantissa_bits = self.bit_width - 9
+    # The min/max representable value with exp
+    smallest = tf.math.pow(2.0, exp - (mantissa_bits - 1))
+    largest = tf.math.pow(2.0, exp + 1) - smallest
+    return smallest, largest
+
+  def _get_smallest_and_largest_shared(self, exp, shared_exp):
+    # sign bits: 1, exponent bits: 8, no implicit leading 1
+    mantissa_bits = self.bit_width - 9
+    # The min/max representable value with exp
+    smallest = tf.math.pow(2.0, exp - (mantissa_bits - 1))
+    largest = tf.math.pow(2.0, shared_exp + 1) - smallest
+    return smallest, largest
+
+  @tf.custom_gradient
+  def custom_bfp_fake_quant(self, inputs):
+    """The custom dataformat-bfp fake quantization operation kernel.
+
+    Args:
+      inputs: a tensor containing values to be quantized.
+    Returns:
+      a tensor containing quantized values.
+    """
+    # Handle inf/nan value in the input tensor.
+    inf_mask = tf.cast(tf.math.is_inf(inputs), tf.float32)
+    inf_remain = tf.math.multiply(inputs, inf_mask)
+    inputs = tf.math.multiply_no_nan(inputs,tf.cast(tf.math.logical_not(tf.math.logical_or(tf.math.is_inf(inputs), tf.math.is_nan(inputs))),tf.float32))
+
+    input_shape = tf.shape(inputs)
+    inputs, tmp_shape = self._transform_to_block_wise(inputs)
+    max_exp, _ = self._get_exponent(inputs)
+    interval, max_v = self._get_smallest_and_largest(max_exp)
+    quantized = bfp_quantize(inputs, interval, self.round_mode, -max_v, max_v)
+    dequantized = bfp_dequantize(quantized, input_shape, self.axis, tmp_shape)
+
+    dequantized = tf.math.add(dequantized, inf_remain)
+
+
+    def grad_fn(dy):
+      """Custom gradient function."""
+      return dy 
+
+    return dequantized, grad_fn
+
+  @tf.custom_gradient
+  def custom_msfp_fake_quant(self, inputs):
+    """The custom dataformat-bfp fake quantization operation kernel.
+
+    Args:
+      inputs: a tensor containing values to be quantized.
+    Returns:
+      a tensor containing quantized values.
+    """
+    # Handle inf/nan value in the input tensor.
+    inf_mask = tf.cast(tf.math.is_inf(inputs), tf.float32)
+    inf_remain = tf.math.multiply(inputs, inf_mask)
+    inputs = tf.math.multiply_no_nan(inputs,tf.cast(tf.math.logical_not(tf.math.logical_or(tf.math.is_inf(inputs), tf.math.is_nan(inputs))),tf.float32))
+
+    input_shape = tf.shape(inputs)
+    inputs, tmp_shape = self._transform_to_block_wise(inputs)
+    sub_max_exp, _ = self._get_exponent(inputs)
+    shared_max_exp = self._get_shared_exponent(sub_max_exp)
+    max_exp = self._get_exponent_with_shift(shared_max_exp, sub_max_exp)
+
+    interval, max_v = self._get_smallest_and_largest_shared(max_exp, shared_max_exp)
+    quantized = bfp_quantize(inputs, interval, self.round_mode, -max_v, max_v)
+    dequantized = bfp_dequantize(quantized, input_shape, self.axis, tmp_shape)
+
+    dequantized = tf.math.add(dequantized, inf_remain)
+
+
+    def grad_fn(dy):
+      """Custom gradient function."""
+      return dy 
+
+    return dequantized, grad_fn
+
+  @tf.custom_gradient
+  def custom_bf16_fake_quant(self, inputs):
+    """The custom dataformat-bf16 fake quantization operation kernel.
+
+    Args:
+      inputs: a tensor containing values to be quantized.
+    Returns:
+      a tensor containing quantized values.
+    """
+    quantized = tf.cast(inputs, tf.bfloat16)
+    dequantized = tf.cast(quantized, tf.float32)
+    def grad_fn(dy):
+      """Custom gradient function."""
+      return dy 
+
+    return dequantized, grad_fn
+
+  def call(self, inputs):
+    """The fake dataformat quantization operation kernel.
+
+    Args:
+      inputs: a tensor containing values to be quantized.
+    Returns:
+      a tensor containing quantized values.
+    """
+    if self.data_format == "bfp":
+      with tf.name_scope("BFP_BFPFakeQuantize"):
+        return self.custom_bfp_fake_quant(inputs)
+    elif self.data_format == "msfp":
+      with tf.name_scope("BFP_MSFPFakeQuantize"):
+        return self.custom_msfp_fake_quant(inputs)
+    elif self.data_format == "bf16":
+      with tf.name_scope("BFP_BF16FakeQuantize"):
+        return self.custom_bf16_fake_quant(inputs)
+    elif self.data_format == "fp32":
+      with tf.name_scope("BFP_FP32FakeQuantize"):
+        return inputs
+    else:
+      pass
+

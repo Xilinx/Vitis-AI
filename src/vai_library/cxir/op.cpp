@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ class c_api {
     auto self = static_cast<xir::OpImp*>(op);
     return conv_to_xir_string(self->type_);
   }
-  static const xir_attrs_t op_get_attrs(xir_op_t op) {
+  static xir_attrs_t op_get_attrs(xir_op_t op) {
     auto self = static_cast<xir::OpImp*>(op);
     return static_cast<xir_op_t>(self->attrs_.get());
   }

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="dir_7c11d37038edcdb18934fd3676864300" kind="dir">
+    <compoundname>pydoc</compoundname>
+    <innerfile refid="create__graph__runner_8py">create_graph_runner.py</innerfile>
+    <innerfile refid="create__runner_8py">create_runner.py</innerfile>
+    <innerfile refid="execute__async_8py">execute_async.py</innerfile>
+    <innerfile refid="get__input__tensors_8py">get_input_tensors.py</innerfile>
+    <innerfile refid="get__inputs_8py">get_inputs.py</innerfile>
+    <innerfile refid="get__output__tensors_8py">get_output_tensors.py</innerfile>
+    <innerfile refid="get__outputs_8py">get_outputs.py</innerfile>
+    <innerfile refid="runner__example_8py">runner_example.py</innerfile>
+    <innerfile refid="runnerext__example_8py">runnerext_example.py</innerfile>
+    <innerfile refid="wait_8py">wait.py</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="pydoc/"/>
+  </compounddef>
+</doxygen>

@@ -17,15 +17,15 @@
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
 VERSION="${VERSION:-`cat dockerfiles/VERSION.txt`}"
 DOCKERFILE="${DOCKERFILE:-dockerfiles/ubuntu-vai/vitis-ai-cpu.Dockerfile}"
-XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202220.2.14.354_20.04-amd64-xrt.deb}"
+XRT_URL="${XRT_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrt_202220.2.14.418_20.04-amd64-xrt.deb}"
 XRM_URL="${XRM_URL:-https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_20.04-x86_64.deb}"
-VAI_CONDA_CHANNEL="${VAI_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-3.0.tar.gz}"
-VAI_WEGO_CONDA_CHANNEL="${VAI_WEGO_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-wego-3.0.tar.gz}"
-VAI_DEB_CHANNEL="${VAI_DEB_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=vairuntime-3.0.tar.gz}"
+VAI_CONDA_CHANNEL="${VAI_CONDA_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-3.5.0.tar.gz}"
+VAI_DEB_CHANNEL="${VAI_DEB_CHANNEL:-https://www.xilinx.com/bin/public/openDownload?filename=vairuntime-3.5.0.tar.gz}"
 SUCCESSFUL_EXIT_STATUS=0
 FAILED_EXIT_STATUS=1
 SKIP_BUILD_BASE_IMAGE=0
-
+GIT_VERSION=$(git rev-parse --short HEAD)
+VERSION="${VERSION}-${GIT_VERSION}"
 
 function usage
 {
@@ -35,23 +35,18 @@ function usage
     echo "   This script builds Vitis AI dockers"
     echo "   ";
     echo "  -t | --DOCKER_TYPE         : [Required] Valid values:cpu,gpu,rocm";
-    echo "  -f | --TARGET_FRAMEWORK    : [Required] The Framework to build. Valid values:" 
+    echo "  -f | --TARGET_FRAMEWORK    : [Required] The Framework to build. Valida values:" 
     echo "                              For CPU docker: 
                                             Tensorflow 1.15: tf1
-					    Tensorflow 2 :   tf2
-					    Pytorch:         pytorch";
+                                            Tensorflow 2 :   tf2
+                                            Pytorch:         pytorch";
     echo  "                             For GPU dockers:
-                                            TensorFlow 1.15:       tf1
-                                            TensorFlow 2 :         tf2
-                                            optimizer_tensorflow:  opt_tf1
-                                            optimizer_tensorflow2: opt_tf2
-                                            optimizer_pytorch:     opt_pytorch
-                                            PyTorch:               pytorch"; 
+                                            Tensorflow 1.15:       tf1
+                                            Tensorflow 2 :         tf2
+                                            Pytorch:               pytorch"; 
     echo  "                             For ROCM dockers:
-                                            optimizer_tensorflow2: opt_tf2
-                                            optimizer_pytorch:     opt_pytorch
-                                            TensorFlow 2 :         tf2
-                                            PyTorch:               pytorch";
+                                            Tensorflow 2 :         tf2
+                                            Pytorch:               pytorch";
     echo "  -h | --help              : This message";
     return ${rtn}
 }
@@ -62,28 +57,41 @@ function execute
 
   add_args=""
   echo "SKIP:${SKIP_BUILD_BASE_IMAGE}, docker type:${DOCKER_TYPE}\n"
+
  if [[ "$SKIP_BUILD_BASE_IMAGE" == "0" ]];then
      if [[ "$DOCKER_TYPE" == 'cpu' ]];then
          VAI_BASE="ubuntu:20.04"
+          BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"
      fi
      if [[ "$DOCKER_TYPE" == 'gpu' ]];then
-         VAI_BASE="nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04"
+         if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
+
+            VAI_BASE="nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04"
+            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
+        else 
+            VAI_BASE="nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04"
+            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
+        fi
+         #11.3.1-cudnn8-runtime-ubuntu20.04"
      fi
      if [[ "$DOCKER_TYPE" == 'rocm' ]]; then
-	if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
- 	    VAI_BASE="rocm/pytorch:rocm5.4.1_ubuntu20.04_py3.7_pytorch_1.12.1"
-	    add_args=" --build-arg TARGET_FRAMEWORK=$TARGET_FRAMEWORK "
+    if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
+       # VAI_BASE="rocm/pytorch:rocm5.4.1_ubuntu20.04_py3.7_pytorch_1.12.1"
+        VAI_BASE="rocm/pytorch:rocm5.5_ubuntu20.04_py3.8_pytorch_1.13.1"
+        #"xcoartifactory.xilinx.com/uif-docker-master-local/rocmiv-internal-pt:5_ubuntu20.04_py3.8_pytorch_release-1.13_3aa2ef3"
+            add_args=" --build-arg TARGET_FRAMEWORK=$TARGET_FRAMEWORK "
             BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
          else
-            VAI_BASE="rocm/tensorflow:rocm5.4.1-tf2.10-dev"
+            VAI_BASE="rocm/tensorflow:rocm5.5-tf2.11-dev"
+            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
          fi
      fi
-     BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"
+      BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"
      echo "VAI_BASE: ${VAI_BASE}"
 
      echo "BUild Base image:${BASE_IMAGE} first"
      buildcmd="docker build  --network=host \
-	       --build-arg DOCKER_TYPE=$DOCKER_TYPE \
+           --build-arg DOCKER_TYPE=$DOCKER_TYPE \
                --build-arg VAI_BASE=${VAI_BASE} \
                -t ${BASE_IMAGE} $add_args  \
                -f dockerfiles/ubuntu-vai/CondaBase.Dockerfile  \
@@ -96,8 +104,6 @@ function execute
      echo "FAILD build base image"
      exit 1
     fi
-
-
  fi
  buildcmd="docker build --network=host \
      --build-arg TARGET_FRAMEWORK=$TARGET_FRAMEWORK \
@@ -116,10 +122,11 @@ function execute
      -f ${DOCKERFILE} -t $IMAGE_TAG ./ "
  echo "$buildcmd"
  $buildcmd
- docker tag ${IMAGE_TAG} ${IMAGE_LATEST_TAG}
  rtn=$?
  return ${rtn}
 }
+
+
 
 # Prereq
 function prereq
@@ -147,16 +154,16 @@ function validate_args
 	     rtn=${FAILED_EXIT_STATUS}
           fi
         elif [[ "$DOCKER_TYPE" == 'gpu' ]]; then
-           if [[ "$TARGET_FRAMEWORK" != "tf1" && "$TARGET_FRAMEWORK" != 'tf2' && "$TARGET_FRAMEWORK" != 'pytorch' && "$TARGET_FRAMEWORK" != 'opt_tf1' && "$TARGET_FRAMEWORK" != 'opt_tf2' && "$TARGET_FRAMEWORK" != 'opt_pytorch' ]]; then
+           if [[ "$TARGET_FRAMEWORK" != "tf1" && "$TARGET_FRAMEWORK" != 'tf2' && "$TARGET_FRAMEWORK" != 'pytorch' ]]; then
             echo "Error: For Nvidia GPU  docker, Validate value for TARGET_FRAMEWORK are:"
-            echo "    tf1,tf2,pytorch,opt_tf1,opt_tf2, opt_pytorch"
+            echo "    tf1,tf2,pytorch"
              rtn=${FAILED_EXIT_STATUS}
           fi
 
         elif [[ "$DOCKER_TYPE" == 'rocm' ]]; then
-          if [[ "$TARGET_FRAMEWORK" != "opt_tf2" && "$TARGET_FRAMEWORK" != 'opt_pytorch' &&  "$TARGET_FRAMEWORK" != 'pytorch' &&  "$TARGET_FRAMEWORK" != 'tf2' ]]; then
+          if [[ "$TARGET_FRAMEWORK" != 'pytorch' &&  "$TARGET_FRAMEWORK" != 'tf2' ]]; then
             echo "Error: For ROCM docker, Validate value for TARGET_FRAMEWORK are:"
-            echo "    tf2,pytorch,opt_pytorch,opt_tf2"
+            echo "    tf2,pytorch"
              rtn=${FAILED_EXIT_STATUS}
           fi
         fi
@@ -225,9 +232,6 @@ function main
         tf1) IMG_FW="tensorflow";;
         tf2) IMG_FW="tensorflow2";;
         pytorch) IMG_FW="pytorch";; 
-        opt_tf1) IMG_FW="opt-tensorflow";;
-        opt_tf2) IMG_FW="opt-tensorflow2";;
-        opt_pytorch) IMG_FW="opt-pytorch";; 
     esac
 
     BRAND="${BRAND:-vitis-ai-${IMG_FW}-${DOCKER_TYPE}}"

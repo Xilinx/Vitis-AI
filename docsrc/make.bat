@@ -13,8 +13,14 @@ set BUILDDIR=build
 if "%1" == "" goto help
 
 if "%1" == "github" (
-    %SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
-    copy %SOURCEDIR%\docs\reference\ModelZoo_VAI3.0_Github_web.htm %BUILDDIR%\html\docs\reference\ModelZoo_VAI3.0_Github_web.htm
+    echo.Build Doxygen docs
+	cd %SOURCEDIR%/doxygen
+	doxygen Doxyfile
+	python C:/users/quentonh/anaconda3/envs/sphinx_builder/lib/site-packages/breathe/apidoc.py -o ./api ./xml
+	cd ../..
+	echo.Build HTML docs
+	%SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+    copy %SOURCEDIR%\docs\reference\ModelZoo_VAI_Github.htm %BUILDDIR%\html\docs\reference\ModelZoo_VAI_Github_web.htm
 	copy %SOURCEDIR%\docs\404.html %BUILDDIR%\html\404.html
 	rm ../docs -r
 	robocopy %BUILDDIR%/html ../docs /E > nul

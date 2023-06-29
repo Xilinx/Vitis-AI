@@ -1,3 +1,48 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# BSD 3-Clause License
+#
+# Copyright (c) Soumith Chintala 2016,
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 import argparse
 import os
 import shutil
@@ -80,6 +125,11 @@ parser.add_argument(
     help='Directory to save trained models.')
 parser.add_argument(
     '--output_dir', default='qat_result', help='Directory to save qat result.')
+parser.add_argument(
+    '--gpus',
+    type=str,
+    default='0',
+    help='gpu ids to be used for training, seperated by commas')
 args, _ = parser.parse_known_args()
 
 def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
@@ -260,7 +310,6 @@ class ResNet(nn.Module):
 
     # Zero-initialize the last BN in each residual branch,
     # so that the residual branch starts with zeros, and each residual block behaves like an identity.
-    # This improves the model by 0.2~0.3% according to https://arxiv.org/abs/1706.02677
     if zero_init_residual:
       for m in self.modules():
         if isinstance(m, Bottleneck):
@@ -325,13 +374,6 @@ def _resnet(arch, block, layers, pretrained, progress, **kwargs):
   return model
 
 def resnet18(pretrained=False, progress=True, **kwargs):
-  r"""ResNet-18 model from
-    `"Deep Residual Learning for Image Recognition" <https://arxiv.org/pdf/1512.03385.pdf>'_
-
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-        progress (bool): If True, displays a progress bar of the download to stderr
-    """
   return _resnet('resnet18', BasicBlock, [2, 2, 2, 2], pretrained, progress,
                  **kwargs)
 
@@ -340,8 +382,8 @@ def train_one_step(model, inputs, criterion, optimizer, step, device):
   model.train()
 
   images, target = inputs
-
-  model = model.to(device)
+  if not isinstance(model, nn.DataParallel):
+    model = model.to(device)
   images = images.to(device, non_blocking=True)
   target = target.to(device, non_blocking=True)
 
@@ -351,7 +393,9 @@ def train_one_step(model, inputs, criterion, optimizer, step, device):
 
   l2_decay = 1e-4
   l2_norm = 0.0
-  for param in model.quantizer_parameters():
+  q_params = model.quantizer_parameters() if not isinstance(model, nn.DataParallel) \
+    else model.module.quantizer_parameters()
+  for param in q_params:
     l2_norm += torch.pow(param, 2.0)[0]
   if args.quantizer_norm:
     loss += l2_decay * torch.sqrt(l2_norm)
@@ -375,11 +419,12 @@ def validate(val_loader, model, criterion, device):
 
   # switch to evaluate mode
   model.eval()
+  if not isinstance(model, nn.DataParallel):
+    model = model.to(device)
 
   with torch.no_grad():
     end = time.time()
     for i, (images, target) in enumerate(val_loader):
-      model = model.to(device)
       images = images.to(device, non_blocking=True)
       target = target.to(device, non_blocking=True)
 
@@ -503,11 +548,16 @@ def accuracy(output, target, topk=(1,)):
       res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-def train(model, train_loader, val_loader, criterion, device):
+def train(model, train_loader, val_loader, criterion, device_ids):
   best_acc1 = 0
   best_filepath = None
 
   num_train_batches_per_epoch = int(len(train_loader) / args.train_batch_size)
+  if device_ids is not None and len(device_ids) > 0:
+    device = f"cuda:{device_ids[0]}"
+    model = model.to(device)
+    if len(device_ids) > 1:
+      model = nn.DataParallel(model, device_ids=device_ids)
 
   batch_time = AverageMeter('Time', ':6.3f')
   data_time = AverageMeter('Data', ':6.3f')
@@ -516,11 +566,13 @@ def train(model, train_loader, val_loader, criterion, device):
   top5 = AverageMeter('Acc@5', ':6.2f')
 
   param_groups = [{
-      'params': model.quantizer_parameters(),
+      'params': model.quantizer_parameters() if not isinstance(model, nn.DataParallel) \
+        else model.module.quantizer_parameters(),
       'lr': args.quantizer_lr,
       'name': 'quantizer'
   }, {
-      'params': model.non_quantizer_parameters(),
+      'params': model.non_quantizer_parameters() if not isinstance(model, nn.DataParallel) \
+        else model.module.non_quantizer_parameters(),
       'lr': args.weight_lr,
       'name': 'weight'
   }]
@@ -566,7 +618,8 @@ def train(model, train_loader, val_loader, criterion, device):
         filepath = save_checkpoint(
             {
                 'epoch': epoch + 1,
-                'state_dict': model.state_dict(),
+                'state_dict': model.state_dict() if not isinstance(model, nn.DataParallel) \
+                  else model.module.state_dict(),
                 'best_acc1': best_acc1
             }, is_best, args.save_dir)
         if is_best:
@@ -614,7 +667,9 @@ def main():
       num_workers=args.workers,
       pin_memory=True)
 
-  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  device_ids = None if args.gpus == "" else [int(i) for i in args.gpus.split(",")]
+
+  device = f"cuda:{device_ids[0]}" if device_ids is not None and len(device_ids) > 0 else "cpu"
 
   model = resnet18(pretrained=True).to(device)
   # define loss function (criterion) and optimizer
@@ -630,7 +685,7 @@ def main():
     quantized_model = qat_processor.trainable_model()
 
     criterion = criterion.to(device)
-    best_ckpt = train(quantized_model, train_loader, val_loader, criterion, device)
+    best_ckpt = train(quantized_model, train_loader, val_loader, criterion, device_ids)
 
     # Step 2: Get deployable model and test it.
     # There may be some slight differences in accuracy with the quantized model.

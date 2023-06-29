@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ using namespace vitis::ai;
 int main(int argc, char *argv[]) {
   // bool preprocess = !(getenv("PRE") != nullptr);
   auto det = vitis::ai::PlateDetect::create(argv[1], true);
+  if (!det) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
+
   int width = det->getInputWidth();
   int height = det->getInputHeight();
   std::cout << "width " << width << " "    //

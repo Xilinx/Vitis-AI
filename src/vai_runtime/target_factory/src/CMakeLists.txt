@@ -92,6 +92,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC protobuf::libprotobuf PRIVATE unilog::unilog)
+if(NOT MSVC)
+  if(Protobuf_USE_STATIC_LIBS)
+    target_link_options(${PROJECT_NAME} PRIVATE -Wl,--exclude-libs,ALL)
+  endif(Protobuf_USE_STATIC_LIBS)  
+endif(NOT MSVC)
 
 # add python api
 if(BUILD_PYTHON)

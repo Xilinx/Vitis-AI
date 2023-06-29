@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="get__input__tensors_8py" kind="file" language="Python">
+    <compoundname>get_input_tensors.py</compoundname>
+    <innernamespace refid="namespaceget__input__tensors">get_input_tensors</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceget__input__tensors_1a90cf14f9034ee6ac6a081db034bc67a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>get_input_tensors</definition>
+        <argsstring>()</argsstring>
+        <name>get_input_tensors</name>
+        <qualifiedname>get_input_tensors.get_input_tensors</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/get_input_tensors.py" line="22" column="1" bodyfile="pydoc/get_input_tensors.py" bodystart="22" bodyend="25"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespaceget__input__tensors" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@brief</highlight><highlight class="normal"><sp/>Get<sp/>all<sp/>input<sp/>tensors<sp/>of<sp/>runner.</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@return</highlight><highlight class="normal"><sp/>List[xir.Tensor].<sp/><sp/>A<sp/>list<sp/>of<sp/>DPU<sp/>runner<sp/>inputs,<sp/>each<sp/>of<sp/>which<sp/>have<sp/>type<sp/>xir.Tensor.</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/>Sample<sp/>code:</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>Each<sp/>element<sp/>of<sp/>the<sp/>list<sp/>returned<sp/>by<sp/>get_input_tensors()<sp/>corresponds<sp/>to<sp/>a<sp/>DPU<sp/>runner<sp/>input.<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>Each<sp/>list<sp/>element<sp/>has<sp/>a<sp/>number<sp/>of<sp/>class<sp/>attributes<sp/>which<sp/>can<sp/>be<sp/>displayed<sp/>like<sp/>this:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>inputTensors<sp/>=<sp/>dpu_runner.get_input_tensors()</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>print(dir(inputTensors[0])</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>The<sp/>most<sp/>useful<sp/>of<sp/>these<sp/>attributes<sp/>are<sp/>name,<sp/>dims<sp/>and<sp/>dtype:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>inputTensor<sp/></highlight><highlight class="keywordflow">in</highlight><highlight class="normal"><sp/>inputTensors:</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print(inputTensor.name)</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print(inputTensor.dims)</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print(inputTensor.dtype)</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@endcode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>Note<sp/>that<sp/>the<sp/>dimensions<sp/>(.dim)<sp/>of<sp/>an<sp/>input<sp/>tensor<sp/>are<sp/></highlight><highlight class="keywordflow">in</highlight><highlight class="normal"><sp/>the<sp/>form<sp/>NHWC<sp/>(batchsize,<sp/>height,width,channels).</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;</highlight></codeline>
+<codeline lineno="22"><highlight class="stringliteral">def<sp/>get_input_tensors():</highlight></codeline>
+<codeline lineno="23"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">pass</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/get_input_tensors.py"/>
+  </compounddef>
+</doxygen>

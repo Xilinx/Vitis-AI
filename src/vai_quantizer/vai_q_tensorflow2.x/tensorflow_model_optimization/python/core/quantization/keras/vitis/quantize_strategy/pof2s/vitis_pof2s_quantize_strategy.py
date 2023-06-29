@@ -40,6 +40,8 @@ dirname = os.path.dirname(__file__)
 vitis_pof2s_qs_config = os.path.join(dirname,
                                      "vitis_pof2s_quantize_strategy.json")
 
+vitis_bfloat16_op_list = os.path.join(dirname, "bfloat16_op.json")
+
 
 class VitisPof2SQuantizeStrategy(VitisQuantizeStrategy):
   """Vitis pof2s quantize strategy."""
@@ -50,6 +52,8 @@ class VitisPof2SQuantizeStrategy(VitisQuantizeStrategy):
     Args:
       qs_config: A json file contains the quantize strategy configurations.
     """
+    self._bfloat16_op_list = common_utils.load_json(vitis_bfloat16_op_list)
+
     self._qs_configs = common_utils.load_json(qs_configs)
 
     self._optimize_pipeline = VitisPof2SOptimizeTransformsPipeline(

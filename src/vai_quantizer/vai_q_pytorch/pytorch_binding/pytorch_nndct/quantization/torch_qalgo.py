@@ -29,6 +29,8 @@ from nndct_shared.utils import NndctOption, NndctScreenLogger, QError, QWarning
 from nndct_shared.base import NNDCT_OP
 from pytorch_nndct.nn import fake_quantize_per_tensor, fake_quantize_per_channel
 from pytorch_nndct.nn import fake_quantize_per_tensor_tensorrt, fake_quantize_per_channel_tensorrt
+from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+
 
 _CONV_LINEAR_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, \
                       NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, \
@@ -37,14 +39,16 @@ _CONV_LINEAR_TYPES = [NNDCT_OP.CONV2D, NNDCT_OP.DEPTHWISE_CONV2D, \
 _CONV_TRANSPOSE_TYPES = [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D,\
                         NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D]
 
-def create_quant_algo(tensor_type, quant_strategy_info, node):
+_CONV_NORM_TYPES = [NNDCT_OP.BATCH_NORM, NNDCT_OP.LAYER_NORM]
+
+def create_quant_algo(quant_strategy_info, node):
   algo_config = quant_strategy_info
   quant_algo = None
   scale_type = algo_config.get("scale_type")
   granularity = algo_config.get("granularity")
   
   if granularity == "per_channel":
-    if (int(torch.__version__.split('.')[1]) < 5) and (int(torch.__version__.split('.')[0]) <= 1):
+    if compare_torch_version(CmpFlag.LESS, "1.5.0"):
       NndctScreenLogger().error2user(QError.TORCH_VERSION, f"Torch should uptate to 1.5.0 or higher version if per_channel quantization.")
       exit(2)
   op_type = node.op.type
@@ -56,6 +60,11 @@ def create_quant_algo(tensor_type, quant_strategy_info, node):
         axis = 0
       elif op_type in _CONV_TRANSPOSE_TYPES:
         axis = 1
+      elif op_type in _CONV_NORM_TYPES:
+        axis = 0
+      else:
+        NndctScreenLogger().error2user(QError.QUANT_CONFIG, f"'{op_type}' is not supported in per channel quantization. ")
+        exit(2)
       quant_algo = FloatQuantPerChannelAlgo(algo_config, axis)
     elif granularity == "per_tensor":
       method = algo_config.get("method")
@@ -196,14 +205,19 @@ class PerChannelQuantAlgo(UniformQuantAlgo):
     if self._round_method == "half_even":
       if NndctOption.nndct_tensorrt_quant_algo.value and self._symmetric_mode == "symmetric":
         return fake_quantize_per_channel_tensorrt(input, self._float_max, self._quant_min, self._quant_max, self._axis)
-      else:
-        if (int(torch.__version__.split('.')[1]) > 9) and (int(torch.__version__.split('.')[0]) > 0):
+      elif NndctOption.nndct_use_torch_quantizer.value is True:
+        if compare_torch_version(CmpFlag.GREATER, "1.9.0"):
           self._zero_point = self._zero_point.to(torch.int32)
         else:
           self._zero_point = self._zero_point.to(torch.long)
         return torch.fake_quantize_per_channel_affine(input, self._scale, self._zero_point, 
                                                       self._axis, self._quant_min, self._quant_max)
-              
+      else:
+        method = 8
+        self._scale = torch.where(self._scale > sys.float_info.min, self._scale, torch.tensor(2**(-18), device=self._scale.device)).cpu()
+        self._zero_point = self._zero_point.cpu()
+        return fake_quantize_per_channel(input, 1.0/self._scale, self._zero_point,
+                                         self._axis, self._quant_min, self._quant_max, method, inplace)
     else:
       if self._round_method == "half_up":
         method = 2
@@ -211,6 +225,7 @@ class PerChannelQuantAlgo(UniformQuantAlgo):
         method = 6
       elif self._round_method == "std_round":
         method = 3
+      self._scale = torch.where(self._scale > sys.float_info.min, self._scale, torch.tensor(2**(-18), device=self._scale.device))
       return fake_quantize_per_channel(input, 1.0/self._scale, self._zero_point,
                                        self._axis, self._quant_min, self._quant_max, method, inplace)
 
@@ -300,10 +315,10 @@ class FloatQuantPerChannelAlgo(PerChannelQuantAlgo):
   def calib_scale(self):
     if self._symmetric_mode == "symmetric":
       self._scale = self._float_max/self._quant_max
-      self._zero_point = torch.zeros(self._scale.shape[0], device=self._scale.device).long()
+      self._zero_point = torch.zeros(self._scale.shape[0], dtype=torch.int32, device=self._scale.device)
     else:
       self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
-      self._zero_point = (-self._float_min/self._scale).round().long()
+      self._zero_point = (-self._float_min/self._scale).round().to(torch.int32)
   
   def calib_global_statis(self):
     self.calib_scale()
@@ -382,7 +397,10 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
       elif self._round_method == "std_round":
         mth = 3
       elif self._round_method == "half_even":
-        mth = -1
+        if NndctOption.nndct_use_torch_quantizer.value is True:
+          mth = -1
+        else:
+          mth = 8
       
       device = tensor.device
       out_num = tensor.shape[self._axis]
@@ -421,12 +439,10 @@ class PowerofTwoQuantPerChannelAlgo(PerChannelQuantAlgo):
         
   def calib_scale(self):
     try:
-      #self._scale = 1.0/2**self._fix_pos if self._fix_pos > 0 else 2**(-self._fix_pos)
       self._scale = torch.where(self._fix_pos.to(torch.float32)>0, 1.0/2**self._fix_pos.to(torch.float32), 2**(-self._fix_pos.to(torch.float32)))
-      #self._scale = torch.where(self._fix_pos>0, 1.0/2**self._fix_pos, 2**(-self._fix_pos))
     except OverflowError as e:
       print("{}".format(repr(e)))
-    self._zero_point = torch.zeros(self._scale.shape[0], device=self._scale.device).long()
+    self._zero_point = torch.zeros(self._scale.shape[0], dtype=torch.int32, device=self._scale.device)
     self._float_max = self._scale*self._quant_max
   
   def calib_global_statis(self):
@@ -441,9 +457,14 @@ class PerTensorQuantAlgo(UniformQuantAlgo):
     if self._round_method == "half_even":
       if NndctOption.nndct_tensorrt_quant_algo.value and self._symmetric_mode == "symmetric":
         return fake_quantize_per_tensor_tensorrt(input, self._float_max, self._quant_min, self._quant_max)
-      else:
+      elif NndctOption.nndct_use_torch_quantizer.value is True:
         return torch.fake_quantize_per_tensor_affine(input, self._scale, self._zero_point, 
                                                     self._quant_min, self._quant_max)
+      else:
+        method = 8
+        self._scale = self._scale if self._scale > sys.float_info.min else 2**(-18)
+        return fake_quantize_per_tensor(input, 1.0/self._scale, self._zero_point,
+                                      self._quant_min, self._quant_max, method, inplace)
     else:
       if self._round_method == "half_up":
         method = 2
@@ -451,6 +472,7 @@ class PerTensorQuantAlgo(UniformQuantAlgo):
         method = 6
       elif self._round_method == "std_round":
         method = 3
+      self._scale = self._scale if self._scale > sys.float_info.min else 2**(-18)
       return fake_quantize_per_tensor(input, 1.0/self._scale, self._zero_point,
                                       self._quant_min, self._quant_max, method, inplace)
   
@@ -536,7 +558,7 @@ class MaxMinQuantPerTensorAlgo(PerTensorQuantAlgo):
       self._zero_point = 0
     else:
       self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
-      self._zero_point = round(-self._float_min/self._scale)
+      self._zero_point = int(round(-self._float_min/self._scale))
   
   def calib_global_statis(self):
     #self._scale = (self._float_max-self._float_min)/(self._quant_max-self._quant_min)
@@ -658,6 +680,7 @@ class MSEQuantPerTensorAlgo(HistogramQuantPerTensorAlgo):
           method = 6
         elif self._round_method == "std_round":
           method = 3
+        self._scale = self._scale if self._scale > sys.float_info.min else 2**(-18)
         quant_centers = fake_quantize_per_tensor(centers, 1.0/scale, zero_point,
                                                  self._quant_min, self._quant_max, method, True)
       mse = ((quant_centers - centers)**2 * counts).mean().cpu().detach().item()
@@ -774,7 +797,10 @@ class PowerofTwoQuantPerTensorAlgo(PerTensorQuantAlgo):
     elif self._round_method == "std_round":
       mth = 3
     elif self._round_method == "half_even":
-      mth = -1
+      if NndctOption.nndct_use_torch_quantizer.value is True:
+        mth = -1
+      else:
+        mth = 8
     
     device = tensor.device
     Tbuffer = torch.empty_like(tensor).to(device)

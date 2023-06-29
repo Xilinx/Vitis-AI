@@ -282,21 +282,6 @@ class VitisFSFinalizeTransformsPipeline(TransformsPipeline):
           "No `output_format` found, skip model format conversion and output.")
       return finalized_model, layer_metadata
 
-    formats = {'h5': '.h5', 'tf': '', 'onnx': '.onnx'}
-    if configs['output_format'] not in formats:
-      logger.error(
-          "Invalid output_format: {}, supported output_format are: {}".format(
-              configs['output_format'], list(formats.keys())))
-
-    finalized_model_name = 'quantized_model'
-    if configs['output_format'] == 'onnx':
-      onnx_opset_version = configs['onnx_opset_version']
-      model_utils.convert_to_onnx(finalized_model, configs['output_dir'],
-                                  finalized_model_name, onnx_opset_version)
-    else:
-      filepath = os.path.join(
-          configs['output_dir'],
-          'quantized_model' + formats[configs['output_format']])
-      finalized_model.save(filepath, save_format=configs['output_format'])
+    model_utils.save_func_model(finalized_model, configs)
 
     return finalized_model, layer_metadata

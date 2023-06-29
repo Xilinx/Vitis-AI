@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ void StateMap::clearBadStates() {
 void StateMap::print() {
   std::lock_guard<std::mutex> lock(this->mtx_);
   LOG(INFO) << std::string(50, '+');
-  for (auto it : *m_data_) {
+  for (auto& it : *m_data_) {
     LOG(INFO) << "StateMap[" << it.first << "]= " << it.second;
   }
   LOG(INFO) << "cur_id_ = " << cur_id_;

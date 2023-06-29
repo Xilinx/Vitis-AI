@@ -8,9 +8,9 @@ dependencies:
   - python=3.6
   - tensorflow-onnx_gpu
   - vai_q_tensorflow_gpu
+  - vai_optimizer_tensorflow_gpu
   - vaic
-  - dpuv3-pycompiler
   - xnnc
   - xcompiler
   - vart
-  - rt-engine
+  - rt-engine=3.5.0

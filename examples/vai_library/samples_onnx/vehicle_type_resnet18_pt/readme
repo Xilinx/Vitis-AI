@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ Important:
     sample : ./test_vehicle_type_resnet18_pt_onnx /usr/share/vitis_ai_library/models/vehicle_type_resnet18_onnx_pt/vehicle_type_resnet18_onnx_pt.onnx sample_vehicleclassification.jpg
     output : 
 batch 0:
-score[2]    =  0.997422     text: sedan,
-score[3]    =  0.00247236   text: hatchback,
-score[5]    =  7.46588e-05  text: fastback,
-score[11]   =  2.74654e-05  text: convertible,
-score[1]    =  3.71704e-06  text: SUV,
+score[2]    =  0.99593      text: Coupe
+score[1]    =  0.00407014   text: Convertible
+score[4]    =  1.84784e-07  text: Limousine
+score[6]    =  6.79782e-08  text: Sedan
+score[3]    =  7.95943e-11  text: Hatchback
 
 Performance:
 sample: ./test_performance_vehicle_type_resnet18_pt_onnx /usr/share/vitis_ai_library/models/vehicle_type_resnet18_onnx_pt/vehicle_type_resnet18_onnx_pt.onnx -s 60 -t 1 ./test_performance_vehicleclassification.list

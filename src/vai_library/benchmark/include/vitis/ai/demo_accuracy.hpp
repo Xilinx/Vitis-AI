@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -291,7 +291,7 @@ struct DpuRunThread : public MyThread {
           << " " << frame.mat.cols << " " << frame.mat.rows;
       frames.emplace_back(frame);
     }
-    for (auto f : frames) {
+    for (auto& f : frames) {
       images.emplace_back(f.mat);
     }
     auto result_ptrs = dpu_filter_->run(images);

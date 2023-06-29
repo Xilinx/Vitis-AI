@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ $(OUTPUT_DIR)/hfnet.o:  hfnet.cpp hfnet.hpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
 
 demo_hfnet: $(OUTPUT_DIR)/demo_hfnet.o $(OUTPUT_DIR)/hfnet.o
-	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)
+	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)  -lvart-util
 
 $(OUTPUT_DIR)/test_performance_hfnet.o: test_performance_hfnet.cpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<

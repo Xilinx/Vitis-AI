@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ class c_api {
     return conv_to_xir_string(self->name_);
   }
 
-  static const xir_attrs_t subgraph_get_attrs(xir_subgraph_t subgraph) {
+  static xir_attrs_t subgraph_get_attrs(xir_subgraph_t subgraph) {
     auto self = static_cast<xir::SubgraphImp*>(subgraph);
     return static_cast<xir_subgraph_t>(self->attrs_.get());
   }
@@ -45,7 +45,7 @@ class c_api {
 
     auto ret = self->get_children();
     int i = 0;
-    for (auto child : ret) {
+    for (auto& child : ret) {
       children[i++] = static_cast<xir_subgraph_t>(child);
     }
   }
@@ -55,7 +55,7 @@ class c_api {
     auto self = static_cast<xir::SubgraphImp*>(subgraph);
     auto ret = self->children_topological_sort();
     int i = 0;
-    for (auto child : ret) {
+    for (auto& child : ret) {
       children[i++] = static_cast<xir_subgraph_t>(child);
     }
   }
@@ -78,7 +78,7 @@ extern "C" int32_t xir_subgraph_get_op_num(xir_subgraph_t subgraph) {
 extern "C" void xir_subgraph_get_ops(xir_subgraph_t subgraph, void* data,
                                      xir_get_op_callback_t cb) {
   auto self = static_cast<xir::Subgraph*>(subgraph);
-  for (auto op : self->get_ops()) {
+  for (auto& op : self->get_ops()) {
     cb(data, op);
   }
 }
@@ -94,7 +94,7 @@ extern "C" void xir_subgraph_get_input_tensors(xir_subgraph_t subgraph,
                                                void* data,
                                                xir_get_tensor_callback_t cb) {
   auto self = static_cast<xir::Subgraph*>(subgraph);
-  for (auto t : self->get_input_tensors()) {
+  for (auto& t : self->get_input_tensors()) {
     cb(data, t);
   }
 }
@@ -102,7 +102,7 @@ extern "C" void xir_subgraph_get_output_tensors(xir_subgraph_t subgraph,
                                                 void* data,
                                                 xir_get_tensor_callback_t cb) {
   auto self = static_cast<xir::Subgraph*>(subgraph);
-  for (auto t : self->get_output_tensors()) {
+  for (auto& t : self->get_output_tensors()) {
     cb(data, t);
   }
 }

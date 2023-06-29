@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 #include <vector>
 #include <vitis/ai/env_config.hpp>
 #include <vitis/ai/profiling.hpp>
-#include "vitis/ai/math.hpp"
 
+#include "vitis/ai/math.hpp"
 #include "vitis/ai/nnpp/apply_nms.hpp"
 DEF_ENV_PARAM(ENABLE_YOLOV6_DEBUG, "0");
 DEF_ENV_PARAM(DEBUG_YOLOV6_WODFL, "0");
@@ -32,11 +32,95 @@ using namespace std;
 namespace vitis {
 namespace ai {
 
+static void detect_wodfl_int8(vector<vector<float>>& boxes,
+                              int8_t* bbox_layer_ptr, int8_t* cls_layer_ptr,
+                              int height, int width, float stride,
+                              float conf_thresh, int anchor_cnt,
+                              int num_classes, float bbox_scale,
+                              float cls_scale) {
+  for (int h = 0; h < height; ++h) {
+    for (int w = 0; w < width; ++w) {
+      for (int c = 0; c < anchor_cnt; ++c) {
+        auto idx = ((h * width + w) * anchor_cnt + c);
+        auto cls_idx = idx * num_classes;
+        vector<float> box(6);
+
+        int max_p = -1;
+        int8_t conf = -128;  // the range of int8_t is -128->127
+        int8_t conf_thresh_inverse = -std::log(1.0f / conf_thresh - 1)/cls_scale;
+        for (int p = 0; p < num_classes; p++) {
+          if (cls_layer_ptr[cls_idx + p] < conf_thresh_inverse)
+            continue;
+          if (cls_layer_ptr[cls_idx + p] < conf) continue;
+          max_p = p;
+          conf = cls_layer_ptr[cls_idx + p];
+        }
+        if (max_p != -1) {
+          box[4] = max_p;
+          box[5] = 1.0f / (1.0f + std::exp(-conf * cls_scale));
+          float x1y1_x = w + 0.5 - bbox_layer_ptr[idx * 4] * bbox_scale;
+          float x1y1_y = h + 0.5 - bbox_layer_ptr[idx * 4 + 1] * bbox_scale;
+          float x2y2_w = w + 0.5 + bbox_layer_ptr[idx * 4 + 2] * bbox_scale;
+          float x2y2_h = h + 0.5 + bbox_layer_ptr[idx * 4 + 3] * bbox_scale;
+          box[0] = (x1y1_x + x2y2_w) / 2 * stride;
+          box[1] = (x1y1_y + x2y2_h) / 2 * stride;
+          box[2] = (x2y2_w - x1y1_x) * stride;
+          box[3] = (x2y2_h - x1y1_y) * stride;
+          box[0] -= box[2] / 2;
+          box[1] -= box[3] / 2;
+
+          boxes.push_back(box);
+        }
+      }
+    }
+  }
+}
+
+static void detect_int8(vector<vector<float>>& boxes, int8_t* bbox_layer_ptr,
+                        int8_t* cls_layer_ptr, int height, int width,
+                        float stride, float conf_thresh, int anchor_cnt,
+                        int num_classes, float bbox_scale, float cls_scale) {
+  int size = height * width * anchor_cnt;
+  for (int h = 0; h < height; ++h) {
+    for (int w = 0; w < width; ++w) {
+      for (int c = 0; c < anchor_cnt; ++c) {
+        auto idx = ((h * width + w) * anchor_cnt + c);
+        auto cls_idx = idx * num_classes;
+        vector<float> box(6);
+        int max_p = -1;
+        int8_t conf = -128;  // the range of int8_t is -128->127
+        int8_t conf_thresh_inverse = -std::log(1.0f / conf_thresh - 1)/cls_scale;
+        for (int p = 0; p < num_classes; p++) {
+          if (cls_layer_ptr[cls_idx + p] < conf_thresh_inverse)
+            continue;
+          if (cls_layer_ptr[cls_idx + p] * 1.0f < conf) continue;
+          max_p = p;
+          conf = cls_layer_ptr[cls_idx + p] ;
+        }
+        if (max_p != -1) {
+          box[4] = max_p;
+          box[5] = 1.0f / (1.0f + std::exp(-conf * cls_scale));
+          float x1y1_x = w + 0.5 - bbox_layer_ptr[idx] * bbox_scale;
+          float x1y1_y = h + 0.5 - bbox_layer_ptr[idx + size * 1] * bbox_scale;
+          float x2y2_w = w + 0.5 + bbox_layer_ptr[idx + size * 2] * bbox_scale;
+          float x2y2_h = h + 0.5 + bbox_layer_ptr[idx + size * 3] * bbox_scale;
+          box[0] = (x1y1_x + x2y2_w) / 2 * stride;
+          box[1] = (x1y1_y + x2y2_h) / 2 * stride;
+          box[2] = (x2y2_w - x1y1_x) * stride;
+          box[3] = (x2y2_h - x1y1_y) * stride;
+          box[0] -= box[2] / 2;
+          box[1] -= box[3] / 2;
+          boxes.push_back(box);
+        }
+      }
+    }
+  }
+}
+
 static void detect_wodfl(vector<vector<float>>& boxes, float* bbox_layer_ptr,
                          float* cls_layer_ptr, int height, int width,
                          float stride, float conf_thresh, int anchor_cnt,
                          int num_classes) {
-  // int size = height * width * anchor_cnt;
   for (int h = 0; h < height; ++h) {
     for (int w = 0; w < width; ++w) {
       for (int c = 0; c < anchor_cnt; ++c) {
@@ -54,13 +138,6 @@ static void detect_wodfl(vector<vector<float>>& boxes, float* bbox_layer_ptr,
         box[3] = (x2y2_h - x1y1_y) * stride;
         box[0] -= box[2] / 2;
         box[1] -= box[3] / 2;
-
-        // box[0] = (w - bbox_layer_ptr[idx]) * stride;
-        // box[1] = (h - bbox_layer_ptr[idx + size * 1]) * stride;
-        // box[2] = (w + bbox_layer_ptr[idx + size * 2]) * stride;
-        // box[3] = (h + bbox_layer_ptr[idx + size * 3]) * stride;
-        // box[2] = box[2] - box[0];
-        // box[3] = box[3] - box[1];
 
         int max_p = -1;
         float conf = 0.f;
@@ -188,6 +265,7 @@ std::vector<YOLOv6Result> yolov6_post_process(
 
   std::vector<float> stride(yolo_v6_params.stride().begin(),
                             yolo_v6_params.stride().end());
+
   std::vector<std::string> bbox_layername(
       yolo_v6_params.bbox_layer_name().begin(),
       yolo_v6_params.bbox_layer_name().end());
@@ -249,58 +327,38 @@ std::vector<YOLOv6Result> yolov6_post_process(
       int width = cls_output_tensors[i].width;
       int height = cls_output_tensors[i].height;
 
-      int sizeOut = bbox_output_tensors[i].size / batch;
-      std::vector<float> bbox_buffer;
-      std::vector<float> cls_buffer;
-      float* bbox_out = nullptr;
-      float* cls_out = nullptr;
+      int sizeOut;
       if (use_graph_runner) {
-        bbox_out = (float*)bbox_output_tensors[i].get_data(k);
-        cls_out = (float*)cls_output_tensors[i].get_data(k);
+        float* bbox_out = (float*)bbox_output_tensors[i].get_data(k);
+        float* cls_out = (float*)cls_output_tensors[i].get_data(k);
 
         sizeOut = bbox_output_tensors[i].size / batch / sizeof(float);
+        boxes.reserve(boxes.size() + sizeOut);
+        if (without_dfl) {
+          detect_wodfl(boxes, bbox_out, cls_out, height, width, stride[i],
+                       conf_thresh, anchor_cnt, num_classes);
+        } else {
+          detect(boxes, bbox_out, cls_out, height, width, stride[i],
+                 conf_thresh, anchor_cnt, num_classes);
+        }
       } else {
         sizeOut = bbox_output_tensors[i].size / batch;
-
-        bbox_buffer.resize(sizeOut);
-        cls_buffer.resize(cls_output_tensors[i].size / batch);
         float bbox_scale =
             vitis::ai::library::tensor_scale(bbox_output_tensors[i]);
         float cls_scale =
             vitis::ai::library::tensor_scale(cls_output_tensors[i]);
-        int8_t* bbox_ptr = (int8_t*)bbox_output_tensors[i].get_data(k);
-        int8_t* cls_ptr = (int8_t*)cls_output_tensors[i].get_data(k);
-        std::transform(bbox_ptr, bbox_ptr + bbox_buffer.size(),
-                       bbox_buffer.begin(),
-                       [=](const int8_t& a) { return a * bbox_scale; });
-        std::transform(cls_ptr, cls_ptr + cls_buffer.size(), cls_buffer.begin(),
-                       [=](const int8_t& a) {
-                         return 1.0f / (1.0f + std::exp(-a * cls_scale));
-                       });
-        bbox_out = bbox_buffer.data();
-        cls_out = cls_buffer.data();
-      }
-
-      boxes.reserve(boxes.size() + sizeOut);
-
-      if (ENV_PARAM(ENABLE_YOLOV6_DEBUG)) {
-        LOG(INFO) << "tensor w:" << width << ", h:" << height;
-        LOG(INFO) << "sizeOut: " << sizeOut;
-      }
-
-      /* Store the object detection frames as coordinate information  */
-      if (ENV_PARAM(ENABLE_YOLOV6_DEBUG)) {
-        LOG(INFO) << "i:" << i << "anchor:" << anchor_cnt << ", w:" << width
-                  << ", h:" << height << "s:" << stride[i]
-                  << ", c:" << bbox_output_tensors[i].channel;
-      }
-      // if (ENV_PARAM(DEBUG_YOLOV6_WODFL)) {
-      if (without_dfl) {
-        detect_wodfl(boxes, bbox_out, cls_out, height, width, stride[i],
-                     conf_thresh, anchor_cnt, num_classes);
-      } else {
-        detect(boxes, bbox_out, cls_out, height, width, stride[i], conf_thresh,
-               anchor_cnt, num_classes);
+        int8_t* bbox_out = (int8_t*)bbox_output_tensors[i].get_data(k);
+        int8_t* cls_out = (int8_t*)cls_output_tensors[i].get_data(k);
+        boxes.reserve(boxes.size() + sizeOut);
+        if (without_dfl) {
+          detect_wodfl_int8(boxes, bbox_out, cls_out, height, width, stride[i],
+                            conf_thresh, anchor_cnt, num_classes, bbox_scale,
+                            cls_scale);
+        } else {
+          detect_int8(boxes, bbox_out, cls_out, height, width, stride[i],
+                      conf_thresh, anchor_cnt, num_classes, bbox_scale,
+                      cls_scale);
+        }
       }
     }
 
@@ -345,7 +403,7 @@ std::vector<YOLOv6Result> yolov6_post_process(
       //           << lhs[2] << " " << lhs[3] << " " << lhs[4]
       //           << ", rhs: " << rhs[0] << " " << rhs[1];
 
-      return lhs[5] >= rhs[5];
+      return lhs[5] > rhs[5];
     };
     if (res.size() > max_nms_num) {
       std::partial_sort(res.begin(), res.begin() + max_nms_num, res.end(),
@@ -380,3 +438,4 @@ std::vector<YOLOv6Result> yolov6_post_process(
 
 }  // namespace ai
 }  // namespace vitis
+

@@ -6,10 +6,11 @@ channels:
 
 dependencies:
   - python=3.6
+  - tensorflow_1.15_cpu_wego
   - vai_wego_tensorflow
+  - vai_q_tensorflow
   - vart
   - vaic
-  - dpuv3-pycompiler
   - xnnc
   - xcompiler
   - pyyaml

@@ -159,7 +159,7 @@ Status GetScaleAndOffsetNodes(const NodeMatch &match,
   new_nodes->push_back(offset_node);
 
   NodeDef add_node;
-  add_node.set_op("Add");
+  add_node.set_op("BiasAdd");
   add_node.set_name(batch_norm_node.name());
   SetNodeAttr("T", DT_FLOAT, &add_node);
   AddNodeInput(mul_node.name(), &add_node);
@@ -175,7 +175,7 @@ Status UpdateOldBatchNorms(const GraphDef &input_graph_def,
   std::map<string, string> inputs_to_rename;
   std::unordered_set<string> nodes_to_ignore;
   TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-      input_graph_def, // clang-format off
+      input_graph_def,  // clang-format off
     {"BatchNormWithGlobalNormalization|FusedBatchNorm|FusedBatchNormV2|FusedBatchNormV3",    // batch_norm_node
       {
         {"*"},  // input_node
@@ -184,7 +184,7 @@ Status UpdateOldBatchNorms(const GraphDef &input_graph_def,
         {"Const"},  // beta_node
         {"Const"},  // gamma_node
       }
-    }, // clang-format on
+    },  // clang-format on
       [&inputs_to_rename, &nodes_to_ignore](
           const NodeMatch &match, const std::set<string> &input_nodes,
           const std::set<string> &output_nodes,
@@ -436,7 +436,7 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
     GraphDef replaced_graph_def;
     bool allow_intersection = true;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"FusedBatchNorm|FusedBatchNormV2|FusedBatchNormV3",                // batchnorm
           {
             {"BiasAdd|Add|AddV2",
@@ -450,11 +450,11 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
             {"*"},  // mean_node
             {"*"},  // variance_node
           }
-        }, // clang-format on
-        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm,
-         &bn_to_mv](const NodeMatch &match, const std::set<string> &input_nodes,
-                    const std::set<string> &output_nodes,
-                    std::vector<NodeDef> *new_nodes) {
+        },  // clang-format on
+        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm, &bn_to_mv](
+            const NodeMatch &match, const std::set<string> &input_nodes,
+            const std::set<string> &output_nodes,
+            std::vector<NodeDef> *new_nodes) {
           // Find all the nodes we expect in the subgraph.
           const NodeDef &bn_node = match.node;
           const NodeDef &biasadd_node = match.inputs[0].node;
@@ -626,7 +626,7 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"FusedBatchNorm|FusedBatchNormV2|FusedBatchNormV3",                // batchnorm
           {
             {"Conv2D|MatMul|DepthwiseConv2dNative"},  // conv_node
@@ -635,11 +635,11 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
             {"*"},  // mean_node
             {"*"},  // variance_node
           }
-        }, // clang-format on
-        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm,
-         &bn_to_mv](const NodeMatch &match, const std::set<string> &input_nodes,
-                    const std::set<string> &output_nodes,
-                    std::vector<NodeDef> *new_nodes) {
+        },  // clang-format on
+        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm, &bn_to_mv](
+            const NodeMatch &match, const std::set<string> &input_nodes,
+            const std::set<string> &output_nodes,
+            std::vector<NodeDef> *new_nodes) {
           // Find all the nodes we expect in the subgraph.
           const NodeDef &bn_node = match.node;
           const NodeDef &conv_node = match.inputs[0].node;
@@ -782,7 +782,7 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
     GraphDef replaced_graph_def;
 
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
       {"FusedBatchNorm|FusedBatchNormV2|FusedBatchNormV3",                // batchnorm
         {
           {"Identity",
@@ -795,11 +795,11 @@ Status FoldBatchNormsTraining(const GraphDef &input_graph_def,
           {"*"},  // mean_node
           {"*"},  // variance_node
         }
-      }, // clang-format on
-        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm,
-         &bn_to_mv](const NodeMatch &match, const std::set<string> &input_nodes,
-                    const std::set<string> &output_nodes,
-                    std::vector<NodeDef> *new_nodes) {
+      },  // clang-format on
+        [&inputs_to_rename, &nodes_to_ignore, &bn_to_mm, &bn_to_mv](
+            const NodeMatch &match, const std::set<string> &input_nodes,
+            const std::set<string> &output_nodes,
+            std::vector<NodeDef> *new_nodes) {
           // Find all the nodes we expect in the subgraph.
           const NodeDef &bn_node = match.node;
           const NodeDef &front_identity_node = match.inputs[0].node;
@@ -955,7 +955,7 @@ Status FoldConvMulInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"Mul",                // mul_node
           {
             {"BiasAdd|Add|AddV2",  // biasadd_node
@@ -971,7 +971,7 @@ Status FoldConvMulInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // mul_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1095,7 +1095,7 @@ Status FoldConvMulInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"Mul",                // mul_node
           {
             {"Const"},  // mul_values_node
@@ -1111,7 +1111,7 @@ Status FoldConvMulInference(const GraphDef &input_graph_def,
               }
             },
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1251,7 +1251,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     //"quantize_results");
     bool allow_intersection = true;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2",  // add_node
           {
             {"Mul",                // mul_node
@@ -1272,7 +1272,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1366,7 +1366,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(
         ReplaceMatchingOpTypes(
-            current_graph_def, // clang-format off
+            current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2",
           {
             {"Mul",                // mul_node
@@ -1382,7 +1382,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
             [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
                 const NodeMatch &match, const std::set<string> &input_nodes,
                 const std::set<string> &output_nodes,
@@ -1453,7 +1453,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2",  // add_node
           {
             {"Mul",                // mul_node
@@ -1475,7 +1475,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1558,7 +1558,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2",
           {
             {"Mul",                // mul_node
@@ -1575,7 +1575,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1644,7 +1644,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2",
           {
             {"Mul",                // mul_node
@@ -1665,7 +1665,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1733,7 +1733,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2", // add_node
           {
             {"Mul",                // mul_node
@@ -1766,7 +1766,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1860,7 +1860,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
     nodes_to_ignore.clear();
     GraphDef replaced_graph_def;
     TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
-        current_graph_def, // clang-format off
+        current_graph_def,  // clang-format off
         {"BiasAdd|Add|AddV2", // add_node
           {
             {"Mul", // mul_node
@@ -1888,7 +1888,7 @@ Status FoldBatchNormsInference(const GraphDef &input_graph_def,
             },
             {"Const"},  // add_values_node
           }
-        }, // clang-format on
+        },  // clang-format on
         [&did_graph_change, &inputs_to_rename, &nodes_to_ignore](
             const NodeMatch &match, const std::set<string> &input_nodes,
             const std::set<string> &output_nodes,
@@ -1979,5 +1979,5 @@ Status FoldBatchNormsCommand(const GraphDef &input_graph_def,
 
 REGISTER_DECENT_Q_GRAPH_TRANSFORM("fold_batch_norms", FoldBatchNormsCommand);
 
-} // namespace decent_q
-} // namespace tensorflow
+}  // namespace decent_q
+}  // namespace tensorflow

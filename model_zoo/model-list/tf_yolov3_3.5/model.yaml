@@ -1,0 +1,45 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv3 on VOC.
+input size: 416*416
+float ops: 65.63G
+task: detection
+framework: tensorflow
+prune: 'no'
+version: 3.0
+files:
+- name: tf_yolov3_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_3.5.zip
+  checksum: 2d6e1b169910df796c52d0e02df0b4ca
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vek280-r3.5.0.tar.gz
+  checksum: ac7453afff00202fd39e6e2b3c97772d
+- name: yolov3_voc_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u200-u250-r3.0.0.tar.gz
+  checksum: 3588ddeec012cfa104182eb7113c001c
+- name: yolov3_voc_tf
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: ae412396c3136cc5e5b0498f9f081e37
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

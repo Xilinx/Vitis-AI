@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -215,7 +215,7 @@ std::vector<SoloResult> SoloImp::run(const std::vector<cv::Mat>& input_images) {
   vector<cv::Mat> images;
   auto size = cv::Size(640, 640);
   std::vector<std::vector<int>> ori_shape;
-  for (auto input_image : input_images) {
+  for (auto& input_image : input_images) {
     ori_shape.push_back({(int)input_image.cols, (int)input_image.rows});
     Mat image;
     if (size != input_image.size()) {

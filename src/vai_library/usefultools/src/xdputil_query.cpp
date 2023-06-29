@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 #include <xir/xrt_device_handle.hpp>
 
 #include "tools_extra_ops.hpp"
-
+#include "PhysicalMemory.hpp"
 typedef uint64_t u64;
 typedef uint32_t u32;
 #define DPU_NUM(x) (((x)&0x0f) << 0)
@@ -69,11 +69,11 @@ struct device_info_struct {
 
 class base_device {
  public:
+  virtual ~base_device(){}
   virtual py::dict get_public_data(const device_info_struct& info,
                                    size_t core_count) {
     return py::dict();
   }
-
   virtual py::dict get_private_data(const device_info_struct& info);
   virtual py::dict read_dpu_register(const device_info_struct& info) {
     py::dict res;
@@ -107,8 +107,9 @@ class DPUCZDX8G_device : public base_device {
   virtual py::dict get_private_data(const device_info_struct& info);
   DPUCZDX8G_device(std::vector<std::string> key_i = {},
                    std::vector<uint32_t> addr_i = {});
-
+  uint32_t read_aie_reg_value(int addr);
  private:
+  uint32_t get_aie_freq(std::string dpuarch);
   std::vector<std::string> key;
   std::vector<uint32_t> addr;
 };
@@ -542,9 +543,103 @@ py::dict DPUCZDX8G_device::get_private_data(const device_info_struct& info) {
   res["Load minus mean"] = data_slice(read_res[2], 4, 8) ? "enable" : "disable";
   res["Load augmentation"] =
       data_slice(read_res[2], 8, 12) ? "enable" : "disable";
+  res["AIE Frequency (Hz)"] = get_aie_freq(info.dpu_arch_type);
   return res;
 }
 
+uint32_t DPUCZDX8G_device::read_aie_reg_value(int addr) {
+  unsigned page_size = getpagesize();
+  unsigned mapped_size = page_size;
+  unsigned offset_in_page = (unsigned)addr & (page_size - 1);
+  if (offset_in_page + 32 > page_size) {
+      mapped_size *= 2;
+  }
+  unsigned addr_mask = ~(page_size -1);
+  PhysicalMemory map_addr(addr & addr_mask, mapped_size);
+  MemRegValue<uint32_t> value(&map_addr,offset_in_page);
+  return value.read();
+}
+uint32_t DPUCZDX8G_device:: get_aie_freq(std::string dpu_arch_type){
+  uint32_t aie_freq = 0;
+  //const char *dpu_arch = "DPUCV2DX8G";
+  int mepll_ctrl_addr, me_core_ref_ctrl;
+  int hsm0_ref_ctrl = 0xF1260148;
+  int pmcpll_ctrl_addr = 0xf1260040;
+  int nocpll_ctrl_addr = 0xf1260050;
+  char idcode_cmd[14] = "PM_GET_CHIPID";
+  char idcode_name[10];
+  uint32_t idcode_num;
+  std::map<uint32_t, int> mepll_base_addr_dict = {
+    {0x4ca8093, 0xf70a0000},
+    {0x4cd3093, 0xf6d10000},
+    {0x4cc8093, 0xf6420000},
+    {0x4cc0093, 0xf6300000},
+    {0x4cd0093, 0xf6d10000},
+    {0x4c98093, 0xf6d10000},
+    {0x4c9b093, 0xf6d10000},
+    {0x4c9a093, 0xf6d10000}
+  };
+  FILE *f_handle_id = fopen("/sys/kernel/debug/zynqmp-firmware/pm", "rt+");
+  if (!f_handle_id) {
+    std::cout << "Err open idcode file failure" << std::endl;
+    return aie_freq;
+  }
+ 
+  if (fwrite(idcode_cmd,sizeof(char),13, f_handle_id) != 13) {
+    std::cout << "Err idcode cmd failure" << std::endl;
+    fclose(f_handle_id);
+    return aie_freq;
+  }
+ 
+  if (fscanf(f_handle_id, "%s %x", idcode_name, &idcode_num) == 0) {
+    std::cout << "Err get idcode failure" << std::endl;
+    fclose(f_handle_id);
+    return aie_freq;
+  }
+  fclose(f_handle_id);
+  if((mepll_base_addr_dict.count(idcode_num & 0xfffffff)) > 0) {
+    mepll_ctrl_addr = mepll_base_addr_dict[idcode_num & 0xfffffff] + 0x100;
+    me_core_ref_ctrl = mepll_base_addr_dict[idcode_num & 0xfffffff] + 0x138;
+  } else {
+    return aie_freq;
+  }
+  uint32_t ref_clk = 0;
+  FILE *  f_handle = fopen("/sys/kernel/debug/clk/ref_clk/clk_rate", "rt");
+  if (!f_handle) {
+    std::cout <<"Err open clk file failure!" << std::endl;
+    return aie_freq;
+  }
+  if (fscanf(f_handle, "%d", &ref_clk) == 0) {
+    std::cout <<"Err: fscanf volt failure" << std::endl;
+    fclose(f_handle);
+    return aie_freq;
+  }
+  fclose(f_handle);
+  uint32_t hsm0_ref_value = read_aie_reg_value(hsm0_ref_ctrl);
+  uint32_t n_p_pll;
+  if((hsm0_ref_value & 0x7) == 0){
+    n_p_pll = read_aie_reg_value(pmcpll_ctrl_addr);
+  } else if((hsm0_ref_value & 0x7) == 3) {
+    n_p_pll = read_aie_reg_value(nocpll_ctrl_addr);
+  } else {
+    std::cout << "get an error value from hsm0" << std::endl;
+    return aie_freq;
+  }
+  uint32_t clkoutdiv = pow(2, ((n_p_pll & 0x30000) >> 16));
+  uint32_t n_p_cla = (n_p_pll & 0xFF00) >> 8;  // bit 15:8
+  uint32_t n_p_clk = ref_clk * n_p_cla / clkoutdiv;
+  uint32_t hsm0_cal = (hsm0_ref_value & 0x3ff00) >> 8;  // bit 17:8
+  uint32_t hsm0_clk = n_p_clk / hsm0_cal;
+  uint32_t mepll = read_aie_reg_value(mepll_ctrl_addr);
+  uint32_t mepll_cal = (mepll & 0xff00) >> 8;  // bit 15:8
+
+  uint32_t me_clkoutdiv = pow(2, ((mepll & 0x30000) >> 16));
+  uint32_t me_core = read_aie_reg_value(me_core_ref_ctrl);
+  uint32_t me_core_cal = (me_core & 0x3ff00) >> 8;  // bit17:8
+  uint32_t mePLL_freq = hsm0_clk * mepll_cal / me_clkoutdiv / me_core_cal;
+  //std::cout << "aie_freq:" << mePLL_freq << std::endl;
+  return mePLL_freq;
+}
 DPUCZDX8G_device::DPUCZDX8G_device(std::vector<std::string> key_i,
                                    std::vector<uint32_t> addr_i) {
   key = {"AP_REG",  //
@@ -555,6 +650,10 @@ DPUCZDX8G_device::DPUCZDX8G_device(std::vector<std::string> key_i,
           0x180, 0x184, 0x190, 0x194,  //
           0x188, 0x18C, 0x198, 0x19C,  //
           0x48,  0x50,  0x54};
+  if ((std::getenv("TARGET_DEVICE") != nullptr) && (!strcmp(std::getenv("TARGET_DEVICE"), "V70"))) {
+    addr.erase(addr.begin());
+    key.erase(key.begin());
+  }
   if (key_i.empty()) {
     for (auto j = 0u; j < 8; j++) {
       key.push_back("dpu0_base_addr_" + std::to_string(j));
@@ -585,6 +684,10 @@ py::dict DPUCZDX8G_device::read_dpu_register(const device_info_struct& info) {
       ap_status[data_slice(registers[idx], 0, 4)] +
       ap_reset_status[data_slice(registers[idx], 5, 7)];
   idx++;
+  if ((std::getenv("TARGET_DEVICE") != nullptr) && (!strcmp(std::getenv("TARGET_DEVICE"), "V70"))) {
+    common_registers["AP status"] = "NULL - Register Limited To Read";
+    idx=0;
+  }
   for (auto i = idx; i < idx + 8; i++) {
     common_registers[key[i].c_str()] = registers[i];
   }

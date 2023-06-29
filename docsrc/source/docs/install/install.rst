@@ -1,15 +1,13 @@
 Host Installation Instructions
 =================================================
 
-The purpose of this page is to provide the developer with guidance on the installation of Vitis |trade| AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in :doc:`../board_setup/board_setup`.
+The purpose of this page is to provide the developer with guidance on the installation of Vitis |trade| AI tools on the development host PC. Instructions for installation of Vitis AI on the target are covered separately in the Quickstart tutorials.
 
-There are three primary options for installation:
+There are two primary options for installation:
 
 **[Option1]** Directly leverage pre-built Docker containers available from Docker Hub: `xilinx/vitis-ai <https://hub.docker.com/r/xilinx/>`__.
 
 **[Option2]** Build a custom container to target your local host machine.
-
-**[Option3]** Install Vitis AI on AWS or Azure. See the instructions to install Vitis AI on :doc:`AWS <install_on_aws>`, or :doc:`Azure <install_on_azure>`.
 
 
 In addition, Vitis AI supports three host types: 
@@ -43,7 +41,40 @@ CPU hosts require no special preparation.
 ROCm GPU Host Initial Preparation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For ROCm hosts, developers should prepare their host by referring to the `ROCm Docker installation documentation <https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md>`__.
+For ROCm hosts, developers need to install ROCm.  Vitis AI 3.5 supports ROCm v5.5.
+
+The below steps describe the installation of ROCm for Ubuntu 20.04 hosts.  If you are leveraging a different host operating systems, please refer to `the ROCm Installation Guide <https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.5/page/Introduction_to_ROCm_Installation_Guide_for_Linux.html>`__ .
+
+.. code-block::
+
+	sudo apt-get update
+	wget https://repo.radeon.com/amdgpu-install/5.5/ubuntu/focal/amdgpu-install_5.5.50500-1_all.deb 
+	sudo apt-get install ./amdgpu-install_5.5.50500-1_all.deb
+	sudo amdgpu-install --usecase=hiplibsdk,rocm
+
+Add yourself to the render or video group using the following instructions:
+
+.. code-block::
+
+	sudo usermod -a -G render $LOGNAME
+	-OR-
+	sudo usermod -a -G video $LOGNAME
+
+.. note:: Use of the video group is recommended for all ROCm-supported operating systems.
+
+Add the user to the render group for Ubuntu 20.04:
+
+.. code-block::
+
+	sudo usermod -a -G render $LOGNAME
+
+Make sure to reboot the machine after installing the ROCm kernel package to force the new kernel to load on reboot.  You can verify the ROCm kernel is loaded by typing the following command at a prompt:
+
+.. code-block::
+
+	lsmod | grep amdgpu
+	
+You may also refer to the `ROCm Docker installation documentation <https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.5/page/How_to_Install_ROCm.html>`__ for further details.
 
 
 CUDA GPU Host Initial Preparation
@@ -136,9 +167,10 @@ You are now ready to start working with the Vitis AI Docker container.  At this 
 
 Starting with the Vitis AI 3.0 release, pre-built Docker containers are framework specific.  Furthermore, we have extended support to include AMD ROCm enabled GPUs.
 Users thus now have three options for the host Docker:
-	- CPU-only
-	- CUDA-capable GPUs
-	- ROCm-capable GPUs
+
+#. CPU-only
+#. CUDA-capable GPUs
+#. ROCm-capable GPUs
 
 CUDA-capable GPUs are not supported by pre-built containers, and thus the developer must :ref:`build the container from scripts <build-docker-from-scripts>`.
 
@@ -175,12 +207,6 @@ Where ``<Framework>`` and ``<Arch>`` can be selected as in the table below:
    * - TensorFlow 2 ROCm
      - tensorflow2
      - rocm
-   * - PyTorch with AI Optimizer ROCm
-     - opt-pytorch
-     - rocm
-   * - TF2 with AI Optimizer ROCm
-     - opt-tensorflow2
-     - rocm
 
 
 *Specific Examples:*
@@ -190,14 +216,14 @@ Where ``<Framework>`` and ``<Arch>`` can be selected as in the table below:
 	- TensorFlow 2 CPU docker : ``docker pull xilinx/vitis-ai-tensorflow2-cpu:latest``
 	- TensorFlow 2 ROCm docker: ``docker pull xilinx/vitis-ai-tensorflow2-rocm:latest``
 
-.. important:: The ``cpu`` option *does not provide GPU acceleration support* which is **strongly recommended** for acceleration of the Vitis AI :ref:`Quantization process <quantization-process>`. The pre-built ``cpu`` container should only be used when a GPU is not available on the host machine.  The :ref:`AI Optimizer containers <model_optimization>` are only required for pruning and require a license.
+.. important:: The ``cpu`` option *does not provide GPU acceleration support* which is **strongly recommended** for acceleration of the Vitis AI :ref:`Quantization process <quantization-process>`. The pre-built ``cpu`` container should only be used when a GPU is not available on the host machine.
 
 Next, you can now start the Vitis AI Docker using the following commands:
 
 .. code-block::
 
 	cd <Vitis-AI install path>/Vitis-AI
-	./docker_run.sh xilinx/vitis-ai-<pytorch|opt-pytorch|tensorflow2|opt-tensorflow2|tensorflow>-<cpu|rocm>:latest
+	./docker_run.sh xilinx/vitis-ai-<pytorch|tensorflow2|tensorflow>-<cpu|rocm>:latest
 
     
 .. _build-docker-from-scripts:
@@ -245,48 +271,33 @@ The supported build options are:
      -
    * - gpu
      - pytorch
-     - PyTorch CUDA-gpu
-   * -
-     - opt_pytorch
      - PyTorch with AI Optimizer CUDA-gpu
    * -
      - tf2
-     - TensorFlow 2 CUDA-gpu
-   * -
-     - opt_tf2
      - TensorFlow 2 with AI Optimizer CUDA-gpu
    * - 
      - tf1
-     - TensorFlow 1.15 CUDA-gpu
-   * -
-     - opt_tf1
      - TensorFlow 1.15 with AI Optimizer CUDA-gpu
    * -
      -
      -
    * - rocm
      - pytorch
-     - PyTorch ROCm-gpu
-   * -
-     - opt_pytorch
      - PyTorch with AI Optimizer ROCm-gpu
    * - 
      - tf2
-     - TensorFlow 2 ROCm-gpu
-   * -
-     - opt_tf2
      - TensorFlow 2 with AI Optimizer ROCm-gpu
 
-.. important:: The ``cpu`` option *does not provide GPU acceleration support* which is **strongly recommended** for acceleration of the Vitis AI :ref:`Quantization process <quantization-process>`. The pre-built ``cpu`` container should only be used when a GPU is not available on the host machine.  The :ref:`AI Optimizer containers <model_optimization>` are only required for pruning and require a license.
+.. important:: The ``cpu`` option *does not provide GPU acceleration support* which is **strongly recommended** for acceleration of the Vitis AI :ref:`Quantization process <quantization-process>`. The pre-built ``cpu`` container should only be used when a GPU is not available on the host machine.
 
 As an example, the developer should use the following commands to build a Pytorch CUDA GPU docker with support for the Vitis AI Optimizer. Adjust your path to ``<Vitis-AI install path>/Vitis-AI/docker`` directory as necessary.
 
 .. code-block::
 
     cd <Vitis-AI install path>/Vitis-AI/docker
-    ./docker_build.sh -t gpu -f opt_pytorch
+    ./docker_build.sh -t gpu -f pytorch
 
-You may also ``run docker_build.sh --help`` for additional information.
+You may also run ``docker_build.sh --help`` for additional information.
 
 .. warning:: The ``docker_build`` process may take several hours to complete. Assuming the build is successful, move on to the steps below. If the build was unsuccessful, inspect the log output for specifics. In many cases, a specific package could not be located, most likely due to remote server connectivity. Often, simply re-running the build script will result in success. In the event that you continue to run into problems, please reach out for support.
 
@@ -327,7 +338,7 @@ You can now start the Docker for Vitis AI using the following command:
 .. code-block::
 
 	cd <Vitis-AI install path>/Vitis-AI
-	./docker_run.sh xilinx/vitis-ai-<pytorch|opt-pytorch|tensorflow2|opt-tensorflow2|tensorflow>-<cpu|gpu|rocm>:latest
+	./docker_run.sh xilinx/vitis-ai-<pytorch|tensorflow2|tensorflow>-<cpu|gpu|rocm>:latest
 
 .. important:: Use ``./docker_run.sh`` as a script reference should you have customized requirements for launching your Docker container.
 

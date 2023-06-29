@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ std::vector<std::string> xilinx_version(std::vector<std::string> so_names) {
   typedef char* (*CAC_FUNC)();
   CAC_FUNC cac_func = NULL;
   std::vector<std::string> version_list;
-  for (auto so : so_names) {
+  for (auto & so : so_names) {
     auto handle = dlopen(so.c_str(), RTLD_LAZY);
     if (!handle) {
       version_list.push_back(dlerror());
@@ -46,7 +46,7 @@ std::vector<std::string> xilinx_version2(std::vector<std::string> so_names) {
   typedef char* (*CAC_FUNC)();
   CAC_FUNC cac_func = NULL;
   std::vector<std::string> version_list;
-  for (auto so : so_names) {
+  for (auto & so : so_names) {
     auto handle = dlopen(so.c_str(), RTLD_LAZY);
     if (!handle) {
       version_list.push_back("");

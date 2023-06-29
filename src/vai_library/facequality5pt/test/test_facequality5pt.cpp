@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ int main(int argc,char *argv[]){
   }
 
   auto qual_tester = vitis::ai::FaceQuality5pt::create(argv[1], true);
+  if (!qual_tester) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   //auto qual_tester = vitis::ai::FaceQuality5pt::create(vitis::ai::FACE_QUALITY5PT_NORMAL,true);
   qual_tester->setMode(vitis::ai::FaceQuality5pt::Mode::DAY);
 

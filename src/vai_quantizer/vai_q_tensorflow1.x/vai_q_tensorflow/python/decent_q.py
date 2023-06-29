@@ -98,6 +98,7 @@ from tensorflow.python import Graph
 
 from .utils import *
 from .quantize_graph import *
+from .fast_finetune import fast_ft
 
 sys.path.append("..")
 from vai_q_tensorflow.gen_files.version import __version__, __git_version__
@@ -327,8 +328,17 @@ def get_shape_info(input_graph_def, input_fn, s_config, ignore_node_names):
     pass
   return shape_info
 
-def calibrate_frozen(input_graph_def, input_fn, q_config, s_config,
-        add_shapes=False, fold_constant=True):
+def calibrate_frozen(input_graph_def,
+                     input_fn,
+                     q_config,
+                     s_config,
+                     add_shapes=False,
+                     fold_constant=True,
+                     include_fast_ft=False,
+                     fast_ft_mode=1,
+                     fast_ft_epochs=1,
+                     fast_ft_lr=1e-6,
+                     fast_ft_lrcoef=1.0):
   """Transform float graph to quantized graph and do calibration"""
 
   temp_path = os.path.join(q_config.output_dir, "temp")
@@ -372,6 +382,13 @@ def calibrate_frozen(input_graph_def, input_fn, q_config, s_config,
   # Quantized Evaluation
   quantize_eval_graph_def = CreateQuantizeEvaluationGraphDef(
       calib_graph_def, q_config)
+
+  if include_fast_ft:
+    quantize_eval_graph_def = fast_ft(input_graph_def, input_fn, q_config, s_config,
+                                      quantize_eval_graph_def, temp_path,
+                                      fast_ft_mode, fast_ft_epochs,
+                                      fast_ft_lr, fast_ft_lrcoef)
+
   shutil.rmtree(temp_path)
   return quantize_eval_graph_def
 
@@ -481,11 +498,19 @@ def quantize_frozen(input_graph_def,
                     skip_check=0,
                     dump_as_xir=False,
                     fuse_op_config=None,
-                    add_shapes=False,
+                    add_shapes=True,
                     keep_float_weight=True,
                     output_format="pb",
+                    onnx_opset=13,
                     custom_op_set=set(),
-                    fold_constant=True):
+                    fold_constant=True,
+                    include_fast_ft=False,
+                    fast_ft_mode=1,
+                    fast_ft_epochs=1,
+                    fast_ft_lr=1e-6,
+                    fast_ft_lrcoef=1.0,
+                    fix_input_shape=False,
+                    debug_mode=False):
   """Quantize calibrate and then deploy to DPU.
 
   Args:
@@ -509,10 +534,35 @@ def quantize_frozen(input_graph_def,
   if not skip_check:
     check_float_graph(input_graph_def, input_fn, q_config, s_config)
 
-  quantize_eval_graph_def = calibrate_frozen(input_graph_def, input_fn,
-                                             q_config, s_config,
-                                             add_shapes=add_shapes,
-                                             fold_constant=fold_constant)
+  if debug_mode:
+    import hashlib
+    print(hashlib.md5(input_graph_def.SerializeToString()).hexdigest())
+    print(q_config.to_string())
+    print(version_string())
+    for node in input_graph_def.node:
+      print(f"{node.name}, {node.op}, {node.input}")    
+    
+  quantize_eval_graph_def = calibrate_frozen(
+      input_graph_def,
+      input_fn,
+      q_config,
+      s_config,
+      add_shapes=add_shapes,
+      fold_constant=fold_constant,
+      include_fast_ft=include_fast_ft,
+      fast_ft_mode=fast_ft_mode,
+      fast_ft_epochs=fast_ft_epochs,
+      fast_ft_lr=fast_ft_lr,
+      fast_ft_lrcoef=fast_ft_lrcoef)
+
+  if fix_input_shape:
+    for node in quantize_eval_graph_def.node:
+      if node.name in q_config.input_nodes:
+        index = q_config.input_nodes.index(node.name)
+        shape = q_config.input_shapes[index]
+        node.attr['shape'].shape.Clear()
+        for v in shape:
+          node.attr["shape"].shape.dim.add(size=v)
 
   if not keep_float_weight:
     max_dump_batches = 1
@@ -591,7 +641,7 @@ def quantize_frozen(input_graph_def,
                     "quantize_eval_model.onnx")
       model_proto, external_tensor_storage = tf2onnx.convert.from_graph_def(quantize_eval_graph_def,
                 name="", input_names=input_names, output_names=output_names,
-                opset=13, custom_ops=None, custom_op_handlers=None, custom_rewriter=None,
+                opset=onnx_opset, custom_ops=None, custom_op_handlers=None, custom_rewriter=None,
                 inputs_as_nchw=None, extra_opset=None,
                 shape_override=None, target=None, large_model=False,
                 output_path=output_path)
@@ -726,10 +776,76 @@ def deploy_checkpoint(input_meta_graph_def, input_checkpoint, q_config):
   return
 
 
-def inspect(input_graph_def, input_frozen_graph):
+def inspect(input_graph_def, input_frozen_graph, q_config=QuantizeConfig()):
   """Inspect the float graph and parse quantizable patterns,
   then generate possible vai_q_tensorflow command"""
   CheckGraphDef(input_graph_def, input_frozen_graph)
+  if not q_config.target_type:
+    return
+  temp_path = os.path.join(q_config.output_dir, "temp")
+  if not os.path.exists(temp_path):
+    os.makedirs(temp_path)
+
+  from tensorflow.tools.graph_transforms import TransformGraph
+  input_names = q_config.input_nodes
+  output_names = get_graph_outputs(input_graph_def)
+  transforms = ["fold_constants(ignore_errors=true)"]
+  input_graph_def = TransformGraph(input_graph_def, input_names,
+                                         output_names, transforms)
+  # save_pb_file(input_graph_def,
+  #              os.path.join(q_config.output_dir, "decent_debug/fold_constants.pb"))
+
+  # Calibration
+  input_graph_def = CreateOptimizedGraphDef(input_graph_def, q_config)
+  input_graph_def = add_shapes_to_graph_def(input_graph_def)
+  calib_graph_def = CreateQuantizeCalibrationGraphDef(input_graph_def,
+                                                      q_config)
+  # input_name2nodes = get_name_to_nodes_map(input_graph_def)
+  # calib_name2nodes = get_name_to_nodes_map(calib_graph_def)
+
+  inspect_rst_path = os.path.join(q_config.output_dir, "inspect_results.txt")
+  notes = {}
+  device = {}
+  with open(inspect_rst_path, "r") as f:
+    lines = f.readlines()
+  for l in lines:
+    l = l.strip().split("||")
+    nodes = l[2].split("+")
+    for n in nodes:
+      if not n:
+        continue
+      notes[n] = l[4]
+      device[n] = l[3]
+
+  black_list = ["Const", "Shape"]
+  table = []
+  for node in input_graph_def.node:
+    name = node.name
+    if node.op in black_list:
+      continue
+    node_insp = []
+    node_insp.append(name)
+    node_insp.append(node.op)
+    if node.op in ["FusedBatchNorm", "FusedBatchNormV3", "FusedBatchNormV2"]:
+      if name in device:
+        node_insp.append(device[name])
+        node_insp.append(notes[name])
+      elif node.input[0] in device:
+        node_insp.append(device[node.input[0]])
+        node_insp.append(notes[node.input[0]])
+    elif name in device:
+      node_insp.append(device[name])
+      node_insp.append(notes[name])
+    else:
+      node_insp.append("CPU")
+      node_insp.append(f"{name} is not in quantize range, determined by the"
+              "input and output")
+    table.append(node_insp)
+
+  from tabulate import tabulate
+  headers = ["Name", "Type", "Device", "Note"]
+  maxcolwidths=[8, 48, 12, 8, 48]
+  print(tabulate(table, headers=headers, showindex="always", tablefmt="grid", maxcolwidths=maxcolwidths))
 
 
 def dump(input_graph_def,
@@ -936,6 +1052,7 @@ def main(unused_args, flags):
                                 nodes_bit=nodes_bit,
                                 nodes_method=nodes_method,
                                 method=flags.method,
+                                target_type=flags.target_type,
                                 calib_iter=flags.calib_iter,
                                 output_dir=flags.output_dir,
                                 align_concat=flags.align_concat,
@@ -947,6 +1064,7 @@ def main(unused_args, flags):
                                 do_cle=flags.do_cle,
                                 replace_relu6=flags.replace_relu6,
                                 replace_sigmoid=flags.replace_sigmoid,
+                                fold_reshape=flags.fold_reshape,
                                 replace_softmax=flags.replace_softmax)
       if flags.convert_datatype:
         convert_datatype(input_graph_def, q_config, flags.convert_datatype)
@@ -957,11 +1075,24 @@ def main(unused_args, flags):
       add_shapes = (flags.add_shapes != 0)
       keep_float_weight = (flags.keep_float_weight != 0)
       fold_constant = (flags.fold_constant != 0)
+
+      include_fast_ft = (flags.include_fast_ft != 0)
+      fast_ft_mode = flags.fast_ft_mode
+      fast_ft_epochs = flags.fast_ft_epochs
+      fast_ft_lr = flags.fast_ft_lr
+      fast_ft_lrcoef = flags.fast_ft_lrcoef
+
+      fix_input_shape = (flags.fix_input_shape != 0)
+      debug_mode = (flags.debug_mode != 0)      
+      
       quantize_frozen(input_graph_def, input_fn, q_config, s_config,
-                      flags.skip_check, flags.dump_as_xir,
-                      flags.fuse_op_config, add_shapes, keep_float_weight,
-                      flags.output_format, custom_op_set,
-                      fold_constant)
+                      flags.skip_check, flags.dump_as_xir, flags.fuse_op_config,
+                      add_shapes, keep_float_weight,
+                      flags.output_format, flags.onnx_opset,
+                      custom_op_set, fold_constant, include_fast_ft,
+                      fast_ft_mode, fast_ft_epochs,
+                      fast_ft_lr, fast_ft_lrcoef,
+                      fix_input_shape, debug_mode)
 
     elif flags.mode == "train":
       input_meta_graph_def = _parse_input_meta_graph(flags.input_meta_graph)
@@ -981,6 +1112,7 @@ def main(unused_args, flags):
                                 nodes_bit=nodes_bit,
                                 nodes_method=nodes_method,
                                 method=flags.method,
+                                target_type=flags.target_type,
                                 calib_iter=flags.calib_iter,
                                 output_dir=flags.output_dir,
                                 align_concat=flags.align_concat,
@@ -1010,6 +1142,7 @@ def main(unused_args, flags):
                                 nodes_bit=nodes_bit,
                                 nodes_method=nodes_method,
                                 method=flags.method,
+                                target_type=flags.target_type,
                                 calib_iter=flags.calib_iter,
                                 output_dir=flags.output_dir,
                                 align_concat=flags.align_concat,
@@ -1048,7 +1181,39 @@ def main(unused_args, flags):
 
   elif flags.command == "inspect":
     input_graph_def = _parse_input_frozen_graph(flags.input_frozen_graph)
-    inspect(input_graph_def, flags.input_frozen_graph)
+    if not flags.target_type:
+      q_config = QuantizeConfig()
+      return inspect(input_graph_def, flags.input_frozen_graph)
+    input_nodes = _parse_input_nodes(input_graph_def, flags.input_nodes)
+    output_nodes = _parse_output_nodes(input_graph_def, flags.output_nodes)
+    input_shapes = _parse_input_shapes(input_nodes, flags.input_shapes)
+    ignore_nodes = _parse_ignore_nodes(input_graph_def, flags.ignore_nodes)
+    nodes_bit = _parse_nodes_bit(input_graph_def, flags.nodes_bit)
+    nodes_method = _parse_nodes_method(input_graph_def, flags.nodes_method)
+    q_config = QuantizeConfig(input_nodes=input_nodes,
+                              output_nodes=output_nodes,
+                              input_shapes=input_shapes,
+                              ignore_nodes=ignore_nodes,
+                              weight_bit=flags.weight_bit,
+                              activation_bit=flags.activation_bit,
+                              nodes_bit=nodes_bit,
+                              nodes_method=nodes_method,
+                              method=flags.method,
+                              target_type=flags.target_type,
+                              calib_iter=flags.calib_iter,
+                              output_dir=flags.output_dir,
+                              align_concat=flags.align_concat,
+                              adjust_shift_bias=flags.adjust_shift_bias,
+                              adjust_shift_cut=flags.adjust_shift_cut,
+                              simulate_dpu=flags.simulate_dpu,
+                              scale_all_avgpool=flags.scale_all_avgpool,
+                              do_cle=flags.do_cle,
+                              replace_relu6=flags.replace_relu6,
+                              replace_sigmoid=flags.replace_sigmoid,
+                              fold_reshape=flags.fold_reshape,
+                              replace_softmax=flags.replace_softmax)
+    input_graph_def = _parse_input_frozen_graph(flags.input_frozen_graph)
+    inspect(input_graph_def, flags.input_frozen_graph, q_config)
 
   elif flags.command == "dump":
     os.environ["ARCH_TYPE"] = flags.arch_type
@@ -1215,6 +1380,13 @@ def run_main():
       will be left unquantized during quantization even if it is quantizable.  This argument has no effect for non-quantizable nodes. \
       e.g 'conv1/Relu,depthwise_conv1/weights,conv1',  If using python api then \
       should be used like this, ignore_nodes=['conv1/Relu','depthwise_conv1/weights','conv1']")
+  parser.add_argument(
+      "--target_type",
+      type=str,
+      default="",
+      help=
+      "The name of target device, The quantizer will automatically identify which nodes can run on the DPU according to the "\
+      " provided target name. e.g:DPUCADF8H_ISA0")
   parser.add_argument("--skip_check",
                       type=int,
                       default=0,
@@ -1225,6 +1397,42 @@ def run_main():
                       default=1,
                       choices=[0, 1],
                       help="Set to 1 to do fold_constant for graph_def.")
+  parser.add_argument("--fold_reshape",
+                      type=int,
+                      default=0,
+                      choices=[0, 1],
+                      help="Set to 1 to fuse the shape inference nodes as a constant node, so that simplify graph")
+  parser.add_argument(
+      "--include_fast_ft",
+      type=int,
+      default=0,
+      choices=[0, 1],
+      help="Set to 1 to do fast finetune for quantization. Fast finetune adjusts the weights layer by layer \
+      with calibration dataset and may get better accuracy for some models. \
+      It will take much longer time than normal PTQ (still shorter than QAT as calibration dataset is much smaller than train dataset) \
+      and is disabled by default to save time, and can be turned on to try to improve the performance if you see accuracy issues."
+  )
+  parser.add_argument(
+      "--fast_ft_mode",
+      type=int,
+      default=1,
+      help="The mode of fast finetune. Set to 0 to use normal mode, 1 to use sequential mode.")
+  parser.add_argument(
+      "--fast_ft_epochs",
+      type=int,
+      default=1,
+      help="Maximum epochs to do fast finetune for each layer.")
+  parser.add_argument(
+      "--fast_ft_lr",
+      type=float,
+      default=1e-6,
+      help="Learning rate for fast finetune.")
+  parser.add_argument(
+      "--fast_ft_lrcoef",
+      type=float,
+      default=1.0,
+      help="During fast finetuning, the layers that have large loss will \
+           apply the learning rate multiplied by a coefficient for better convergence.")
   parser.add_argument(
       "--align_concat",
       type=int,
@@ -1293,8 +1501,7 @@ def run_main():
       type=int,
       default=1,
       choices=[0, 1],
-      help=
-      "Set to 1 to enable replace relu6 with relu. \
+      help= "Set to 1 to enable replace relu6 with relu. \
       Set to 0 will skip replacement."
   )
   parser.add_argument(
@@ -1362,6 +1569,31 @@ def run_main():
       help=
       "indicates what format to save the quantized model, 'pb' for saving tensorflow " \
       " frozen pb, 'onnx' for saving onnx model.")
+  parser.add_argument(
+      "--onnx_opset",
+      type=int,
+      default=13,
+      help=
+      "Set op set version when output format is 'onnx' "
+  )
+  parser.add_argument(
+      "--fix_input_shape",
+      type=int,
+      default=0,
+      choices=[0, 1],
+      help=
+      "Set to 0 to keep the placeholder node the same. \
+      Set to 1 will set shape of placeholder as the shape of flags.input_shapes."
+  )
+  parser.add_argument(
+      "--debug_mode",
+      type=int,
+      default=0,
+      choices=[0, 1],
+      help=
+      "Set to 0 to skip print debug message. \
+      Set to 1 will print debug include msdsum, node."
+  )
 
   ############################################
   #  Input Function Configuration Arguments  #

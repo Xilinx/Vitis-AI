@@ -1,5 +1,6 @@
 from .conv import *
 from .conv1d import *
+from .conv3d import *
 from .linear import *
 from .rnn_builder import *
 from .add import *
@@ -40,8 +41,9 @@ from .layernorm import *
 from .embedding import *
 from .prelu import *
 # from .clamp import *
-from distutils.version import LooseVersion
-if torch.__version__ >= LooseVersion('1.9'):
+from .sqrt import *
+from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.9"):
   from .mish import *
 
 from .nndct_quant_model import *

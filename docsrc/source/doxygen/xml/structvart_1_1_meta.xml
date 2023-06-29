@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="structvart_1_1_meta" kind="struct" language="C++" prot="public">
+    <compoundname>vart::Meta</compoundname>
+    <derivedcompoundref refid="structvart_1_1_dpu_meta" prot="public" virt="non-virtual">DpuMeta</derivedcompoundref>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structvart_1_1_meta_1aa139e7c7d968328493be1eaea54c5193" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string target</definition>
+        <argsstring></argsstring>
+        <name>target</name>
+        <qualifiedname>vart::Meta::target</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="255" column="15" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvart_1_1_meta_1af807e3f149c6854dab5970fecedb9dd0" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string lib</definition>
+        <argsstring></argsstring>
+        <name>lib</name>
+        <qualifiedname>vart::Meta::lib</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="257" column="15" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structvart_1_1_meta_1a23c350fbb2e67292e0c0f7defaeb7190" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string dirname</definition>
+        <argsstring></argsstring>
+        <name>dirname</name>
+        <qualifiedname>vart::Meta::dirname</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="259" column="15" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="253" column="1" bodyfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="253" bodyend="260"/>
+    <listofallmembers>
+      <member refid="structvart_1_1_meta_1a23c350fbb2e67292e0c0f7defaeb7190" prot="public" virt="non-virtual"><scope>vart::Meta</scope><name>dirname</name></member>
+      <member refid="structvart_1_1_meta_1af807e3f149c6854dab5970fecedb9dd0" prot="public" virt="non-virtual"><scope>vart::Meta</scope><name>lib</name></member>
+      <member refid="structvart_1_1_meta_1aa139e7c7d968328493be1eaea54c5193" prot="public" virt="non-virtual"><scope>vart::Meta</scope><name>target</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

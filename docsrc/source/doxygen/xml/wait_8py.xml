@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="wait_8py" kind="file" language="Python">
+    <compoundname>wait.py</compoundname>
+    <innernamespace refid="namespacewait">wait</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacewait_1a9dd979228e0a14a50ef3e2ee0206a5f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>wait</definition>
+        <argsstring>(jobid_time)</argsstring>
+        <name>wait</name>
+        <qualifiedname>wait.wait</qualifiedname>
+        <param>
+          <type>jobid_time</type>
+          <defname>jobid_time</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/wait.py" line="15" column="1" bodyfile="pydoc/wait.py" bodystart="15" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespacewait" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@brief</highlight><highlight class="normal"><sp/>Waits<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>the<sp/>end<sp/>of<sp/>DPU<sp/>processing.</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@details</highlight><highlight class="normal"><sp/>modes:<sp/></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>1.<sp/>Blocking<sp/>wait<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>specific<sp/>ID.<sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>2.<sp/>Non-blocking<sp/>wait<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>specific<sp/>ID.<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>3.<sp/>Blocking<sp/>wait<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>any<sp/>ID.<sp/></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>4.<sp/>Non-blocking<sp/>wait<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>any<sp/>ID</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@param</highlight><highlight class="normal"><sp/>jobid_time:<sp/>tuple[uint32_t,<sp/>int],<sp/>[job<sp/>id,<sp/>time],<sp/>jobid:<sp/>neg<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>any<sp/>id,<sp/>others<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>specific<sp/>job<sp/>id.<sp/><sp/>time:<sp/></highlight><highlight class="keywordflow">not</highlight><highlight class="normal"><sp/>used<sp/>here</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@return</highlight><highlight class="normal"><sp/>status<sp/>0<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>exit<sp/>successfully,<sp/>others<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>customized<sp/>warnings<sp/></highlight><highlight class="keywordflow">or</highlight><highlight class="normal"><sp/>errors</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;</highlight></codeline>
+<codeline lineno="15"><highlight class="stringliteral">def<sp/>wait(jobid_time):</highlight></codeline>
+<codeline lineno="16"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">pass</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/wait.py"/>
+  </compounddef>
+</doxygen>

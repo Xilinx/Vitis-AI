@@ -497,8 +497,7 @@ def adjust_gamma(img, gamma, gain=1):
 
     if gamma < 0:
         raise ValueError('Gamma should be a non-negative real number')
-    # from here
-    # https://stackoverflow.com/questions/33322488/how-to-change-image-illumination-in-opencv-python/41061351
+ 
     table = np.array([((i / 255.0)**gamma) * 255 * gain for i in np.arange(0, 256)]).astype('uint8')
     if img.shape[2] == 1:
         return cv2.LUT(img, table)[:, :, np.newaxis]

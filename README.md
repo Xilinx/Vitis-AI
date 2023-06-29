@@ -13,7 +13,7 @@
 
 
 <br />
-Xilinx&reg; Vitis&trade; AI is an Integrated Development Environment that can be leveraged to accelerate AI inference on Xilinx platforms. Vitis AI provides optimized IP, tools, libraries, models, as well as resources, such as example designs and tutorials that aid the user throughout the development process.  It is designed with high efficiency and ease-of-use in mind, unleashing the full potential of AI acceleration on Xilinx SoCs and Alveo Data Center accelerator cards.  
+AMD Vitis&trade; AI is an Integrated Development Environment that can be leveraged to accelerate AI inference on AMD adaptable platforms. Vitis AI provides optimized IP, tools, libraries, models, as well as resources, such as example designs and tutorials that aid the user throughout the development process.  It is designed with high efficiency and ease-of-use in mind, unleashing the full potential of AI acceleration on AMD adaptable SoCs and Alveo Data Center accelerator cards.  
 <br /> <br />
 
 

@@ -17,7 +17,7 @@
 import tensorflow as tf
 import numpy as np
 
-from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper, vitis_quantize_wrapper_v2
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 
 keras = tf.keras
@@ -28,7 +28,7 @@ def _get_layer_output(model, layer_name, input_data, batch_size, steps):
   """Get the predict result of layer's ouput."""
   target_layer = model.get_layer(layer_name)
   layer_model = tf.keras.Model(inputs=model.input, outputs=target_layer.output)
-  return layer_model.predict(input_data, batch_size, steps)
+  return layer_model.predict(input_data, batch_size=batch_size, steps=steps)
 
 
 def _has_bias(layer):
@@ -46,9 +46,10 @@ def bias_correction(quant_model, float_model, calib_dataset, calib_batch_size,
 
   target_layers = []
   for layer in quant_model.layers:
-    if isinstance(
+    if (isinstance(
         layer,
-        vitis_quantize_wrapper.QuantizeWrapper) and layer.trainable_weights:
+        vitis_quantize_wrapper.QuantizeWrapper) or 
+        isinstance(layer, vitis_quantize_wrapper_v2.QuantizeWrapperV2)) and layer.trainable_weights:
       if _has_bias(layer.layer):
         target_layers.append(layer)
 

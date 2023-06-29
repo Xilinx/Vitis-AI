@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -117,14 +117,14 @@ vai_overview_add_accuracy(facequality5pt_mt facequality5pt)
 # hourglass
 vai_overview_add_test(hourglass hourglass Hourglass)
 vai_overview_add_performance(hourglass hourglass Hourglass)
-vai_overview_add_accuracy(hourglass hourglass REQUIRE ${PROJECT_NAME}::hourglass
-                                                      json-c)
+vai_overview_add_accuracy(hourglass hourglass REQUIRE
+                          ${PROJECT_NAME}::hourglass json-c)
 
 # movenet
 vai_overview_add_test(movenet movenet Movenet)
 vai_overview_add_performance(movenet movenet Movenet)
 vai_overview_add_accuracy(movenet movenet REQUIRE ${PROJECT_NAME}::movenet
-                                                  json-c)
+                          json-c)
 # lanedetect
 vai_overview_add_test(lanedetect lanedetect RoadLine)
 vai_overview_add_performance(lanedetect lanedetect RoadLine)
@@ -174,9 +174,9 @@ vai_overview_add_accuracy(multitaskv3_segmentation multitaskv3)
 vai_overview_add_test(openpose openpose OpenPose)
 vai_overview_add_performance(openpose openpose OpenPose)
 vai_overview_add_accuracy(openpose openpose REQUIRE ${PROJECT_NAME}::openpose
-                                                    json-c)
-vai_overview_add_accuracy(openpose_mt openpose REQUIRE ${PROJECT_NAME}::openpose
-                                                       json-c)
+                          json-c)
+vai_overview_add_accuracy(openpose_mt openpose REQUIRE
+                          ${PROJECT_NAME}::openpose json-c)
 
 # platedetect
 vai_overview_add_test(platedetect platedetect PlateDetect)
@@ -302,7 +302,7 @@ vai_overview_add_test(solo solo Solo)
 vai_overview_add_test(fairmot fairmot FairMot)
 vai_overview_add_performance(fairmot fairmot FairMot)
 vai_overview_add_accuracy(fairmot fairmot REQUIRE ${PROJECT_NAME}::fairmot
-                                                  ${PROJECT_NAME}::reidtracker)
+                          ${PROJECT_NAME}::reidtracker)
 # vai_overview_add_accuracy(fairmot fairmot REQUIRE ${PROJECT_NAME}::FairMot
 # ${PROJECT_NAME}::ReidTracker)
 
@@ -315,8 +315,8 @@ vai_overview_add_accuracy(retinaface retinaface)
 vai_overview_add_test(segmentation segmentation Segmentation8UC3)
 vai_overview_add_performance(segmentation segmentation Segmentation8UC3)
 foreach(TMPMODEL segmentation segmentation_mt endov unet)
-  vai_overview_add_accuracy(${TMPMODEL} segmentation
-                            REQUIRE ${PROJECT_NAME}::segmentation json-c)
+  vai_overview_add_accuracy(${TMPMODEL} segmentation REQUIRE
+                            ${PROJECT_NAME}::segmentation json-c)
 endforeach(TMPMODEL)
 
 # RGBDsegmentation
@@ -381,14 +381,25 @@ vai_overview_add_performance(yolovx yolovx YOLOvX)
 vai_overview_add_accuracy(yolovx_mt yolovx)
 vai_overview_add_accuracy(yolovx_nano_mt yolovx)
 vai_overview_add_accuracy(yolovx_coco_mt yolovx REQUIRE ${PROJECT_NAME}::yolovx
- json-c)
-
+                          json-c)
 
 # yolov6
 vai_overview_add_test(yolov6 yolov6 YOLOv6)
 vai_overview_add_accuracy(yolov6_mt yolov6)
 vai_overview_add_performance(yolov6 yolov6 YOLOv6 NO_CONFIG REQUIRE
                              ${PROJECT_NAME}::yolov6)
+
+# yolov8
+vai_overview_add_test(yolov8 yolov8 YOLOv8)
+vai_overview_add_accuracy(yolov8 yolov8)
+vai_overview_add_performance(yolov8 yolov8 YOLOv8 NO_CONFIG REQUIRE
+                             ${PROJECT_NAME}::yolov8)
+
+# fcos
+vai_overview_add_test(fcos fcos FCOS)
+vai_overview_add_accuracy(fcos fcos)
+vai_overview_add_performance(fcos fcos FCOS NO_CONFIG REQUIRE
+                             ${PROJECT_NAME}::fcos)
 
 # bevdet
 vai_overview_add_test(bevdet bevdet bevdet NO_VIDEO NO_CONFIG)
@@ -414,6 +425,11 @@ vai_overview_add_performance(yolov5 yolov5 YOLOv3 NO_CONFIG REQUIRE
                              ${PROJECT_NAME}::yolov3)
 vai_overview_add_accuracy(yolov5_mt yolov5 REQUIRE ${PROJECT_NAME}::yolov3)
 
+# yolov7
+vai_overview_add_test(yolov7 yolov7 YOLOv7)
+vai_overview_add_performance(yolov7 yolov7 YOLOv7)
+vai_overview_add_accuracy(yolov7_mt yolov7)
+
 # ultrafast
 vai_overview_add_test(ultrafast ultrafast UltraFast NO_VIDEO)
 vai_overview_add_performance(ultrafast ultrafast UltraFast)
@@ -435,10 +451,10 @@ vai_overview_add_performance(efficientdet_d2 efficientdet_d2 EfficientDetD2)
 vai_overview_add_accuracy(efficientdet_d2 efficientdet_d2)
 
 # bosch related: bosch_ssdobjdet bosch_fcnsemseg
-if( ENABLE_BOSCH_FCNSEMSEG  AND (NOT DISABLE_ALL))
+if(ENABLE_BOSCH_FCNSEMSEG AND (NOT DISABLE_ALL))
   vai_overview_add_performance(bosch_fcnsemseg bosch_fcnsemseg Bosch_Fcnsemseg)
 endif()
-if( ENABLE_BOSCH_SSDOBJDET  AND (NOT DISABLE_ALL))
+if(ENABLE_BOSCH_SSDOBJDET AND (NOT DISABLE_ALL))
   vai_overview_add_performance(bosch_ssdobjdet bosch_ssdobjdet Bosch_Ssdobjdet)
 endif()
 
@@ -447,10 +463,32 @@ vai_overview_add_test(monodepth2 monodepth2 Monodepth2 NO_VIDEO)
 vai_overview_add_performance(monodepth2 monodepth2 Monodepth2)
 vai_overview_add_accuracy(monodepth2 monodepth2)
 
-#cflownet
-vai_overview_add_test(test_bin_cflownet cflownet  Cflownet NO_VIDEO NO_CONFIG NAME test_bin_cflownet)
-vai_overview_add_performance(cflownet cflownet  Cflownet NO_CONFIG)
+# cflownet
+vai_overview_add_test(
+  test_bin_cflownet
+  cflownet
+  Cflownet
+  NO_VIDEO
+  NO_CONFIG
+  NAME
+  test_bin_cflownet)
+vai_overview_add_performance(cflownet cflownet Cflownet NO_CONFIG)
 vai_overview_add_accuracy(cflownet cflownet)
+
+# unet2d
+vai_overview_add_test(
+  test_bin_unet2d
+  unet2d
+  Unet2D
+  NO_VIDEO
+  NO_CONFIG
+  NAME
+  test_bin_unet2d)
+vai_overview_add_performance(unet2d unet2d Unet2D NO_CONFIG)
+vai_overview_add_accuracy(unet2d unet2d)
+
+# install unet3d
+install(DIRECTORY samples/dpu_task/unet3d DESTINATION ${SAMPLE_INATLL_PATH})
 
 # demos demo_yolov3
 vai_overview_add_demo(
@@ -569,23 +607,21 @@ vai_overview_add_app(
   apps/seg_and_pose_detect/seg_and_pose_detect.cpp
   apps/seg_and_pose_detect/readme
   VAI_INSTALL_BUILD
-  apps/seg_and_pose_detect/build.sh
-  apps/seg_and_pose_detect/builddrm.sh)
+  apps/seg_and_pose_detect/build.sh)
 
 vai_overview_add_app(
   NAME
   multitask_v3_quad_windows
   SRCS
-  apps/multitaskv3with4windows/multitaskv3_quad_windows.cpp
+  apps/multitask_v3_quad_windows/multitaskv3_quad_windows.cpp
   REQUIRE
   ${PROJECT_NAME}::multitaskv3
   ${PROJECT_NAME}::benchmark
   VAI_INSTALL_FILES
-  apps/multitaskv3with4windows/multitaskv3_quad_windows.cpp
-  apps/multitaskv3with4windows/readme
+  apps/multitask_v3_quad_windows/multitaskv3_quad_windows.cpp
+  apps/multitask_v3_quad_windows/readme
   VAI_INSTALL_BUILD
-  apps/multitaskv3with4windows/build.sh
-  apps/multitaskv3with4windows/builddrm.sh)
+  apps/multitask_v3_quad_windows/build.sh)
 
 # segs_and_roadline_detect
 vai_overview_add_app(
@@ -602,8 +638,7 @@ vai_overview_add_app(
   apps/segs_and_roadline_detect/segs_and_roadline_detect.cpp
   apps/segs_and_roadline_detect/readme
   VAI_INSTALL_BUILD
-  apps/segs_and_roadline_detect/build.sh
-  apps/segs_and_roadline_detect/builddrm.sh)
+  apps/segs_and_roadline_detect/build.sh)
 
 # tutorials
 if(ENABLE_TUTORIAL AND (NOT DISABLE_ALL))
@@ -636,3 +671,4 @@ endif()
 if(ENABLE_ONNX AND (NOT DISABLE_ALL))
   add_subdirectory(samples_onnx)
 endif()
+

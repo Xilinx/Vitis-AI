@@ -128,8 +128,8 @@ Segmentation3DImp::Segmentation3DImp(const std::string &model_name, bool need_pr
   proj_unfold2.resize(25*64*2048);
   unproj_unfold_1_argmax.resize(25*64*2048);
 
-  k2_distances = std::shared_ptr<float>(new float[unfold_height*unfold_width]);
-  knn_argmax_onehot = std::shared_ptr<float>(new float [21*MAX_POINTS]);
+  k2_distances = std::unique_ptr<float>(new float[unfold_height*unfold_width]);
+  knn_argmax_onehot = std::unique_ptr<float>(new float [21*MAX_POINTS]);
 }
 
 Segmentation3DImp::~Segmentation3DImp() {  delete []proj_idx; }

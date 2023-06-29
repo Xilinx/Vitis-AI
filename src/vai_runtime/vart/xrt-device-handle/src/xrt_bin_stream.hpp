@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ class XrtBinStream {
   uint64_t get_cu_base_addr(size_t cu_idx) const;
   std::array<unsigned char, sizeof(xuid_t)> get_uuid() const;
   bool is_lpddr() const { return is_lpddr_; }
+  int get_bank_id() const { return bank_id_; }
 
  private:
   void init_fd(const std::string filename);
@@ -47,6 +48,7 @@ class XrtBinStream {
   void init_cu_names();
   void init_cu_indices();
   void guess_lpddr();
+  void init_bank_id();
 
  private:
   std::vector<char> buffer_;
@@ -59,5 +61,6 @@ class XrtBinStream {
   std::vector<size_t> indices_;
   std::string dsa_;
   bool is_lpddr_;
+  int bank_id_;
 };
 }  // namespace xir

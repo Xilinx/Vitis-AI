@@ -1,0 +1,1 @@
+appsrc ! videoconvert ! videoscale  ! video/x-raw, width=960, height=540! kmssink driver-name=xlnx plane-id=46 render-rectangle=<0,540,960,540> sync=false

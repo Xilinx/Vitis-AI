@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,9 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications Copyright (C) 2022 Advanced Micro Devices, Inc. All Rights
+ * Reserved.
  */
 
 #include "vart/mm/host_flat_tensor_buffer.hpp"
+
+#include <glog/logging.h>
 
 #include <algorithm>
 #include <cmath>
@@ -122,7 +127,7 @@ std::pair<uint64_t, size_t> HostFlatTensorBuffer::data(
     valid_size *= shape[k];
   }
   if (idx.size() == 0U) {
-    return {reinterpret_cast<uint64_t>(data_), valid_size};
+    return {reinterpret_cast<uint64_t>(data_), size_of_element_in_bytes(valid_size, get_tensor()->get_data_type().bit_width)};
   }
   UNI_LOG_CHECK(idx.size() == shape.size(), VART_TENSOR_BUFFER_INVALID_INDEX)
       << "shape=" << xir::to_string(shape) << ", index=" << xir::to_string(idx);
@@ -191,15 +196,15 @@ static inline uint8_t get_data_4bit(uint8_t* ptr,
   return (offset % 8 == 0) ? (ptr[offset / 8] & 0x0f) : (ptr[offset / 8] >> 4);
 }
 
-static uint32_t get_file_size(std::string file_name) {
+static uint32_t get_file_size(const std::string& file_name) {
   std::ifstream infile(file_name, std::ios::binary | std::ios::ate);
-  UNI_LOG_CHECK(infile.is_open(), VAIEDIFF_BAD_FILE)
+  UNI_LOG_CHECK(infile.is_open(), VART_FAILED_FILE_OPERATION)
       << "Cannot open file " << file_name;
   return infile.tellg();
 }
 
 static void init_from_file_4bit(HostFlatTensorBuffer* buffer,
-                                std::string file_name) {
+                                const std::string& file_name) {
   clear_buffer(buffer);
   auto ptr = reinterpret_cast<uint8_t*>(buffer->data({}).first);
   // TODO: check file size

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="dir_5983261e4e516e69de041de68bc7f381" kind="dir">
+    <compoundname>vart</compoundname>
+    <innerfile refid="runner_8hpp">runner.hpp</innerfile>
+    <innerfile refid="runner__ext_8hpp">runner_ext.hpp</innerfile>
+    <innerfile refid="tensor__buffer_8hpp">tensor_buffer.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/"/>
+  </compounddef>
+</doxygen>

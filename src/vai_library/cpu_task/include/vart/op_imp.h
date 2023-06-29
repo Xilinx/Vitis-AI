@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,7 +202,7 @@ inline constexpr bool arg_convertible_v = arg_convertible_t<T>::value;
 
 inline int required_input_num(const xir::OpDef* opdef) {
   auto size = 0;
-  for (auto argdef : opdef->input_args()) {
+  for (auto& argdef : opdef->input_args()) {
     if (argdef.occur_type == xir::OpArgDef::REQUIRED ||
         argdef.occur_type == xir::OpArgDef::REQUIRED_AND_REPEATED)
       size++;
@@ -316,7 +316,7 @@ struct arg_converter_t<std::vector<simple_tensor_buffer_t<T>>> {
         << "name mismatch! opdef:" << to_string(opdef);
     auto ret = std::vector<simple_tensor_buffer_t<T>>();
     ret.reserve(arg.args.size());
-    for (auto tb : arg.args) {
+    for (auto& tb : arg.args) {
       ret.emplace_back(simple_tensor_buffer_t<T>::create(tb));
     };
     return ret;

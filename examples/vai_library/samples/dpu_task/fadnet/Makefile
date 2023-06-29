@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ $(OUTPUT_DIR)/fadnet.o:  fadnet.cpp fadnet.hpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
 
 demo_fadnet: $(OUTPUT_DIR)/demo_fadnet.o $(OUTPUT_DIR)/fadnet.o
-	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)
+	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)  -lvart-util
 
 $(OUTPUT_DIR)/test_performance_fadnet.o: test_performance_fadnet.cpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
@@ -62,7 +62,7 @@ $(OUTPUT_DIR)/fadnet_v2.o:  fadnet_v2.cpp fadnet_v2.hpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
 
 demo_fadnet_v2: $(OUTPUT_DIR)/demo_fadnet_v2.o $(OUTPUT_DIR)/fadnet_v2.o
-	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)
+	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)  -lvart-util
 
 $(OUTPUT_DIR)/test_performance_fadnet_v2.o: test_performance_fadnet_v2.cpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<

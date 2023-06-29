@@ -60,7 +60,7 @@ BEVdetImp::BEVdetImp(const std::string& model_name0,
     LOG(INFO) << "use aie " << ls1path;
     auto graph = xir::Graph::deserialize(ls1path);
     auto root = graph->get_root_subgraph();
-    for (auto c : root->get_children()) {
+    for (auto& c : root->get_children()) {
       if (c->get_attr<std::string>("device") == "DPU") {
         static std::unique_ptr<vart::Runner> aie_runner_static =
             vart::Runner::create_runner_with_attrs(c, attrs.get());
@@ -203,7 +203,7 @@ void BEVdetImp::run_aie(const std::vector<std::vector<char>>& input_bins,
   __TIC__(copy_aie_output)
   auto data0 = (int8_t*)aie_runner_outputs[0]->data({0, 0, 0, 0}).first;
   auto data1 = (int8_t*)aie_runner_outputs[0]->data({1, 0, 0, 0}).first;
-  LOG(INFO) << aie_runner_outputs[0]->data({1, 0, 0, 0}).second;
+  
   size_t count = 128 * 128;
   for (size_t i = 0; i < count; i++) {
     memcpy(output + i * 80, data0 + i * 40, 40);

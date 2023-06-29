@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,22 +31,23 @@ Important:
 
     sample : ./test_jpeg_vehicleclassification vehicle_make_resnet18_pt sample_vehicleclassification.jpg
     output :
-I0109 19:11:32.478858  1302 demo.hpp:1193] batch: 0     image: sample_vehicle_make.jpg
-I0109 19:11:32.478921  1302 process_result.hpp:24] r.index 1 audi, r.score 0.999997
-I0109 19:11:32.511299  1302 process_result.hpp:24] r.index 21 mazda, r.score 2.26032e-06
-I0109 19:11:32.511387  1302 process_result.hpp:24] r.index 34 subaru, r.score 1.12535e-07
-I0109 19:11:32.511456  1302 process_result.hpp:24] r.index 17 kia, r.score 1.12535e-07
-I0109 19:11:32.511515  1302 process_result.hpp:24] r.index 13 infiniti, r.score 4.13993e-08
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0419 01:19:03.748142  8622 demo.hpp:1183] batch: 0     image: sample_vehicleclassification.jpg
+I0419 01:19:03.748263  8622 process_result.hpp:24] r.index 78 Audi, r.score 0.975131
+I0419 01:19:03.748471  8622 process_result.hpp:24] r.index 73 Volkswagen, r.score 0.0178602
+I0419 01:19:03.748606  8622 process_result.hpp:24] r.index 81 BWM, r.score 0.00241711
+I0419 01:19:03.748770  8622 process_result.hpp:24] r.index 39 Toyota, r.score 0.000889205
+I0419 01:19:03.748911  8622 process_result.hpp:24] r.index 150 GreatWall, r.score 0.00032712
 
     sample : ./test_jpeg_vehicleclassification vehicle_type_resnet18_pt sample_vehicleclassification.jpg
     output :
-I0109 19:12:19.121683  1404 demo.hpp:1193] batch: 0     image: sample_vehicle_type.jpg
-I0109 19:12:19.121739  1404 process_result.hpp:24] r.index 6 Sedan r.score 0.975803
-I0109 19:12:19.154119  1404 process_result.hpp:24] r.index 3 Hatchback, r.score 0.0178725
-I0109 19:12:19.154208  1404 process_result.hpp:24] r.index 2 Coupe, r.score 0.00512054
-I0109 19:12:19.154274  1404 process_result.hpp:24] r.index 5 Minivan, r.score 0.00114255
-I0109 19:12:19.154336  1404 process_result.hpp:24] r.index 1 Convertible, r.score 3.4502e-05
-
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0419 01:19:15.925132  8623 demo.hpp:1183] batch: 0     image: sample_vehicleclassification.jpg
+I0419 01:19:15.925496  8623 process_result.hpp:24] r.index 3 hatchback, r.score 0.866754
+I0419 01:19:15.925770  8623 process_result.hpp:24] r.index 5 fastback, r.score 0.117302
+I0419 01:19:15.925938  8623 process_result.hpp:24] r.index 2 sedan, r.score 0.0158751
+I0419 01:19:15.926102  8623 process_result.hpp:24] r.index 11 convertible r.score 6.48781e-05
+I0419 01:19:15.926282  8623 process_result.hpp:24] r.index 1 SUV, r.score 3.23009e-06
 
 Performance: 
     ./test_performance_vehicleclassification vehicle_make_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thread> 

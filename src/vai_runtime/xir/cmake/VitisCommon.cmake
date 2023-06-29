@@ -16,6 +16,11 @@
 
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_C_STANDARD 99)
+
+if(IS_DISTRIBUTION)
+  set(extra_cxx_flags "-Wno-maybe-uninitialized")
+endif(IS_DISTRIBUTION)
+
 if (MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
    # too many warning about DLL interface because of protobuf/stubs/status.h
@@ -27,7 +32,7 @@ if (MSVC)
 
 else(MSVC)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -ggdb -O0 -fno-inline")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -Werror")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall -Werror ${extra_cxx_flags}")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 	set(CMAKE_EXE "${CMAKE_C_FLAGS} -Wall -Werror")

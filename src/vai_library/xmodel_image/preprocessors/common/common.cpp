@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ void XmodelPreprocessorCommon::process(
     const std::vector<vitis::ai::Mat>& image_buffers,
     vart::TensorBuffer* tensor_buffer) {
   auto batch_index = 0u;
-  for (auto input : image_buffers) {
+  for (auto& input : image_buffers) {
     cv::Mat cv_input(input.rows, input.cols, input.type, input.data,
                      input.step);
     // auto data = vart::get_tensor_buffer_data(tensor_buffer, batch_index);

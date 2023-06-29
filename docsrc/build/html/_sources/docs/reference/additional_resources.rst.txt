@@ -1,3 +1,5 @@
+.. _additional_resources:
+
 Technical Support
 ==================
 
@@ -6,7 +8,7 @@ There are multiple avenues available to obtain technical support for Vitis |trad
 	- You can search for answers and post questions on the `Vitis AI Forum <https://support.xilinx.com/s/topic/0TO2E000000YKY9WAO/vitis-ai-ai>`__\.
 	- You can contact your local sales or FAE `contact <https://www.xilinx.com/about/contact.html>`__.
 	- If you have access, you can open a formal `service request <https://www.xilinx.com/support.html#serviceportal>`__.
-
+	- If all else fails, please `email us <amd_ai_mkt@amd.com>`__.
 
 Additional Resources
 =====================

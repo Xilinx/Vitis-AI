@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ void parseImage(vitis::ai::OpenPose *openpose, const vector<cv::Mat> &img,
 std::string get_single_name(const std::string &line);
 int main(int argc, char *argv[]) {
   auto openpose = vitis::ai::OpenPose::create("openpose_pruned_0_3");
+  if (!openpose) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   size_t batch = openpose->get_input_batch();
   std::ofstream out_fs(argv[2], std::ofstream::out);
   std::ifstream fs(argv[1]);

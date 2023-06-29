@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications Copyright (C) 2022 Advanced Micro Devices, Inc. All Rights
+ * Reserved.
  */
 
 #ifndef USE_JSON_C
-#define USE_JSON_C 1
+#  define USE_JSON_C 1
 #endif
 #if USE_JSON_C
-#include <json-c/json.h>
+#  include <json-c/json.h>
 #endif
+#include <glog/logging.h>
 
 #include <UniLog/UniLog.hpp>
 #include <filesystem>
@@ -53,7 +57,7 @@ static std::string guess_plugin_name(const std::string& name) {
 }
 
 #if USE_JSON_C
-//# Bring back older meta json read utility functions
+// # Bring back older meta json read utility functions
 static std::string safe_read_string_with_default(
     json_object* value, const std::string& key,
     const std::string& default_value) {
@@ -154,7 +158,7 @@ static DpuMeta read_dpu_meta_from_value(json_object* value,
   return ret;
 }
 
-//# Read meta info from json and call to DPUV1 runner
+// # Read meta info from json and call to DPUV1 runner
 static std::vector<std::unique_ptr<vart::Runner>>* create_dpu_runner_by_meta(
     const DpuMeta& dpuMeta) {
   typedef std::vector<std::unique_ptr<vart::Runner>>* (*INIT_FUN)(
@@ -172,7 +176,7 @@ static std::vector<std::unique_ptr<vart::Runner>>* create_dpu_runner_by_meta(
   return init_fun(dpuMeta);
 }
 
-//# Method overload for DPUV1
+// # Method overload for DPUV1
 std::vector<std::unique_ptr<Runner>> Runner::create_runner(
     const std::string& model_directory) {
   auto value = read_json_from_directory(model_directory);
@@ -186,7 +190,7 @@ std::vector<std::unique_ptr<Runner>> Runner::create_runner(
 }
 #endif  // USE_JSON_C
 
-//# Runner DPUV2
+// # Runner DPUV2
 std::unique_ptr<Runner> Runner::create_runner(const xir::Subgraph* subgraph,
                                               const std::string& mode) {
   UNI_LOG_CHECK(subgraph != nullptr, VART_RUNNER_CONSTRUCTION_FAIL)
@@ -216,7 +220,7 @@ std::unique_ptr<Runner> Runner::create_runner(const xir::Subgraph* subgraph,
   return std::unique_ptr<vart::Runner>(init_fun(subgraph));
 }
 
-//# Runner
+// # Runner
 
 std::unique_ptr<Runner> Runner::create_runner_with_attrs(
     const xir::Subgraph* subgraph, xir::Attrs* attrs) {

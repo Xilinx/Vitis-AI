@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="namespacewait" kind="namespace" language="Python">
+    <compoundname>wait</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacewait_1a9dd979228e0a14a50ef3e2ee0206a5f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>wait</definition>
+        <argsstring>(jobid_time)</argsstring>
+        <name>wait</name>
+        <qualifiedname>wait.wait</qualifiedname>
+        <param>
+          <type>jobid_time</type>
+          <defname>jobid_time</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/wait.py" line="15" column="1" bodyfile="pydoc/wait.py" bodystart="15" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Waits for the end of DPU processing. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>modes:<orderedlist>
+<listitem><para>Blocking wait for specific ID.</para>
+</listitem><listitem><para>Non-blocking wait for specific ID.</para>
+</listitem><listitem><para>Blocking wait for any ID.</para>
+</listitem><listitem><para>Non-blocking wait for any ID</para>
+</listitem></orderedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jobid_time</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>tuple[uint32_t, int], [job id, time], jobid: neg for any id, others for specific job id. time: not used here</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <location file="pydoc/wait.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

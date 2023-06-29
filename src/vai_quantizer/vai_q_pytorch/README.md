@@ -5,9 +5,8 @@ vai_q_pytorch is short for Vitis AI Quantizer for Pytorch. It is a tool for neur
 vai_q_pytorch is designed as a part of a standard platform for neural network deep compression. Base on this architecture, working stages of vai_q_pytorch follows:<br>
     1.  Parse neural network computation graph from Pytorch framework to Intermediate Representation (IR).<br>
     2.  Modify the computation graph based on IR. Pruning, quantization and graph optimization are handled in this stage.<br>
-    3.  Deploy the modified IR on different platform, such as DPU and Xilinx AI Engine.<br>
+    3.  Deploy the modified IR on different platform, such as DPU and AMD AI Engine.<br>
     4.  Assemble the modified computation graph back to Pytorch. In that way abilities and tools in Pytorch such as pre-processing, post processing and distribution system can be used.<br>
-
 
 ### Supported and Limitation
 
@@ -15,20 +14,19 @@ vai_q_pytorch is designed as a part of a standard platform for neural network de
 1. Support version 3.6 ~ 3.9. 
     
 * Pytorch
-1. Support version 1.1 ~ 1.12. 
+1. Support version 1.1 ~ 1.13, 2.0. 
 2. QAT does NOT work with pytorch 1.1 ~ 1.3.
 3. Data Parallelism is NOT supported.
     
 * Models
 1. Classification Models in Torchvision. 
-2. Pytorch models in Xilinx Modelzoo. 
-3. LSTM models (standard LSTM and customized LSTM)
+2. Pytorch models in AMD Modelzoo. 
 
 ### Quick Start in Docker environment
 
-If you work in Vitis-AI 3.0 version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
-In this conda environment, python version is 3.7, pytorch version is 1.12 and torchvision version is 0.13. You can directly start our "resnet18" example without installation steps.
-A new Conda environment with a specified PyTorch version (1.2~1.12) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/common/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
+If you work in Vitis-AI 3.5 and later version of docker, there is a conda environment "vitis-ai-pytorch", in which vai_q_pytorch package is already installed. 
+In this conda environment, python version is 3.8, pytorch version is 1.13 and torchvision version is 0.14. You can directly start our "resnet18" example without installation steps.
+A new Conda environment with a specified PyTorch version (1.2~1.13, 2.0) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/common/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
@@ -74,7 +72,7 @@ For CPU version, remove all CUDA_HOME environment variable setting in your .bash
 
     unset CUDA_HOME
 
-##### Pre step 2: install Pytorch(1.1-1.12.1) and torchvision
+##### Pre step 2: install Pytorch(1.1-1.13, 2.0) and torchvision
 Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructions for other versions are in [pytorch](https://pytorch.org/) website.
 
     pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
@@ -82,7 +80,7 @@ Here take pytorch 1.7.1 and torchvision 0.8.2 as an example, detailed instructio
 ##### Pre step 3: install other dependencies
     pip install -r requirements.txt 
 
-##### Now install the main component:
+##### Now install the main component
 For user NOT change the code frequently, install with commands:
 
     cd ./pytorch_binding; python setup.py install 
@@ -91,12 +89,12 @@ For user WILL change the code frequently, install with commands:
 
     cd ./pytorch_binding; python setup.py develop 
 
-##### Verify the installation:
+##### Verify the installation
 If the following command line does not report error, the installation is done.
 
     python -c "import pytorch_nndct"
 
-To create deployed model, XIR library needs to be installed. If just run quantization and check the accuracy, this is not must. 
+To create deployed XIR format model, XIR library needs to be installed. If just run quantization and check the accuracy, this is not must. 
 Refer to Vitis AI document for more information on deployment.
 
 **Note:**<br>
@@ -118,6 +116,7 @@ These functions usually work as pre-processing and post-processing. If they are 
 our API will remove them in our quantized module, which will cause unexpected behavior when forwarding quantized module. <br>
 - The float model should pass "jit trace test". First set the float module to evaluation status, then use “torch.jit.trace” function to test the float model. Make sure the float module can pass the trace test.For more details, please refer to example/jupyter_notebook/jit_trace_test/jit_trace_test.ipynb.<br>
 - The most common operators in pytorch are supported in quantizer, please refer to [support_op.md](doc/support_op.md) for details.
+
 ##### Inspect float model before quantization
 Vai_q_pytorch provides a function called inspector to help users diagnose neural network (NN) models under different device architectures. The inspector can predict target device assignments based on hardware constraints.The generated inspection report can be used to guide  users to modify or optimize the NN model, greatly reducing the difficulty and time of deployment. It is recommended to inspect float models before quantization.
 
@@ -163,7 +162,7 @@ Quantize calibration determines "quantize" op parameters in evaluation process i
 After calibration, we can evaluate quantized model by setting quant_mode to "test".
 
 Take resnet18_quant.py to demonstrate how to add vai_q_pytorch APIs in float code. 
-Xilinx [Pytorch Modelzoo](https://github.com/Xilinx/AI-Model-Zoo) includes float model and quantized model.
+AMD [Pytorch Modelzoo](https://github.com/Xilinx/AI-Model-Zoo) includes float model and quantized model.
 It is a good idea to check the difference between float and quantized script, like "code/test.py" and "quantize/quant.py" in ENet.
 
 1. Import vai_q_pytorch modules <br>
@@ -413,6 +412,38 @@ quantizer = torch_quantizer(quant_mode=quant_mode,
   python resnet18_quant.py --quant_mode test --target DPUCAHX8L_ISA0_SP --subset_len 1 --batch_size 1 --deploy
 
   ```
+  
+##### Inference of quantized model
+- Inference of quantized model in xmodel format. The quantized model in xmodel format can not run with any tool at present.
+- Inference of quantized model in torchscript format. We can run the quantized model in torchscript format, which is a *.pt* file, in PyTorch framework. The module *pytorch_nndct* has to be imported before inference because it sets up quantized operators used in this model.
+```py
+  import pytorch_nndct
+
+  model = torch.jit.load(model_path)
+  output = model(input)
+```
+- Inference of quantized model in onnx format. We can run the quantized model in onnx format by employing onnxruntime/onnxruntime_extensions APIs. 
+
+For onnx model with native QuantizeLinear/DequantizeLinear operators, we can run the model using onnxruntime.
+```py
+  import onnxruntime as ort
+
+  ort_sess = ort.InferenceSession(onnx_path)
+  ort_output = ort_sess.run(None, {ort_sess.get_inputs()[0].name: input_data})
+```
+For onnx model with VAI QuantizeLinear/DequantizeLinear operators, we need to set up custom operators first and then run the model using onnxruntime_extensions. The setting up can be done by function *load_vai_ops()*, which is imported from pytorch_nndct.
+```py
+  from onnxruntime_extensions import PyOrtFunction
+  from pytorch_nndct.apis import load_vai_ops
+
+  ## load custom ops before inference
+  load_vai_ops()
+
+  # run using onnxruntime_extensions API
+  run_ort = PyOrtFunction.from_model(onnx_path)
+  ort_output = run_ort(input)
+```
+  
 ### vai_q_pytorch main APIs
 
 The APIs for CNN are in module [pytorch_binding/pytorch_nndct/apis.py](pytorch_binding/pytorch_nndct/apis.py):
@@ -427,7 +458,7 @@ class torch_quantizer():
                output_dir: str = "quantize_result",
                bitwidth: int = 8,
                device: torch.device = torch.device("cuda"),
-               quant_config_file: Optional[str] = None,
+	       quant_config_file: Optional[str] = None,
                target: Optional[str]=None):
 
 ```
@@ -449,27 +480,41 @@ class torch_quantizer():
 ```py
   def export_xmodel(self, output_dir, deploy_check):
 ```
-    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”
+    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”.
     Depoly_check: Flags to control dump of data for detailed data comparison. Default is False. If it is set to True, binary format data will be dumped to output_dir/deploy_check_data_int/.
-##### Export onnx format quantized model
+##### Export quantized model in onnx format
+Since native onnx only supports INT8 quantization and half-even roundings, other bits of quantization and many more rounding methods (such as half-up, toward zero) used in Vitis-AI Quantizer can not be exported when converting to onnx models. Therefore, we develop vai::QuantizeLinear and vai::DequantizeLinear to replace the corresponding native onnx operators when exporting onnx models. 
+The difference between native onnx QuantizeLinear and the VAI counterpart is as follows. The native onnx DequantizeLinear and VAI counterpart are the same, which is *(x, x_scale, x_zero_point)*. 
+  - *QuantizeLinear*: 
+    - onnx has input list *(x, y_scale, y_zero_point)*.
+    - VAI has input list *(x, valmin, valmax, scale, zero_point, method)*, where, valmin and valmax are quantization intervals, for example, valmin=-128 and valmax=127 for INT8 symmetric quantization, and method is a rounding way which can be half-even, half-up, down, up, toward zero, away from zero, et.al..
+
+We can get native Quant-Dequant onnx model if we set *native_onnx=True* in the following definition. Otherwise, we get custom Quant-Dequant onnx model which has VAI QuantizeLinear and DequantizeLinear operators. The default value is *True*.
 ```py
-  def export_onnx_model(self, output_dir, verbose):
+  def export_onnx_model(self, output_dir="quantize_result", verbose=False, dynamic_batch=False, opset_version=None, native_onnx=True, dump_layers=False, check_model=False, opt_graph=False):
 ```
-    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”
-    Verbose: Flag to control showing verbose log or no
-##### Export torchscript format quantized model
+    output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”.
+    verbose: Flag to control showing verbose log or no.
+    dynamic_batch: A bool value to set the batch-size of the input shape dynamic or not. Default is False.
+    opset_version: The version of the default (ai.onnx) opset to target. If not set, it will be valued the latest version that is stable for the current version of PyTorch.
+    native_onnx: Export onnx model with native Quant-Dequant operators or custom Quant-Dequant ones. If set True, we get onnx model with native QuantizeLinear and DequantizeLinear operators. Otherwise, we get the model with VAI QuantizeLinear and DequantizeLinear operators. Default is True.
+    dump_layers: Dump output of each layer in onnx model during runtime. Default is False.
+    check_model: Check the difference of outputs between xmodel and onnx model. Default is False.
+    opt_graph: Optimize onnx graph. Default is False.
+    
+##### Export quantized model in torchscript format
 ```py
   def export_torch_script(self, output_dir="quantize_result", verbose=False):
 ```
-    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”
-    Verbose: Flag to control showing verbose log or not
+    Output_dir: Directory for quantization result and intermediate files. Default is “quantize_result”.
+    Verbose: Flag to control showing verbose log or not.
 
 ##### Create a inspector
 ```py
 class Inspector():
   def __init__(self, name_or_fingerprint: str):
 ```
-    name_or_fingerprint: Specify the hardware target name or fingerprint
+    name_or_fingerprint: Specify the hardware target name or fingerprint.
 ##### Inspect float model
 ```py
   def inspect(self, 
@@ -483,12 +528,9 @@ class Inspector():
     module: Float module to be depolyed
     input_args: Input tensor with the same shape as real input of float module, but the values can be random number.    
     device: Trace model on GPU or CPU.
-    output_dir: Directory for inspection results
+    output_dir: Directory for inspection results.
     verbose_level: Control the level of detail of the inspection results displayed on the screen. Defaut:1
         0: turn off printing inspection results.
         1: print summary report of operations assigned to CPU.
         2: print summary report of device allocation of all operations.
     image_format: Export visualized inspection result. Support 'svg' / 'png' image format.
-
-
-

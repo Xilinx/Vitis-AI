@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,12 +37,17 @@ static xir_subgraph_t find_subgraph(xir_graph_t graph, const char* name) {
   return ret;
 }
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
 int main(int argc, char* argv[]) {
   const char* filename = argv[1];
   const char* kernel = argv[2];
   const char* input_file = argv[3];
   int runner_num = atoi(argv[4]);
+  runner_num = MIN(100, MAX(0, runner_num));
   int count = atoi(argv[5]);
+  count = MIN(100, MAX(0, count));
   vart_runner_t runners[count];
   xir_graph_t graph = xir_graph_deserialize(filename);
   xir_subgraph_t subgraph = find_subgraph(graph, kernel);

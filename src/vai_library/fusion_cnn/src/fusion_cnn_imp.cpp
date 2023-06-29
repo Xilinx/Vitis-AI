@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -430,9 +430,9 @@ std::tuple<V1F, V1I, unsigned int> get_overlaps_and_indexes(
 
 static void print_result(DetectResult& result) {
   std::cout << "DetectResult: " << std::endl;
-  for (auto box : result.bboxes) {
+  for (auto& box : result.bboxes) {
     std::cout << "score: " << box.score << "\t bbox: ";
-    for (auto coordinate : box.bbox) {
+    for (auto& coordinate : box.bbox) {
       std::cout << coordinate << " ";
     }
     std::cout << std::endl;

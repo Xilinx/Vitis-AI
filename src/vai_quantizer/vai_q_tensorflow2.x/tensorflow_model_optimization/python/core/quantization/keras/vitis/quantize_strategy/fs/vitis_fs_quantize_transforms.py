@@ -30,6 +30,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers i
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_conv_bn
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.graph_transformations import transforms
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import model_utils
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_optimize_transforms
 
 activations = tf.keras.activations
@@ -133,9 +134,9 @@ class LayersQuantize(transforms.Transform):
             info_msg.format(_get_act_type(layer_node), layer_node['name']))
         return match_layer
     if layer_node['class_name'] == 'TensorFlowOpLayer':
-      layer = self.input_model.get_layer(layer_node['name'])
+      layer = model_utils.get_layer(self.input_model, layer_node['name'])
     else:
-      layer = self.input_model.get_layer(layer_node['config']['name'])
+      layer = model_utils.get_layer(self.input_model, layer_node['config']['name'])
     if not quantize_config and self.quantize_registry.supports(layer):
       quantize_config = self.quantize_registry.get_quantize_config(layer)
 
@@ -412,9 +413,9 @@ class NoQuantInConvAct(transforms.Transform):
     conv_layer_node = act_layer_node.input_layers[0]
     conv_metadata = conv_layer_node.metadata
 
-    act_layer = self.input_model.get_layer(
+    act_layer = model_utils.get_layer(self.input_model,
         act_layer_node.layer['config']['name'])
-    conv_layer = self.input_model.get_layer(
+    conv_layer = model_utils.get_layer(self.input_model,
         conv_layer_node.layer['config']['name'])
 
     # No need to annotate if conv or act not quantizable
@@ -491,9 +492,9 @@ class NoQuantInAddAct(transforms.Transform):
     add_layer_node = act_layer_node.input_layers[0]
     add_metadata = add_layer_node.metadata
 
-    act_layer = self.input_model.get_layer(
+    act_layer = model_utils.get_layer(self.input_model,
         act_layer_node.layer['config']['name'])
-    add_layer = self.input_model.get_layer(
+    add_layer = model_utils.get_layer(self.input_model,
         add_layer_node.layer['config']['name'])
 
     # No need to annotate if add/mul or act not quantizable

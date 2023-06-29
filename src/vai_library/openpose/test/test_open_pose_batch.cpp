@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
   }
 
   auto det = vitis::ai::OpenPose::create(argv[1]);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   // input process
   vector<cv::Mat> arg_input_images;

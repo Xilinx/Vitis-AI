@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,7 +156,7 @@ static void report_step(std::ostream* p_out) {
 }
 
 template <typename T>
-inline int main_for_performance(int argc, char* argv[], T factory_method) {
+inline int main_for_performance(int argc, char* argv[], const T& factory_method) {
   parse_opt(argc, argv);
   ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME) = 1;
   auto lazy_load_image = false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,10 @@ int main(int argc, char *argv[]) {
     abort();
   }
   auto net = vitis::ai::Monodepth2::create(argv[1]);  (void)net;
+  if (!net) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   std::vector<std::string> vlist;
   LoadListNames( std::string(argv[2]), vlist);
 

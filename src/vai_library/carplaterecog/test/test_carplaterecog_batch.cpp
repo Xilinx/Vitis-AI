@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
     abort();
   }
   auto det = vitis::ai::CarPlateRecog::create(argv[1], argv[2], argv[3], true);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   int width = det->getInputWidth();
   int height = det->getInputHeight();
   std::cout << "width " << width << " "    //

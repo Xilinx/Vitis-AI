@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.7" xml:lang="en-US">
+  <compounddef id="runner__ext_8hpp" kind="file" language="C++">
+    <compoundname>runner_ext.hpp</compoundname>
+    <includes refid="runner_8hpp" local="no">vart/runner.hpp</includes>
+    <innerclass refid="classvart_1_1_runner_ext" prot="public">vart::RunnerExt</innerclass>
+    <innernamespace refid="namespacevart">vart</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="runner__ext_8hpp_1aa2ff67cf35b11a599daa3bbe56eccc61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt; float &gt; get_input_scale</definition>
+        <argsstring>(std::vector&lt; const xir::Tensor * &gt; input_tensors)</argsstring>
+        <name>get_input_scale</name>
+        <qualifiedname>vart::get_input_scale</qualifiedname>
+        <param>
+          <type>std::vector&lt; const xir::Tensor * &gt;</type>
+          <declname>input_tensors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="74" column="13" declfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="74" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1af74effe5ea0387f488f1736f47aef08e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt; float &gt; get_output_scale</definition>
+        <argsstring>(std::vector&lt; const xir::Tensor * &gt; output_tensors)</argsstring>
+        <name>get_output_scale</name>
+        <qualifiedname>vart::get_output_scale</qualifiedname>
+        <param>
+          <type>std::vector&lt; const xir::Tensor * &gt;</type>
+          <declname>output_tensors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="76" column="13" declfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="76" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1aee651886d01ebf5100dbfa007a77cab2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float get_input_scale</definition>
+        <argsstring>(const xir::Tensor *input_tensor)</argsstring>
+        <name>get_input_scale</name>
+        <qualifiedname>vart::get_input_scale</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>input_tensor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="78" column="7" declfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="78" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1a0b14c48cfb263e47cd0652bb2eb9e6a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float get_output_scale</definition>
+        <argsstring>(const xir::Tensor *output_tensor)</argsstring>
+        <name>get_output_scale</name>
+        <qualifiedname>vart::get_output_scale</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>output_tensor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="79" column="7" declfile="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="79" declcolumn="7"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>2022-2023<sp/>Advanced<sp/>Micro<sp/>Devices<sp/>Inc.</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>Licensed<sp/>under<sp/>the<sp/>Apache<sp/>License,<sp/>Version<sp/>2.0<sp/>(the<sp/>&quot;License&quot;);</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>you<sp/>may<sp/>not<sp/>use<sp/>this<sp/>file<sp/>except<sp/>in<sp/>compliance<sp/>with<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>You<sp/>may<sp/>obtain<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>License<sp/>at</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/>http://www.apache.org/licenses/LICENSE-2.0</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>Unless<sp/>required<sp/>by<sp/>applicable<sp/>law<sp/>or<sp/>agreed<sp/>to<sp/>in<sp/>writing,<sp/>software</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>distributed<sp/>under<sp/>the<sp/>License<sp/>is<sp/>distributed<sp/>on<sp/>an<sp/>&quot;AS<sp/>IS&quot;<sp/>BASIS,</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>WITHOUT<sp/>WARRANTIES<sp/>OR<sp/>CONDITIONS<sp/>OF<sp/>ANY<sp/>KIND,<sp/>either<sp/>express<sp/>or<sp/>implied.</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*<sp/>See<sp/>the<sp/>License<sp/>for<sp/>the<sp/>specific<sp/>language<sp/>governing<sp/>permissions<sp/>and</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>limitations<sp/>under<sp/>the<sp/>License.</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vart/runner.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">vart<sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">RunnerExt<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classvart_1_1_runner" kindref="compound">vart::Runner</ref><sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">explicit</highlight><highlight class="normal"><sp/>RunnerExt()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/>RunnerExt(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RunnerExt&amp;)<sp/>=<sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/>RunnerExt&amp;<sp/>operator=(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>RunnerExt&amp;<sp/>other)<sp/>=<sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>~RunnerExt()<sp/>=<sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::unique_ptr&lt;RunnerExt&gt;<sp/><ref refid="namespacecreate__runner" kindref="compound">create_runner</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>xir::Subgraph*<sp/>subgraph,</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xir::Attrs*<sp/>attrs);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::vector&lt;vart::TensorBuffer*&gt;<sp/><ref refid="namespaceget__inputs" kindref="compound">get_inputs</ref>()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::vector&lt;vart::TensorBuffer*&gt;<sp/><ref refid="namespaceget__outputs" kindref="compound">get_outputs</ref>()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal">std::vector&lt;float&gt;<sp/>get_input_scale(</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;const<sp/>xir::Tensor*&gt;<sp/>input_tensors);</highlight></codeline>
+<codeline lineno="76"><highlight class="normal">std::vector&lt;float&gt;<sp/>get_output_scale(</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;const<sp/>xir::Tensor*&gt;<sp/>output_tensors);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>get_input_scale(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>xir::Tensor*<sp/>input_tensor);</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>get_output_scale(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>xir::Tensor*<sp/>output_tensor);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vart</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/arhind/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp"/>
+  </compounddef>
+</doxygen>

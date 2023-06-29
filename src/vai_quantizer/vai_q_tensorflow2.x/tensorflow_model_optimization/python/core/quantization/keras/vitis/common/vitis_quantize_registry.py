@@ -60,9 +60,9 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         layer_module = importlib.import_module(module_name)
         layer_type = getattr(layer_module, layer_name)
     except Exception as e:
-        logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
-                     'Fail to parse layer type `{}`, error: {}'.format(
-          layer_type_str, e))
+      logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
+                   'Fail to parse layer type `{}`, error: {}'.format(
+                       layer_type_str, e))
     return layer_type
 
   def _parse_layer_quantize_config(self, config):
@@ -113,13 +113,17 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         logger.debug('Override default {} of {}({})\'s {}: {} -> {}'.format(
             user_key, layer_name, layer_type, name, local_value, user_value))
 
-    def _override_activation_unsigned(quantizer,
+    def _override_quantizer_params_unsigned(quantizer,
                                       user_config,
                                       user_key,
                                       local_key,
                                       name='',
                                       relu_like=False):
-      ''' Non relu-like layer cannot set unsigned when symmetry quantization'''
+      """Unsigned option cannot be set for non relu-like layer when symmetry"""
+      if not (name == 'activation' or name == 'output'):
+        return _override_quantizer_params(quantizer, user_config, user_key,
+                local_key, name)
+
       symmetry_value = quantizer['quantizer_params'].get('symmetry', None)
       unsigned_value = user_config.get('activation_unsigned', None)
       if None not in [
@@ -133,8 +137,37 @@ class VitisQuantizeRegistry(QuantizeRegistry):
         _override_quantizer_params(quantizer, user_config, user_key, local_key,
                                    name)
 
+    def _override_quantizer_dataformat(quantizer,
+                                       user_config,
+                                       key):
+      user_value = user_config.get(key, None)
+      local_value = quantizer['quantizer_params'].get(key, None)
+      if None not in [
+          user_value, local_value
+      ] and quantizer['quantizer_params'][key] != user_value and (local_value not in ['fp32', 'bf16']):
+        quantizer['quantizer_params'][key] = user_value
+        logger.debug('Override default {} of {}({})\'s {}: {} -> {}'.format(
+            key, layer_name, layer_type, key, local_value, user_value))
+
+    def _override_quantizer_use_fixneuron(quantizer,
+                                   user_config,
+                                   user_key,
+                                   local_key,
+                                   name=''):
+      """Determine using fixneuron to quantize weights or not"""
+      _override_quantizer_params(quantizer, user_config, user_key, local_key,
+                                   name)
+
+      local_value = quantizer['quantizer_params'].get(local_key, None)
+      if local_value is not None and local_value > 0:
+        if name == 'weight' or name == 'bias':
+          quantizer['quantizer_params'][local_key] = 2
+        else:
+          quantizer['quantizer_params'][local_key] = 1
+
     quantizer = layer_config.get('input_quantizer')
     if quantizer:
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
       _override_quantizer_params(quantizer, user_config, 'input_bit',
                                  'bit_width', 'input')
       _override_quantizer_params(quantizer, user_config, 'input_method',
@@ -148,12 +181,35 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                  'symmetry', 'input')
       _override_quantizer_params(quantizer, user_config, 'input_round_mode',
                                  'round_mode', 'input')
-      _override_quantizer_params(quantizer, user_config, 'input_unsigned',
+      _override_quantizer_params_unsigned(quantizer, user_config, 'input_unsigned',
                                  'unsigned', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_narrow_range',
+                                 'narrow_range', 'input')
+      _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
+                                 'use_framework_quant', 'input')
+      _override_quantizer_use_fixneuron(quantizer, user_config, 'use_fixneuron_quant',
+                                 'use_fixneuron_quant', 'input')
+
+    for quantizer in layer_config.get('input_quantizers', []):
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
+      _override_quantizer_params(quantizer, user_config, 'input_bit',
+                                 'bit_width', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_method',
+                                 'method', 'input')
+      _override_quantizer_params(quantizer, user_config,
+                                 'input_method_percentile',
+                                 'method_percentile', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_per_channel',
+                                 'per_channel', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_symmetry',
+                                 'symmetry', 'input')
+      _override_quantizer_params(quantizer, user_config, 'input_round_mode',
+                                 'round_mode', 'input')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'input')
 
     for quantizer in layer_config.get('weight_quantizers', []):
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
       _override_quantizer_params(quantizer, user_config, 'weight_bit',
                                  'bit_width', 'weight')
       _override_quantizer_params(quantizer, user_config, 'weight_method',
@@ -164,12 +220,17 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                  'symmetry', 'weight')
       _override_quantizer_params(quantizer, user_config, 'weight_round_mode',
                                  'round_mode', 'weight')
-      _override_quantizer_params(quantizer, user_config, 'weight_unsigned',
+      _override_quantizer_params_unsigned(quantizer, user_config, 'weight_unsigned',
                                  'unsigned', 'weight')
+      _override_quantizer_params(quantizer, user_config, 'weight_narrow_range',
+                                 'narrow_range', 'weight')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'weight')
+      _override_quantizer_use_fixneuron(quantizer, user_config, 'use_fixneuron_quant',
+                                 'use_fixneuron_quant', 'weight')
 
     for quantizer in layer_config.get('bias_quantizers', []):
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
       _override_quantizer_params(quantizer, user_config, 'bias_bit',
                                  'bit_width', 'bias')
       _override_quantizer_params(quantizer, user_config, 'bias_method',
@@ -180,12 +241,17 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                  'symmetry', 'bias')
       _override_quantizer_params(quantizer, user_config, 'bias_round_mode',
                                  'round_mode', 'bias')
-      _override_quantizer_params(quantizer, user_config, 'bias_unsigned',
+      _override_quantizer_params_unsigned(quantizer, user_config, 'bias_unsigned',
                                  'unsigned', 'bias')
+      _override_quantizer_params(quantizer, user_config, 'bias_narrow_range',
+                                 'narrow_range', 'bias')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'bias')
+      _override_quantizer_use_fixneuron(quantizer, user_config, 'use_fixneuron_quant',
+                                 'use_fixneuron_quant', 'bias')
 
     for quantizer in layer_config.get('activation_quantizers', []):
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
       _override_quantizer_params(quantizer, user_config, 'activation_bit',
                                  'bit_width', 'activation')
       _override_quantizer_params(quantizer, user_config, 'activation_method',
@@ -201,13 +267,19 @@ class VitisQuantizeRegistry(QuantizeRegistry):
       _override_quantizer_params(quantizer, user_config,
                                  'activation_round_mode', 'round_mode',
                                  'activation')
-      _override_activation_unsigned(quantizer, user_config,
+      _override_quantizer_params_unsigned(quantizer, user_config,
                                     'activation_unsigned', 'unsigned',
                                     'activation', layer_relulike)
+      _override_quantizer_params(quantizer, user_config,
+                                 'activation_narrow_range', 'narrow_range',
+                                 'activation')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'activation')
+      _override_quantizer_use_fixneuron(quantizer, user_config, 'use_fixneuron_quant',
+                                 'use_fixneuron_quant', 'activation')
 
     for quantizer in layer_config.get('output_quantizers', []):
+      _override_quantizer_dataformat(quantizer, user_config, 'data_format')
       _override_quantizer_params(quantizer, user_config, 'activation_bit',
                                  'bit_width', 'output')
       _override_quantizer_params(quantizer, user_config, 'activation_method',
@@ -223,11 +295,16 @@ class VitisQuantizeRegistry(QuantizeRegistry):
       _override_quantizer_params(quantizer, user_config,
                                  'activation_round_mode', 'round_mode',
                                  'output')
-      _override_activation_unsigned(quantizer, user_config,
+      _override_quantizer_params_unsigned(quantizer, user_config,
                                     'activation_unsigned', 'unsigned', 'output',
                                     layer_relulike)
+      _override_quantizer_params(quantizer, user_config,
+                                 'activation_narrow_range', 'narrow_range',
+                                 'output')
       _override_quantizer_params(quantizer, user_config, 'use_framework_quant',
                                  'use_framework_quant', 'output')
+      _override_quantizer_use_fixneuron(quantizer, user_config, 'use_fixneuron_quant',
+                                 'use_fixneuron_quant', 'output')
 
     return layer_config
 
@@ -362,7 +439,8 @@ class VitisQuantizeRegistry(QuantizeRegistry):
                                        self._relu_like_layer(layer))
 
     # Should never come here.
-    logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]''Invalid Layer type {}'.format(layer.__class__))
+    logger.error('[Quantizer_TF2_Unsupported_Layer][Unsupported layer type]'
+                 'Invalid Layer type {}'.format(layer.__class__))
 
   def _get_layer_limits(self, layer_type):
     """Return the layer limits for the given layer_type."""

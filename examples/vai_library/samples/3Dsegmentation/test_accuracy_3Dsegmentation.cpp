@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,10 +96,15 @@ using namespace vitis::ai;
 int main(int argc, char *argv[]) {
   // bool preprocess = !(getenv("PRE") != nullptr);
   auto det = vitis::ai::Segmentation3D::create(argv[1], false);
+  if (!det) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
+
   vector<string> names;
   LoadImageNames(argv[2], names);
   string out_dir = argv[3];
-  for (auto name : names) {
+  for (auto& name : names) {
     vector<vector<float>> arrays(4);
     auto namesp = split(name, "-");
     auto path = namesp[0];

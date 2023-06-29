@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -149,7 +149,7 @@ vai_add_test(compare_float_bin)
 vai_add_test(test_experimental)
 vai_add_test(show_binary_image)
 vai_add_test(check_supported_op)
-target_link_libraries(check_supported_op -ldl)
+# target_link_libraries(check_supported_op -ldl)
 vai_add_test(generate_xir_op_imp)
 
 add_test(

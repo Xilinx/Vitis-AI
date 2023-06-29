@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,7 +143,7 @@ class Tensor {
   [
       [deprecated("Tensor::get_dim_num() will be removed in the future "
                   "version. Please use the Tensor::get_shape().get_size() "
-                  "instead.")]] virtual const std::int32_t
+                  "instead.")]] virtual std::int32_t
   get_dim_num() const = 0;
 
   /**
@@ -157,7 +157,7 @@ class Tensor {
   [[deprecated(
       "Tensor::get_dim_size(std::int32_t idx) will be removed in the future "
       "version. Please use the Tensor::get_shape().at(idx) "
-      "instead.")]] virtual const std::int32_t
+      "instead.")]] virtual std::int32_t
   get_dim_size(std::int32_t idx) const = 0;
 
   /**
@@ -165,7 +165,7 @@ class Tensor {
    *
    * @return The number of data.
    */
-  virtual const std::int32_t get_element_num() const = 0;
+  virtual std::int64_t get_element_num() const = 0;
 
   /**
    * @brief Get the data type of the current Tensor object.
@@ -183,7 +183,7 @@ class Tensor {
   [[deprecated(
       "Tensor::get_bit_width() API will be removed in the future version, "
       "please use the Tensor::get_data_type() API to get the data type and "
-      "read the bit width information in it.")]] virtual const std::int32_t
+      "read the bit width information in it.")]] virtual std::int32_t
   get_bit_width() const = 0;
 
   /**
@@ -191,7 +191,7 @@ class Tensor {
    *
    * @return Number of elements.
    */
-  virtual const std::int32_t get_data_size() const = 0;
+  virtual std::uint64_t get_data_size() const = 0;
 
   /**
    * @brief Get the Attrs object of the current Tensor object.
@@ -214,7 +214,7 @@ class Tensor {
    *
    * @return True if exist, else false.
    */
-  virtual const bool has_attr(const std::string& key) const = 0;
+  virtual bool has_attr(const std::string& key) const = 0;
 
   /**
    * @brief Get the attribute value indicated by key.

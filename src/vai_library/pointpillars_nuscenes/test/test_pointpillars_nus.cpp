@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,10 @@ int main( int argc, char *argv[])
 
   auto pointpillars = vitis::ai::PointPillarsNuscenes::create(
           model_0, model_1);
+  if (!pointpillars) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }   
   auto points_dim = pointpillars->getPointsDim();
   read_inno_file_pp_nus(anno_file_name, points_info, points_dim, points_info.sweep_infos); 
 

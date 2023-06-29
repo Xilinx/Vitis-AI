@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ static std::vector<char> get_vec_char(py::buffer buffer) {
 static std::vector<std::vector<char>> get_list_of_vec_char(py::list lst) {
   auto ret = std::vector<std::vector<char>>(lst.size());
   auto i = 0u;
-  for (auto elt : lst) {
+  for (auto& elt : lst) {
     ret[i] = get_vec_char(py::cast<py::buffer>(elt));
     i = i + 1;
   }

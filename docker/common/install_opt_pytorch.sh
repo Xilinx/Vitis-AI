@@ -17,11 +17,10 @@ if [[ ${DOCKER_TYPE} == 'rocm' ]]; then
         sudo ln -s /opt/conda $VAI_ROOT/conda;
     fi
     
-    command_opt=" sudo mamba env update -v -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-optimizer_pytorch.yml";
+    command_opt=" sudo conda env update -v -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-optimizer_pytorch.yml";
     . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && sudo  mkdir -p $VAI_ROOT/conda/pkgs \
     && sudo conda update conda -y --force-reinstall -c conda-forge -c anaconda \
-    && sudo conda install -c conda-forge mamba conda-build \
     && sudo python3 -m pip install --upgrade pip wheel setuptools requests \
     && sudo conda config --env --remove-key channels || true \
     && sudo conda config --env --append channels ${VAI_CONDA_CHANNEL} \
@@ -36,7 +35,6 @@ else
     command_opt=" mamba env create -v -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-optimizer_pytorch.yml ";
     . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && conda install -c conda-forge mamba conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools requests \
     && conda config --env --remove-key channels || true \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \

@@ -29,6 +29,7 @@ limitations under the License.
 ==============================================================================*/
 
 #include "cross_layers_equalization.h"
+#include "graph_quantizer.h"
 #include "quantize_utils.h"
 #include "replace_softmax.h"
 #include "tensorflow/core/common_runtime/shape_refiner.h"
@@ -433,10 +434,24 @@ Status GetShapeOfNodes(
     const int batch_size,
     std::unordered_map<string, std::vector<int>> *shape_of_nodes) {
   // Method get from node attre "_output_shapes" is preferred to get shape
-  // information
+  // information, but sometimes it can not get correct shape, like yolov3_voc,
+  // shape of up_sampling2d_1/ResizeNearestNeighbor(ResizeNearestNeighbor)
   TF_RETURN_IF_ERROR(GetShapeOfNodesFromAttr(input_graph_def, node_names,
                                              batch_size, shape_of_nodes));
-  if (node_names.size() == (*shape_of_nodes).size()) {
+  bool using_session = (node_names.size() != (*shape_of_nodes).size());
+  for (const auto &item : *shape_of_nodes) {
+    const string &node_name = item.first;
+    const std::vector<int> &shape = item.second;
+    for (int i = 1; i < shape.size(); ++i) {
+      if (shape[i] == -1) {
+        DLOG_WARNING << "Op shape is not get by _output_shapes, name:"
+                     << node_name;
+        using_session = true;
+        break;
+      }
+    }
+  }
+  if (!using_session) {
     return Status::OK();
   } else {
     return GetShapeOfNodesUsingSessRun(input_graph_def, node_names, batch_size,
@@ -485,9 +500,17 @@ Status InferenceShape(const GraphDef &input_graph_def,
         SetNodeAttr("dtype", DT_INT32, &shape_node);
 
         std::vector<int> node_shape = shape_of_nodes[node_with_shape.name()];
-        Tensor shape_tensor(DT_INT32, {(int)node_shape.size()});
+        std::vector<TensorShapeProto> output_shapes;
+        GetNodeAttr(input_node, "_output_shapes", &output_shapes);
+        // using the first output shape
+        const TensorShapeProto &input_node_shape = output_shapes[0];
+        const int shape_dim = node_with_shape.op() == "ResizeNearestNeighbor"
+                                  ? 2
+                                  : (int)node_shape.size();
+        Tensor shape_tensor(DT_INT32, {shape_dim});
         if (node_with_shape.op() == "Reshape") {
-          for (auto j = 0; j < node_shape.size(); j++) {
+          shape_tensor.flat<int>()(0) = input_node_shape.dim(0).size();
+          for (auto j = 1; j < node_shape.size(); j++) {
             shape_tensor.flat<int>()(j) = node_shape[j];
           }
         } else if (node_with_shape.op() == "ResizeNearestNeighbor") {
@@ -571,7 +594,8 @@ Status ConvertMeanToAvgpool(const GraphDef &input_graph_def,
                       &avgpool_node);
           SetNodeAttr("padding", "VALID", &avgpool_node);
           SetNodeAttr("T", DT_FLOAT, &avgpool_node);
-          SetNodeAttr("strides", std::vector<int>({1, 1, 1, 1}), &avgpool_node);
+          SetNodeAttr("strides", std::vector<int>({1, kernel_h, kernel_w, 1}),
+                      &avgpool_node);
           SetNodeAttr("data_format", "NHWC", &avgpool_node);
 
           new_nodes->push_back(avgpool_node);
@@ -591,7 +615,8 @@ Status ConvertMeanToAvgpool(const GraphDef &input_graph_def,
                       &avgpool_node);
           SetNodeAttr("padding", "VALID", &avgpool_node);
           SetNodeAttr("T", DT_FLOAT, &avgpool_node);
-          SetNodeAttr("strides", std::vector<int>({1, 1, 1, 1}), &avgpool_node);
+          SetNodeAttr("strides", std::vector<int>({1, kernel_h, kernel_w, 1}),
+                      &avgpool_node);
           SetNodeAttr("data_format", "NHWC", &avgpool_node);
           new_nodes->push_back(avgpool_node);
 
@@ -608,6 +633,90 @@ Status ConvertMeanToAvgpool(const GraphDef &input_graph_def,
           new_nodes->push_back(ri_node);
           new_nodes->push_back(mean_node);
         }
+        return Status::OK();
+      },
+      {}, &processed_graph_def));
+  TF_RETURN_IF_ERROR(RenameNodeInputs(processed_graph_def, inputs_to_rename,
+                                      nodes_to_ignore, output_graph_def));
+  return Status::OK();
+}
+
+Status GetFactors(const int org_num, int &factor_1, int &factor_2) {
+  factor_1 = int(sqrt(org_num));
+  while (factor_1 > 1) {
+    if (org_num % (factor_1) == 0) {
+      factor_2 = org_num / factor_1;
+      return Status::OK();
+    }
+    --factor_1;
+  }
+  factor_2 = org_num;
+  return Status::OK();
+}
+
+Status SplitLargeKernelPool(const GraphDef &input_graph_def,
+                            GraphDef *output_graph_def) {
+  GraphDef current_graph_def, processed_graph_def;
+  std::map<string, string> inputs_to_rename;
+  std::unordered_set<string> nodes_to_ignore;
+
+  DLOG_WARNING << "Start try to spilit MaxPool|Avgpool";
+
+  current_graph_def = input_graph_def;
+  TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
+      current_graph_def,  // clang-format off
+      {"MaxPool|AvgPool"},  // clang-format on
+      [&inputs_to_rename, &nodes_to_ignore](
+          const NodeMatch &match, const std::set<string> &input_nodes,
+          const std::set<string> &output_nodes,
+          std::vector<NodeDef> *new_nodes) {
+        const NodeDef &pool_node = match.node;
+
+        std::vector<int> ksize;
+        GetNodeAttr(pool_node, "ksize", &ksize);
+        int kernel_h = ksize[1];
+        int kernel_w = ksize[2];
+
+        if (kernel_h * kernel_w < 512) {
+          new_nodes->push_back(pool_node);
+          return Status::OK();
+        }
+        DLOG_WARNING << "Split pool node " << pool_node.name()
+                     << " kernel_h, kernel_w is [" << kernel_h << ", "
+                     << kernel_w << "]";
+        int kernel_h_1, kernel_h_2, kernel_w_1, kernel_w_2;
+        GetFactors(kernel_h, kernel_h_1, kernel_h_2);
+        GetFactors(kernel_w, kernel_w_1, kernel_w_2);
+        // Build avgpool node
+        NodeDef pool_node_1;
+        pool_node_1.set_name(pool_node.name() + "_viti_split");
+        pool_node_1.set_op(pool_node.op());
+        AddNodeInput(pool_node.input(0), &pool_node_1);
+        SetNodeAttr("ksize", std::vector<int>({1, kernel_h_1, kernel_w_1, 1}),
+                    &pool_node_1);
+        string padding_type;
+        GetNodeAttr(pool_node, "padding", &padding_type);
+        SetNodeAttr("padding", padding_type, &pool_node_1);
+        SetNodeAttr("T", DT_FLOAT, &pool_node_1);
+        SetNodeAttr("strides", std::vector<int>({1, kernel_h_1, kernel_w_1, 1}),
+                    &pool_node_1);
+        SetNodeAttr("data_format", "NHWC", &pool_node_1);
+        new_nodes->push_back(pool_node_1);
+        //
+        // Build avgpool node
+        NodeDef pool_node_2;
+        pool_node_2.set_name(pool_node.name());
+        pool_node_2.set_op(pool_node.op());
+        AddNodeInput(pool_node_1.name(), &pool_node_2);
+        SetNodeAttr("ksize", std::vector<int>({1, kernel_h_2, kernel_w_2, 1}),
+                    &pool_node_2);
+        SetNodeAttr("padding", padding_type, &pool_node_2);
+        SetNodeAttr("T", DT_FLOAT, &pool_node_2);
+        SetNodeAttr("strides", std::vector<int>({1, kernel_h_2, kernel_w_2, 1}),
+                    &pool_node_2);
+        SetNodeAttr("data_format", "NHWC", &pool_node_2);
+
+        new_nodes->push_back(pool_node_2);
         return Status::OK();
       },
       {}, &processed_graph_def));
@@ -694,8 +803,7 @@ Status AdjustHardSwishComputeOrder(const GraphDef &input_graph_def,
 }
 
 Status SimulateDPU(const GraphDef &input_graph_def, GraphDef *output_graph_def,
-                   const int scale_all_avgpool, const int replace_softmax,
-                   const int replace_sigmoid) {
+                   const int scale_all_avgpool, const int replace_sigmoid) {
   GraphDef current_graph_def, processed_graph_def;
   std::map<string, string> inputs_to_rename;
   std::unordered_set<string> nodes_to_ignore;
@@ -705,6 +813,10 @@ Status SimulateDPU(const GraphDef &input_graph_def, GraphDef *output_graph_def,
   current_graph_def = input_graph_def;
   TF_RETURN_IF_ERROR(
       ConvertMeanToAvgpool(current_graph_def, &processed_graph_def));
+
+  current_graph_def = processed_graph_def;
+  TF_RETURN_IF_ERROR(
+      SplitLargeKernelPool(current_graph_def, &processed_graph_def));
 
   current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(ReplaceMatchingOpTypes(
@@ -1038,11 +1150,6 @@ Status SimulateDPU(const GraphDef &input_graph_def, GraphDef *output_graph_def,
   TF_RETURN_IF_ERROR(RenameNodeInputs(processed_graph_def, inputs_to_rename,
                                       nodes_to_ignore, &current_graph_def));
 
-  if (replace_softmax) {
-    TF_RETURN_IF_ERROR(
-        ReplaceSoftmaxWithDPUSoftmax(current_graph_def, &processed_graph_def));
-    current_graph_def = processed_graph_def;
-  }
   *output_graph_def = current_graph_def;
   return Status::OK();
 }
@@ -1181,7 +1288,10 @@ Status RemoveIdentityNNode(const GraphDef &input_graph_def,
       new_node.mutable_input()->Clear();
       for (int i = 0; i < node.input_size(); ++i) {
         const string input_name = GetRealName(node.input(i));
-        const NodeDef *input_node = node_map[input_name];
+        if (!node_map.count(input_name)) {
+          continue;
+        }
+        const NodeDef *input_node = node_map.at(input_name);
         if (input_node->op() == "IdentityN") {
           AddNodeInput(input_node->input(0), &new_node);
         } else {
@@ -1321,6 +1431,27 @@ Status LoadNodeGroupsFromFile(std::set<NodeGroup> &node_groups,
   }
 
   ifile.close();
+  return Status::OK();
+}
+
+Status SaveInspectMessageToFile(const InspectMessage &insp_msg,
+                                const string &output_dir) {
+  string filename = io::JoinPath(output_dir, "inspect_results.txt");
+
+  std::ofstream ofile(filename);
+  if (!ofile.is_open()) {
+    DLOG_WARNING << "Cannot find inspect results file: " << filename;
+  }
+
+  for (const auto &pattern_insp_info : insp_msg) {
+    ofile << pattern_insp_info.first << "||";
+    for (const auto &info : pattern_insp_info.second) {
+      ofile << info << "||";
+    }
+    ofile << std::endl;
+  }
+
+  ofile.close();
   return Status::OK();
 }
 

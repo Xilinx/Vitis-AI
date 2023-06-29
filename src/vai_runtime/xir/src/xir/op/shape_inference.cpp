@@ -52,6 +52,43 @@ void shape_infer_remain(xir::Op* cur) {
   cur->replace_output_tensor(std::move(output_tensor));
 }
 
+void shape_infer_broadcast(xir::Op* cur) {
+  auto in_num = cur->get_input_num();
+  auto input_tensors = cur->get_input_tensors();
+  if (in_num == 1) {
+    auto output_tensor_ori = cur->get_output_tensor();
+    auto output_tensor_new = xir::Tensor::create(
+        output_tensor_ori->get_name(), input_tensors[0]->get_shape(),
+        output_tensor_ori->get_data_type());
+    output_tensor_new->set_attrs(output_tensor_ori->get_attrs());
+    cur->replace_output_tensor(std::move(output_tensor_new));
+    return;
+  }
+  auto sbc_rlt = size_broadcast(input_tensors[0]->get_shape(),
+                                input_tensors[1]->get_shape());
+  UNI_LOG_CHECK(std::get<0>(sbc_rlt), XIR_INVALID_ARG_OCCUR)
+      << cur->to_string() << "'s input size are not matching. One is "
+      << xir::to_string(input_tensors[0]->get_shape()) << " and another is "
+      << xir::to_string(input_tensors[1]->get_shape()) << ".";
+  if (in_num > 2) {
+    for (unsigned int i = 2; i < input_tensors.size(); i++) {
+      auto out =
+          size_broadcast(std::get<1>(sbc_rlt), input_tensors[i]->get_shape());
+      UNI_LOG_CHECK(std::get<0>(out), XIR_INVALID_ARG_OCCUR)
+          << cur->to_string() << "'s input size are not matching. One is "
+          << xir::to_string(std::get<1>(sbc_rlt)) << " and another is "
+          << xir::to_string(input_tensors[i]->get_shape()) << ".";
+      sbc_rlt = out;
+    }
+  }
+  auto output_tensor_ori = cur->get_output_tensor();
+  auto output_tensor_new =
+      xir::Tensor::create(output_tensor_ori->get_name(), std::get<1>(sbc_rlt),
+                          output_tensor_ori->get_data_type());
+  output_tensor_new->set_attrs(output_tensor_ori->get_attrs());
+  cur->replace_output_tensor(std::move(output_tensor_new));
+}
+
 std::int32_t cal_out_1d(std::vector<std::int32_t> in_shape,
                         std::vector<std::int32_t> padding,
                         std::vector<std::int32_t> kernel,
@@ -326,7 +363,7 @@ void shape_infer_conv2d(xir::Op* cur) {
       << "The number of channel of weights is " << w_shape.back()
       << ", but the number of channel of input / group is "
       << in_shape.back() / group;
-  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR) 
+  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR)
       << "The number of channel of input should be divisible by group.";
   UNI_LOG_CHECK(w_shape.front() % group == 0, XIR_INVALID_ARG_OCCUR)
       << "The number of weight kernel should be divisible by group.";
@@ -403,7 +440,7 @@ void shape_infer_transposed_conv2d(xir::Op* cur) {
   auto pad_mode = attrs->get_attr<std::string>("pad_mode");
   int ow = 0, oh = 0, oc = 0;
   if (pad_mode == "FLOOR") {
-    // copied from
+    // referred to
     // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
     ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
          padding[0] - padding[1];
@@ -470,7 +507,7 @@ void shape_infer_transposed_depthwise_conv2d(xir::Op* cur) {
   auto pad_mode = attrs->get_attr<std::string>("pad_mode");
   int ow = 0, oh = 0, oc = 0;
   if (pad_mode == "FLOOR") {
-    // copied from
+    // referred to
     // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
     ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
          padding[0] - padding[1];
@@ -826,23 +863,16 @@ void shape_infer_eltwise(xir::Op* cur) {
           << " But here one of the shapes is " << xir::to_string(t->get_shape())
           << ". one of the shape is " << xir::to_string(ins[0]->get_shape());
     });
+    shape_infer_remain(cur);
   } else if (ins.size() == 2) {
-    auto sbc_rlt = size_broadcast(ins[0]->get_shape(), ins[1]->get_shape());
-    auto sbc_shape = std::get<1>(sbc_rlt);
-    bool if_match =
-        (std::get<0>(sbc_rlt)) && ((ins[0]->get_shape() == sbc_shape) ||
-                                   (ins[1]->get_shape() == sbc_shape));
-    UNI_LOG_CHECK(if_match, XIR_INVALID_ARG_OCCUR)
-        << cur->to_string() << "'s two input dimensions not matching ("
-        << xir::to_string(ins[0]->get_shape()) << " vs "
-        << xir::to_string(ins[1]->get_shape()) << ").";
+    shape_infer_broadcast(cur);
   } else if (ins.size() == 1) {
+    shape_infer_remain(cur);
     // do nonthing
   } else {
     UNI_LOG_FATAL(XIR_INVALID_ARG_OCCUR)
         << cur->to_string() << " requires at least one input.";
   }
-  shape_infer_remain(cur);
 }
 
 void shape_infer_concat(xir::Op* cur) {
@@ -1121,7 +1151,8 @@ void shape_infer_reduction(xir::Op* cur) {
   cur->replace_output_tensor(std::move(output_tensor));
 }
 
-// code copied from tensorflow
+// referred to
+// https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/reduction_ops_common.cc
 void shape_infer_reduction_mean(xir::Op* cur) { shape_infer_reduction(cur); }
 
 void forward_reduction_product(xir::Op* cur) {
@@ -1439,43 +1470,6 @@ void shape_infer_shape(xir::Op* cur) {
 }
 
 void shape_infer_neg(xir::Op* cur) { shape_infer_remain(cur); }
-
-void shape_infer_broadcast(xir::Op* cur) {
-  auto in_num = cur->get_input_num();
-  auto input_tensors = cur->get_input_tensors();
-  if (in_num == 1) {
-    auto output_tensor_ori = cur->get_output_tensor();
-    auto output_tensor_new = xir::Tensor::create(
-        output_tensor_ori->get_name(), input_tensors[0]->get_shape(),
-        output_tensor_ori->get_data_type());
-    output_tensor_new->set_attrs(output_tensor_ori->get_attrs());
-    cur->replace_output_tensor(std::move(output_tensor_new));
-    return;
-  }
-  auto sbc_rlt = size_broadcast(input_tensors[0]->get_shape(),
-                                input_tensors[1]->get_shape());
-  UNI_LOG_CHECK(std::get<0>(sbc_rlt), XIR_INVALID_ARG_OCCUR)
-      << cur->to_string() << "'s input size are not matching. One is "
-      << xir::to_string(input_tensors[0]->get_shape()) << " and another is "
-      << xir::to_string(input_tensors[1]->get_shape()) << ".";
-  if (in_num > 2) {
-    for (unsigned int i = 2; i < input_tensors.size(); i++) {
-      auto out =
-          size_broadcast(std::get<1>(sbc_rlt), input_tensors[i]->get_shape());
-      UNI_LOG_CHECK(std::get<0>(out), XIR_INVALID_ARG_OCCUR)
-          << cur->to_string() << "'s input size are not matching. One is "
-          << xir::to_string(std::get<1>(sbc_rlt)) << " and another is "
-          << xir::to_string(input_tensors[i]->get_shape()) << ".";
-      sbc_rlt = out;
-    }
-  }
-  auto output_tensor_ori = cur->get_output_tensor();
-  auto output_tensor_new =
-      xir::Tensor::create(output_tensor_ori->get_name(), std::get<1>(sbc_rlt),
-                          output_tensor_ori->get_data_type());
-  output_tensor_new->set_attrs(output_tensor_ori->get_attrs());
-  cur->replace_output_tensor(std::move(output_tensor_new));
-}
 
 void shape_infer_add(xir::Op* cur) { shape_infer_broadcast(cur); }
 
@@ -1992,7 +1986,7 @@ void shape_infer_conv2d_fix(xir::Op* cur) {
       << "The number of channel of weights is " << w_shape.back()
       << ", but the number of channel of input / group is "
       << in_shape.back() / group;
-  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR) 
+  UNI_LOG_CHECK(in_shape.back() % group == 0, XIR_INVALID_ARG_OCCUR)
       << "The number of channel of input should be divisible by group.";
   UNI_LOG_CHECK(w_shape.front() % group == 0, XIR_INVALID_ARG_OCCUR)
       << "The number of weight kernel should be divisible by group.";
@@ -2085,7 +2079,7 @@ void shape_infer_transposed_conv2d_fix(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   std::int32_t ow, oh, oc;
-  // copied from
+  // referred to
   // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
   ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
        padding[0] - padding[1];
@@ -2124,7 +2118,7 @@ void shape_infer_transposed_depthwise_conv2d_fix(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   std::int32_t ow, oh, oc;
-  // copied from
+  // referred to
   // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
   ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
        padding[0] - padding[1];
@@ -2269,7 +2263,7 @@ void shape_infer_transposed_conv3d_fix(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   std::int32_t ow, oh, od, oc;
-  // copied from
+  // referred to
   // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
   ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
        padding[0] - padding[1];
@@ -2310,7 +2304,7 @@ void shape_infer_transposed_depthwise_conv3d_fix(xir::Op* cur) {
                    [](auto i) { return i; });
   }
   std::int32_t ow, oh, od, oc;
-  // copied from
+  // referred to
   // https://github.com/BVLC/caffe/blob/master/src/caffe/layers/deconv_layer.cpp
   ow = (in_shape[2] - 1) * stride[0] + dilation[0] * (kernel[0] - 1) + 1 -
        padding[0] - padding[1];

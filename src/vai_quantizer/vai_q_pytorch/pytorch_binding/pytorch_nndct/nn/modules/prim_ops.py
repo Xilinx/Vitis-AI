@@ -146,7 +146,6 @@ class deephi_StridedSlice(_PrimModule):
     super().__init__()
 
   def forward(self, input, dim, start, end, step):
-    size = input.size()
     break_symbol = ':'
     symbols = ""
     start_symbol = []
@@ -154,7 +153,7 @@ class deephi_StridedSlice(_PrimModule):
     step_symbol = []
     for i in range(dim[0]):
       start_symbol.append(str(0))
-      end_symbol.append(str(int(size[i])))
+      end_symbol.append(str(9223372036854775807))
       step_symbol.append(str(1))
 
     for i in range(len(start)):
@@ -187,6 +186,8 @@ class deephi_SliceInplaceCopy(_PrimModule):
 
   def forward(self, input, source, dim, index):
     index = torch.tensor([index]).to(input.device)
+    if input.dtype != source.dtype:
+      source = source.to(input.dtype)
     output = input.index_copy_(dim, index, source.unsqueeze(dim))
     output = quantize_tensors([output], self.node)[0]
     return output
@@ -232,23 +233,17 @@ class deephi_IndexInputInplace(_PrimModule):
     super().__init__()
 
   def forward(self, input, indices, values, accumulate):
-    # TODO: try to remove hard code
+    # For onnx dump, can't call aten::index_put_ directly.
+    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
+    qinput[indices] = values
+    output = quantize_tensors([qinput], self.node)[0]
+    return output
+    
 
-    if any([len(index.tolist()) == 0 for index in indices if index is not None]):
-      return input
-
-    if indices[0] is None:
-      input[:, indices[1]] = values
-    elif len(indices) == 2 and indices[1] is None:
-      input[indices[0], :] = values
-    elif all([index is not None for index in indices]):
-      input[indices] = values
-
-    return input
 
 
 @py_utils.register_quant_op
-def index_put_inplace(*args, **kwargs):
+def index_put_(*args, **kwargs):
   return deephi_IndexInputInplace(*args, **kwargs)
 
 
@@ -463,3 +458,28 @@ class deephi_TupleUnpack(_PrimModule):
 @py_utils.register_quant_op
 def TupleUnpack(*args, **kwargs):
   return deephi_TupleUnpack(*args, **kwargs)
+
+
+
+class deephi_Sub(_PrimModule):
+  def __init__(self, reverse=False):
+    super().__init__()
+    self.reverse = reverse
+
+  def forward(self, input, other, alpha=1):
+    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
+    if self.reverse is True:
+      output = -(qinput - alpha * other)
+    else:
+      output = qinput - alpha * other
+    output = quantize_tensors([output], self.node)[0]
+
+    return output
+
+@py_utils.register_quant_op
+def Sub(*args, **kwargs):
+  return deephi_Sub()
+
+@py_utils.register_quant_op
+def Rsub(*args, **kwargs):
+  return deephi_Sub(reverse=True)

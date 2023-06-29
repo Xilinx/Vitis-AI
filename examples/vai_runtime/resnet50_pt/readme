@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,39 +16,20 @@
 Before running the program, please download the corresponding model and install it.
 The model required by this sample is: resnet50_pt
 You can find the detailed informantion of this model under
-   Vitis-AI/model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.0/model.yaml
+   Vitis-AI/model_zoo/model-list/pt_resnet50_imagenet_224_224_8.2G_3.5/model.yaml
 
-For ZCU102/ZCU104/KV260, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
-For VCK190, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck190-r3.0.0.tar.gz
+For VEK280, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vek280-r3.5.0.tar.gz
 
 Please choose the corresponding model and download it.
 
-Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz -O resnet50_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+Take VEK280 as an example, execute the following commands to download and install the model.
+	wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vek280-r3.5.0.tar.gz -O resnet50_pt-vek280-r3.5.0.tar.gz
 	mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf resnet50_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+	tar -xzvf resnet50_pt-vek280-r3.5.0.tar.gz
 	cp resnet50_pt /usr/share/vitis_ai_library/models -r
 
-For DPUCVDX8H_4pe_miscdwc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+For V70 DPUCV2DX8G DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
         sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-        sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_6pe_dwc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-        sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_6pe_misc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-        sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_8pe_normal DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf resnet50_pt-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-        sudo cp resnet50_pt /usr/share/vitis_ai_library/models -r
+        tar -xzvf resnet50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+        sudo cp resnet50 /usr/share/vitis_ai_library/models -r

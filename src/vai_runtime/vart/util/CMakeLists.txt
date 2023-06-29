@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -44,7 +44,11 @@ add_library(
   src/variable_bit.cpp
   src/tensor_mirror_attrs.cpp
   include/vitis/ai/plugin.hpp
-  src/plugin.cpp)
+  src/plugin.cpp
+  src/getenv.cpp
+  src/getenv.c)
+
+set_property(TARGET ${COMPONENT_NAME} PROPERTY C_STANDARD 11)
 
 if(hiredis_FOUND)
   target_sources(${COMPONENT_NAME} PRIVATE src/redis_lock.hpp
@@ -56,12 +60,9 @@ else(MSVC)
 
   target_sources(
     ${COMPONENT_NAME}
-    PRIVATE
-      src/file_lock_lnx.cpp
-      # thread pool does not work on MSVC because the bug
-      # https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/108672
-      include/vitis/ai/thread_pool.hpp
-      src/thread_pool.cpp)
+    PRIVATE src/file_lock_lnx.cpp
+            # thread pool does not work on MSVC because the bug
+            include/vitis/ai/thread_pool.hpp src/thread_pool.cpp)
 endif(MSVC)
 add_library(${PROJECT_NAME}::${COMPONENT_NAME} ALIAS ${COMPONENT_NAME})
 if(BUILD_SHARED_LIBS)
@@ -150,10 +151,10 @@ if(BUILD_TEST)
   add_executable(test_erl_msg_box test/test_erl_msg_box.cpp)
   target_link_libraries(test_erl_msg_box ${COMPONENT_NAME})
 
-  # if(NOT MSVC) # thread pool does not work on MSVC because the bug #
-  # https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/108672
-  # add_executable(test_thread_pool test/test_thread_pool.cpp)
-  # target_link_libraries(test_thread_pool ${COMPONENT_NAME}) endif(NOT MSVC)
+  if(NOT MSVC)
+    add_executable(test_thread_pool test/test_thread_pool.cpp)
+    target_link_libraries(test_thread_pool ${COMPONENT_NAME})
+  endif(NOT MSVC)
   add_executable(test_zero_copy_helper test/test_zero_copy_helper.cpp)
   target_link_libraries(test_zero_copy_helper ${COMPONENT_NAME} xir::xir)
 endif()

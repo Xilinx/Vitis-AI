@@ -1,8 +1,0 @@
-name: base
-
-channels:
-  - conda-forge 
-  - anaconda
-
-dependencies:
-  - vai_optimizer_pytorch_rocm

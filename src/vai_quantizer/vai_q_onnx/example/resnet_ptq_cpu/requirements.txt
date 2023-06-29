@@ -1,0 +1,7 @@
+numpy
+onnx>1.12.0
+onnxruntime>=1.14.0
+onnxruntime_extensions
+protobuf
+torch
+torchvision

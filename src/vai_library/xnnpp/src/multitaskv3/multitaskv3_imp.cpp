@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ static void get_depth_ori(int8_t* src, float* dst, size_t length, float scale) {
 static void sigmoid_n(int8_t* src, float* dst, size_t length, float scale) {
   for (size_t i = 0; i < length; ++i) {
     auto tmp = (float)src[i] * scale;
-    dst[i] = (1. / (1. + exp(-tmp)));
+    dst[i] = (1.0f / (1.0f + exp(-tmp)));
   }
 }
 
@@ -460,34 +460,43 @@ std::vector<Vehiclev3Result> MultiTaskv3PostProcessImp::process_det(
   __TIC__(MULTITASK_DET)
   std::vector<float> cs(conf_result.size());
   CHECK_EQ(all_loc_infos_[batch_idx].size(), all_conf_infos_[batch_idx].size());
+  __TIC__(ALL)
   for (auto k = 0u; k < all_conf_infos_[batch_idx].size(); k++) {
     auto offset =
         all_conf_infos_[batch_idx][k].index_begin * num_detection_classes_;
+    __TIC__(SIG_1)
     sigmoid_n((int8_t*)all_conf_infos_[batch_idx][k].ptr,
               conf_result.data() + offset,
               all_conf_infos_[batch_idx][k].index_size * 3,
               all_conf_infos_[batch_idx][k].scale);
+    __TOC__(SIG_1)
+    __TIC__(SIG_2)
     sigmoid_n((int8_t*)all_centerness_infos_[batch_idx][k].ptr,
               centerness_result.data() +
                   all_centerness_infos_[batch_idx][k].index_begin,
               all_centerness_infos_[batch_idx][k].index_size,
               all_centerness_infos_[batch_idx][k].scale);
+    __TOC__(SIG_2)
+    __TIC__(MUL)
     for (auto i = 0u; i < centerness_result.size(); i++) {
       cs[i * 3 + 0] = conf_result[i * 3 + 0] * centerness_result[i];
       cs[i * 3 + 1] = conf_result[i * 3 + 1] * centerness_result[i];
       cs[i * 3 + 2] = conf_result[i * 3 + 2] * centerness_result[i];
     }
+    __TOC__(MUL)
   }
+  __TOC__(ALL)
 
   vector<Vehiclev3Result> v_result;
-
   std::map<uint32_t, vitis::ai::multitaskv3::SSDOutputInfo> bbox_layer_infos;
   // for (auto i : bbox_layer_indexes_) {
   for (auto i = 0u; i < all_loc_infos_[batch_idx].size(); ++i) {
     bbox_layer_infos.emplace(std::make_pair(i, all_loc_infos_[batch_idx][i]));
   }
+  __TIC__(DETCT)
   // for(auto i = 0u; i < conf_result.size(); i++)
   detector_->Detect(bbox_layer_infos, cs.data(), v_result);
+  __TOC__(DETCT)
   __TOC__(MULTITASK_DET)
   return v_result;
 }
@@ -497,14 +506,22 @@ cv::Mat MultiTaskv3PostProcessImp::process_depth(
         output_tensors,
     size_t tensor_ind, size_t batch_idx) {
   __TIC__(MULTITASK_DEPTH)
-  vector<float> rs(output_tensors[3][tensor_ind].size);
+  // vector<float> rs(output_tensors[3][tensor_ind].size);
+  vector<float> rs(  output_tensors[3][tensor_ind].channel
+                   * output_tensors[3][tensor_ind].height 
+                   * output_tensors[3][tensor_ind].width);
   auto out_scale =
       vitis::ai::library::tensor_scale(output_tensors[3][tensor_ind]);
   get_depth((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx),
-            rs.data(), output_tensors[3][tensor_ind].size, out_scale);
+            rs.data(), 
+            // output_tensors[3][tensor_ind].size, 
+            rs.size(), 
+            out_scale);
   cv::Mat depth_results(output_tensors[3][tensor_ind].height,
                         output_tensors[3][tensor_ind].width, CV_8UC1);
-  for (auto i = 0u; i < output_tensors[3][tensor_ind].width * output_tensors[3][tensor_ind].height; i++) {
+  for (auto i = 0u; i < output_tensors[3][tensor_ind].width *
+                            output_tensors[3][tensor_ind].height;
+       i++) {
     depth_results.data[i] = (uint8_t)rs[i];
   }
   __TOC__(MULTITASK_DEPTH)
@@ -516,14 +533,22 @@ cv::Mat MultiTaskv3PostProcessImp::process_depth_ori(
         output_tensors,
     size_t tensor_ind, size_t batch_idx) {
   __TIC__(MULTITASK_DEPTH)
-  vector<float> rs(output_tensors[3][tensor_ind].size);
+  // vector<float> rs(output_tensors[3][tensor_ind].size);
+  vector<float> rs(  output_tensors[3][tensor_ind].channel
+                   * output_tensors[3][tensor_ind].height 
+                   * output_tensors[3][tensor_ind].width);
   auto out_scale =
       vitis::ai::library::tensor_scale(output_tensors[3][tensor_ind]);
   get_depth_ori((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx),
-            rs.data(), output_tensors[3][tensor_ind].size, out_scale);
+                rs.data(), 
+                // output_tensors[3][tensor_ind].size, 
+                rs.size(), 
+                out_scale);
   cv::Mat depth_results(output_tensors[3][tensor_ind].height,
                         output_tensors[3][tensor_ind].width, CV_8UC1);
-  for (auto i = 0u; i < output_tensors[3][tensor_ind].width * output_tensors[3][tensor_ind].height; i++) {
+  for (auto i = 0u; i < output_tensors[3][tensor_ind].width *
+                            output_tensors[3][tensor_ind].height;
+       i++) {
     depth_results.data[i] = (uint8_t)rs[i];
   }
   __TOC__(MULTITASK_DEPTH)
@@ -533,7 +558,7 @@ cv::Mat MultiTaskv3PostProcessImp::process_depth_ori(
 cv::Mat MultiTaskv3PostProcessImp::process_seg(
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
-  size_t tensor_ind, size_t batch_idx) {
+    size_t tensor_ind, size_t batch_idx) {
   __TIC__(MULTITASK_SEG)
   /*
   size_t tensor_ind = 0;
@@ -584,39 +609,26 @@ cv::Mat MultiTaskv3PostProcessImp::process_seg_visualization_c(
     const std::vector<std::vector<vitis::ai::library::OutputTensor>>&
         output_tensors,
     size_t tensor_ind, size_t batch_idx) {
-  /*
-  size_t tensor_ind = 0;
-  for (auto j = 0u; j < output_tensors[3].size(); ++j) {
-    if (output_tensors[3][j].name.find(tensor_name) != std::string::npos) {
-      tensor_ind = j;
-    }
-  }
-  */
   __TIC__(MULTITASK_SEG_VISUALIZATION)
   cv::Mat segmat(output_tensors[3][tensor_ind].height,
                  output_tensors[3][tensor_ind].width, CV_8UC3);
-  unsigned int col_ind = 0;
-  unsigned int row_ind = 0;
-  for (size_t i = 0; i < output_tensors[3][tensor_ind].height *
-                             output_tensors[3][tensor_ind].width *
-                             output_tensors[3][tensor_ind].channel;
-       i = i + output_tensors[3][tensor_ind].channel) {
-    auto max_ind = std::max_element(
-        ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i,
-        ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i +
-            output_tensors[3][tensor_ind].channel);
-    uint8_t posit = std::distance(
-        ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i,
-        max_ind);
-    segmat.at<cv::Vec3b>(row_ind, col_ind) =
-        cv::Vec3b((uint8_t)color_c1[posit], (uint8_t)color_c2[posit],
-                  (uint8_t)color_c3[posit]);
-    col_ind++;
-    if (col_ind > output_tensors[3][tensor_ind].width - 1) {
-      row_ind++;
-      col_ind = 0;
+  size_t i = 0;
+  for (unsigned int row_ind = 0; row_ind <
+  output_tensors[3][tensor_ind].height; row_ind++)
+    for (unsigned int col_ind = 0; col_ind <
+    output_tensors[3][tensor_ind].width; col_ind++) {
+      auto max_ind = std::max_element(
+          ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i,
+          ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i +
+              output_tensors[3][tensor_ind].channel);
+      uint8_t posit = std::distance(
+          ((int8_t*)output_tensors[3][tensor_ind].get_data(batch_idx)) + i,
+          max_ind);
+      segmat.at<cv::Vec3b>(row_ind, col_ind) =
+          cv::Vec3b((uint8_t)color_c1[posit], (uint8_t)color_c2[posit],
+                    (uint8_t)color_c3[posit]);
+      i+=output_tensors[3][tensor_ind].channel;
     }
-  }
 
   __TOC__(MULTITASK_SEG_VISUALIZATION)
   return segmat;
@@ -624,6 +636,7 @@ cv::Mat MultiTaskv3PostProcessImp::process_seg_visualization_c(
 
 std::vector<MultiTaskv3Result> MultiTaskv3PostProcessImp::post_process(
     size_t batch_size) {
+  __TIC__(POST_PROCESS)
   auto ret = std::vector<MultiTaskv3Result>{};
   ret.reserve(batch_size);
   for (auto i = 0u; i < batch_size; i++) {
@@ -639,11 +652,13 @@ std::vector<MultiTaskv3Result> MultiTaskv3PostProcessImp::post_process(
 
     });
   }
+  __TOC__(POST_PROCESS)
   return ret;
 }
 
 std::vector<MultiTaskv3Result>
 MultiTaskv3PostProcessImp::post_process_visualization(size_t batch_size) {
+  __TIC__(POST_VIS)
   auto ret = std::vector<MultiTaskv3Result>{};
   ret.reserve(batch_size);
   for (auto i = 0u; i < batch_size; i++) {
@@ -651,8 +666,8 @@ MultiTaskv3PostProcessImp::post_process_visualization(size_t batch_size) {
         (int)input_tensors_[0][0].width,                             //
         (int)input_tensors_[0][0].height,                            //
         MultiTaskv3PostProcessImp::process_det(output_tensors_, i),  //
-        MultiTaskv3PostProcessImp::process_seg_visualization(output_tensors_,
-                                                             0, i),
+        MultiTaskv3PostProcessImp::process_seg_visualization(output_tensors_, 0,
+                                                             i),
         MultiTaskv3PostProcessImp::process_seg_visualization_c(output_tensors_,
                                                                1, i),
         MultiTaskv3PostProcessImp::process_seg_visualization_c(output_tensors_,
@@ -661,8 +676,10 @@ MultiTaskv3PostProcessImp::post_process_visualization(size_t batch_size) {
 
     });
   }
+  __TOC__(POST_VIS)
   return ret;
 }
 
 }  // namespace ai
 }  // namespace vitis
+
