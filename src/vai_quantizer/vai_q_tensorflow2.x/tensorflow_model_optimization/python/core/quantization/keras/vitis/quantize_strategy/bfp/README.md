@@ -48,11 +48,11 @@ $ python -c "import tensorflow_model_optimization"
 ```
 
 ### Docker Image
-Vitis AI provides a Docker environment for the Vitis AI Optimizer. The Docker image encapsulates the required tools and libraries necessary for pruning in these frameworks. To get and run the Docker image, please refer to https://xilinx.github.io/Vitis-AI/docs/install/install.html#leverage-vitis-ai-containers.
+Vitis AI provides a Docker environment for the Vitis AI Optimizer. The Docker image encapsulates the required tools and libraries necessary for pruning in these frameworks. To get and run the Docker image, please refer to https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#leverage-vitis-ai-containers.
 
 
 For CUDA docker image, there is no prebuilt one and you have to build it yourself.
-You can read [this](https://xilinx.github.io/Vitis-AI/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions.
+You can read [this](https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions.
 
 ## Block Floating Point
 Suppose "float_model" is what you want to apply "new data format" to.

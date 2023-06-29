@@ -8,7 +8,7 @@
 
 # Vitis AI DPU IP and Reference Designs
 
-As of the 3.5 release of Vitis AI, all DPU IP and reference design content has migrated Github.IO.  **[YOU MAY ACCESS THE LATEST DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/docs/workflow-system-integration)** or **[OPEN THE OFFLINE DOCUMENTATION IN YOUR BROWSER](../docs/docs/workflow-system-integration.html)**.
+As of the 3.5 release of Vitis AI, all DPU IP and reference design content has migrated Github.IO.  **[YOU MAY ACCESS THE LATEST DOCUMENTATION ONLINE](https://xilinx.github.io/Vitis-AI/3.5/html/docs/workflow-system-integration)** or **[OPEN THE OFFLINE DOCUMENTATION IN YOUR BROWSER](../docs/docs/workflow-system-integration.html)**.
 
 
 

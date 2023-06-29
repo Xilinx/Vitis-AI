@@ -42,7 +42,7 @@ Optionally, configure git-lfs in order to reduce the local storage requirements.
 
 ## Repository Branching and Tagging Strategy
 
-To understand the branching and tagging strategy leveraged by this repository, please refer to [this page](https://xilinx.github.io/Vitis-AI/docs/install/branching_tagging_strategy.html)
+To understand the branching and tagging strategy leveraged by this repository, please refer to [this page](https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/branching_tagging_strategy.html)
 
 ## Licenses
 

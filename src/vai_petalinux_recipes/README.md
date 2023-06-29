@@ -22,7 +22,7 @@ The following are the **Third-Party** open-source dependencies required by the V
 
 There are two ways to install the `Vitis AI` libraries: 
 * To rebuild the system by configuring PetaLinux. (Build-Time)
-* To install VAI3.5 to the target leveraging a pre-built package. (Run-Time) See the board setup instructions for details of the online installation [process](https://xilinx.github.io/Vitis-AI/docs/board_setup/vai_install_to_target.html)
+* To install VAI3.5 to the target leveraging a pre-built package. (Run-Time) See the board setup instructions for details of the online installation [process](https://xilinx.github.io/Vitis-AI/3.5/html/docs/workflow-system-integration.html#vitis-ai-online-installation)
 
 # To rebuild the system by configuring PetaLinux
 If users want to install VAI3.5 into rootfs when generating system image by PetaLinux, users need to get the VAI3.5 recipes.

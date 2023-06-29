@@ -59,7 +59,7 @@ $ python -c "import pytorch_nndct"
 ```
 
 ### Docker Image
-Vitis AI provides a Docker environment for the Vitis AI Optimizer. The Docker image encapsulates the required tools and libraries necessary for pruning in these frameworks. To get and run the Docker image, please refer to https://xilinx.github.io/Vitis-AI/docs/install/install.html#leverage-vitis-ai-containers.
+Vitis AI provides a Docker environment for the Vitis AI Optimizer. The Docker image encapsulates the required tools and libraries necessary for pruning in these frameworks. To get and run the Docker image, please refer to https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#leverage-vitis-ai-containers.
 
 The prebuilt ROCm docker image can be get by:
 ```shell
@@ -67,7 +67,7 @@ $ docker pull xilinx/vitis-ai-opt-pytorch-rocm:latest
 ```
 
 For CUDA docker image, there is no prebuilt one and you have to build it yourself.
-You can read [this](https://xilinx.github.io/Vitis-AI/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions. 
+You can read [this](https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions. 
 
 ## Iterative Pruning
 The method includes two stages: model analysis and pruned model generation.
