@@ -250,12 +250,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><p>Support for setting the opset version in exporting onnx format.</p></li>
 </ul>
 <p>Bug Fixed:
-1.      Fixed a bug where the AddV2 operation is misunderstood as a BiasAdd.</p>
+1.      Fixed a bug where the AddV2 operation is misinterpreted as a BiasAdd.</p>
 </section>
 <section id="compiler">
 <h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Release notes to be announced ASAP</p></li>
+<li><p>New operators supported: Broadcast add/mul, Bilinear downsample, Trilinear downsample, Group conv2d, Strided-slice</p></li>
+<li><p>Performance improved on XV2DPU</p></li>
+<li><p>Error message improved</p></li>
+<li><p>Compilation time speed up</p></li>
 </ul>
 </section>
 <section id="pytorch-optimizer">
@@ -306,7 +309,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="model-inspector">
 <h2>Model Inspector<a class="headerlink" href="#model-inspector" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Release notes to be announced ASAP</p></li>
+<li><p>Added support for DPUCV2DX8G</p></li>
 </ul>
 </section>
 <section id="profiler">
@@ -380,7 +383,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 29, 2023.
+      <span class="lastupdated">Last updated on July 2, 2023.
       </span></p>
   </div>
 

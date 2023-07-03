@@ -138,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">ubuntu</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ubuntu</span><span class="o">/</span> <span class="n">focal</span> <span class="n">universe</span>
 </pre></div>
 </div>
-<p>You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-cpu.Dockerfile">CPU-only</a> or <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-gpu.Dockerfile">GPU</a> applications Docker will attempt to pull from US servers. As a result, users accessing from China will generally experience slow download speeds.</p>
+<p>You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for CPU-only or GPU accelerated containers Docker will attempt to pull from US servers. As a result, users accessing from China will generally experience slow download speeds.</p>
 <p>Prior to building the Vitis AI Docker image it is recommended that you modify <strong>/etc/apt/sources.list</strong> and the vitis-ai-gpu.Dockerfile.</p>
 <p>In the Vitis AI .DockerFile, change the first instances of apt-get update and apt-get install.</p>
 <p>From:</p>
@@ -184,7 +184,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 29, 2023.
+      <span class="lastupdated">Last updated on July 2, 2023.
       </span></p>
   </div>
 
