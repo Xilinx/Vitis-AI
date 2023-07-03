@@ -84,7 +84,7 @@ Zynq |trade| Ultrascale+ |trade|
      - 5.15
 
    * - v2.0
-     - 3.5
+     - 3.4
      - Vivado / Vitis / PetaLinux 2021.2
      - 5.10
 

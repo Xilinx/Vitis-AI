@@ -81,7 +81,7 @@ TensorFlow 1 CNN Quantizer
 - Support for setting the opset version in exporting onnx format.
 
 Bug Fixed:
-1.	Fixed a bug where the AddV2 operation is misunderstood as a BiasAdd.
+1.	Fixed a bug where the AddV2 operation is misinterpreted as a BiasAdd.
 
 Compiler
 --------
@@ -127,7 +127,7 @@ Library
 
 Model Inspector
 ---------------
-- Release notes to be announced ASAP
+- Added support for DPUCV2DX8G
 
 Profiler
 --------

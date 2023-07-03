@@ -130,8 +130,8 @@ IP and Reference Designs
    * - DPUCZDX8G `PG338 <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
      - MPSoC & Kria K26
      - 3.0
-     - `Download <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.5.tar.gz>`__
-     - `Get IP <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_ip_repo_VAI_v3.5.tar.gz>`__
+     - `Download <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.0.tar.gz>`__
+     - `Get IP <https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_ip_repo_VAI_v3.0.tar.gz>`__
 		
    * - DPUCVDX8G `PG389 <https://docs.xilinx.com/r/en-US/pg389-dpu>`__
      - VCK190
@@ -174,7 +174,7 @@ Vitis Integration
 
 The Vitis |trade| workflow specifically targets developers with a software-centric approach to AMD SoC system development. Vitis AI is differentiated from traditional FPGA flows, enabling you to build FPGA acceleration into your applications without developing RTL kernels.
 
-The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an ``xclbin`` file. To provide developers with a reference platform that can be used as a starting point, the Vitis AI repository includes several `reference designs <https://github.com/Xilinx/Vitis-AI/tree/v3.5/dpu>`__ for the different DPU architectures and target platforms.
+The Vitis workflow enables the integration of the DPU IP as an acceleration kernel that is loaded at runtime in the form of an ``xclbin`` file. To provide developers with a reference platform that can be used as a starting point. For the DPUCV2DX8G, please refer to the VEK280 reference design included in this release.  For MPSoC and Versal AI Core (non AIE-ML devices) please refer to the /dpu subdirectory in the Vitis AI 3.0 Github repository.
 
 In addition, a Vitis tutorial is available which provides the `end-to-end workflow <https://github.com/Xilinx/Vitis-Tutorials/tree/2023.1/Vitis_Platform_Creation/Design_Tutorials/02-Edge-AI-ZCU104>`__ for creating a Vitis Platform for ZCU104 targets.
 
@@ -213,7 +213,7 @@ There are two ways to integrate the Vitis |trade| AI Library and Runtime in a cu
 
 - Build the Linux image using Petalinux, incorporating the necessary recipes.
 
-- Install Vitis AI 3.5 to the target leveraging a pre-built package at run time.  For details of this procedure, please see :ref:`Vitis AI Online Installation <vart_vail_online_install>`
+- Install Vitis AI 3.5 to the target leveraging a pre-built package at run time.  For details of this procedure, please see the instructions in the Vitis AI Online Installation section below.
 
 
 .. _vart_vail_online_install:
@@ -345,7 +345,7 @@ Run the following commands to upgrade PetaLinux.
 
 Following this upgrade, you will find ``vitis-ai-library_3.5.bb`` recipe in ``<petalinux project>/components/yocto/layers/meta-vitis-ai``.
 
-For details about this process, refer to `Petalinux Upgrade <https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade-Option>`__.
+For details about this process, refer to `Petalinux Upgrade <https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade>`__.
 
 .. note:: ``2023.1_update1`` will be released approximately 1 month after Vitis 3.5 release. The name of ``2023.1_update1`` may change. Modify it accordingly.
 

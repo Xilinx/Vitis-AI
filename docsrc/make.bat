@@ -20,11 +20,12 @@ if "%1" == "github" (
 	cd ../..
 	echo.Build HTML docs
 	%SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
-    copy %SOURCEDIR%\docs\reference\ModelZoo_Github.htm %BUILDDIR%\html\docs\reference\ModelZoo_Github_web.htm
+    REM python csv2table %SOURCEDIR%\docs\reference\ModelZoo_Github.csv %SOURCEDIR%\docs\reference\ModelZoo_Github_web.html
+	copy %SOURCEDIR%\docs\reference\ModelZoo_Github.htm %BUILDDIR%\html\docs\reference\ModelZoo_Github_web.htm
 	copy %SOURCEDIR%\docs\404.html %BUILDDIR%\html\404.html
 	rm ../docs -r
-	robocopy %BUILDDIR%/html ../docs /E > nul
-	robocopy %SOURCEDIR%/docs/reference/images ../docs/_images /E > nul
+	robocopy /MIR %BUILDDIR%/html ../docs /E > nul
+	robocopy /MIR %SOURCEDIR%/docs/reference/images ../docs/_images /E > nul
     echo.Generated files copied to ../docs
     goto end
 )

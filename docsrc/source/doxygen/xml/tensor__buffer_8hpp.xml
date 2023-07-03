@@ -155,6 +155,6 @@
 <codeline lineno="284"><highlight class="normal"></highlight></codeline>
 <codeline lineno="285"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vart</highlight><highlight class="normal"></highlight></codeline>
     </programlisting>
-    <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp"/>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp"/>
   </compounddef>
 </doxygen>

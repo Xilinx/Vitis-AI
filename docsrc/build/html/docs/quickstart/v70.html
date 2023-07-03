@@ -160,7 +160,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
              
   <section id="quick-start-guide-for-alveo-v70">
 <h1>Quick Start Guide for Alveo V70<a class="headerlink" href="#quick-start-guide-for-alveo-v70" title="Permalink to this heading">¶</a></h1>
-<p>The AMD <strong>DPUCV2DX8G</strong> for the Alveo™ V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support V70.</p>
+<p>The AMD <strong>DPUCV2DX8G</strong> for the Alveo™ V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you install the software and packages required to support V70.</p>
 <a class="reference internal image-reference" href="../../_images/V70.PNG"><img alt="../../_images/V70.PNG" src="../../_images/V70.PNG" style="width: 1300px;" /></a>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
@@ -252,7 +252,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 </section>
 <section id="vitis-ai-model-zoo">
 <h3>Vitis-AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Permalink to this heading">¶</a></h3>
-<p>You can now select a model from the Vitis AI Model Zoo <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
+<p>You can now select a model from the <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
 <ul class="simple">
 <li><p>Take the ResNet50 model as an example.</p></li>
 </ul>
@@ -279,7 +279,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 <ol class="arabic simple" start="2">
 <li><p>Extract the <code class="docutils literal notranslate"><span class="pre">vitis_ai_runtime_r3.5.0_image_video.tar.gz</span></code> package.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /w/examples/vai_runtime
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /workspace/examples/vai_runtime
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -291,7 +291,8 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 <ol class="arabic simple" start="4">
 <li><p>Compile the example.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ bash -x build.sh
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ sudo chmod u+r+x build.sh
+<span class="o">[</span>Docker<span class="o">]</span> $ bash -x build.sh
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
@@ -538,7 +539,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 <ol class="arabic simple" start="4">
 <li><p>Execute the single-image test application.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ./test_jpeg_classification resnet18_pt /workspace/examples/vai_library/samples/classification/images/002.jpg
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ ./test_jpeg_classification resnet18_pt /workspace/examples/vai_library/samples/classification/images/001.jpg
 </pre></div>
 </div>
 <p>If you wish to do so, you can review the <cite>result.jpg</cite> file.  OpenCV function calls have been used to overlay the predictions.</p>
@@ -573,7 +574,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 29, 2023.
+      <span class="lastupdated">Last updated on July 2, 2023.
       </span></p>
   </div>
 

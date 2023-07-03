@@ -31,7 +31,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="163" column="3" bodyfile="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="163" bodyend="163"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="163" column="3" bodyfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="163" bodyend="163"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -80,7 +80,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="129" column="26"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="129" column="26"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1ad6ff892533067e379b0f7b4835b5f6f6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="classvart_1_1_runner" kindref="compound">Runner</ref> &gt;</type>
@@ -132,7 +132,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="148" column="26"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="148" column="26"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1a8c7560df8d7d56a34d0460237c0b1402" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::vector&lt; std::unique_ptr&lt; <ref refid="classvart_1_1_runner" kindref="compound">Runner</ref> &gt; &gt;</type>
@@ -150,7 +150,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="159" column="22"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="159" column="22"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -166,7 +166,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="166" column="11"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="166" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1aa02286793adeba583522dfc326e63cdb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>std::pair&lt; uint32_t, int &gt;</type>
@@ -210,7 +210,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="180" column="21"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="180" column="21"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1ac7678c1789b8f7dc606af799a08898bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>int</type>
@@ -254,7 +254,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="199" column="15"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="199" column="15"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1a2996a37558eadcba72a1b982424c67bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type>TensorFormat</type>
@@ -282,7 +282,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="219" column="24"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="219" column="24"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1ad42f3fc078debc25be1562ebdb91ccbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>std::vector&lt; const xir::Tensor * &gt;</type>
@@ -307,7 +307,7 @@ Sample code:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="235" column="23"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="235" column="23"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_runner_1a01a98ca8e96e4b9ffd502bb0de0046b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>std::vector&lt; const xir::Tensor * &gt;</type>
@@ -331,7 +331,7 @@ Sample code: <programlisting><codeline><highlight class="normal">outputTensors<s
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="250" column="23"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="250" column="23"/>
       </memberdef>
       <memberdef kind="function" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>std::pair&lt; std::uint32_t, int &gt;</type>
@@ -374,7 +374,7 @@ Sample code: <programlisting><codeline><highlight class="normal">outputTensors<s
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="47" column="21"/>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="47" column="21"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -420,7 +420,7 @@ Sample code: <programlisting><codeline><highlight class="normal">outputTensors<s
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
-    <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="113" column="1" bodyfile="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="113" bodyend="251"/>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="113" column="1" bodyfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="113" bodyend="251"/>
     <listofallmembers>
       <member refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" prot="public" virt="non-virtual"><scope>vart::Runner</scope><name>create_runner</name></member>
       <member refid="classvart_1_1_runner_1a8c7560df8d7d56a34d0460237c0b1402" prot="public" virt="non-virtual"><scope>vart::Runner</scope><name>create_runner</name></member>

@@ -161,7 +161,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
              
   <section id="quick-start-guide-for-versal-trade-ai-edge-vek280">
 <h1>Quick Start Guide for Versal™ AI Edge VEK280<a class="headerlink" href="#quick-start-guide-for-versal-trade-ai-edge-vek280" title="Permalink to this heading">¶</a></h1>
-<p>The AMD <strong>DPUCV2DX</strong> for Versal™ AI Edge is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support VEK280.</p>
+<p>The AMD <strong>DPUCV2DX8G</strong> for Versal™ AI Edge is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you to install the software and packages required to support VEK280.</p>
+<a class="reference internal image-reference" href="../../_images/VEK280_Top_img.png"><img alt="../../_images/VEK280_Top_img.png" class="align-center" src="../../_images/VEK280_Top_img.png" style="width: 400px;" /></a>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <section id="host-requirements">
@@ -180,7 +181,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section id="wsl">
 <h3>WSL<a class="headerlink" href="#wsl" title="Permalink to this heading">¶</a></h3>
 <p>This is an optional step intended to enable Windows users to evaluate Vitis™ AI.</p>
-<p>Although this is not a fully tested and supported flow, in most cases users will be able to execute this basic tutorial on Windows.  The Windows Subsystem for Linux (WSL) can be installed from the command line. Open a Powershell prompt as an Administrator and execute the following command:</p>
+<p>Although this is not a fully supported flow, in most cases users will be able to execute this basic tutorial on Windows.  The Windows Subsystem for Linux (WSL) can be installed from the command line. Open a Powershell prompt as an Administrator and execute the following command:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Powershell<span class="o">]</span> &gt; wsl --install -d Ubuntu-20.04
 </pre></div>
 </div>
@@ -268,6 +269,7 @@ directory on the host.  Thus you will note that <code class="docutils literal no
 </div>
 <p>Cross compile the <code class="docutils literal notranslate"><span class="pre">resnet50_pt</span></code> example.</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> examples/vai_runtime/resnet50_pt
+<span class="o">[</span>Docker<span class="o">]</span> $ sudo chmod u+r+x build.sh
 <span class="o">[</span>Docker<span class="o">]</span> $ bash –x build.sh
 </pre></div>
 </div>
@@ -346,7 +348,7 @@ directory on the host.  Thus you will note that <code class="docutils literal no
 </section>
 <section id="vitis-ai-model-zoo">
 <h3>Vitis-AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Permalink to this heading">¶</a></h3>
-<p>You can now select a model from the Vitis AI Model Zoo <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
+<p>You can now select a model from the <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
 <ol class="arabic simple">
 <li><p>Take the ResNet50 model as an example.</p></li>
 </ol>
@@ -565,7 +567,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 <li><p>The compiler takes the quantized <code class="docutils literal notranslate"><span class="pre">INT8.xmodel</span></code> and generates the deployable <code class="docutils literal notranslate"><span class="pre">DPU.xmodel</span></code> by running the command below.  Note that you must modify the command to specify the appropriate <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file for your target.  For MPSoC targets, these are located in the folder <code class="docutils literal notranslate"><span class="pre">/opt/vitis_ai/compiler/arch/DPUCZDX8G</span></code> inside the Docker container.</p></li>
 </ol>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">cd</span> /workspace/resnet18
-<span class="o">[</span>Docker<span class="o">]</span> $ vai_c_xir -x quantize_result/ResNet_int.xmodel -a /opt/vitis_ai/compiler/arch/DPUCV2DX/VEK280/arch.json -o resnet18_pt -n resnet18_pt
+<span class="o">[</span>Docker<span class="o">]</span> $ vai_c_xir -x quantize_result/ResNet_int.xmodel -a /opt/vitis_ai/compiler/arch/DPUCV2DX8G/VEK280/arch.json -o resnet18_pt -n resnet18_pt
 </pre></div>
 </div>
 <ul class="simple">
@@ -640,6 +642,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 <li><p>Enter the directory of the sample and compile it.</p></li>
 </ol>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ <span class="nb">cd</span> ~/Vitis-AI/examples/vai_library/samples/classification
+<span class="o">[</span>Target<span class="o">]</span> $ chmod u+r+x build.sh
 <span class="o">[</span>Target<span class="o">]</span> $ ./build.sh
 </pre></div>
 </div>
@@ -651,7 +654,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 </div>
 <p>If you wish to do so, you can copy the <cite>result.jpg</cite> file back to your host and review the output.  OpenCV function calls have been used to overlay the predictions.</p>
 <ol class="arabic simple" start="5">
-<li><p>To run the video example, run the following command.  To keep this simple we will use one of the Vitis AI video samples, but you should scp your own video clip to the target (webm / raw formats).</p></li>
+<li><p>To run the video example, run the following command.  To keep this simple we will use one of the Vitis AI video samples, but users should scp their own video clip to the target in a webm or raw format.</p></li>
 </ol>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ ./test_video_classification resnet18_pt ~/Vitis-AI/examples/vai_library/apps/pose_960_540.avi -t <span class="m">8</span>
 </pre></div>
@@ -694,7 +697,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on June 29, 2023.
+      <span class="lastupdated">Last updated on July 2, 2023.
       </span></p>
   </div>
 

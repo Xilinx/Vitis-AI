@@ -17,7 +17,7 @@ In the early phases of development, it is highly recommended that the developer 
 
 For more information on the Model Inspector, see the following resources:
 
--  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://github.com/Xilinx/Vitis-AI/tree/v3.5/examples/vai_quantizer/pytorch/inspector_tutorial.ipynb>`__ and `TensorFlow <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2>`__.
+-  When you are ready to get started with the Vitis AI Model Inspector, refer to the examples provided for both `PyTorch <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_pytorch/example/jupyter_notebook/inspector/inspector_tutorial.ipynb>`__ and `TensorFlow <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_tensorflow2.x/README.md#inspecting-vai_q_tensorflow2>`__.
 
 -  If your graph uses operators that are not natively supported by your specific DPU target, see the :ref:`Operator Support <operator-support>` section.
 
@@ -129,13 +129,10 @@ Quantization Related Resources
 
 - For additional details on the Vitis AI Quantizer, refer the "Quantizing the Model" chapter in the `Vitis AI User Guide <https://docs.xilinx.com/access/sources/dita/map?isLatest=true&ft:locale=en-US&url=ug1414-vitis-ai>`__.
 
-- TensorFlow 2.x examples are available as follows:
-   - `TF2 Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/post_training.md>`__
-   - `TF2 Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_tensorflow2.x/tensorflow_model_optimization/g3doc/guide/quantization/training.md>`__
+- TensorFlow 2.x examples are available `here <https://github.com/Xilinx/Vitis-AI/tree/v3.5/examples/vai_quantizer/tensorflow2x>`__
 
-- PyTorch examples are available as follows:
-   - `PT Post-Training Quantization <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py>`__
-   - `PT Quantization Aware Training <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_pytorch/example/resnet18_qat.py>`__
+- PyTorch examples are available `here <https://github.com/Xilinx/Vitis-AI/tree/v3.5/src/vai_quantizer/vai_q_pytorch/example>`__
+
 
 .. _model-compilation:
 

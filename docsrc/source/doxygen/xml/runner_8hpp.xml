@@ -143,6 +143,6 @@
 <codeline lineno="269"><highlight class="normal">};</highlight></codeline>
 <codeline lineno="270"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>vart</highlight><highlight class="normal"></highlight></codeline>
     </programlisting>
-    <location file="C:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp"/>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp"/>
   </compounddef>
 </doxygen>

@@ -9,7 +9,7 @@ Vitis |trade| AI Docker images leverage Ubuntu 20.04. In your Ubuntu installatio
 
      deb http://us.archive.ubuntu.com/ubuntu/ focal universe
 
-You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for `CPU-only <https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-cpu.Dockerfile>`__ or `GPU <https://github.com/Xilinx/Vitis-AI/blob/master/docker/dockerfiles/vitis-ai-gpu.Dockerfile>`__ applications Docker will attempt to pull from US servers. As a result, users accessing from China will generally experience slow download speeds.
+You can see that the hostname “archive.ubuntu.com” resolves to servers located within the United States. When building the Vitis AI Docker image, whether for CPU-only or GPU accelerated containers Docker will attempt to pull from US servers. As a result, users accessing from China will generally experience slow download speeds.
 
 Prior to building the Vitis AI Docker image it is recommended that you modify **/etc/apt/sources.list** and the vitis-ai-gpu.Dockerfile.
 

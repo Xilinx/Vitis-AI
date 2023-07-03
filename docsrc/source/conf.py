@@ -34,7 +34,7 @@ author = 'Advanced Micro Devices, Inc'
 version = '3.5'
 # The full version, including alpha/beta/rc tags
 release = '3.5'
-html_last_updated_fmt = 'June 29, 2023'
+html_last_updated_fmt = 'July 2, 2023'
 
 # -- General configuration ---------------------------------------------------
 
