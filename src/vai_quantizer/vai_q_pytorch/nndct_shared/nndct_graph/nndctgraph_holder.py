@@ -22,6 +22,7 @@ from functools import reduce
 from nndct_shared.base import NNDCT_KEYS, NNDCT_OP, NNDCT_PARAM
 from nndct_shared.utils.log import NndctDebugger
 from nndct_shared import utils as nndct_utils
+from nndct_shared.utils import NndctOption
 
 from .base_graph import Graph
 from .base_node import Node
@@ -51,7 +52,8 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.MAX_POOL1D,
         NNDCT_OP.MIN, NNDCT_OP.RESIZE, 
         NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.PAD, NNDCT_OP.QUANT_STUB,
-        NNDCT_OP.INPUT, NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RESIZE_3D,
+        NNDCT_OP.INPUT, NNDCT_OP.TUPLE_INPUT,
+        NNDCT_OP.CONV3D, NNDCT_OP.DEPTHWISE_CONV3D, NNDCT_OP.RESIZE_3D,
         NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.SUM, NNDCT_OP.HSWISH, NNDCT_OP.HSIGMOID,
         NNDCT_OP.MATMUL, 
         NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, 
@@ -61,6 +63,7 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.COST_VOLUME,
         NNDCT_OP.SOFTMAX,
         NNDCT_OP.PRELU,
+        NNDCT_OP.SQRT,
         # NNDCT_OP.CLAMP,
         NNDCT_OP.GELU,
         NNDCT_OP.MISH,
@@ -79,9 +82,11 @@ class NndctGraphHolder(NndctDebugger):
         NNDCT_OP.ADD, NNDCT_OP.MULTIPLY,
         NNDCT_OP.SIGMOID, NNDCT_OP.TANH,
         NNDCT_OP.SUB, NNDCT_OP.RSUB,
+        NNDCT_OP.DIV,
         NNDCT_OP.CONCAT, 
         NNDCT_OP.STACK,
         NNDCT_OP.INPUT,
+        NNDCT_OP.TUPLE_INPUT,
         NNDCT_OP.MATMUL, 
         NNDCT_OP.ADDMM,
         NNDCT_OP.SOFTMAX,
@@ -131,7 +136,12 @@ class NndctGraphHolder(NndctDebugger):
     return self.__Nndctgraph.node(node_name)
 
   def is_node_quantizable(self, node, lstm):
-    if not lstm:
+    if NndctOption.nndct_tensorrt_strategy.value:
+      ret = node.op.type in self.TENSORRT_QUANTIZABLE_OPS
+      # check the node is in quant_stub or not:
+      ret = ret and node.in_quant_part
+      return ret
+    elif not lstm:
       # check the node type if it needs to be quantized
       ret = node.op.type in self.QUANTIZABLE_OPS
       # check the node is in quant_stub or not:
@@ -142,13 +152,6 @@ class NndctGraphHolder(NndctDebugger):
       ret = ret and node.in_quant_part
       ret = ret and (not self.will_merge_with_table(node, lstm))
       return ret
-    
-  def is_node_tensorrt_quantizable(self, node):
-    # check the node type if it needs to be quantized
-    ret = node.op.type in self.TENSORRT_QUANTIZABLE_OPS
-     # check the node is in quant_stub or not:
-    ret = ret and node.in_quant_part
-    return ret
 
   def node_output_quantizable(self, node):
     if node.op.type in self.MULTIPLE_OUTPUTS_OPS:
@@ -186,10 +189,17 @@ class NndctGraphHolder(NndctDebugger):
 
   def quant_output(self, node_or_name):
     node = self._find_node(node_or_name)
+    if NndctOption.nndct_only_int_quant.value == False:
+      return node
     if not node.in_quant_part:
       return node
     idx = -1
     end_node = self.__Nndctgraph.node(self._QuantGroups[node.name][idx])
+    
+    if end_node.op.type == NNDCT_OP.TUPLE_INPUT and len(self.Nndctgraph.children(end_node)) > 0 \
+      and self.Nndctgraph.children(end_node)[0].op.type == NNDCT_OP.TUPLE_UNPACK:
+      end_node = self.Nndctgraph.children(end_node)[0]
+    
     if self.is_concat_input(end_node):
       for c in self.Nndctgraph.children(end_node):
         if c.op.type == NNDCT_OP.CONCAT:
@@ -211,7 +221,7 @@ class NndctGraphHolder(NndctDebugger):
   def quant_group(self, node_or_name):
     node = self._find_node(node_or_name)
     if not node.in_quant_part:
-      return None
+      return [node_or_name], [node.op.type]
     QuantGroupTypes = []
     for node_name in self._QuantGroups[node.name]:
       QuantGroupTypes.append(self.__Nndctgraph.node(node_name).op.type)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,30 @@
 
 #include <queue>
 #include <vector>
+#include <mutex>
 
 DEF_ENV_PARAM(HARDWARE_ARGMAX, "0");
 
 namespace vitis {
 namespace ai {
 
-static void convert_color(std::string& src, std::vector<uint8_t>& dest) {
-  size_t pos = 0;
-  while ((pos = src.find_first_of("0123456789", pos)) != std::string::npos) {
-    dest.push_back(std::stoi(std::string(src, pos)));
-    pos = src.find_first_of(" ", pos);
+static void convert_color(const std::vector<std::string>& src, std::vector<uint32_t>& dest) {
+  std::vector<std::vector<uint8_t>> tv(3);
+  for(int i=0; i<3; i++) {
+    size_t pos = 0;
+    while ((pos = src[i].find_first_of("0123456789", pos)) != std::string::npos) {
+      tv[i].emplace_back(std::stoi(std::string(src[i], pos)));
+      pos = src[i].find_first_of(" ", pos);
+    }
   }
-}
-
-static void load_color(const vitis::ai::proto::DpuModelParam& config,
-                       std::vector<uint8_t>& color_c1,
-                       std::vector<uint8_t>& color_c2,
-                       std::vector<uint8_t>& color_c3) {
-  std::string scolor1{config.segmentation_param().color1()};
-  std::string scolor2{config.segmentation_param().color2()};
-  std::string scolor3{config.segmentation_param().color3()};
-  convert_color(scolor1, color_c1);
-  convert_color(scolor2, color_c2);
-  convert_color(scolor3, color_c3);
+  dest.resize(tv[0].size(), 0);
+  uint8_t* pd = (uint8_t*)dest.data();
+  for(int j=0; j<(int)tv[0].size(); j++) {
+    for(int i=0; i<3; i++) {
+      // dest[j*3+i] = tv[i][j];
+      *(pd+j*4+i) = tv[i][j];
+    }
+  }
 }
 
 SegmentationResult segmentation_post_process_8UC1(
@@ -89,56 +89,59 @@ std::vector<SegmentationResult> segmentation_post_process_8UC1(
   }
   return ret;
 }
+
+
 SegmentationResult segmentation_post_process_8UC3(
     const vitis::ai::library::InputTensor& input_tensors,
     const vitis::ai::library::OutputTensor& output_layer,
-    const vitis::ai::proto::DpuModelParam& config, size_t batch_idx) {
-  std::vector<uint8_t> color_c1;
-  std::vector<uint8_t> color_c2;
-  std::vector<uint8_t> color_c3;
-  load_color(config, color_c1, color_c2, color_c3);
+    const vitis::ai::proto::DpuModelParam& config,
+    size_t batch_idx) {
+
+  SegmentationResult ret{(int)input_tensors.width,
+                         (int)input_tensors.height,
+                         cv::Mat(output_layer.height, output_layer.width, CV_8UC3)};
+
+  static std::vector<uint32_t> color_c;
+  static std::mutex mtx_init;
+  if (color_c.empty()) {
+    mtx_init.lock();
+    if(color_c.empty() ) {
+      std::vector<std::string> scolor(3);
+      scolor[0] = std::string{config.segmentation_param().color1()};
+      scolor[1] = std::string{config.segmentation_param().color2()};
+      scolor[2] = std::string{config.segmentation_param().color3()};
+      convert_color(scolor, color_c);
+    }
+    mtx_init.unlock();
+  }
+
+  int i_all = output_layer.height * output_layer.width;
+  uint8_t* pmat = ret.segmentation.ptr<uint8_t>(0);
 
   if (ENV_PARAM(HARDWARE_ARGMAX) == 0) {
     __TIC__(SEG_MAX_VALUE)
-    std::vector<uint8_t> output =
-             vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
-                                  output_layer.width, 
+    std::vector<uint8_t> output;
+    output = vitis::ai::max_index((int8_t*)output_layer.get_data(batch_idx),
+                                  output_layer.width,
                                   output_layer.height,
                                   output_layer.channel);
     __TOC__(SEG_MAX_VALUE)
-    
     __TIC__(SEG_CREATE_COLOR_IMG)
-    cv::Mat segMat(output_layer.height, output_layer.width, CV_8UC3);
-    for(unsigned int row_ind = 0; row_ind < output_layer.height; ++row_ind)
-      for(unsigned int col_ind = 0; col_ind < output_layer.width; ++col_ind) {
-        uint8_t posit = output[row_ind*output_layer.width + col_ind];
-        segMat.at<cv::Vec3b>(row_ind, col_ind) = 
-          cv::Vec3b(color_c1[posit], color_c2[posit], color_c3[posit]);
-      }
-    __TOC__(SEG_CREATE_COLOR_IMG)
-    return SegmentationResult{(int)input_tensors.width,
-                              (int)input_tensors.height, segMat};
-  } else {
-    __TIC__(SEG_CREATE_COLOR_IMG)
-    //std::vector<uint8_t> output_permute(output_layer.width * output_layer.width * output_layer.channel);
-
-    //for(auto w = 0u; w < output_layer.width; w++) {
-      //for (auto h = 0u; h < output_layer.height; h++) {
-        //output_permute[output_layer.width * h + w] = ((int8_t*)output_layer.get_data(batch_idx))[output_layer.height * w + h];
-      //}
-    //}
-    cv::Mat segMat(output_layer.height, output_layer.width, CV_8UC3);
-    for(unsigned int row_ind = 0; row_ind < output_layer.height; ++row_ind) {
-      for(unsigned int col_ind = 0; col_ind < output_layer.width; ++col_ind) {
-        uint8_t posit = ((int8_t*)output_layer.get_data(batch_idx))[row_ind*output_layer.width + col_ind];
-        segMat.at<cv::Vec3b>(row_ind, col_ind) = 
-          cv::Vec3b(color_c1[posit], color_c2[posit], color_c3[posit]);
-      }
+    for(int i=0; i<i_all-1; ++i, pmat+=3 )  {
+       *(uint32_t*)pmat = color_c[output[i]];
     }
+    memcpy(pmat, (uint8_t*)color_c.data()+output[i_all-1]*4, 3);
     __TOC__(SEG_CREATE_COLOR_IMG)
-    return SegmentationResult{(int)input_tensors.width,
-                              (int)input_tensors.height, segMat};
+  } else {
+    int8_t* output_p = (int8_t*)output_layer.get_data(batch_idx);
+    __TIC__(SEG_CREATE_COLOR_IMG)
+    for(int i=0; i<i_all-1; ++i, pmat+=3 )  {
+        *(uint32_t*)(pmat) = color_c[output_p[i]];
+    }
+    memcpy(pmat, (uint8_t*)color_c.data()+output_p[i_all-1]*4, 3);
+    __TOC__(SEG_CREATE_COLOR_IMG)
   }
+  return ret;
 }
 
 std::vector<SegmentationResult> segmentation_post_process_8UC3(

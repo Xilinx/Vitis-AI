@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class c_api {
       i = i + 1;
     }
   }
-  static const xir_attrs_t graph_get_attrs(xir_graph_t graph) {
+  static xir_attrs_t graph_get_attrs(xir_graph_t graph) {
     auto self = static_cast<xir::GraphImp*>(graph);
     return static_cast<xir_graph_t>(self->attrs_.get());
   }
@@ -129,7 +129,7 @@ extern "C" void xir_graph_get_head_ops(xir_graph_t graph, void* data,
                                        xir_get_op_callback_t cb) {
   auto self = static_cast<xir::Graph*>(graph);
   auto ops = self->get_head_ops();
-  for (auto op : ops) {
+  for (auto& op : ops) {
     cb(data, op);
   }
 }
@@ -138,7 +138,7 @@ extern "C" void xir_graph_get_tail_ops(xir_graph_t graph, void* data,
                                        xir_get_op_callback_t cb) {
   auto self = static_cast<xir::Graph*>(graph);
   auto ops = self->get_tail_ops();
-  for (auto op : ops) {
+  for (auto& op : ops) {
     cb(data, op);
   }
 }
@@ -154,7 +154,7 @@ extern "C" void xir_graph_topological_sort(xir_tensor_t graph, void* data,
                                            xir_get_op_callback_t cb) {
   auto self = static_cast<xir::Graph*>(graph);
   auto ops = self->topological_sort();
-  for (auto op : ops) {
+  for (auto& op : ops) {
     cb(data, op);
   }
 }

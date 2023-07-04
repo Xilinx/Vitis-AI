@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,11 @@ int main(int argc, char* argv[]) {
   ofstream out(argv[3]);
   string out_img_path = string(argv[4]);
   auto model = vitis::ai::MultiTask::create(g_model_name);
-  for (auto name : names) {
+  if (!model) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  } 
+  for (auto& name : names) {
     cv::Mat img = cv::imread(name);
     auto results = model->run_8UC1(img);
     auto namesp = split(name, "/");

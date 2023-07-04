@@ -13,9 +13,10 @@
 # limitations under the License.
 
 name: "AMD_AIE2_1x4_Overlay"
-type: "IPUCVDX8G"
+ipu_overlay_type: "1x4_Overlay"
+type: "IPU_PHX"
 isa_version: 0x00
-feature_code: 0x020500270d12
+feature_code: 0x020500fffffe
 
 overlay_info {
   aienum_row_num: 4

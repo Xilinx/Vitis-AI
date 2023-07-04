@@ -9,7 +9,6 @@ dependencies:
   - vai_wego_tensorflow
   - vart
   - vaic
-  - dpuv3-pycompiler
   - xnnc
   - xcompiler
   - tensorflow-onnx

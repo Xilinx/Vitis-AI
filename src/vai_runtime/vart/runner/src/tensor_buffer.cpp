@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications Copyright (C) 2022 Advanced Micro Devices, Inc. All Rights
+ * Reserved.
  */
 #include "vart/tensor_buffer.hpp"
+
+#include <glog/logging.h>
 
 #include <algorithm>
 #include <cmath>
@@ -157,7 +162,7 @@ static void copy_tensor_buffer_real_from_host_to_phy(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -173,7 +178,7 @@ static void copy_tensor_buffer_real_from_phy_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -189,7 +194,7 @@ static void copy_tensor_buffer_real_from_host_to_device(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -205,7 +210,7 @@ static void copy_tensor_buffer_real_from_device_to_host(
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;
@@ -222,7 +227,7 @@ static void copy_tensor_buffer_real_from_phy_to_phy(vart::TensorBuffer* tb_from,
   auto idx = vart::get_index_zeros(tb_from->get_tensor());
   uint64_t data = 0u;
   size_t tensor_size = 0;
-  auto single_batch_size = (size_t)((uint32_t)tb_from->get_tensor()->get_data_size()) /
+  auto single_batch_size = tb_from->get_tensor()->get_data_size() /
                            tb_from->get_tensor()->get_shape()[0];
   for (auto batch = 0u; batch < batch_size; ++batch) {
     idx[0] = (int)batch;

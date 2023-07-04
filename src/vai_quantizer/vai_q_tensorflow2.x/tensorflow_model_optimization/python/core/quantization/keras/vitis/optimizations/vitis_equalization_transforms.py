@@ -62,30 +62,32 @@ def _cross_layer_equalize(head_conv,
   "Markus Nagel et al., Data-Free Quantization through Weight Equalization and Bias Correction", arXiv:1906.04721, 2019."
   """
   head_weights, tail_weights = [], []
+  head_conv_name_prefix = '/'.join(head_conv.layer['config']['name'].split('/')[1:]) 
+  tail_conv_name_prefix = '/'.join(tail_conv.layer['config']['name'].split('/')[1:]) 
   # Get head conv weights and bias
   if head_conv.layer['class_name'] == 'Conv2D':
-    w = head_conv.weights['kernel:0']
+    w = head_conv.weights[head_conv_name_prefix+'/kernel:0'] if head_conv_name_prefix else head_conv.weights['kernel:0']
     oc = w.shape[3]  # k * k * ic * oc for Conv2D
     head_weights.append(w.reshape(-1, oc))
     if head_conv.layer['config']['use_bias']:
-      b = head_conv.weights['bias:0']
+      b = head_conv.weights[head_conv_name_prefix+'/bias:0'] if head_conv_name_prefix else head_conv.weights['bias:0']
       head_weights.append(b.reshape(1, -1))
   else:
-    w = head_conv.weights['depthwise_kernel:0']
+    w = head_conv.weights[head_conv_name_prefix+'/depthwise_kernel:0'] if head_conv_name_prefix else head_conv.weights['depthwise_kernel:0']
     oc = w.shape[2]  # k * k * ic * 1 for DepthwiseConv2D
     head_weights.append(w.reshape(-1, oc))
     if head_conv.layer['config']['use_bias']:
-      b = head_conv.weights['bias:0']
+      b = head_conv.weights[head_conv_name_prefix+'/bias:0'] if head_conv_name_prefix else head_conv.weights['bias:0']
       head_weights.append(b.reshape(1, -1))
 
   # Get tail conv weights and bias
   if tail_conv.layer['class_name'] == 'Conv2D':
-    w = tail_conv.weights['kernel:0']
+    w = tail_conv.weights[tail_conv_name_prefix+'/kernel:0'] if tail_conv_name_prefix else tail_conv.weights['kernel:0']
     ic = w.shape[2]  # k * k * ic * oc for Conv2D
     w = w.transpose(0, 1, 3, 2)
     tail_weights.append(w.reshape(-1, ic))
   else:
-    w = tail_conv.weights['depthwise_kernel:0']
+    w = tail_conv.weights[tail_conv_name_prefix+'/depthwise_kernel:0'] if tail_conv_name_prefix else tail_conv.weights['depthwise_kernel:0']
     ic = w.shape[2]  # k * k * ic * 1 for DepthwiseConv2D
     tail_weights.append(w.reshape(-1, ic))
 
@@ -98,19 +100,37 @@ def _cross_layer_equalize(head_conv,
 
   # Scale head conv weights and bias
   if head_conv.layer['class_name'] == 'Conv2D':
-    head_conv.weights['kernel:0'] *= scale.reshape(1, 1, 1, -1)
+    if head_conv_name_prefix:
+      head_conv.weights[head_conv_name_prefix+'/kernel:0'] *= scale.reshape(1, 1, 1, -1)
+    else:
+      head_conv.weights['kernel:0'] *= scale.reshape(1, 1, 1, -1)
     if head_conv.layer['config']['use_bias']:
-      head_conv.weights['bias:0'] *= scale
+      if head_conv_name_prefix:
+        head_conv.weights[head_conv_name_prefix+'/bias:0'] *= scale
+      else:
+        head_conv.weights['bias:0'] *= scale
   else:
-    head_conv.weights['depthwise_kernel:0'] *= scale.reshape(1, 1, -1, 1)
+    if head_conv_name_prefix:
+      head_conv.weights[head_conv_name_prefix+'/depthwise_kernel:0'] *= scale.reshape(1, 1, -1, 1)
+    else:
+      head_conv.weights['depthwise_kernel:0'] *= scale.reshape(1, 1, -1, 1)
     if head_conv.layer['config']['use_bias']:
-      head_conv.weights['bias:0'] *= scale
+      if head_conv_name_prefix:
+        head_conv.weights[head_conv_name_prefix+'/bias:0'] *= scale
+      else:
+        head_conv.weights['bias:0'] *= scale
 
   # Scale tail conv weights and bias
-  if tail_conv.layer['class_name'] == 'Conv2D':
-    tail_conv.weights['kernel:0'] /= scale.reshape(1, 1, -1, 1)
+  if tail_conv_name_prefix:
+    if tail_conv.layer['class_name'] == 'Conv2D':
+      tail_conv.weights[tail_conv_name_prefix+'/kernel:0'] /= scale.reshape(1, 1, -1, 1)
+    else:
+      tail_conv.weights[tail_conv_name_prefix+'/depthwise_kernel:0'] /= scale.reshape(1, 1, -1, 1)
   else:
-    tail_conv.weights['depthwise_kernel:0'] /= scale.reshape(1, 1, -1, 1)
+    if tail_conv.layer['class_name'] == 'Conv2D':
+      tail_conv.weights['kernel:0'] /= scale.reshape(1, 1, -1, 1)
+    else:
+      tail_conv.weights['depthwise_kernel:0'] /= scale.reshape(1, 1, -1, 1)
 
 
 class CLEBase(transforms.Transform):

@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -23,6 +23,6 @@ vai_add_library(
        src/batch_tensor_buffer_view.cpp
        src/tensor_mirror_attrs.hpp
        src/tensor_mirror_attrs.cpp
-  PUBLIC_REQUIRE vart::runner glog::glog)
+  PUBLIC_REQUIRE vart::runner vart::util glog::glog)
 
 vai_add_test(test_path_util)

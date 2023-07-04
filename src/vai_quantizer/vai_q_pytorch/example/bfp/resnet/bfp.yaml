@@ -1,0 +1,4 @@
+bfp:
+  bitwidth: 16
+  block_size: 16
+  rounding_mode: 'round_even'

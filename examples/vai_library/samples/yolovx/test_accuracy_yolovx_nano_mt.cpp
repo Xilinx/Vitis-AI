@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@
 #include <vitis/ai/nnpp/yolovx.hpp>
 #include <vitis/ai/yolovx.hpp>
 extern int g_last_frame_id;
-
-extern int GLOBAL_ENABLE_NEW_IOU;
 std::string model_name;
 bool is_first = true;
 using namespace std;
@@ -121,7 +119,6 @@ struct YolovXAcc : public AccThread {
 
 int main(int argc, char* argv[]) {
   model_name = argv[1];
-  GLOBAL_ENABLE_NEW_IOU = 1;
   return vitis::ai::main_for_accuracy_demo(
       argc, argv,
       [&] { return vitis::ai::YOLOvX::create(model_name + "_acc"); },

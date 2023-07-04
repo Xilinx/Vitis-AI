@@ -5,4 +5,4 @@
  </tr>
 </table>
 
-This folder contains the Docker container build files.  For information on building and using Vitis AI Docker containers, start [here](https://xilinx.github.io/Vitis-AI/docs/install/install.html)
+This folder contains the Docker container build files.  For information on building and using Vitis AI Docker containers, **[YOU MAY ACCESS THE LATEST INSTALL DOCUMENTATION ONLINE] https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html)** or **[OPEN THE OFFLINE DOCUMENTATION IN YOUR BROWSER](../docs/install/install.html)**.

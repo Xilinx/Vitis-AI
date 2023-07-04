@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,12 @@ int main(int argc, char *argv[]) {
   std::vector< std::unique_ptr<Cflownet>> vssd;
   std::vector<std::string> out_dir_t(t_n);
   for(int i=0; i<t_n; i++) {
-    vssd.emplace_back(vitis::ai::Cflownet::create("cflownet_pt"));
+    auto det = vitis::ai::Cflownet::create("cflownet_pt");
+    if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+    }  
+    vssd.emplace_back(std::move(det));
     vth.emplace_back( std::thread( &accuracy_thread, vssd[i].get(), i , t_n ));
   }
   for(int i=0; i<t_n; i++) {

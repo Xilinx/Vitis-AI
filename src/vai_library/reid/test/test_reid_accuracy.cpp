@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ double cosine_distance(Mat feat1, Mat feat2) { return 1 - feat1.dot(feat2); }
 
 int main(int argc, char *argv[]) {
   auto det = vitis::ai::Reid::create(argv[1]);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   size_t batch = det->get_input_batch();
   vector<Mat> featx;
   vector<Mat> featy;
@@ -54,7 +58,7 @@ int main(int argc, char *argv[]) {
       continue;
     }
     auto rets = det->run(inputs);
-    for (auto ret : rets) {
+    for (auto& ret : rets) {
       featx.push_back(ret.feat);
     }
     inputs.clear();

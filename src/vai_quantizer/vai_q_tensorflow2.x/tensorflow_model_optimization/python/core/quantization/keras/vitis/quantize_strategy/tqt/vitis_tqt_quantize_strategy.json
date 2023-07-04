@@ -46,7 +46,7 @@
   "finalize_pipeline_config":
   {
     "output_format": "",
-    "onnx_opset_version": 11,
+    "onnx_opset_version": 13,
     "output_dir": "./quantize_results/"
   },
 
@@ -54,31 +54,37 @@
   {
     "user_quantize_config":
     {
+      "data_format": null,
       "input_bit": null,
       "input_method": null,
       "input_symmetry": null,
       "input_per_channel": null,
       "input_round_mode": null,
       "input_unsigned": null,
+      "input_narrow_range": null,
       "weight_bit": null,
       "weight_method": null,
       "weight_symmetry": null,
       "weight_per_channel": null,
       "weight_round_mode": null,
       "weight_unsigned": null,
+      "weight_narrow_range": null,
       "bias_bit": null,
       "bias_method": null,
       "bias_symmetry": null,
       "bias_per_channel": null,
       "bias_round_mode": null,
       "bias_unsigned": null,
+      "bias_narrow_range": null,
       "activation_bit": null,
       "activation_method": null,
       "activation_symmetry": null,
       "activation_per_channel": null,
       "activation_round_mode": null,
       "activation_unsigned": null,
+      "activation_narrow_range": null,
       "use_framework_quant": null,
+      "use_fixneuron_quant": null,
       "input_layers": [],
       "output_layers": [],
       "ignore_layers": []
@@ -89,7 +95,7 @@
       "input_layers": [],
       "input_quantizer":
       {
-        "quantizer_type": "TQTQuantizer",
+        "quantizer_type": "Pof2SQuantizer",
         "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
       }
     },
@@ -102,21 +108,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -127,21 +133,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": 2, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": 2, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -152,21 +158,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -177,21 +183,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -202,7 +208,7 @@
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -213,7 +219,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -224,7 +230,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -235,14 +241,14 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_outputs": [0],
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -253,7 +259,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -264,18 +270,40 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           },
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_outputs": [0],
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          }
+        ]
+      },
+
+      {
+        "layer_type": "tensorflow.keras.layers.LayerNormalization",
+        "quantizable_weights": ["gamma", "beta"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          }
+        ],
+        "quantizable_outputs": [0],
+        "output_quantizers": [
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -286,7 +314,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -297,7 +325,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -308,7 +336,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -319,7 +347,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -330,7 +358,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -341,6 +369,10 @@
 
       {
         "layer_type": "tensorflow.keras.layers.Reshape"
+      },
+
+      {
+        "layer_type": "tensorflow.keras.layers.Permute"
       },
       
       {
@@ -353,7 +385,29 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          }
+        ]
+      },
+
+      {
+        "layer_type": "tensorflow_model_optimization.python.core.quantization.keras.vitis.layers.vitis_activation.VitisLayernorm",
+        "quantizable_weights": ["gamma", "beta"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
+          }
+        ],
+        "quantizable_outputs": [0],
+        "output_quantizers": [
+          {
+            "quantizer_type": "TQTQuantizer",
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -364,7 +418,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -375,7 +429,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -386,7 +440,7 @@
         "output_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -397,21 +451,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       },
@@ -422,21 +476,21 @@
         "weight_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_biases": ["bias"],
         "bias_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 0, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ],
         "quantizable_activations": ["activation"],
         "activation_quantizers": [
           {
             "quantizer_type": "TQTQuantizer",
-            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "unsigned": false, "narrow_range": false}
+            "quantizer_params": {"bit_width": 8, "method": 0, "round_mode": 1, "symmetry": true, "per_channel": false, "channel_axis": -1, "use_fixneuron_quant": 0, "unsigned": false, "narrow_range": false}
           }
         ]
       }

@@ -1,4 +1,4 @@
-# Copyright 2021 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ def get_subg_info(sub_g: dict, rank_id):
     device = sub_g.get("device", "unknow")
 
     mc = sub_g.get("mc_code_sstr.str()", "")
-    mc_size = len(mc)
+    mc_size = len(mc) / 2 # div 2: sizeof string -> sizeof bin
 
     if (mc_size < 100_000_000):
         if (mc_size > 50_000_000):

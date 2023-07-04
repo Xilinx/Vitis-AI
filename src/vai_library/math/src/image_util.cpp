@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -539,43 +539,43 @@ void transform_mean_scale(int w, int h, const uint8_t* src, int8_t* dst,
   unsigned char high_shift_R = mean[2] + 0.999;
   uint8x16_t low_mean_R = vdupq_n_u8(low_shift_R);
   uint8x16_t high_mean_R = vdupq_n_u8(high_shift_R);
-  auto calc_float_mean = [](const uint8x16_t& in_u8, int scale,
+  auto calc_float_mean = [](const uint8x16_t& in_u8, int scale_,
                             const uint8x16_t& high_mean,
                             const uint8x16_t& low_mean) -> int8x16_t {
-    if (scale > 0) {
+    if (scale_ > 0) {
       // scale > 0
       // LOG(FATAL) << "scale > 0 not implementation";
-      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale > 0 not implementation";
+      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale_ > 0 not implementation";
       // temp = vshlq_n_u8(vminq_u8(vabdq_u8(in_u8, high_mean),
       // vabdq_u8(in_u8, low_mean)), scale);
       return int8x16_t();
-    } else if (scale < 0) {
+    } else if (scale_ < 0) {
       // scale < 0
       return vreinterpretq_s8_u8(
-          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), -scale),
-                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), -scale)));
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, high_mean), -scale_),
+                   vshrq_n_u8(vqsubq_u8(low_mean, in_u8), -scale_)));
     }
     // scale =0
     return vreinterpretq_s8_u8(
         vsubq_u8(vqsubq_u8(in_u8, high_mean), vqsubq_u8(low_mean, in_u8)));
   };
-  auto calc_int_mean = [](const uint8x16_t& in_u8, int scale,
-                          const uint8x16_t& mean) -> int8x16_t {
-    if (scale > 0) {
+  auto calc_int_mean = [](const uint8x16_t& in_u8, int scale_,
+                          const uint8x16_t& mean_) -> int8x16_t {
+    if (scale_ > 0) {
       // scale >0
       // LOG(FATAL) << "scale > 0 not implementation";
-      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale > 0 not implementation";
+      UNI_LOG_FATAL(VAILIB_MATH_NOT_SUPPORT) << "scale_ > 0 not implementation";
       return int8x16_t();
       // temp = vshlq_n_u8(vabdq_u8(in_u8, mean), scale);
-    } else if (scale < 0) {
+    } else if (scale_ < 0) {
       // scale < 0
       return vreinterpretq_s8_u8(
-          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean), -scale),
-                   vshrq_n_u8(vqsubq_u8(mean, in_u8), -scale)));
+          vsubq_u8(vshrq_n_u8(vqsubq_u8(in_u8, mean_), -scale_),
+                   vshrq_n_u8(vqsubq_u8(mean_, in_u8), -scale_)));
     }
     // scale =0
     return vreinterpretq_s8_u8(
-        vsubq_u8(vqsubq_u8(in_u8, mean), vqsubq_u8(mean, in_u8)));
+        vsubq_u8(vqsubq_u8(in_u8, mean_), vqsubq_u8(mean_, in_u8)));
   };
   uint8x16x3_t sbgr_u8;
   uint8x16_t& sb_u8 = sbgr_u8.val[0];

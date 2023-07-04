@@ -8,5 +8,5 @@
 
 ## Third-party Inference Stack Integration
 
-Vitis-AI provides integration support for TVM, ONNXRuntime and TensorFlow Lite workflows. The subfolders here are the launch point for developers who wish to leverage these workflows.  For additional high-level details please refer to [this](https://xilinx.github.io/Vitis-AI/docs/workflow-third-party.html) page, or browse the documentation in the subfolders for lower-level details.
+Vitis AI provides integration support for TVM and TensorFlow Lite workflows. The subfolders here are the launch point for developers who wish to leverage these workflows.  For additional high-level details please refer to [this](https://xilinx.github.io/Vitis-AI/3.5/html/docs/workflow-third-party.html) page, or browse the documentation in the subfolders for lower-level details.
 

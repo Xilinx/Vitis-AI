@@ -5,11 +5,11 @@
  </tr>
 </table>
 
-# Vitis AI Runtime v3.0 Embedded Quick-start
+# Vitis AI Runtime v3.5 Embedded Quick-start
  
 The VART libraries and Vitis-AI applications are typically cross-compiled on the host, leveraging a Vitis-AI specific sysroot and SDK.
 
-Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [board_setup](../../board_setup/vai_install_to_target/README.md).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
+Since Vitis-AI has a different release cycle than PetaLinux, Vitis-AI PetaLinux recipes are released slightly later than the public PetaLinux release.  The result is that the SDK and sysroot must be installed as a separate process from the Petalinux install.  Also, it is important to note that the bitbake recipes that are required to build these components are released as a part of the Vitis AI repository, and may be found in the [board_setup](../../board_setup/README.md).  Leveraging the provided recipes, petalinux-build can generate the required sysroot and SDK.
 
 Outside of the petalinux-build flow, users should follow the below simple instructions to create the required sysroot and SDK on the host.
 
@@ -22,33 +22,33 @@ Outside of the petalinux-build flow, users should follow the below simple instru
 
 An easy way to get started is to simply leverage scripts that are provided to create the required Sysroot and compile the SDK.  Please follow the below steps:
 
-1. If you have not already done so, you may wish to install Petalinux on your host machine.  The Petalinux installer run file is available from the Xilinx [downloads site](https://www.xilinx.com/member/forms/download/xef.html?filename=petalinux-v2022.2-10141622-installer.run).  The process for installing Petalinux is:
+1. If you have not already done so, you may wish to install Petalinux on your host machine.  The Petalinux installer run file is available from the Xilinx [downloads site](https://www.xilinx.com/member/forms/download/xef.html?filename=petalinux-v2023.1-05012318-installer.run).  The process for installing Petalinux is:
 
 ```
-$ sudo chmod +x ./petalinux-v2022.2-10141622-installer.run
-$ ./petalinux-v2022.2-10141622-installer.run -d <install destination>
+$ sudo chmod +x ./petalinux-v2023.1-05012318-installer.run
+$ ./petalinux-v2023.1-05012318-installer.run -d <install destination>
 ```
 
-2. Download the cross-compiler installation script [sdk-2022.2.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.2.0.0.sh) to the host.  We recommend installing the SDK to the user's home folder (~/petalinux_sdk_2022.2) for the best user experience.  If you select a different install path, ensure that it has read-write permissions.
+2. Download the cross-compiler installation script [sdk-2023.1.0.0.sh](https://www.xilinx.com/bin/public/openDownload?filename=sdk-2023.1.0.0.sh) to the host.  We recommend installing the SDK to the user's home folder (~/petalinux_sdk_2023.1) for the best user experience.  If you select a different install path, ensure that it has read-write permissions.
 
 ```
-$ mkdir petalinux_sdk_2022.2
-$ cd petalinux_sdk_2022.2
-$ wget https://www.xilinx.com/bin/public/openDownload?filename=sdk-2022.2.0.0.sh -O sdk-2022.2.0.0.sh
-$ chmod +x sdk-2022.2.0.0.sh
+$ mkdir petalinux_sdk_2023.1
+$ cd petalinux_sdk_2023.1
+$ wget https://www.xilinx.com/bin/public/openDownload?filename=sdk-2023.1.0.0.sh -O sdk-2023.1.0.0.sh
+$ chmod +x sdk-2023.1.0.0.sh
 ```
 
 3. Execute the cross-compiler installation script.  Note that this script merges both a shell script as well as a binary .zip file where the .zip file is incorporated as a payload within the script.
 
 ```
-$ ./sdk-2022.2.0.0.sh
+$ ./sdk-2023.1.0.0.sh
 ```
 
-4. The script will ask you to enter the target directory for SDK installation (default: /opt/petalinux/2022.2).  You can override this to use the current directory (~/petalinux_sdk_2022.2) by entering "./".
+4. The script will ask you to enter the target directory for SDK installation (default: /opt/petalinux/2023.1).  You can override this to use the current directory (~/petalinux_sdk_2023.1) by entering "./".
 
 5. Once the installation is complete, execute the following command:
 ```
-source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
+source ~/petalinux_sdk_2023.1/environment-setup-cortexa72-cortexa53-xilinx-linux
 ```
 
 ****************
@@ -56,12 +56,12 @@ source ~/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
 
 ****************
 
-5. Next, we need to download the sysroot tarball [vitis_ai_2022.2-r3.0.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2022.2-r3.0.0.tar.gz).
+5. Next, we need to download the sysroot tarball [vitis_ai_2023.1-r3.5.0.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2023.1-r3.5.0.tar.gz).
  
 ```
-wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2022.2-r3.0.0.tar.gz -O vitis_ai_2022.2-r3.0.0.tar.gz
-rm -r ~/petalinux_sdk_2022.2/sysroots/cortexa72-cortexa53-xilinx-linux/usr/share/cmake/XRT/
-tar -xzvf vitis_ai_2022.2-r3.0.0.tar.gz -C ~/petalinux_sdk_2022.2/sysroots/cortexa72-cortexa53-xilinx-linux
+wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_2023.1-r3.5.0.tar.gz -O vitis_ai_2023.1-r3.5.0.tar.gz
+rm -r ~/petalinux_sdk_2023.1/sysroots/cortexa72-cortexa53-xilinx-linux/usr/share/cmake/XRT/
+tar -xzvf vitis_ai_2023.1-r3.5.0.tar.gz -C ~/petalinux_sdk_2023.1/sysroots/cortexa72-cortexa53-xilinx-linux
 ```
 
 ****************
@@ -95,9 +95,9 @@ cd <vitis-ai-install-path>/src/vai_runtime/target_factory
 cd <vitis-ai-install-path>/src/vai_runtime/vart
 ./cmake.sh --clean
 ```
-After you compile each module of VART, the libraries and test applications will be generated under `~/build/build.linux.2022.2.aarch64.Debug/`.
+After you compile each module of VART, the libraries and test applications will be generated under `~/build/build.linux.2023.1.aarch64.Debug/`.
 
-Take `unilog` as an example.  You will find the compiled `libunilog.so` under `~/build/build.linux.2022.2.aarch64.Debug/unilog/src` and the test applications for this same library under `~/build/build.linux.2022.2.aarch64.Debug/unilog/test`. 
+Take `unilog` as an example.  You will find the compiled `libunilog.so` under `~/build/build.linux.2023.1.aarch64.Debug/unilog/src` and the test applications for this same library under `~/build/build.linux.2023.1.aarch64.Debug/unilog/test`. 
 
 Also, these libraries will be installed into the sysroot by default. The installation path is `<sdk install path>/sysroots/aarch64-xilinx-linux/install/Debug/lib`
 

@@ -3,17 +3,14 @@ name: vitis-ai-pytorch
 channels:
   - pytorch
   - conda-forge
-  - anaconda
 
 dependencies:
-  - python=3.7
+  - python=3.8
   - pytorch_nndct
+  - libprotobuf=3.21.3
   - vaic
-  - dpuv3-pycompiler
-  - xnnc
   - xcompiler
   - vart
-  - vai_utf
   - pyyaml
   - jupyter
   - ipywidgets

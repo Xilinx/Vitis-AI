@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
   auto results = det->run(images);
   for (int k = 0; k < (int)results.size(); k++) {
-    std::cout << "batch-" << k << ":\n";
+    std::cout << "batch " << k << "\n";
     for (size_t i = 0; i < results[k].poses.size(); ++i) {
       cout << results[k].poses[i] << endl;
       if (results[k].poses[i].y > 0 && results[k].poses[i].x > 0) {

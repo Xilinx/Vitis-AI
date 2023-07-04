@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,20 @@
 
 #include <signal.h>
 
+#include <cstdlib>
 #include <map>
 #include <vitis/ai/trace.hpp>
 
 #include "internal.hpp"
 #if _WIN32
-#include <windows.h>
+#  include <windows.h>
 #else
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
-#include <sys/types.h>
+#  include <sys/syscall.h>
+#  include <sys/sysinfo.h>
+#  include <sys/types.h>
 
-#define gettid() syscall(SYS_gettid)
-#define getpid() syscall(SYS_getpid)
+#  define gettid() syscall(SYS_gettid)
+#  define getpid() syscall(SYS_getpid)
 #endif
 namespace vitis::ai::trace {
 
@@ -107,17 +108,15 @@ bool check_env(vai_trace_options_t& options) {
 #endif
   options["pid"] = to_string(pid);
 
-  auto enable = getenv("VAI_TRACE_ENABLE") ? true : false;
+  auto trace_env = my_getenv_s("VAI_TRACE_ENABLE", "false");
+  auto enable = trace_env == "true";
   options["enable"] = to_string(enable);
-
   if (!enable) return false;
 
-  auto buf_size_mb =
-      getenv("VAI_TRACE_RBUF_MB") ? getenv("VAI_TRACE_RBUF_MB") : "2";
+  auto buf_size_mb = my_getenv_s("VAI_TRACE_RBUF_MB", "2");
   options["buf_size_mb"] = buf_size_mb;
 
-  auto trace_log_dir =
-      getenv("VAI_TRACE_DIR") ? getenv("VAI_TRACE_DIR") : string("/tmp/");
+  auto trace_log_dir = my_getenv_s("VAI_TRACE_DIR", "/temp/");
   options["trace_log_dir"] = trace_log_dir;
 
   string logger_file_path = trace_log_dir + "vaitrace_" + to_string(pid);
@@ -138,33 +137,33 @@ vai_trace_options_t initialize() {
 bool is_enabled() { return get_trace_controller_inst().is_enabled(); };
 
 void lock(void) {
-    if (!is_enabled()) return;
-    global_lock.lock();
+  if (!is_enabled()) return;
+  global_lock.lock();
 };
 
-void lock(size_t &core_idx) {
-    if (!is_enabled()) return;
-    core_lock[core_idx].lock();
+void lock(size_t& core_idx) {
+  if (!is_enabled()) return;
+  core_lock[core_idx].lock();
 };
 
-void lock(std::mutex &mutex) {
-    if (!is_enabled()) return;
-    mutex.lock();
+void lock(std::mutex& mutex) {
+  if (!is_enabled()) return;
+  mutex.lock();
 };
 
 void unlock(void) {
-    if (!is_enabled()) return;
-    global_lock.unlock();
+  if (!is_enabled()) return;
+  global_lock.unlock();
 };
 
-void unlock(size_t &core_idx) {
-    if (!is_enabled()) return;
-    core_lock[core_idx].unlock();
+void unlock(size_t& core_idx) {
+  if (!is_enabled()) return;
+  core_lock[core_idx].unlock();
 };
 
-void unlock(std::mutex &mutex) {
-    if (!is_enabled()) return;
-    mutex.unlock();
+void unlock(std::mutex& mutex) {
+  if (!is_enabled()) return;
+  mutex.unlock();
 };
 
 void disable_trace() {

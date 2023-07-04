@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,27 +80,13 @@ class OnnxMovenet : public OnnxTask {
   float conf_threshold = 0.1;
 };
 
-//(image_data - mean) * scale, BRG2RGB and hwc2chw
-static void set_input_image(const cv::Mat& image, float* data) {
-  float mean[3] = {127.5f, 127.5f, 127.5f};
-  float scales[3] = {0.00784314f, 0.00784314f, 0.00784314f};
-  for (int c = 0; c < 3; c++) {
-    for (int h = 0; h < image.rows; h++) {
-      for (int w = 0; w < image.cols; w++) {
-        auto c_t = abs(c - 2);  // BRG to RGB
-        auto image_data =
-            (image.at<cv::Vec3b>(h, w)[c_t] - mean[c_t]) * scales[c_t];
-        data[c * image.rows * image.cols + h * image.cols + w] =
-            (float)image_data;
-      }
-    }
-  }
-}
-
 void OnnxMovenet::preprocess(const cv::Mat& image, int idx) {
   cv::Mat resized_image;
   cv::resize(image, resized_image, cv::Size(getInputWidth(), getInputHeight()));
-  set_input_image(resized_image, input_tensor_values.data() + batch_size * idx);
+  set_input_image_rgb(resized_image, input_tensor_values.data() + batch_size * idx,
+                  std::vector<float>{127.5f, 127.5f, 127.5f},
+                  std::vector<float>{0.00784314f, 0.00784314f, 0.00784314f}
+                 );
   return;
 }
 

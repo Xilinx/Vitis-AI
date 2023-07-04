@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,10 @@ static std::unique_ptr<xir::Tensor> create_tensor(
       tensor = t;
     }
     UNI_LOG_CHECK(t != nullptr, VART_XRT_NULL_PTR)
-      << "cannot get tensor from the tensor buffer";
+        << "cannot get tensor from the tensor buffer";
     auto dims = t->get_shape();
     UNI_LOG_CHECK(!dims.empty(), VART_TENSOR_INFO_ERROR)
-      << "dims.size() " << dims.size();
+        << "dims.size() " << dims.size();
     batch = batch + dims[0];
     if (batch_dims.empty()) {
       batch_dims = dims;
@@ -63,9 +63,11 @@ static std::unique_ptr<xir::Tensor> create_tensor(
       }
       UNI_LOG_CHECK(name == t->get_name(), VART_TENSOR_INFO_ERROR)
           << "all tensor should have same name";
-      UNI_LOG_CHECK((int)data_type.type == (int)t->get_data_type().type, VART_TENSOR_INFO_ERROR)
+      UNI_LOG_CHECK((int)data_type.type == (int)t->get_data_type().type,
+                    VART_TENSOR_INFO_ERROR)
           << "all tensor should have data_type";
-      UNI_LOG_CHECK(data_type.bit_width == t->get_data_type().bit_width, VART_TENSOR_INFO_ERROR)
+      UNI_LOG_CHECK(data_type.bit_width == t->get_data_type().bit_width,
+                    VART_TENSOR_INFO_ERROR)
           << "all tensor should have bit_width";
     }
   }
@@ -79,7 +81,8 @@ static vart::TensorBuffer::location_t my_get_location(
   UNI_LOG_CHECK(!tensor_buffers.empty(), VART_TENSOR_INFO_ERROR);
   auto ret = tensor_buffers[0]->get_location();
   for (auto i = 1u; i < tensor_buffers.size(); ++i) {
-    UNI_LOG_CHECK(ret == tensor_buffers[i]->get_location(), VART_TENSOR_INFO_ERROR)
+    UNI_LOG_CHECK(ret == tensor_buffers[i]->get_location(),
+                  VART_TENSOR_INFO_ERROR)
         << "all tensor buffers must have the same location: tensor_buffers[i]="
         << tensor_buffers[i]->to_string()
         << "; the first tensor buffer=" << tensor_buffers.front()->to_string();
@@ -108,33 +111,14 @@ std::pair<uint64_t, size_t> BatchTensorBuffer::xdata(
       return tensor_buffers_[0]->data(idx);
     }
   }
-  size_t tb_idx = 0u;
-  int batch = 0;
-  //  Ddebug idx=[1,0,0,0] tb_idx=0 tensor_buffers_.size()=3 idx2=[1,0,0,0]
-  //  batch=0
-  auto dims = tensor_buffers_[tb_idx]->get_tensor()->get_shape();
-  for (tb_idx = 0; tb_idx < tensor_buffers_.size() && idx[0] > batch;
-       tb_idx++) {
-    batch = batch + dims[0];
-  }
-  if (tb_idx >= tensor_buffers_.size()) {
-    return std::make_pair(0u, 0u);
-  }
+  auto tb_pair = get_tb_idx(idx[0]);
   auto idx2 = idx;
-  idx2[0] = idx[0] - batch;
-  // LOG(INFO) << "Ddebug idx=" << to_string(idx.begin(), idx.end())
-  //           << " tb_idx < tensor_buffers_.size()="
-  //           << (tb_idx < tensor_buffers_.size()) << "  idx[0] < batch "
-  //           << (idx[0] < batch) << " tb_idx=" << tb_idx  //
-  //           << " " << idx[0] << "<" << batch             //
-  //           << " tensor_buffers_.size()=" << tensor_buffers_.size()
-  //           << " idx2=" << to_string(idx2.begin(), idx2.end())
-  //           << " batch=" << batch;
+  idx2[0] = tb_pair.second;
   auto ret = std::pair<uint64_t, size_t>();
   if (is_phy) {
-    ret = tensor_buffers_[0]->data_phy(idx2);
+    ret = tensor_buffers_[tb_pair.first]->data_phy(idx2);
   } else {
-    ret = tensor_buffers_[0]->data(idx2);
+    ret = tensor_buffers_[tb_pair.first]->data(idx2);
   }
   return ret;
 }

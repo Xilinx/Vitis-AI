@@ -162,6 +162,26 @@ After the successful execution of the *vai_q_tensorflow* command, one output fil
 |1|deploy_model.pb|Quantized model for the Vitis AI compiler (extended TensorFlow format) for targeting DPUCZDX8G implementations.|
 |2|quantize_eval_model.pb|Quantized model for evaluation (also, the Vitis AI compiler input for most DPU architectures, like DPUCAHX8H, and DPUCADF8H).|
 
+### (Optional) Fast Finetune
+Fast finetune adjusts the weights layer by layer with calibration dataset and may get better accuracy for some models. It will take much longer time than normal PTQ (still shorter than QAT as calibration dataset is much smaller than train dataset) and is disabled by default to save time, and can be turned on to try to improve the performance if you see accuracy issues.
+- **include_fast_ft**: Set to 1 to do fast finetune (default is 0).
+- **fast_ft_mode**: The mode of fast finetune. Set to 0 to use normal mode, 1 to use sequential mode (default is 1). You can use the default value instead of setting it for most models.
+- **fast_ft_epochs**: Maximum epochs to do fast finetune for each layer (default is 1). If you set more training epochs, the model may converge better, but it takes longer.
+- **fast_ft_lr**: Learning rate for fast finetune (default is 1e-6). You need to try some learning rates to get better results for your model.
+- **fast_ft_lrcoef**: During fast finetuning, the layers that have large loss will apply the learning rate multiplied by a coefficient for better convergence (default is 1.0). You can set it to the power of 10, such as 10, 100, 1000 ...
+```shell
+$vai_q_tensorflow quantize \
+--input_frozen_graph frozen_graph.pb \
+--input_nodes ${input_nodes} \
+--input_shapes ${input_shapes} \
+--output_nodes ${output_nodes} \
+--input_fn input_fn \
+--include_fast_ft 1 --fast_ft_mode 1 --fast_ft_epochs 1 \
+--fast_ft_lr 1e-6 --fast_ft_lrcoef 1.0 \
+[options]
+```
+Recommended steps for fast finetune related parameters' tuning: 1. just try different *fast_ft_lr* and select the one that can obtain a better accuracy; 2. if in the previous step a layer with large loss (e.g. greater than 3.0) was observed, try different *fast_ft_lrcoef* and select the one that can obtain a better accuracy; 3. increase *fast_ft_epochs* and select the one that can obtain a better accuracy.
+
 ### (Optional) Exporting the Quantized Model to ONNX
 The quantized model is tensorflow protobuf format by default. If you want to get a ONNX format model, just add *output_format* to the *vai_q_tensorflow* command.
 - **output_format**: Indicates what format to save the quantized model, 'pb' for saving tensorflow frozen pb, 'onnx' for saving onnx model (default is 'pb').
@@ -469,6 +489,31 @@ The options supported by *vai_q_tensorflow* are shown in the following tables.
     <td>--skip_check</td>
     <td>Int32</td>
     <td>If set to 1, the check for float model is skipped. Useful when only part of the input model is quantized.<br>Range: [0, 1]<br><br>Default value: 0</td>
+  </tr>
+  <tr>
+    <td>--include_fast_ft</td>
+    <td>Int32</td>
+    <td>Enable fast finetune layer by layer during quantization. Fast finetune is good for accuracy but takes longer.<br><br>0: Disable fast finetune<br>1: Enable fast finetune<br><br>Default value: 0</td>
+  </tr>
+  <tr>
+    <td>--fast_ft_mode</td>
+    <td>Int32</td>
+    <td>The mode of fast finetune.<br><br>0: Normal mode<br>1: Sequential mode<br><br>Default value: 1</td>
+  </tr>
+  <tr>
+    <td>--fast_ft_epochs</td>
+    <td>Int32</td>
+    <td>Maximum epochs to do fast finetune for each layer.<br><br>Default value: 1</td>
+  </tr>
+  <tr>
+    <td>--fast_ft_lr</td>
+    <td>float</td>
+    <td>Learning rate for fast finetune.<br><br>Default value: 1e-6</td>
+  </tr>
+  <tr>
+    <td>--fast_ft_lrcoef</td>
+    <td>float</td>
+    <td>During fast finetuning, the layers that have large loss will apply the learning rate multiplied by a coefficient for better convergence.<br><br>Default value: 1.0</td>
   </tr>
   <tr>
     <td>--align_concat</td>

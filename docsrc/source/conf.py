@@ -31,10 +31,10 @@ copyright = '2022-2023, Advanced Micro Devices, Inc'
 author = 'Advanced Micro Devices, Inc'
 
 # The short X.Y version
-version = '3.0'
+version = '3.5'
 # The full version, including alpha/beta/rc tags
-release = '3.0'
-html_last_updated_fmt = 'February 9, 2023'
+release = '3.5'
+html_last_updated_fmt = 'July 2, 2023'
 
 # -- General configuration ---------------------------------------------------
 
@@ -55,9 +55,9 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'm2r2',
-	# 'recommonmark',
-	# 'sphinx_markdown_tables',
+	'recommonmark',
+	'sphinx_markdown_tables',
+    'breathe',
 	#'edit_on_github',
     # Auto-generate section labels.
     'sphinx.ext.autosectionlabel',	
@@ -103,7 +103,7 @@ source_suffix = {
 source_parsers = {
     '.md': CommonMarkParser,
 	# myst_parser testing
-	#'.md':
+	#'.md': 
 }
 
 # The master toctree document.
@@ -263,3 +263,13 @@ def setup(app):
             'auto_toc_tree_section': 'Contents',
             }, True)
     app.add_transform(AutoStructify)
+
+
+# -- Breathe configuration -------------------------------------------------
+
+breathe_default_project = "runtime"
+breathe_default_members = ('members',)
+breathe_projects = {
+
+	"runtime": "../source/doxygen/xml"
+	}

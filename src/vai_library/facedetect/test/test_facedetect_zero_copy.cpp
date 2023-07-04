@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,6 +101,11 @@ int main(int argc, char* argv[]) {
 
   __TIC__(FACE_DET_TOTAL)
   auto det = vitis::ai::FaceDetect::create(argv[1], false);
+  if (!det) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
+
   auto batch = det->get_input_batch();
 
   // 1, get input tensor buffer's size & input offset
@@ -172,7 +177,7 @@ int main(int argc, char* argv[]) {
   }
 
   // release xrt bo
-  for (auto bo : bo_for_inputs) {
+  for (auto & bo : bo_for_inputs) {
     xclFreeBO(bo.xrt_handle, bo.xrt_bo_handle);
   }
   xclClose(h);

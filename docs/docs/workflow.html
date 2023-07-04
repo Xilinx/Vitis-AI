@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5RHQV7');</script>
 <!-- End Google Tag Manager -->
-  <title>Vitis AI - A Brief Introduction &mdash; Vitis™ AI 3.0 documentation</title>
+  <title>Overview &mdash; Vitis™ AI 3.5 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
@@ -35,8 +35,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Release Notes 3.0" href="reference/release_notes_3.0.html" />
-    <link rel="prev" title="Vitis AI" href="../index.html" /> 
+    <link rel="next" title="DPU IP Details and System Integration" href="workflow-system-integration.html" />
+    <link rel="prev" title="Quick Start Guide for Alveo V70" href="quickstart/v70.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -52,7 +52,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0
+                3.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,71 +62,56 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#new-users">New Users</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-is-a-dpu">What is a DPU?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#test-drive-vitis-ai-on-a-supported-platform">Test-Drive Vitis AI on a Supported Platform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-evaluation-targets">Supported Evaluation Targets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#version-compatibility">Version Compatibility</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Current Release</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vek280.html">Versal AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/v70.html">Alveo V70</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#first-steps">First Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-evaluation-targets">Supported Evaluation Targets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<p class="caption" role="heading"><span class="caption-text">Runtime API Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/classlist.html">C++ API Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doxygen/api/pythonlist.html">Python APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Formal Vitis AI Documents</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#id1">Additional Resources</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
 </ul>
 
         </div>
@@ -143,7 +128,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Vitis AI - A Brief Introduction</li>
+      <li>Overview</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/workflow.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -153,57 +138,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="vitis-ai-a-brief-introduction">
-<h1>Vitis AI - A Brief Introduction<a class="headerlink" href="#vitis-ai-a-brief-introduction" title="Permalink to this heading">¶</a></h1>
-<p>The page intends to briefly introduce each component of the Vitis™ AI workflow and provide a unified landing page that will assist developers in navigating to key resources for each stage in the workflow.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Review this entire Vitis AI HTML documentation as a first step on your journey with Vitis AI. On these pages, you will find vital information that will help to augment the formal user and product guides.</p>
-</div>
-<section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">¶</a></h2>
-<p>Vitis AI documentation has formal product and user guides, task-specific resources, and examples. Additional task-specific resources and examples are encapsulated in the various sections of this documentation repository. The formal documentation is listed in  <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Release Documentation</span></a>.</p>
-</section>
-<section id="new-users">
-<h2>New Users<a class="headerlink" href="#new-users" title="Permalink to this heading">¶</a></h2>
-<p>So, you are a new user wondering where to start. In general, there are two primary starting points. Most users will want to start by installing the toolchain or doing a “test drive.” Xilinx recommends that all users start with a “test drive” and then move on to the installation of the tools. The two workflows are as follows:</p>
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
+<section id="first-steps">
+<h2>First Steps<a class="headerlink" href="#first-steps" title="Permalink to this heading">¶</a></h2>
+<p>So, you are a new user wondering where to start. In general, there are two primary starting points. Most users will want to start by evaluating the toolchain and running a few examples.  AMD recommends that all users start by downloading and running examples on a supported target platform, and then move on to installation and evaluation of the tools.</p>
+<p>The two workflows are as follows:</p>
 <figure class="align-default" id="id1">
 <img alt="../_images/New_User_Flow.PNG" src="../_images/New_User_Flow.PNG" />
 <figcaption>
 <p><span class="caption-text">Vitis AI High-Level New User Workflow</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-</section>
-<section id="what-is-a-dpu">
-<h2>What is a DPU?<a class="headerlink" href="#what-is-a-dpu" title="Permalink to this heading">¶</a></h2>
-<p>Xilinx uses the acronym D-P-U to identify soft accelerators that target deep-learning inference. These “<strong>D</strong> eep Learning <strong>P</strong> rocessing <strong>U</strong> nits” are a vital component of the Vitis AI solution. This (perhaps overloaded) term can refer to one of several potential accelerator architectures covering multiple network topologies.</p>
-<p>A DPU comprises elements available in the Xilinx programmable logic fabric, such as DSP, BlockRAM, UltraRAM, LUTs, and Flip-Flops, or may be developed as a set of microcoded functions that are deployed on the Xilinx AI Engine, or “AI Engine” architecture. Furthermore, in the case of some applications, the DPU is likely to be comprised of programmable logic and AI Engine array resources.</p>
-<p>An example of the DPUCZ, targeting Zynq® Ultrascale+™ devices is displayed in the following image:</p>
-<figure class="align-default" id="id2">
-<a class="reference internal image-reference" href="../_images/DPUCZ.PNG"><img alt="../_images/DPUCZ.PNG" src="../_images/DPUCZ.PNG" style="width: 1300px;" /></a>
-<figcaption>
-<p><span class="caption-text">Features and Architecture of the Zynq Ultrascale+ DPUCZ</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>Vitis AI provides the DPU IP and the required tools to deploy both standard and custom neural networks on Xilinx targets:</p>
-<figure class="align-default" id="id3">
-<a class="reference internal image-reference" href="../_images/VAI-1000ft.PNG"><img alt="../_images/VAI-1000ft.PNG" src="../_images/VAI-1000ft.PNG" style="width: 1300px;" /></a>
-<figcaption>
-<p><span class="caption-text">Vitis AI 1000 Foot View</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>Vitis AI DPUs are general-purpose AI inference accelerators. A single DPU instance in your design can enable you to deploy multiple CNNs simultaneously and process multiple streams simultaneously. The Processing depends on the DPU having sufficient parallelism to support the combination of the networks and the number of streams. Multiple DPU instances can be instantiated per device. The DPU can be scaled in size to accommodate the requirements of the user.</p>
-<p>The Vitis AI DPU architecture is called a “Matrix of (Heterogeneous) Processing Engines.”  While on the surface, Vitis AI DPU architectures have some visual similarity to a systolic array; the similarity ends there. DPU is a micro-coded processor with its Instruction Set Architecture. Each DPU architecture has its own instruction set, and the Vitis AI Compiler compiles an executable <code class="docutils literal notranslate"><span class="pre">.Xmodel</span></code> to deploy for each network. The DPU executes the compiled instructions in the <code class="docutils literal notranslate"><span class="pre">.Xmodel</span></code>. The Vitis AI Runtime addresses the underlying tasks of scheduling the inference of multiple networks, multiple streams, and even multiple DPU instances. The mix of processing engines in the DPU is heterogeneous, with the DPU having different engines specialized for different tasks. For instance, CONV2D operators are accelerated in a purpose-built PE, while another process depthwise convolutions.</p>
-<p>One advantage of this architecture is that there is no need to load a new bitstream or build a new hardware platform while changing the network.  This is an important differentiator from Data Flow accelerator architectures that are purpose-built for a single network.  That said, both the Matrix of Processing Engines and Data Flow architectures have a place in Xilinx designs.  If you need a highly optimized, specialized Data Flow accelerator for inference, refer to the <a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a> solutions.  Data Flow architectures based on FINN can support inference at line rates for high-speed communications and extremely high sample rates for inference in the RF domain.  Neither of these two applications is a great fit for Vitis AI.  The reality is that both of these flows are complementary, and support for both can play an essential role in customer product differentiation and future-proofing.</p>
-</section>
-<section id="test-drive-vitis-ai-on-a-supported-platform">
-<h2>Test-Drive Vitis AI on a Supported Platform<a class="headerlink" href="#test-drive-vitis-ai-on-a-supported-platform" title="Permalink to this heading">¶</a></h2>
-<p>In the early stages of evaluation, it is recommended that developers obtain and leverage a supported Vitis AI target platform. Several Xilinx evaluation platforms are directly supported with pre-built SD card images that enable the developer to evaluate the Vitis AI workflow. Because these images are ready-to-use, there is no immediate need for
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>In either case, we recommend that you review the entirety of the Vitis AI Github.IO documentation as a first step on your journey with Vitis AI. On these pages, you will find vital information that will augment the PDF User and Product Guides <a class="reference internal" href="reference/release_documentation.html"><span class="doc">Vitis AI User Guides / DPU Product Guides</span></a>.</p>
+</div>
+<p>In the early stages of evaluation, it is recommended that developers obtain and leverage a supported Vitis AI target platform. Several AMD evaluation platforms are directly supported with pre-built SD card images that enable the developer to evaluate the Vitis AI workflow. Because these images are ready-to-use, there is no immediate need for
 the developer to master the integration of the DPU IP. This path provides an excellent starting point for software or data science-centric developers.</p>
-<p>To get started, you must know which platform you plan to target. New users should consult with a local FAE or ML Specialist, review the DPU product guides, review the target platform documentation, and finally, review the <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Vitis AI Model Zoo</span></a> performance metrics.</p>
+<p>If you are not familiar with AMD’s Adaptable SoC offerings, you may need better understand the features and performance of AMD Adaptable SoCs before selecting a platform.  Users can review Versal™, Zynq™ Ultrascale+™ and Alveo datasheets and documentation, as well as the DPU product guides.  Also important is to review the <a class="reference internal" href="workflow-model-zoo.html"><span class="doc">Vitis AI Model Zoo</span></a> performance metrics which will allow you to contrast the relative performance of each target family.  If required, users may also wish to consult with a local FAE or ML Specialist to determine the ideal target product family or device for a given application.</p>
 </section>
 <section id="supported-evaluation-targets">
 <h2>Supported Evaluation Targets<a class="headerlink" href="#supported-evaluation-targets" title="Permalink to this heading">¶</a></h2>
+<p>Vitis™ AI 3.5 supports the following targets for evaluation.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -215,29 +172,25 @@ the developer to master the integration of the DPU IP. This path provides an exc
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Versal Embedded</p></td>
-<td><p><a class="reference external" href="https://www.xilinx.com/vck190">VCK190</a> / <a class="reference external" href="https://www.xilinx.com/vck5000">VCK5000</a></p></td>
-</tr>
-<tr class="row-odd"><td><p>Versal AI Edge</p></td>
-<td><p><a class="reference external" href="https://www.xilinx.com/member/vitis-ai-vek280.html">VEK280</a></p></td>
-</tr>
-<tr class="row-even"><td><p>Zynq Ultrascale+ Embedded</p></td>
-<td><p><a class="reference external" href="https://www.xilinx.com/zcu102">ZCU102</a> / <a class="reference external" href="https://www.xilinx.com/zcu104">ZCU104</a> / <a class="reference external" href="https://www.xilinx.com/kria">Kria K26 SOM</a></p></td>
+<tr class="row-even"><td><p>Versal AI Edge</p></td>
+<td><p><a class="reference external" href="https://www.xilinx.com/vek280.html">VEK280</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Alveo Data Center Acceleration Cards</p></td>
-<td><p><a class="reference external" href="https://www.xilinx.com/member/v70.html#vitis_ai">V70</a></p></td>
+<td><p><a class="reference external" href="https://www.xilinx.com/applications/data-center/v70.html">V70</a></p></td>
 </tr>
 </tbody>
 </table>
-<p>Vitis AI support for the <a class="reference external" href="https://www.xilinx.com/U200">U200 16nm DDR</a>, <a class="reference external" href="https://www.xilinx.com/U250">U250 16 nm DDR</a>, <a class="reference external" href="https://www.xilinx.com/U280">U280 16 nm HBM</a>, <a class="reference external" href="https://www.xilinx.com/U55C">U55C 16 nm HBM</a>, <a class="reference external" href="https://www.xilinx.com/U50">U50 16 nm HBM</a>, and <a class="reference external" href="https://www.xilinx.com/U50LV">U50LV 16 nm HBM</a> has been discontinued.   <a class="reference external" href="https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_alveo.html">Please leverage a previous release for these targets or contact your local sales team for additional guidance</a>.</p>
-<p>When you are ready to start with one of these pre-built platforms, you should refer to <a class="reference internal" href="board_setup/board_setup.html"><span class="doc">Board Setup</span></a>. These instructions guide users to download a pre-built board image to launch deployment examples that leverage Vitis AI Model Zoo. This is a crucial first step to becoming familiar with Vitis AI.</p>
+<p>Vitis™ AI 3.5 supports Zynq™ Ultrascale+™ and Versal™ AI Core architectures, however the IP for these devices is now considered mature and will not be updated with each release. Users should understand that we will continue to support these targets into the future and Vitis AI will update the pre-built board images and reference designs for these architectures with each major release (ie, 4.0).</p>
+<p>For minor releases (x.5), users wishing to leverage these architectures have two choices:</p>
+<ol class="arabic simple">
+<li><p>Leverage Vitis™ AI 3.0 for initial evaluation and development.</p></li>
+<li><p>Build a custom board Petalinux image for their target leveraging the Vitis AI 3.5 runtime and libraries.</p></li>
+</ol>
+<p>Vitis AI support for the <a class="reference external" href="https://www.xilinx.com/VCK5000">VCK5000</a> was discontinued in the 3.5 release.  Please use Vitis AI 3.0 for this target.</p>
+<p>Vitis AI support for the Uxxx Alveo targets was discontinued in the 3.0 release.  Please use Vitis AI 2.5 for those targets.</p>
+<p>When you are ready to start with one of these platforms, you should refer to the Quickstart documentation. Quickstart instructions guide users to download a pre-built board image to launch deployment examples that leverage Vitis AI Model Zoo. This is a crucial first step to becoming familiar with Vitis AI.</p>
 <p>In addition, developers with access to suitable available hardware platforms can experience pre-built demonstrations available for download through the <a class="reference external" href="https://www.xilinx.com/developer/products/vitis-ai.html#demos">Vitis AI Developer page</a>. Contact your local FAE to arrange a live demonstration.</p>
-<p>Last but not least, embedded in the Vitis AI Github repo, there is a folder that in which we may publish demonstrations from time-to-time. You can access the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/demos">demos here</a>.</p>
-<p>Once the “test drive” of the hardware platform is complete, Xilinx recommends reviewing this documentation to become more familiar with the components of Vitis AI.</p>
-</section>
-<section id="version-compatibility">
-<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Permalink to this heading">¶</a></h2>
-<p>Vitis AI v3.0 and the DPU IP released with the v3.0 branch of this repository are verified as compatible with Vitis, Vivado®, and PetaLinux version 2022.2. If you are using a previous release of Vitis AI, you should review the <a class="reference internal" href="reference/version_compatibility.html"><span class="doc">IP and Tool Version Compatibility</span></a> for that release.</p>
+<p>Last but not least, embedded in the Vitis AI Github repo, there is a folder in which we may publish demonstrations from time-to-time. You can access the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.5/demos">demos here</a>.</p>
 </section>
 </section>
 
@@ -245,25 +198,17 @@ the developer to master the integration of the DPU IP. This path provides an exc
            </div>
           </div>
           
-                  <style>
-                        .footer {
-                        position: fixed;
-                        left: 0;
-                        bottom: 0;
-                        width: 100%;
-                        }
-                  </style>
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Vitis AI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reference/release_notes_3.0.html" class="btn btn-neutral float-right" title="Release Notes 3.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart/v70.html" class="btn btn-neutral float-left" title="Quick Start Guide for Alveo V70" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-system-integration.html" class="btn btn-neutral float-right" title="DPU IP Details and System Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on February 9, 2023.
+      <span class="lastupdated">Last updated on July 2, 2023.
       </span></p>
   </div>
 

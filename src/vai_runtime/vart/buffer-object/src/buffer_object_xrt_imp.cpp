@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,24 +25,32 @@
 #include <cstring>
 #include <string>
 
+#include <UniLog/UniLog.hpp>
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/weak.hpp"
 DEF_ENV_PARAM(DEBUG_BUFFER_OBJECT, "0")
+DEF_ENV_PARAM(DRAM_ADDRESS_MAPPING, "1")
+DEF_ENV_PARAM(DRAM_NUM_OF_BANK, "8")
+DEF_ENV_PARAM(DRAM_BANK_RANGE, "16384")
 
 namespace {
 static uint64_t get_physical_address(const xclDeviceHandle& handle,
-                                     const xclBufferHandle bo) {
+                                     const xclBufferHandle bo,
+                                     const size_t bank_offset) {
   xclBOProperties p;
   auto error_code = xclGetBOProperties(handle, bo, &p);
-  CHECK_EQ(error_code, 0) << "cannot xclGetBOProperties !";
-  auto phy = error_code == 0 ? p.paddr : -1;
+  UNI_LOG_CHECK(error_code == 0, VART_XCLGETBO_INFO_ERROR)
+    << "cannot xclGetBOProperties !";
+  auto phy = error_code == 0 ? p.paddr + bank_offset : -1;
+
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
       << "error_code " << error_code << " "        //
       << "handle " << handle << " "                //
       << "bo " << bo << " "                        //
+      << "bank_offset " << std::hex << "0x" << bank_offset << " "  //
       << "phy " << std::hex << "0x" << phy << " "  //
       << std::dec << std::endl;
-  CHECK_NE(phy, (decltype(phy))(-1)) << "cannot xclGetBOProperties ! "  //
+  UNI_LOG_CHECK(phy != (decltype(phy))(-1), VART_XCLGETBO_INFO_ERROR)  //
                                      << " error_code=" << error_code    //
                                      << " handle " << handle << " "
                                      << " bo=" << bo;
@@ -71,11 +79,30 @@ BufferObjectXrtEdgeImp::BufferObjectXrtEdgeImp(size_t size, size_t device_id,
     : BufferObject(),                                          //
       holder_{xir::XrtDeviceHandle::get_instance()},           //
       xrt_{find_xrt_info(holder_.get(), device_id, cu_name)},  //
-      size_{size}                                              //
+      size_{size},                                             //
+      bank_offset_{0}
 {
-  bo_ = xclAllocBO(xrt_.handle, size, 0 /* not used according to xrt.h*/,
+  bo_size_ = size;
+  bank_offset_ = 0;
+
+  //This optimization utilizes the parallel access feature of DRAM banks to
+  //increase the memory access bandwidth for XVDPU multiple batches. This is
+  //achieved by assigning different bank ranges to the physical addresses of
+  //the input, output, and workspace.
+  if (ENV_PARAM(DRAM_ADDRESS_MAPPING)) {
+    int num_of_bank = ENV_PARAM(DRAM_NUM_OF_BANK);
+    size_t range_per_bank = ENV_PARAM(DRAM_BANK_RANGE);
+    static int bo_idx = 0;
+    if (size > range_per_bank) {
+      bo_size_ = size + (range_per_bank * num_of_bank);
+      bank_offset_ = ((bo_idx++) % num_of_bank) * range_per_bank;
+    }
+  }
+
+  bo_ = xclAllocBO(xrt_.handle, bo_size_, 0 /* not used according to xrt.h*/,
                    xrt_.flags);
-  CHECK(bo_ != XRT_NULL_BO)
+
+  UNI_LOG_CHECK(bo_ != XRT_NULL_BO, VART_XCL_ALLOC_FAIL)
       << " allocation failure: "
       << " xrt_.handle " << xrt_.handle << " "
       << "xrt_.device_id " << xrt_.device_id << " "                          //
@@ -100,26 +127,28 @@ BufferObjectXrtEdgeImp::BufferObjectXrtEdgeImp(size_t size, size_t device_id,
     // In order not to affect the performance measurement of the first write
     // operation, mmset is executed after mmap to actively apply for physical
     // memory.
-    std::memset(data_, 0, size_);  //
+    std::memset(data_, 0, bo_size_);  //
     // cache flush.
     // When the cache is enabled, after memset is executed, the time for cpu to
     // write back to the cache is not fixed, If it alternats with DPU writing,
     // dirty data will appear in the cache, causeing some very difficult to
     // debug errors. eg. DPU outputs random 64 bits zero .
     // Execute cache flush ， write data to cache immediately.
-    xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_TO_DEVICE, size_, 0);
+    xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_TO_DEVICE, bo_size_, 0);
+    data_ = data_ + (bank_offset_ / 4);
   }
-  phy_ = get_physical_address(xrt_.handle, bo_);  //
+  phy_ = get_physical_address(xrt_.handle, bo_, bank_offset_);
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
       << "create bufferobject "                                  //
       << "phy_ " << std::hex << "0x" << phy_ << std::dec << " "  //
       << "size " << size << " "                                  //
+      << "bo_size " << bo_size_ << " "                           //
       << " ptr " << (void*)data_ << " ";
 }
 
 BufferObjectXrtEdgeImp::~BufferObjectXrtEdgeImp() {
   if (data_ != nullptr) {
-    xclUnmapBO(xrt_.handle, bo_, data_);
+    xclUnmapBO(xrt_.handle, bo_, data_ - (bank_offset_ / 4));
   }
   xclFreeBO(xrt_.handle, bo_);
 }
@@ -143,7 +172,7 @@ void BufferObjectXrtEdgeImp::sync_for_read(uint64_t offset, size_t size) {
     return;
   }
   auto sync =
-      xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_FROM_DEVICE, size, offset);
+      xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_FROM_DEVICE, size, offset + bank_offset_);
 
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
       << "phy " << std::hex << "0x" << phy_ << std::dec << " "  //
@@ -151,7 +180,7 @@ void BufferObjectXrtEdgeImp::sync_for_read(uint64_t offset, size_t size) {
       << std::dec <<                                            //
       "size " << size << " "                                    //
       ;
-  CHECK_EQ(sync, 0)
+  UNI_LOG_CHECK(sync == 0, VART_XCL_SYNC_FAIL)
       << "Synchronize the buffer contents from device to host fail !";
 }
 
@@ -162,14 +191,14 @@ void BufferObjectXrtEdgeImp::sync_for_write(uint64_t offset, size_t size) {
     return;
   }
   auto sync =
-      xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_TO_DEVICE, size, offset);
+      xclSyncBO(xrt_.handle, bo_, XCL_BO_SYNC_BO_TO_DEVICE, size, offset + bank_offset_);
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
       << "phy " << std::hex << "0x" << phy_ << std::dec << " "  //
       << "offset " << std::hex << "0x" << offset << " "         //
       << std::dec <<                                            //
       "size " << size << " "                                    //
       ;
-  CHECK_EQ(sync, 0)
+  UNI_LOG_CHECK(sync == 0, VART_XCL_SYNC_FAIL)
       << "Synchronize the buffer contents from host to device fail !";
 }
 
@@ -182,7 +211,7 @@ void BufferObjectXrtEdgeImp::copy_from_host(const void* buf, size_t size,
       << std::dec <<                                            //
       "size " << size << " "                                    //
       ;
-  CHECK_LE(offset + size, size_) << " out of range";
+  UNI_LOG_CHECK(offset + size <= size_, VART_OUT_OF_RANGE);
   auto ok = 0;
 #if IS_EDGE
   memcpy(static_cast<char*>(data_w()) + offset, buf, size);
@@ -191,7 +220,7 @@ void BufferObjectXrtEdgeImp::copy_from_host(const void* buf, size_t size,
   auto flags = 0;
   ok = xclUnmgdPwrite(xrt_.handle, flags, buf, size, phy(offset));
 #endif
-  CHECK_EQ(ok, 0) << "fail to write bo "
+  UNI_LOG_CHECK(ok == 0, VART_XCL_WRITE_ERROR)
                   << "size " << size << " "      //
                   << "offset " << offset << " "  //
                   << "phy " << std::hex << "0x" << phy_ << " ";
@@ -205,7 +234,7 @@ void BufferObjectXrtEdgeImp::copy_to_host(void* buf, size_t size,
       << std::dec <<                                            //
       "size " << size << " "                                    //
       ;
-  CHECK_LE(offset + size, size_) << " out of range";
+  UNI_LOG_CHECK(offset + size <= size_, VART_OUT_OF_RANGE);
   auto ret = 0;
 #if IS_EDGE
   sync_for_read(offset, size);
@@ -214,7 +243,7 @@ void BufferObjectXrtEdgeImp::copy_to_host(void* buf, size_t size,
   auto flags = 0;
   ret = xclUnmgdPread(xrt_.handle, flags, buf, size, phy(offset));
 #endif
-  CHECK_EQ(ret, 0) << "fail to read bo "
+  UNI_LOG_CHECK(ret == 0, VART_XCL_READ_ERROR)
                    << "size " << size << " "      //
                    << "offset " << offset << " "  //
                    << "phy " << std::hex << "0x" << phy_ << " ";

@@ -98,6 +98,11 @@ if(BUILD_SHARED_LIBS)
       xir
       PRIVATE protobuf::libprotobuf Threads::Threads ${CMAKE_DL_LIBS}
       PUBLIC unilog::unilog)
+    if(NOT MSVC)
+      if(Protobuf_USE_STATIC_LIBS)
+        target_link_options(xir PRIVATE -Wl,--exclude-libs,ALL)
+      endif(Protobuf_USE_STATIC_LIBS)  
+    endif(NOT MSVC)
 else(BUILD_SHARED_LIBS)
     target_link_libraries(
       xir

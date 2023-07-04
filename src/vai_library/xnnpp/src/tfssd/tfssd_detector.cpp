@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
 #include <opencv2/core/core.hpp>
 #include <thread>
 #include <tuple>
+#include <vitis/ai/profiling.hpp>
 
 #include "vitis/ai/nnpp/apply_nms.hpp"
 
@@ -82,20 +83,15 @@ void TFSSDdetector::Detect(const T* loc_data, const float* conf_data,
   decoded_bboxes_.clear();
   const T(*bboxes)[4] = (const T(*)[4])loc_data;
 
-  //__TIC__(Sort)
   unsigned int num_det = 0;
   vector<vector<int>> indices(num_classes_);
   vector<vector<pair<float, int>>> score_index_vec(num_classes_);
 
   // Get top_k scores (with corresponding indices).
-  GetMultiClassMaxScoreIndexMT(conf_data, 1, num_classes_ - 1,
-                               &score_index_vec);
-
-  //__TOC__(Sort)
-  //__TIC__(NMS)
+  GetMultiClassMaxScoreIndex(conf_data, 1, num_classes_ - 1, &score_index_vec);
   for (unsigned int c = 1; c < num_classes_; ++c) {
     // Perform NMS for one class
-    ApplyOneClassNMS(bboxes, conf_data, c, score_index_vec[c], &(indices[c]));
+    ApplyOneClassNMS(bboxes, c, score_index_vec[c], &(indices[c]));
     num_det += indices[c].size();
   }
 
@@ -125,10 +121,6 @@ void TFSSDdetector::Detect(const T* loc_data, const float* conf_data,
     }
   }
 
-  //__TOC__(NMS)
-
-  //__TIC__(Box)
-
   for (auto label = 1u; label < indices.size(); ++label) {
     for (auto idx : indices[label]) {
       auto score = conf_data[idx * num_classes_ + label];
@@ -154,8 +146,76 @@ void TFSSDdetector::Detect(const T* loc_data, const float* conf_data,
       result->bboxes.emplace_back(res);
     }
   }
+}
 
-  //__TOC__(Box)
+void TFSSDdetector::Detect(const int8_t* loc_data, const int8_t* conf_data,
+                           TFSSDResult* result) {
+  decoded_bboxes_.clear();
+  const int8_t(*bboxes)[4] = (const int8_t(*)[4])loc_data;
+
+  unsigned int num_det = 0;
+  vector<vector<int>> indices(num_classes_);
+  vector<vector<pair<float, int>>> score_index_vec(num_classes_);
+
+  // Get top_k scores (with corresponding indices).
+  GetMultiClassMaxScoreIndex(conf_data, 1, num_classes_ - 1, &score_index_vec);
+
+  for (unsigned int c = 1; c < num_classes_; ++c) {
+    // Perform NMS for one class
+    ApplyOneClassNMS(bboxes, c, score_index_vec[c], &(indices[c]));
+    num_det += indices[c].size();
+  }
+
+  if (keep_top_k_ > 0 && num_det > keep_top_k_) {
+    vector<tuple<float, int, int>> score_index_tuples;
+    for (auto label = 0u; label < num_classes_; ++label) {
+      const vector<int>& label_indices = indices[label];
+      for (auto j = 0u; j < label_indices.size(); ++j) {
+        auto idx = label_indices[j];
+        auto score = conf_data[idx * num_classes_ + label];
+        score_index_tuples.emplace_back(score, label, idx);
+      }
+    }
+
+    // Keep top k results per image.
+    std::sort(score_index_tuples.begin(), score_index_tuples.end(),
+              [](const tuple<float, int, int>& lhs,
+                 const tuple<float, int, int>& rhs) {
+                return get<0>(lhs) > get<0>(rhs);
+              });
+    score_index_tuples.resize(keep_top_k_);
+
+    indices.clear();
+    indices.resize(num_classes_);
+    for (auto& item : score_index_tuples) {
+      indices[get<1>(item)].push_back(get<2>(item));
+    }
+  }
+  for (auto label = 1u; label < indices.size(); ++label) {
+    for (auto idx : indices[label]) {
+      auto score = conf_data[idx * num_classes_ + label];
+
+      auto& bbox = decoded_bboxes_[idx];
+      TFSSDResult::BoundingBox res;
+      res.label = label;
+      // res.score = score;
+      //  =  1.0/(1.0+exp(-1.0*input[i]*scale ));
+      res.score = (score_converter_ == SIGMOID)
+                      ? 1.0 / (1.0 + exp(-1.0 * score * scale_score_))
+                      : score;
+
+      res.x = bbox[0] - bbox[2] / 2.0;
+      res.y = bbox[1] - bbox[3] / 2.0;
+
+      res.width = bbox[2];
+      res.height = bbox[3];
+      // std::cout <<"Detect(): Rect: bbox: " << bbox[0] << " " << bbox[1] << "
+      // " << bbox[2] << " " << bbox[3]
+      //          << "----- res.x:" <<  res.x << " res.y" << res.y << " width: "
+      //          << res.width << " height:" << res.height<< std::endl;
+      result->bboxes.emplace_back(res);
+    }
+  }
 }
 
 template void TFSSDdetector::Detect(const int* loc_data, const float* conf_data,
@@ -163,10 +223,12 @@ template void TFSSDdetector::Detect(const int* loc_data, const float* conf_data,
 template void TFSSDdetector::Detect(const int8_t* loc_data,
                                     const float* conf_data,
                                     TFSSDResult* result);
-
+// remove sigmoid_c
+void TFSSDdetector::Detect(const int8_t* loc_data, const int8_t* conf_data,
+                           TFSSDResult* result);
 template <typename T>
 void TFSSDdetector::ApplyOneClassNMS(
-    const T (*bboxes)[4], const float* conf_data, int label,
+    const T (*bboxes)[4], int label,
     const vector<pair<float, int>>& score_index_vec, vector<int>* indices) {
   vector<size_t> results;
   vector<vector<float>> boxes;
@@ -190,69 +252,66 @@ void TFSSDdetector::ApplyOneClassNMS(
 }
 
 template void TFSSDdetector::ApplyOneClassNMS(
-    const int (*bboxes)[4], const float* conf_data, int label,
+    const int (*bboxes)[4], int label,
     const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
 template void TFSSDdetector::ApplyOneClassNMS(
-    const int8_t (*bboxes)[4], const float* conf_data, int label,
+    const int8_t (*bboxes)[4], int label,
     const vector<pair<float, int>>& score_index_vec, vector<int>* indices);
-
-void TFSSDdetector::GetOneClassMaxScoreIndex(
-    const float* conf_data, int label,
-    vector<pair<float, int>>* score_index_vec) {
-  //__TIC__(PUSH2)
-  conf_data += label;
-
-  for (int i = 0; i < num_priors_; ++i) {
-    auto score = *conf_data;
-    if (score > nms_confidence_) {
-      score_index_vec->emplace_back(score, i);
-    }
-    conf_data += num_classes_;
-  }
-
-  //__TOC__(PUSH2)
-  //__TIC__(SORT2)
-  std::stable_sort(
-      score_index_vec->begin(), score_index_vec->end(),
-      [](const pair<float, int>& lhs, const pair<float, int>& rhs) {
-        return lhs.first > rhs.first;
-      });
-  //__TOC__(SORT2)
-
-  if (nms_top_k_ < score_index_vec->size()) {
-    score_index_vec->resize(nms_top_k_);
-  }
-}
 
 void TFSSDdetector::GetMultiClassMaxScoreIndex(
     const float* conf_data, int start_label, int num_classes,
     vector<vector<pair<float, int>>>* score_index_vec) {
+  for (int i = 0; i < num_priors_; ++i) {
+    conf_data += start_label;
+    for (auto j = start_label; j < start_label + num_classes; ++j) {
+      auto score = *conf_data;
+      if (score >= nms_confidence_) {
+        (*score_index_vec)[j].emplace_back(score, i);
+      }
+      conf_data += 1;
+    }
+  }
   for (auto i = start_label; i < start_label + num_classes; ++i) {
-    GetOneClassMaxScoreIndex(conf_data, i, &((*score_index_vec)[i]));
+    std::stable_sort(
+        (*score_index_vec)[i].begin(), (*score_index_vec)[i].end(),
+        [](const pair<float, int>& lhs, const pair<float, int>& rhs) {
+          return lhs.first > rhs.first;
+        });
+
+    if (nms_top_k_ < (*score_index_vec)[i].size()) {
+      (*score_index_vec)[i].resize(nms_top_k_);
+    }
   }
 }
 
-void TFSSDdetector::GetMultiClassMaxScoreIndexMT(
-    const float* conf_data, int start_label, int num_classes,
-    vector<vector<pair<float, int>>>* score_index_vec, int threads) {
-  // CHECK_GT(threads, 0);
-  int thread_classes = num_classes / threads;
-  int last_thread_classes = num_classes % threads + thread_classes;
+void TFSSDdetector::GetMultiClassMaxScoreIndex(
+    const int8_t* conf_data, int start_label, int num_classes,
+    vector<vector<pair<float, int>>>* score_index_vec) {
+  int8_t int8_nms = (int8_t)nms_confidence_;
+  for (int i = 0; i < num_priors_; ++i) {
+    conf_data += start_label;
+    for (auto j = start_label; j < start_label + num_classes; ++j) {
+      auto score = *conf_data;
 
-  vector<std::thread> workers;
-
-  auto c = start_label;
-  for (auto i = 0; i < threads - 1; ++i) {
-    workers.emplace_back(&TFSSDdetector::GetMultiClassMaxScoreIndex, this,
-                         conf_data, c, thread_classes, score_index_vec);
-    c += thread_classes;
+      if (score >= int8_nms) {
+        (*score_index_vec)[j].emplace_back(score * 1.0f, i);
+      }
+      conf_data += 1;
+    }
   }
-  workers.emplace_back(&TFSSDdetector::GetMultiClassMaxScoreIndex, this,
-                       conf_data, c, last_thread_classes, score_index_vec);
+  for (auto i = start_label; i < start_label + num_classes; ++i) {
+    std::stable_sort(
+        (*score_index_vec)[i].begin(), (*score_index_vec)[i].end(),
+        [](const pair<float, int>& lhs, const pair<float, int>& rhs) {
+          return lhs.first > rhs.first;
+        });
 
-  for (auto& worker : workers)
-    if (worker.joinable()) worker.join();
+    if (nms_top_k_ < (*score_index_vec)[i].size()) {
+      (*score_index_vec)[i].resize(nms_top_k_);
+    }
+  }
 }
+
 template <typename T>
 void TFSSDdetector::DecodeBBox(const T (*bboxes)[4], int idx, bool normalized) {
   // in tfconcat_decode, we get the center and size directly in prior_bbox, so
@@ -304,3 +363,4 @@ template void TFSSDdetector::DecodeBBox(const int8_t (*bboxes)[4], int idx,
 }  // namespace dptfssd
 }  // namespace ai
 }  // namespace vitis
+

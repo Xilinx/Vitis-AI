@@ -17,7 +17,7 @@
 import tensorflow as tf
 import numpy as np
 
-from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper, vitis_quantize_wrapper_v2
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import model_utils
@@ -138,11 +138,14 @@ def fast_finetune(quant_model, float_model, calib_dataset, calib_batch_size,
 
   target_modules = []
   for layer in quant_model.layers:
-    if isinstance(
+    if (isinstance(
         layer,
-        vitis_quantize_wrapper.QuantizeWrapper) and layer.trainable_weights:
+        vitis_quantize_wrapper.QuantizeWrapper) or 
+        isinstance(layer, vitis_quantize_wrapper_v2.QuantizeWrapperV2)) and layer.trainable_weights:
 
       act = layer
+      if not hasattr(layer.layer, 'activation'):
+        continue
       activation_stub = layer.layer.activation
       if isinstance(activation_stub,
                     vitis_quantize_aware_activation.QuantizeAwareActivation):

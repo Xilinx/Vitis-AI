@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ vector<OFAYOLOResult> OFAYOLOImp::run(const vector<cv::Mat>& input_images) {
   vector<int> cols, rows;
 
   __TIC__(OFAYOLO_PRE_ARM)
-  for (auto input_image : input_images) {
+  for (auto& input_image : input_images) {
     images.push_back(ofa_yolo::letterbox(input_image, sWidth, sHeight).clone());
     cols.push_back(input_image.cols);
     rows.push_back(input_image.rows);

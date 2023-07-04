@@ -1,4 +1,4 @@
-Left,
-Right,
-Front,
+Left
+Right
+Front
 Back

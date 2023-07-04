@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,11 +100,11 @@ class OpTemplateImp : public OpTemplate {
 
   const std::set<std::string> get_types() const override;
 
-  const int get_input_num() const override;
+  int get_input_num() const override;
 
   const std::set<OpTemplate*> get_input_ops() const override;
 
-  const int get_fanout_num() const override;
+  int get_fanout_num() const override;
 
   const std::set<OpTemplate*> get_fanout_ops() const override;
 

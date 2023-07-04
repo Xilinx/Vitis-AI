@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ class ImageCache {
     std::vector<std::string> images;
     std::vector<cv::String> files;
     cv::glob(imageDir, files);
-    for (auto cvStr : files) images.push_back(std::string(cvStr));
+    for (auto& cvStr : files) images.push_back(std::string(cvStr));
     assert(images.size() > 0);
 
     unsigned int numImages = images.size();

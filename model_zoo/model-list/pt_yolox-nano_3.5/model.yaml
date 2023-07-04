@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOX-Nano on COCO.
+input size: 416*416
+float ops: 1G
+task: 2d detection
+framework: pytorch
+prune: 'no'
+version: 3.5
+files:
+- name: pt_yolox-nano_3.5.zip
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_yolox-nano_3.5.zip
+  checksum: 96b11278c32d28c8de9fd8e19662b671
+- name: yolox_nano_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolox_nano_pt-vek280-r3.5.0.tar.gz
+  checksum: f899e240aa9671e44f12b72d0248ad02
+- name: yolox_nano_pt
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolox_nano_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: 8ea8219e672de4163e118462e8f588a6
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

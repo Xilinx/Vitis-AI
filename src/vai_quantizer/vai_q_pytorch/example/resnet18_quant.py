@@ -13,8 +13,6 @@ from torchvision.models.resnet import resnet18
 
 from tqdm import tqdm
 
-#device = torch.device("cuda")
-#device = torch.device("cpu")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
@@ -235,11 +233,14 @@ def quantization(title='optimize',
       sys.exit()
       
   else:
-    ## new api
     ####################################################################################
+    # This function call will create a quantizer object and setup it. 
+    # Eager mode model code will be converted to graph model. 
+    # Quantization is not done here if it needs calibration.
     quantizer = torch_quantizer(
         quant_mode, model, (input), device=device, quant_config_file=config_file, target=target)
 
+    # Get the converted model to be quantized.
     quant_model = quantizer.quant_model
     #####################################################################################
 
@@ -274,20 +275,25 @@ def quantization(title='optimize',
   acc_org5 = 0.0
   loss_org = 0.0
 
-  #register_modification_hooks(model_gen, train=False)
+  # This function call is to do forward loop for model to be quantized.
+  # Quantization calibration will be done after it if quant_mode is 'calib'.
+  # Quantization test  will be done after it if quant_mode is 'test'.
   acc1_gen, acc5_gen, loss_gen = evaluate(quant_model, val_loader, loss_fn)
 
   # logging accuracy
+  # If quant_mode is 'calib', ignore the accuracy log because it is not the final accuracy can be got.
+  # Only check the accuray if quant_mode is 'test'.
   print('loss: %g' % (loss_gen))
   print('top-1 / top-5 accuracy: %g / %g' % (acc1_gen, acc5_gen))
 
   # handle quantization result
   if quant_mode == 'calib':
+    # Exporting intermediate files will be used when quant_mode is 'test'. This is must.
     quantizer.export_quant_config()
   if deploy:
     quantizer.export_torch_script()
     quantizer.export_onnx_model()
-    quantizer.export_xmodel(deploy_check=False)
+    quantizer.export_xmodel()
 
 
 if __name__ == '__main__':

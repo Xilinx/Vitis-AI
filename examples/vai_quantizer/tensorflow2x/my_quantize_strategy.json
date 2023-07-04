@@ -1,0 +1,29 @@
+{
+  "quantize_registry_config":
+  {
+    "layer_quantize_config":
+    [
+      {
+        "layer_type": "__main__.MyLayer",
+        "quantizable_weights": ["w", "b"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "LastValueQuantFsQuantizer",
+            "quantizer_params": {"bit_width": 32, "method": 1, "round_mode": 1}
+          },
+          {
+            "quantizer_type": "LastValueQuantFsQuantizer",
+            "quantizer_params": {"bit_width": 32, "method": 1, "round_mode": 1}
+          }
+        ],
+        "quantizable_outputs": ["0"],
+        "output_quantizers": [
+          {
+            "quantizer_type": "LastValueQuantFsQuantizer",
+            "quantizer_params": {"bit_width": 32, "method": 1, "round_mode": 1}
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,6 @@ namespace ai {
 class
     // without this, we get strange warning, declared with greater
     // visibility than the type of its field
-    // see
-    // https://stackoverflow.com/questions/49252686/exported-class-with-non-exported-data-member
-    // https://github.com/vgc/vgc/issues/11
     __attribute__((visibility("hidden"))) XmodelJitPython : public XmodelJit {
  public:
   explicit XmodelJitPython(xir::Graph* graph);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ void softmax(const int8_t* input, float scale, unsigned int cls,
     }
   } else if (GLOBAL_ENABLE_C_SOFTMAX == 0) {
     //判断scale
-    auto scale2fixpos = [](float scale) { return std::abs((int)log2(scale)); };
+    auto scale2fixpos = [](float scale1) { return std::abs((int)log2(scale1)); };
     int fixpos = scale2fixpos(scale);
     bool fixpoint_supported = (fixpos < 9 && fixpos > 0);
     bool cls_supported =

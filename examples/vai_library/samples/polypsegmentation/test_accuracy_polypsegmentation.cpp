@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,10 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   auto segmentation = vitis::ai::PolypSegmentation::create(argv[1], true);
+  if (!segmentation) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   vector<string> names;
   LoadImageNames(argv[2], names);
@@ -83,7 +87,7 @@ int main(int argc, char* argv[]) {
   auto a = system(mkdir.c_str());
   if (a == -1) exit(0);
 
-  for (auto name : names) {
+  for (auto& name : names) {
     auto img = cv::imread(name);
     if (img.empty()) {
       cerr << "cannot load " << name << endl;

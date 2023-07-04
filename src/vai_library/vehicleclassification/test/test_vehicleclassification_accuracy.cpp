@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,10 @@ int main(int argc, char* argv[]) {
   string images_list_file = argv[2];
   std::ofstream out_fs(argv[3], std::ofstream::out);
   auto det = vitis::ai::VehicleClassification::create(model, true);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   std::ifstream fs(images_list_file);
   std::string line;
   std::string single_name;

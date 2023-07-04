@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacevart" kind="namespace" language="C++">
+    <compoundname>vart</compoundname>
+    <innerclass refid="classvart_1_1_base_runner" prot="public">vart::BaseRunner</innerclass>
+    <innerclass refid="structvart_1_1_dpu_meta" prot="public">vart::DpuMeta</innerclass>
+    <innerclass refid="structvart_1_1_meta" prot="public">vart::Meta</innerclass>
+    <innerclass refid="classvart_1_1_runner" prot="public">vart::Runner</innerclass>
+    <innerclass refid="classvart_1_1_runner_ext" prot="public">vart::RunnerExt</innerclass>
+    <innerclass refid="classvart_1_1_tensor_buffer" prot="public">vart::TensorBuffer</innerclass>
+    <innerclass refid="classvart_1_1_tensor_buffer_ext" prot="public">vart::TensorBufferExt</innerclass>
+    <innerclass refid="structvart_1_1_xcl_bo" prot="public">vart::XclBo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="runner__ext_8hpp_1aa2ff67cf35b11a599daa3bbe56eccc61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt; float &gt; get_input_scale</definition>
+        <argsstring>(std::vector&lt; const xir::Tensor * &gt; input_tensors)</argsstring>
+        <name>get_input_scale</name>
+        <qualifiedname>vart::get_input_scale</qualifiedname>
+        <param>
+          <type>std::vector&lt; const xir::Tensor * &gt;</type>
+          <declname>input_tensors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="74" column="13" declfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="74" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1af74effe5ea0387f488f1736f47aef08e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; float &gt;</type>
+        <definition>std::vector&lt; float &gt; get_output_scale</definition>
+        <argsstring>(std::vector&lt; const xir::Tensor * &gt; output_tensors)</argsstring>
+        <name>get_output_scale</name>
+        <qualifiedname>vart::get_output_scale</qualifiedname>
+        <param>
+          <type>std::vector&lt; const xir::Tensor * &gt;</type>
+          <declname>output_tensors</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="76" column="13" declfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="76" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1aee651886d01ebf5100dbfa007a77cab2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float get_input_scale</definition>
+        <argsstring>(const xir::Tensor *input_tensor)</argsstring>
+        <name>get_input_scale</name>
+        <qualifiedname>vart::get_input_scale</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>input_tensor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="78" column="7" declfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="78" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="runner__ext_8hpp_1a0b14c48cfb263e47cd0652bb2eb9e6a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float get_output_scale</definition>
+        <argsstring>(const xir::Tensor *output_tensor)</argsstring>
+        <name>get_output_scale</name>
+        <qualifiedname>vart::get_output_scale</qualifiedname>
+        <param>
+          <type>const xir::Tensor *</type>
+          <declname>output_tensor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="79" column="7" declfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" declline="79" declcolumn="7"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/tensor_buffer.hpp" line="29" column="1"/>
+  </compounddef>
+</doxygen>

@@ -15,11 +15,18 @@
  */
 
 #pragma once
-#if defined(_WIN32)
+
+#pragma once
+
+#if defined(_MSC_VER)
+#if UNILOG_USE_DLL == 1
 #ifdef UNILOG_EXPORT
 #define UNILOG_DLLESPEC __declspec(dllexport)
 #else
 #define UNILOG_DLLESPEC __declspec(dllimport)
+#endif
+#else
+#define UNILOG_DLLESPEC
 #endif
 #else
 #define UNILOG_DLLESPEC __attribute__((visibility("default")))

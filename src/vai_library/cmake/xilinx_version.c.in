@@ -1,5 +1,5 @@
 /*
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Distributed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ const char* xilinx_@PROJECT_NAME@_version() {
     return "@PROJECT_NAME@-@GIT_VERSION@@VERSION_SUFFIX@"; 
 }
 
-static char @PROJECT_NAME@_version[] = "Xilinx @PROJECT_NAME@ @COMPONENT_NAME@ Version: @PROJECT_VERSION@-@GIT_VERSION@ @BUILD_ID@ @BUILD_DATE@ ";
+static char @PROJECT_NAME@_version[] = "Advanced Micro Devices @PROJECT_NAME@ @COMPONENT_NAME@ Version: @PROJECT_VERSION@-@GIT_VERSION@ @BUILD_ID@ @BUILD_DATE@ ";
 const char* xilinx_version() {
   return @PROJECT_NAME@_version;
 }

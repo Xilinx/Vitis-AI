@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,9 +106,9 @@ struct MyOpImp : public vart::experimental::OpImpBase {
  private:
   std::string mode_;
   std::vector<int> fix_point_inputs_;
-  int fix_point_output_;
+  int fix_point_output_=0;
   std::vector<int> shift_read_;
-  int shift_write_;
+  int shift_write_=0;
   std::vector<int> fmap_o_;
 };
 }  // namespace

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,10 @@ int main(int argc, char *argv[]) {
   GLOBAL_ENABLE_C_SOFTMAX = 2;
 
   auto ssd = vitis::ai::SSD::create("mlperf_ssd_resnet34_tf_acc", true);
+  if (!ssd) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
 
   std::ifstream fs(argv[1]);
   std::ofstream out_fs(argv[2], std::ofstream::out);

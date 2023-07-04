@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ static cv::Scalar getColor(int label) {
 static cv::Mat process_result(cv::Mat &image,
                               const vitis::ai::YOLOv3Result &result,
                               bool is_jpeg) {
-  for (const auto bbox : result.bboxes) {
+  for (const auto& bbox : result.bboxes) {
     int label = bbox.label;
     float xmin = bbox.x * image.cols ;
     float ymin = bbox.y * image.rows ;

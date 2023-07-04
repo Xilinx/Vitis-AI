@@ -48,8 +48,8 @@ designs. With Vitis AI, ML and AI developers can have a familiar and consistent 
 Are all the components of Vitis AI free?
 ----------------------------------------
 
-Everything except Vitis AI Optimizer is free. The Vitis AI Optimizer does require a separate license. Additional details surrounding this
-license can be found in the Optimizer :ref:`introduction <model_optimization>`.
+Yes.  As of the 3.5 release all components are free!  For releases <3.5, the Vitis AI Optimizer does require a separate license which can be obtained free-of-charge upon request. Additional details surrounding this
+license can be found in the Optimizer :ref:`introduction <model-optimization>`.
 
 Is Vitis AI a separate download?
 --------------------------------
@@ -69,7 +69,7 @@ Vitis AI 3.0 supports TensorFlow 1.x, 2.x and PyTorch. Prior to release 2.5, Caf
 Which AI Models does Vitis AI Support?
 --------------------------------------
 
-With the release of the Vitis AI IDE, more than 120 models are released in the Vitis AI Model Zoo. In addition, the Vitis AI IDE is designed to enable developers to deploy custom models, subject to layer, parameter, and activation support. Due to the GPL licensing associated with newer YOLO variants, we will not be releasing pre-trained versions of these models. Users will need to train, quantize,and compile those models using the Vitis AI tool, and we will provide the resources to enable this. In general, Vitis AI can support the majority of CNNs, including custom user networks. As part of our development process and continuous effort to provide more diverse operator and layer support, we train and deploy new models with each release. All of these models, together with performance benchmarks for out-of-the-box supported Xilinx targets are published in the :ref:`Vitis AI Model Zoo <workflow-model-zoo>`.
+With the release of the Vitis AI IDE, more than 120 models are released in the Vitis AI Model Zoo. In addition, the Vitis AI IDE is designed to enable developers to deploy custom models, subject to layer, parameter, and activation support. Due to the non-permissive licensing associated with newer YOLO variants, we will not be releasing pre-trained versions of these models. Users will need to train, quantize,and compile those models using the Vitis AI tool, and we will provide the resources to enable this. In general, Vitis AI can support the majority of CNNs, including custom user networks. As part of our development process and continuous effort to provide more diverse operator and layer support, we train and deploy new models with each release. All of these models, together with performance benchmarks for out-of-the-box supported Xilinx targets are published in the :ref:`Vitis AI Model Zoo <workflow-model-zoo>`.
 
 What Xilinx Target Device Families and Platforms does Vitis AI Support?
 -----------------------------------------------------------------------
@@ -117,7 +117,7 @@ Quantization is a very old concept. The idea is to map a range of real   numbers
 Can I leverage Vitis™ AI on a pure FPGA target with or without a Microblaze™ processor? 
 ---------------------------------------------------------------------------------------
 
-The Vitis AI integrated development environment (IDE) supports SoC targets (Zynq™UltraScale+™ MPSoC, Versal™ ACAP) and Alveo™ platforms (AMD64 host). It does not claim to support FPGA-class devices including Spartan™, Artix™, Kintex™, or Virtex™ FPGAs.  While it is possible to enable and run Vitis AI IDE firmware components on the MicroBlaze processor, this is not a documented and supported flow for mainstream development. Officially, the AMD Xilinx “Space deep-learning processor unit (DPU)” project leverages the MicroBlaze processor targeting Kintex UltraScale-class devices. For deployment in standard commercial applications, we do have an experimental flow that we can potentially share, but it has limitations, and the expectation is that the developer will need to invest additional time in optimization. If you have a strong need for this, please reach out to us directly, and we can discuss your use case further.
+The Vitis AI integrated development environment (IDE) supports SoC targets (Zynq™ UltraScale+™ MPSoC, Versal™ adaptive SoCs) and Alveo™ platforms (AMD64 host). It does not claim to support FPGA-class devices including Spartan™, Artix™, Kintex™, or Virtex™ FPGAs.  While it is possible to enable and run Vitis AI IDE firmware components on the MicroBlaze processor, this is not a documented and supported flow for mainstream development. Officially, the AMD Xilinx “Space deep-learning processor unit (DPU)” project leverages the MicroBlaze processor targeting Kintex UltraScale-class devices. For deployment in standard non-space applications, we do have an experimental flow that we can potentially share, but it has limitations, and the expectation is that the developer will need to invest additional time in optimization. If you have a strong need for this, please reach out to us directly, and we can discuss your use case further.
 
 Is it possible to use the DPU without PetaLinux? 
 ------------------------------------------------

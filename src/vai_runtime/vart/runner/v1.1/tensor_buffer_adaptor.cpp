@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ TensorBufferAdaptor::TensorBufferAdaptor(vitis::ai::TensorBuffer* self)
       self_{self},
       tensor_{std::unique_ptr<xir::Tensor>(
           const_cast<xir::Tensor*>(get_tensor()))} {
-  (void)convert_tensors;  // supress warning
+  (void)convert_tensors({});  // supress warning
 }
 
 std::pair<uint64_t, std::size_t> TensorBufferAdaptor::data(

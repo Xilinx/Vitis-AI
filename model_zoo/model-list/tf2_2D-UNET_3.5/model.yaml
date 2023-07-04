@@ -1,0 +1,39 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: 2D-UNet segmentation on BraTs dataset.
+input size: 144*144*4
+float ops: 24.6G
+task: segmentation
+framework: tensorflow2.3
+prune: 'no'
+version: 3.5
+files:
+- name: tf2_2D-UNET_3.5.zip
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_2D-UNET_3.5.zip
+  checksum: 5d5a04411d807a53aa7852f7a809c106
+- name: unet2d_tf2
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet2d_tf2-vek280-r3.5.0.tar.gz
+  checksum: 5033ebacbd87e8c2a2c89a8379313bcd
+- name: unet2d_tf2
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=unet2d_tf2-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: ae0b4977ed74627b3c32878fa6c1870b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

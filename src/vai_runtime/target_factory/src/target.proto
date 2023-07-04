@@ -54,6 +54,7 @@ message Target {
     uint32 stack_size = 5;
     uint32 bd_nums = 6;
     uint32 lock_nums = 7;
+    uint32 program_memory_size = 8;
   }
 
   message Memtile {
@@ -153,8 +154,12 @@ message Target {
     repeated string output_bank = 4;
     Nonlinear nonlinear = 5;
     enum ElewType {
-        add = 0;
-        mult = 1;
+      add = 0;
+      mult = 1;
+      sub = 2;
+      max = 3;
+      min = 4;
+      div = 5;
     }
     repeated ElewType elew_type = 6;
     message ConvCascade {
@@ -297,9 +302,31 @@ message Target {
   Alu alu_engine = 15;
   uint32 batch = 14;
 
-  OverlayInfo overlay_info = 16;
-  repeated Memtile memtile = 17;
-  repeated Aietile aietile = 18;
-  repeated Shimtile shimtile = 19;
-  SOP aie_sp_engine = 20;
+  string ipu_overlay_type = 16;
+  OverlayInfo overlay_info = 17;
+  repeated Memtile memtile = 18;
+  repeated Aietile aietile = 19;
+  repeated Shimtile shimtile = 20;
+  SOP aie_sp_engine = 21;
+
+  message Kernel {
+      Conv conv_kernel = 1;
+      Eltwise eltwise_kernel = 2;
+      Nonlinear nonlinear_kernel = 3;
+      Pool pool_kernel = 4;
+      Dwconv dwconv_kernel = 5;
+      uint32 pm_size = 6;
+      repeated string ops = 7;
+  }
+
+  repeated Kernel kernels = 22;
+
+  message PDI_partition {
+    string name = 1;
+    string ID = 2;
+    repeated Kernel kernels = 3;
+    uint64 wrapper_size = 4;
+  }
+  
+  repeated PDI_partition PDI = 59;
 }

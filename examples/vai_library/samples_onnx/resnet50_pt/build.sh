@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ else
         OPENCV_FLAGS=$(pkg-config --cflags --libs-only-L opencv)
 fi
 
-lib_x="  -lglog -lunilog -lvitis_ai_library-xnnpp -lvitis_ai_library-model_config -lprotobuf -lxrt_core  -lvart-xrt-device-handle  -lvaip-core -lxcompiler-core -labsl_city -labsl_low_level_hash -lvart-dpu-controller -lxir -lvart-util -ltarget-factory -ljson-c"
+lib_x="  -lglog -lunilog -lvitis_ai_library-xnnpp -lvitis_ai_library-model_config -lprotobuf -lxrt_core  -lvart-xrt-device-handle  -lvaip-core -lxcompiler-core  -lvart-dpu-controller -lxir -lvart-util -ltarget-factory "
 lib_onnx=" -lonnxruntime"
 lib_opencv=" -lopencv_videoio  -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_core "
 

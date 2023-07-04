@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 Important:
   ./test_jpeg_yolovx, ./test_performance_yolovx, ./test_video_yolovx first param followed must be with model name.
   Valid model name:
-    tsd_yolox_pt
     yolox_nano_pt
 
 1, compile
@@ -28,13 +27,6 @@ Important:
 2, copy the compiled executable file and test image to the development board.
 
    run the executable file.
-
-    sample : ./test_jpeg_yolovx  tsd_yolox_pt sample_yolovx_csp.jpg
-    output : 
-WARNING: Logging before InitGoogleLogging() is written to STDERR
-I1116 10:13:07.290788  8603 demo.hpp:1183] batch: 0     image: sample_yolovx_csp.jpg
-I1122 12:07:50.603503  7447 process_result.hpp:32] RESULT: 0    374.61  862.63  444.59  993.37  0.332705
-I1122 12:07:50.612557  7447 process_result.hpp:32] RESULT: 6    374.81  863.00  444.39  993.00  0.407588
 
     sample : ./test_jpeg_yolovx  yolox_nano_pt sample_yolox_nano.jpg
     output : 
@@ -55,16 +47,10 @@ I1122 08:23:07.407517 17157 process_result.hpp:32] RESULT: 74	444.84	122.72	459.
 
 
 Performance: 
-    ./test_performance_yolovx tsd_yolox_pt test_performance_yolovx_csp.list -s 60 -t <thread> 
     ./test_performance_yolovx yolox_nano_pt test_performance_yolovx.list -s 60 -t <thread> 
 
 
 Accuracy:
-    ./test_accuracy_yolovx_coco_mt <model_name> <image_list_filename> <output_filename> -t <thread>
-
-    sample:
-    ./test_accuracy_yolovx_coco_mt tsd_yolox_pt image_list.txt result.txt -t 2
-
     test accuracy of yolox_nano_pt:
     ./test_accuracy_yolovx_nano_mt <model_name> <image_list_filename> <output_filename> -t <thread>
     sample:

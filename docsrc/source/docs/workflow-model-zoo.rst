@@ -3,25 +3,35 @@
 Vitis AI Model Zoo
 ==================
 
-The Vitis |trade| AI Model Zoo, incorporated into the Vitis AI repository, includes optimized deep learning models to speed up the deployment of deep learning inference on Xilinx |reg| platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, and so on. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.
+The Vitis |trade| AI Model Zoo, incorporated into the Vitis AI repository, includes optimized deep learning models to speed up the deployment of deep learning inference on AMD platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, and so on. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.
+
+Vitis AI Copyleft Model Zoo
+---------------------------
+
+Many open-source models are released under reciprocal license terms which are not compatible with Apache 2.0. In order to faciliate the support of such models, and clearly distinguish the source license for each, we have created a separate Model Zoo repository.  Users will find the training code for these models (for example, YOLOv7) in the `Vitis AI Copyleft Model Zoo <https://github.com/Xilinx/Vitis-AI-Copyleft-Model-Zoo>`__.  All other models are found in the primary Vitis AI repository.
+
 
 Model Zoo Details and Performance
 ---------------------------------
 
-All the models in the Model Zoo are deployed on Xilinx hardware with `Vitis AI <https://github.com/Xilinx/Vitis-AI>`__ and the `Vitis AI Library <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library>`__. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.
+All the models in the Model Zoo are deployed on AMD adaptable hardware with `Vitis AI <https://github.com/Xilinx/Vitis-AI>`__ and the `Vitis AI Library <https://github.com/Xilinx/Vitis-AI/tree/v3.5/examples/vai_library>`__. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.
 
-To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet and an online table that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including links to the original papers and datasets, source framework, input size, computational cost (GOPs), and float and quantized accuracy. **You can download the spreadsheet** :download:`here <reference/ModelZoo_VAI3.0_Github.xlsx>`.
+To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet and an online table that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including links to the original papers and datasets, source framework, input size, computational cost (GOPs), and float and quantized accuracy. **You can download the spreadsheet** :download:`here <reference/ModelZoo_Github.xlsx>`.
 
+.. The below is functional (remove the .. comment on the second line) but has formatting issues that are currently unresolved.
+.. raw:: html
+..    :file: reference/ModelZoo_Github.htm
+
+.. For now we will just do this:
 .. raw:: html
 
-    <a href="reference/ModelZoo_VAI3.0_Github_web.htm"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br>
+    <a href="reference/ModelZoo_Github_web.htm"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br>
 
-.. note:: Please note that if the models are marked as "Non-Commercial Use Only", users must comply with this `AMD license agreement <https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/Xilinx-license-agreement-for-non-commercial-models.md>`__ 
+.. note:: Please note that if the models are marked as "Non-Commercial Use Only", users must comply with this `AMD license agreement <https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/AMD-license-agreement-for-non-commercial-models.md>`__ 
 
-.. note:: The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table's header. Free download of Vitis AI and Vitis AI Library from `Vitis AI Github <https://github.com/Xilinx/Vitis-AI>`__ and `Vitis AI Library Github <https://github.com/Xilinx/Vitis-AI/tree/v3.0/examples/vai_library>`__.
 
+.. note:: The model performance benchmarks listed in these tables are verified using Vitis AI v3.5 and Vitis AI Library v3.5. For each platform, specific DPU configurations are used and highlighted in the table's header. Free download of Vitis AI and Vitis AI Library from `Vitis AI Github <https://github.com/Xilinx/Vitis-AI>`__ and `Vitis AI Library Github <https://github.com/Xilinx/Vitis-AI/tree/v3.5/examples/vai_library>`__.
 .. note:: Unless otherwise specified, the benchmarks for all models can be assumed to employ the maximum number of channels (i.e., for benchmarking, the images used for test have three color channels if the specified input dimensions are 299*299*3 (HWC)).
-
 
 
 Model File Nomenclature
@@ -32,7 +42,7 @@ When downloading and using models from the Model Zoo, it will be important to yo
 Model File Nomenclature Decoder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Xilinx Model Zoo file names assume the format: `F_M_(D)_H_W_(P)_C_V`, where:
+AMD Model Zoo file names assume the format: `F_M_(D)_H_W_(P)_C_V`, where:
 
 - `F` specifies the training framework: `tf` is TensorFlow 1.x, `tf2` is TensorFlow 2.x, `pt` is PyTorch
 
@@ -55,9 +65,9 @@ For example, `pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0` is the `inception v3
 Model Download
 --------------
 
-.. note:: Each model is associated with a .yaml file encapsulating the download link and MD5 checksum for a tar.gz file. These YAML files are in the Vitis AI repository ``/model_zoo/model-list``. There is a separate tar.gz file for each specific target platform. A simple way to download an individual model is to use the URLs provided in the .yaml file. This can be useful if you want to download and inspect the model outside a Python environment.
+.. note:: Each model is associated with a `.yaml` file encapsulating the download link and MD5 checksum for a tar.gz file. These YAML files are in the Vitis AI repository ``/model_zoo/model-list``. There is a separate tar.gz file for each specific target platform. A simple way to download an individual model is to use the URLs provided in the .yaml file. This can be useful if you want to download and inspect the model outside a Python environment.
 
-The download package includes the pre-compiled, pre-trained model, which you can leverage as a base reference (layer types, activation types, layer ordering) for your implementation or directly deploy that model on a Xilinx target.
+The download package includes the pre-compiled, pre-trained model, which you can leverage as a base reference (layer types, activation types, layer ordering) for your implementation or directly deploy that model on an AMD target.
 
 
 Automated Download Script
@@ -172,9 +182,31 @@ PyTorch models have the following directory structure:
 
    - For more information on Vitis-AI Quantizer executables ``vai_q_tensorflow`` and ``vai_q_pytorch``, please see the `Vitis AI User Guide <https://docs.xilinx.com/r/en-US/ug1414-vitis-ai>`__.
    - Due to licensing restrictions, some model archives include instructions as to how the user can leverage that model architecture with Vitis AI, but do not include the pretrained model.  In these cases, the user must leverage the documentation provided to build and train their own version of the model.  
-   - For more information about the various Xilinx DPUs, see the :doc:`DPU IP Product Guides <reference/release_documentation>`
+   - For more information about the various AMD DPUs, see the :doc:`DPU IP Product Guides <reference/release_documentation>`
 
+Model Retraining
+----------------
 
+AMD provides the original floating point model and training scripts for each model in the Model Zoo.  Review the `.yaml` file for your target model to locate the download link for the "GPU" model.  
+
+Here is an example:
+
+   .. code-block::
+
+			description: 3D Unet networks on KiTS19
+			input size: 128*128*128
+			float ops: 1065.44G
+			task: 3D Segmentation
+			framework: PyTorch
+			prune: 'no'
+			version: 3.0
+			files:
+			- name: pt_3D-UNET_kits19_128_128_128_1065.44G_3.0
+			  type: float & quantized
+			  board: GPU
+			  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_3D-UNET_kits19_128_128_128_1065.44G_3.0.zip
+			  checksum: 4532f161244d483d44739a7d6c0f7535
+			
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

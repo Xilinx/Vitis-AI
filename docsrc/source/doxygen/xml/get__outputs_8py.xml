@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="get__outputs_8py" kind="file" language="Python">
+    <compoundname>get_outputs.py</compoundname>
+    <innernamespace refid="namespaceget__outputs">get_outputs</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceget__outputs_1a9a2b5c42fef709f884ca51b4dc4e73e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def get_outputs</definition>
+        <argsstring>()</argsstring>
+        <name>get_outputs</name>
+        <qualifiedname>get_outputs.get_outputs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/get_outputs.py" line="13" column="1" bodyfile="pydoc/get_outputs.py" bodystart="13" bodyend="16"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespaceget__outputs" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@brief</highlight><highlight class="normal"><sp/>Get<sp/>all<sp/>output<sp/>tensor<sp/>buffers<sp/>of<sp/>runner.</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="preprocessor">@return</highlight><highlight class="normal"><sp/><sp/>List[<ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref>].<sp/><sp/>All<sp/>output<sp/>tensors.<sp/>A<sp/>vector<sp/>of<sp/>raw<sp/>pointer<sp/>to<sp/>the<sp/>output<sp/>tensor.</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/>Sample<sp/>code:</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output_tensor_buffers<sp/>=<sp/>runner.get_outputs()</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output_element_num<sp/>=<sp/>tuple(output_tensor_buffers[0].get_tensor().get_element_num())</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@endcode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;</highlight></codeline>
+<codeline lineno="13"><highlight class="stringliteral">def<sp/>get_outputs():</highlight></codeline>
+<codeline lineno="14"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">pass</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/get_outputs.py"/>
+  </compounddef>
+</doxygen>

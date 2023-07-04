@@ -7,19 +7,23 @@
 
 # Overview
 
-WeGO (<u>W</u>hol<u>e</u> <u>G</u>raph <u>O</u>ptimizer) is a Vitis AI new experimental feature and it aims to offer the smooth solution to deploy various models on cloud DPU through integrating Vitis AI Development kit with TensorFlow 1.x, TensorFlow 2.x and PyTorch frameworks.
+WeGO (<u>W</u>hol<u>e</u> <u>G</u>raph <u>O</u>ptimizer) is a new feature of Vitis AI that aims to offer a smooth solution for deploying various models on cloud DPU. It achieves this by integrating the Vitis AI Development kit with TensorFlow 1.x, TensorFlow 2.x, and PyTorch frameworks.
 
-WeGO automatically performs subgraph partitioning for the models quantized by Vitis AI quantizer, and applies optimizations and acceleration for the cloud DPU compatible subgraphs.  And the DPU un-supported remaining parts of graph are dispatched to framework for CPU execution. WeGO takes care of the whole graph optimization, compilation and run-time subgraphs’ dispatch and execution. This whole process is completely transparent to the end users, which makes it very easy to use. 
+WeGO automatically performs subgraph partitioning for models quantized by the Vitis AI quantizer. It applies optimizations and acceleration for the cloud DPU-compatible subgraphs. The remaining parts of the graph that are not supported by the DPU are dispatched to the framework for CPU execution. WeGO takes care of the whole graph optimization, compilation, and runtime subgraph dispatch and execution. This entire process is completely transparent to end users, making it very easy to use.
 
-Using WeGO is a very straightforward transition from training to inference for model designers. WeGO provides Python programming interface to deploy the quantized models over different frameworks. This makes it possible to maximumly reuse the Python code (including pre-processing and post-processing) developed during the phase of models training with frameworks, which greatly speeds up the models’ deployment and evaluation over cloud DPUs.
+Using WeGO provides a straightforward transition from training to inference for model designers. WeGO offers a Python programming interface to deploy quantized models across different frameworks. This allows for maximum reuse of Python code, including pre-processing and post-processing, developed during the model training phase with frameworks. This greatly speeds up the deployment and evaluation of models over cloud DPUs.
 
 
 # Preparation
 
 ## Setup Host Environment for Cloud
-Before running the examples, please follow [setup for VCK5000](https://github.com/Xilinx/Vitis-AI/tree/master/board_setup/vck5000) to set up the host env for VCK5000 PROD and make sure you have entered the Vitis-AI CPU docker container successfully and the DPU IP has been selected properly.
+Before running the examples, please follow [setup for V70](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#alveo-v70-setup) for instructions on how to set up the host environment for V70 and make sure you have entered the Vitis-AI CPU docker container successfully and the DPU IP has been selected properly.
 
-> Note: currently three different docker image targeting diverse AI frameworks are provided, make sure the right docker image is used for the corresponding examples running purpose(i.e. TensorFlow 1.x docker for TensorFlow 1.x WeGO examples, TensorFlow 2.x docker for TensorFlow 2.x WeGO examples, PyTorch docker for PyTorch WeGO examples).
+> Note:
+>
+> 1. VCK5000 PROD is deprecated since VAI 3.5. Please apply Vitis AI 3.0 for VCK5000 PROD usage.
+>
+> 2. Currently three different docker image targeting diverse AI frameworks are provided, make sure the right docker image is selected for the corresponding examples running purpose(i.e. TensorFlow 1.x docker for TensorFlow 1.x WeGO examples, TensorFlow 2.x docker for TensorFlow 2.x WeGO examples, PyTorch docker for PyTorch WeGO examples).
 
 ## Prepare WeGO Example Recipes
 Download and prepare the WeGO examples recipes(ie. models and images) by executing:

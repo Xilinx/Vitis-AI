@@ -32,14 +32,15 @@ from nndct_shared.utils import create_work_dir, option_util, NndctOption, NndctS
 from nndct_shared.compile import CompilerFactory, DeployChecker
 from nndct_shared.nndct_graph import (merge_multi_subgraphs,
                                       reorder_multi_subgraph_nodes, merge_multi_graphs_to_single_graph)
+from nndct_shared.quantization.fix_pos_adjust import FixPosInserter
 from pytorch_nndct.parse import NodeTransformer
 from pytorch_nndct.quantization import TORCHQuantizer
 from pytorch_nndct.utils import TorchSymbol
-from pytorch_nndct.quantization import RNNTorchQConfig, TorchQConfig
+from pytorch_nndct.quantization import TorchQConfig
 from .utils import (connect_module_with_graph,
                     parse_module, recreate_nndct_module,
                     set_outputs_recorder_status, update_nndct_blob_data, register_output_hook,
-                    convert_lstm, prepare_quantizable_module, has_lstm, register_input_checker)
+                    convert_lstm, prepare_quantizable_module, has_lstm)
 
 from .base import TorchQuantProcessor
 from pytorch_nndct.utils.jit_utils import optimize_graph
@@ -47,11 +48,11 @@ from pytorch_nndct.utils.module_util import to_device
 
 
 class LSTMTorchQuantProcessor(TorchQuantProcessor):
-    
+
   def _check_args(self, module):
     if not isinstance(module, torch.nn.Module):
       raise TypeError(f"type of 'module' should be 'torch.nn.Module'.")
-    
+
   def __init__(self,
                quant_mode: str,
                module: torch.nn.Module,
@@ -66,14 +67,14 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
     self._export_folder = output_dir
     # Check arguments type
     self._check_args(module)
-    
+
     # Check device available
     if device.type == "cuda":
       #if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
       if not (torch.cuda.is_available() and ("CUDA_HOME" or "ROCM_HOME" in os.environ)):
         device = torch.device("cpu")
         NndctScreenLogger().warning2user(QWarning.CUDA_UNAVAILABLE, f"CUDA (HIP) is not available, change device to CPU")
-    
+
     # Transform torch module to quantized module format
     nndct_utils.create_work_dir(output_dir)
 
@@ -82,22 +83,25 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
       option_util.set_option_value("nndct_param_corr", NndctOption.nndct_param_corr._value)
     else:
       option_util.set_option_value("nndct_param_corr", False)
-      
+
     if (hasattr(NndctOption.nndct_equalization, '_value')):
       option_util.set_option_value("nndct_equalization", NndctOption.nndct_equalization._value)
     else:
       option_util.set_option_value("nndct_equalization", False)
-    
+
     option_util.set_option_value("nndct_cv_app", False)
 
     # Parse the quant config file
-    QConfiger = RNNTorchQConfig()
+    QConfiger = TorchQConfig()
     #if quant_config_file:
-    QConfiger.parse_config_file(quant_config_file, 
-                                bit_width_w = bitwidth_w, 
+    QConfiger.parse_config_file(quant_config_file,
+                                bit_width_w = bitwidth_w,
                                 bit_width_a = bitwidth_a)
     qconfig = QConfiger.qconfig
-    quantizer, qmode = self._init_quant_env(quant_mode, 
+    if NndctOption.nndct_dump_quant_config.value is True:
+      config_dump_file = '/'.join([output_dir, 'effective_config.json'])
+      QConfiger.dump_quant_config(config_dump_file)
+    quantizer, qmode = self._init_quant_env(quant_mode,
                                             output_dir,
                                             qconfig,
                                             is_lstm = True)
@@ -106,7 +110,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_MODE, qmode)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_DEVICE, device)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_CONFIG, qconfig)
-    
+
     standard_RNNs, customized_RNNs = self._analyse_module(module)
 
     if len(standard_RNNs) == 0 and len(customized_RNNs) == 0:
@@ -150,18 +154,18 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
 
       if rnn_module.mode == 'LSTM':
         self._modules_info[name]["mode"] = "LSTM"
-      elif rnn_module.mode == "GRU": 
+      elif rnn_module.mode == "GRU":
         self._modules_info[name]["mode"] = "GRU"
     # merge multi graphs into a graph
     top_graph = self._merge_subgraphs()
-    
+
     # turn on quantizer
     #if quant_mode:
     quantizer.setup(top_graph, rnn_front_end=True, lstm=True)
-    
+
     # write and reload quantizable cell module
     module_graph_map = self._rebuild_layer_module()
-    
+
     # replace float module with quantizale module
     for name, info in self._modules_info.items():
       if info["stack_mode"] is not None:
@@ -186,7 +190,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
   # export xmodel file to be compiled for deployment
   def export_xmodel(self, output_dir, deploy_check):
     self.dump_xmodel(output_dir, deploy_check)
-    
+
   @staticmethod
   def _analyse_module(top_module):
     standard_RNNs = {}
@@ -198,7 +202,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
         standard_RNNs[name] = sub_module
 
     return standard_RNNs, customized_RNNs
-  
+
   def _convert_modules_info_to_layers(self, module_graph_map):
     self._layers_info = defaultdict(dict)
 
@@ -222,7 +226,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
         self._layers_info[name]["graph"] = list(
             info["layers_graph"][0].values())[0]
         self._layers_info[name]["layer_module"] = info["layer_module"]
-  
+
   @staticmethod
   def _insert_QuantLstm_in_top_module(top_module, module_name, info):
     module = top_module
@@ -251,7 +255,7 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
   #     for layer in info["layers_module"]:
   #       for direction, quant_module in layer.items():
   #         connect_module_with_quantizer(quant_module, quantizer)
-         
+
   def _rebuild_layer_module(self):
     module_graph_map = {}
     for name, info in self._modules_info.items():
@@ -309,6 +313,10 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
     `dump xmodel for LSTM cell`
     """
     quantizer = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
+
+    fixposinserter = FixPosInserter(quantizer)
+    fixposinserter(quantizer.Nndctgraph)
+
     if quantizer and quantizer.quant_mode > 1:
       compiler = CompilerFactory.get_compiler("xmodel")
       xmodel_dir = os.path.join(output_dir, "xmodel")
@@ -330,8 +338,8 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
       if deploy_check:
         print("[NNDCT_NOTE]: Dumping checking data...")
         checker = DeployChecker(
-            output_dir_name=output_dir, data_format="txt")     
-        
+            output_dir_name=output_dir, data_format="txt")
+
         # get timestep output
         for name, info in self._layers_info.items():
           cell = info["cell_module"]
@@ -356,15 +364,15 @@ class LSTMTorchQuantProcessor(TorchQuantProcessor):
                 round_method=quantizer.quant_opt['round_method'],
                 enable_dump_weight=enable_dump_weight,
                 select_batch=True)
-          
+
           set_outputs_recorder_status(cell, False)
 
-        print("[NNDCT_NOTE]: Finsh dumping data.")
+        print("[NNDCT_NOTE]: Finish dumping data.")
 
 
 
 class RNNQuantProcessor(TorchQuantProcessor):
-    
+
   def _check_args(self, module):
     if isinstance(module, list):
       for mod in module:
@@ -372,7 +380,7 @@ class RNNQuantProcessor(TorchQuantProcessor):
     else:
       if not isinstance(module, torch.nn.Module):
         raise TypeError(f"{module.__class__.__name__} is not subclass of 'torch.nn.Module'.")
-    
+
   def __init__(self,
                quant_mode: str,
                module: Union[torch.nn.Module, List[torch.nn.Module]],
@@ -387,39 +395,42 @@ class RNNQuantProcessor(TorchQuantProcessor):
     self._export_folder = output_dir
     # Check arguments type
     self._check_args(module)
-    
+
     # Check device available
     if device.type == "cuda":
       #if not (torch.cuda.is_available() and "CUDA_HOME" in os.environ):
       if not (torch.cuda.is_available() and "CUDA_HOME" or "ROCM_HOME" in os.environ):
         device = torch.device("cpu")
         NndctScreenLogger().warning2user(QWarning.CUDA_UNAVAILABLE, f"CUDA is not available, change device to CPU")
-    
+
     # Transform torch module to quantized module format
     nndct_utils.create_work_dir(output_dir)
-    
+
     # turn off weights equalization and bias correction
     if (hasattr(NndctOption.nndct_param_corr, '_value')):
       option_util.set_option_value("nndct_param_corr", NndctOption.nndct_param_corr._value)
     else:
       option_util.set_option_value("nndct_param_corr", False)
-      
+
     if (hasattr(NndctOption.nndct_equalization, '_value')):
       option_util.set_option_value("nndct_equalization", NndctOption.nndct_equalization._value)
     else:
       option_util.set_option_value("nndct_equalization", False)
-    
+
     option_util.set_option_value("nndct_cv_app", False)
-    
+
     # Parse the quant config file
-    QConfiger = RNNTorchQConfig()
+    QConfiger = TorchQConfig()
     #if quant_config_file:
     QConfiger.parse_config_file(quant_config_file,
-                                bit_width_w = bitwidth_w, 
+                                bit_width_w = bitwidth_w,
                                 bit_width_a = bitwidth_a)
 
     qconfig = QConfiger.qconfig
-    quantizer, qmode = self._init_quant_env(quant_mode, 
+    if NndctOption.nndct_dump_quant_config.value is True:
+      config_dump_file = '/'.join([output_dir, 'effective_config.json'])
+      QConfiger.dump_quant_config(config_dump_file)
+    quantizer, qmode = self._init_quant_env(quant_mode,
                                             output_dir,
                                             qconfig,
                                             is_lstm=True)
@@ -428,7 +439,7 @@ class RNNQuantProcessor(TorchQuantProcessor):
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_MODE, qmode)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_DEVICE, device)
     GLOBAL_MAP.set_map(NNDCT_KEYS.QUANT_CONFIG, qconfig)
-   
+
     if isinstance(module, list):
       quantize_models = []
       multi_graph = []
@@ -455,7 +466,7 @@ class RNNQuantProcessor(TorchQuantProcessor):
         quantize_models.append(quant_module.to(device))
         if GLOBAL_MAP.get_ele(NNDCT_KEYS.TORCH_SCRIPT_MODEL):
           quantizer.add_script(GLOBAL_MAP.get_ele(NNDCT_KEYS.TORCH_SCRIPT_MODEL))
-        
+
         if qmode > 1:
           register_output_hook(quant_module, record_once=True)
           set_outputs_recorder_status(quant_module, True)
@@ -467,8 +478,8 @@ class RNNQuantProcessor(TorchQuantProcessor):
           self._input_tensors_name.append(quant_module._input_tensors_name)
         #quant_module._graph = graph
         self._return_tensors_name.append(graph.get_return_tensors())
-        
-      graph = merge_multi_graphs_to_single_graph(multi_graph)   
+
+      graph = merge_multi_graphs_to_single_graph(multi_graph)
       quantizer.quant_model = quantize_models
     else:
       if has_lstm(module):
@@ -503,6 +514,11 @@ class RNNQuantProcessor(TorchQuantProcessor):
     quantizer.setup(graph, rnn_front_end=True, lstm=True)
     self.quantizer = quantizer
     self._example_inputs = input_args
+    self._lstm_app = lstm_app
+
 
     if NndctOption.nndct_calib_before_finetune.value is True:
       self.quantizer.export_float_param()
+
+  def quant_model(self):
+    return self.quantizer.quant_model

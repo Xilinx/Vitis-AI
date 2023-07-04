@@ -39,6 +39,13 @@ export LIBRARY_PATH=/usr/local/lib
 export LD_LIBRARY_PATH=/opt/xilinx/xrt/lib:/usr/lib:/usr/lib/x86_64-linux-gnu
 if [[ "$DOCKER_TYPE" == 'rocm' ]];then
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib
+
+    if [[ "$TARGET_FRAMEWORK" == 'tf2' ]];then
+      export LD_LIBRARY_PATH=/opt/vitis_ai/conda/envs/vitis-ai-tensorflow2/lib:$LD_LIBRARY_PATH
+    fi
+    if [[ "$TARGET_FRAMEWORK" == 'pytorch' ]];then
+      export LD_LIBRARY_PATH=/opt/conda/lib:$LD_LIBRARY_PATH
+    fi
 fi
 if [ -f /tmp/.Xauthority ]; then
     cp /tmp/.Xauthority ~/

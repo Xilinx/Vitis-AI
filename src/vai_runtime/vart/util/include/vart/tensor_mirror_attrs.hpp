@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,10 @@ class TensorMirrorAttrs : public xir::Tensor {
   const std::vector<std::int32_t> get_dims() const override;
   const std::int32_t get_dim_num() const override;
   const std::int32_t get_dim_size(std::int32_t idx) const override;
-  const std::int32_t get_element_num() const override;
+  const std::int64_t get_element_num() const override;
   const xir::DataType& get_data_type() const override;
   const std::int32_t get_bit_width() const override;
-  const std::int32_t get_data_size() const override;
+  const std::uint64_t get_data_size() const override;
   std::unique_ptr<xir::Attrs> get_attrs() const override;
   TensorMirrorAttrs* set_attrs(std::unique_ptr<xir::Attrs> attrs) override;
   const bool has_attr(const std::string& key) const override;

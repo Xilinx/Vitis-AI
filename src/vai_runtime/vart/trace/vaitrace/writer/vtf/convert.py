@@ -1,5 +1,5 @@
 
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ event_id = 1
 start_id = 1
 vtf_events = []
 apm_events = []
+nmu_events = []
+nmu_info = {}
 literal_pool = []
 dpu_core_num = 0
 PID = 0
@@ -188,6 +190,71 @@ def convert_xapm(apm_data, time_offset=0.0):
         apm_events.append([timestamp, s_1_r, s_1_w, s_2_r,
                            s_2_w, s_3_r, s_3_w, s_4_r, s_4_w, s_5_r, s_5_w])
 
+def convert_nmu(nmu_data,options, time_offset=0.0):
+    global nmu_events, nmu_info
+
+    if options.get('noc_nmu', '') != True:
+        return
+    sample_data = []
+    def toMB_s(r):
+        return float(r) / 1000 / 1000
+
+    nmu_info = nmu_data[0]
+    sample_data = nmu_data[1]
+    for rr in sample_data:
+        if not rr.startswith("NMU "):
+            continue
+        r = rr.split()[1:]
+        timestamp = round((float(r[0]) - time_offset) * 1000, 4)
+        if timestamp < 0:
+            continue
+        s_1_r = round(toMB_s(r[1]), 2)
+        s_1_w = round(toMB_s(r[2]), 2)
+        s_2_r = round(toMB_s(r[3]), 2)
+        s_2_w = round(toMB_s(r[4]), 2)
+        s_3_r = round(toMB_s(r[5]), 2)
+        s_3_w = round(toMB_s(r[6]), 2)
+        s_4_r = round(toMB_s(r[7]), 2)
+        s_4_w = round(toMB_s(r[8]), 2)
+        s_5_r = round(toMB_s(r[9]), 2)
+        s_5_w = round(toMB_s(r[10]), 2)
+        nmu_events.append([timestamp, s_1_r, s_1_w, s_2_r,
+                           s_2_w, s_3_r, s_3_w, s_4_r, s_4_w, s_5_r, s_5_w])
+
+
+def output_nmu_trace(OUTPUT_PATH, options):
+    if options.get('noc_nmu', False) != True:
+        return
+    port_name = []
+    per_name = []
+    f_name = "noc_nmu_trace.csv"
+    npi_freq = nmu_info.get('npi_freq', 0)
+    sample_interval = nmu_info.get('interval', 0)
+    with open(os.path.join(OUTPUT_PATH, f_name), "w+t") as vtf:
+        """HEADER"""
+        vtf.writelines("NOC_NMU_INFO\n")
+        test_info = [
+            "interval,%s\n" % sample_interval,
+            "npi_freq,%s\n" % npi_freq,
+        ]
+        vtf.writelines(test_info)
+        vtf.writelines("\n")
+        sample_nodes = nmu_info.get('nodes', [])
+        for p in sample_nodes:
+            if p.get('type',' ') == 'nmu':
+                port_name.append(p.get('location_name', ''))
+        title = "NOC_NMU Bandwith\n"
+        vtf.write(title)
+        for i in port_name:
+            per_name.append(i + "_R")
+            per_name.append(i + "_W")
+        port_header = "sampletime," + ",".join(per_name) + ",\n"
+        vtf.write(port_header)
+        for d in nmu_events:
+            item = "%.2f,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,\n" % (
+                d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10])
+            vtf.write(item)
+        vtf.write('\n')
 
 def output_vart_trace(OUTPUT_PATH):
     global PID, GEN_TIME, XRT_INFO
@@ -306,8 +373,9 @@ def output_vitis_ai_profile(OUTPUT_PATH):
         csv_f.write('\n')
 
 
-def output(OUTPUT_PATH):
+def output(OUTPUT_PATH, options):
     output_vart_trace(OUTPUT_PATH)
+    output_nmu_trace(OUTPUT_PATH, options)
     output_profile_summary(OUTPUT_PATH)
     output_vitis_ai_profile(OUTPUT_PATH)
 
@@ -326,6 +394,7 @@ def xat_to_vtf(xat, options):
     do_timeline_sync(xat)
     convert_dpu(xat.get('vart'), xat.get('hwInfo'), options)
     convert_xapm(xat.get('xapm', {}), xapm_ts_offset)
+    #convert_nmu(xat.get('nmu', {}), options, xapm_ts_offset)
     pyFuncSummary = convert_pyfunc(xat.get('pyfunc', {}))
     cppFuncSummary = convert_cppfunc(xat.get('function', {}))
-    output(saveTo)
+    output(saveTo, options)

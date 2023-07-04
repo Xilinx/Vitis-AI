@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ vector<YOLOv3Result> YOLOv3Imp::run(const vector<cv::Mat>& input_images) {
     auto size = cv::Size(sWidth, sHeight);
     vector<cv::Mat> images;
     cv::Mat image;
-    for (auto input_image : input_images) {
+    for (auto& input_image : input_images) {
       if (size != input_image.size()) {
         cv::resize(input_image, image, size, 0, 0, cv::INTER_LINEAR);
       } else {

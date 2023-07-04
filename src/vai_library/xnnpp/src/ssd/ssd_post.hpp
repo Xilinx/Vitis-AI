@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class SSDPost : public vitis::ai::SSDPostProcess {
   // std::vector<SSDResult> post_processing_arm(const cv::Mat &input_img);
 
  private:
-  int num_classes_;
+  size_t num_classes_;
   bool is_tf_;
   bool is_mlperf_;
   std::set<int> bbox_layer_indexes_;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,10 @@ int main(int argc, char *argv[]) {
   myreadfile(vf.data(), std::string(argv[1]));
   
   auto net = vitis::ai::Cflownet::create("cflownet_pt");
+  if (!net) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   auto result = net->run(vf.data() ); (void)result;
   mywritefile(result.data.data(), 128*128, "./cflownet_result.bin");
 

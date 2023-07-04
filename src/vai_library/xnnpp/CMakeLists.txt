@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -179,6 +179,9 @@ vai_add_library(
   src/ofa_yolo.cpp
   src/yolovx.cpp
   src/yolov6.cpp
+  src/yolov7.cpp
+  src/yolov8.cpp
+  src/fcos.cpp
   src/solo.cpp
   src/posedetect.cpp
   src/reid.cpp
@@ -208,6 +211,9 @@ vai_add_library(
   src/ssd/ssd_post.cpp
   src/ssd/ssd_detector.cpp
   src/ssd/prior_boxes.cpp
+  src/retinanet/retinanet.cpp
+  src/retinanet/retinanet_post.cpp
+  src/retinanet/retinanet_detector.cpp
   src/medicalsegmentation/medicalsegmentation.cpp
   src/medicalsegmentation/medicalsegmentation_post.cpp
   src/medicaldetection/medicaldetection.cpp
@@ -250,3 +256,4 @@ target_include_directories(
                            $<INSTALL_INTERFACE:include>)
 install(FILES ${LIST_PROTO_DST} ${LIST_PBSRC_H}
         DESTINATION include/object_detection/protos)
+

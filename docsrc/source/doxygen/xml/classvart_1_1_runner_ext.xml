@@ -1,0 +1,567 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classvart_1_1_runner_ext" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>vart::RunnerExt</compoundname>
+    <basecompoundref refid="classvart_1_1_runner" prot="public" virt="non-virtual">Runner</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1ad2ade6b989c5f8fe14d22cd271548522" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>RunnerExt</definition>
+        <argsstring>()=default</argsstring>
+        <name>RunnerExt</name>
+        <qualifiedname>vart::RunnerExt::RunnerExt</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="23" column="12"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1a20bc9df28182b2fd5763b36ecc626c38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>RunnerExt</definition>
+        <argsstring>(const RunnerExt &amp;)=delete</argsstring>
+        <name>RunnerExt</name>
+        <qualifiedname>vart::RunnerExt::RunnerExt</qualifiedname>
+        <param>
+          <type>const RunnerExt &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="25" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1ab5521c15a09dd0acc9eedcbbc3b3b6ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>RunnerExt &amp;</type>
+        <definition>RunnerExt &amp; operator=</definition>
+        <argsstring>(const RunnerExt &amp;other)=delete</argsstring>
+        <name>operator=</name>
+        <qualifiedname>vart::RunnerExt::operator=</qualifiedname>
+        <param>
+          <type>const RunnerExt &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="26" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1aee8650372d2ba8b1fe7940aed06d4b0c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual ~RunnerExt</definition>
+        <argsstring>()=default</argsstring>
+        <name>~RunnerExt</name>
+        <qualifiedname>vart::RunnerExt::~RunnerExt</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="28" column="11"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1a478b6c63337f3752d362524b30a7b134" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::vector&lt; <ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref> * &gt;</type>
+        <definition>virtual std::vector&lt; vart::TensorBuffer * &gt; get_inputs</definition>
+        <argsstring>()=0</argsstring>
+        <name>get_inputs</name>
+        <qualifiedname>vart::RunnerExt::get_inputs</qualifiedname>
+        <briefdescription>
+<para>Gets all input TensorBuffers of RunnerExt. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>All input TensorBuffers. A vector of raw pointer to the input <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref>.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart::RunnerExt::create_runner</ref>(subgraph,<sp/>attrs);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input_tensor_buffers<sp/>=<sp/>runner-&gt;get_inputs();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input<sp/>:<sp/>input_tensor_buffers)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>shape<sp/>=<sp/>input-&gt;get_tensor()-&gt;get_shape();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="56" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1af4cf84463ef9feb0d02c6b7e5bed25ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::vector&lt; <ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart::TensorBuffer</ref> * &gt;</type>
+        <definition>virtual std::vector&lt; vart::TensorBuffer * &gt; get_outputs</definition>
+        <argsstring>()=0</argsstring>
+        <name>get_outputs</name>
+        <qualifiedname>vart::RunnerExt::get_outputs</qualifiedname>
+        <briefdescription>
+<para>Gets all output TensorBuffers of RunnerExt. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>All output TensorBuffers. A vector of raw pointer to the output <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref>.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart::RunnerExt::create_runner</ref>(subgraph,<sp/>attrs);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output_tensor_buffers<sp/>=<sp/>runner-&gt;get_outputs();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output<sp/>:<sp/>output_tensor_buffers)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>shape<sp/>=<sp/>output-&gt;get_tensor()-&gt;get_shape();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="71" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1aa02286793adeba583522dfc326e63cdb" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::pair&lt; uint32_t, int &gt;</type>
+        <definition>virtual std::pair&lt; uint32_t, int &gt; execute_async</definition>
+        <argsstring>(const std::vector&lt; TensorBuffer * &gt; &amp;input, const std::vector&lt; TensorBuffer * &gt; &amp;output)=0</argsstring>
+        <name>execute_async</name>
+        <qualifiedname>vart::Runner::execute_async</qualifiedname>
+        <param>
+          <type>const std::vector&lt; <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> * &gt; &amp;</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> * &gt; &amp;</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para>Executes the runner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This is a blocking function.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A vector of <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> create by all input tensors of runner.</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>output</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A vector of <ref refid="classvart_1_1_tensor_buffer" kindref="compound">TensorBuffer</ref> create by all output tensors of runner.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="180" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::pair&lt; std::uint32_t, int &gt;</type>
+        <definition>virtual std::pair&lt; std::uint32_t, int &gt; execute_async</definition>
+        <argsstring>(InputType input, OutputType output)=0</argsstring>
+        <name>execute_async</name>
+        <qualifiedname>vart::BaseRunner::execute_async</qualifiedname>
+        <param>
+          <type>InputType</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>OutputType</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="namespaceexecute__async" kindref="compound">execute_async</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>inputs with a customized type</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>output</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>outputs with a customized type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="47" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1ac7678c1789b8f7dc606af799a08898bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int wait</definition>
+        <argsstring>(int jobid, int timeout)=0</argsstring>
+        <name>wait</name>
+        <qualifiedname>vart::Runner::wait</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>jobid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Waits for the end of DPU processing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jobid</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>job id, neg for any id, others for specific job id</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="199" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1a2996a37558eadcba72a1b982424c67bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>TensorFormat</type>
+        <definition>virtual TensorFormat get_tensor_format</definition>
+        <argsstring>()</argsstring>
+        <name>get_tensor_format</name>
+        <qualifiedname>vart::Runner::get_tensor_format</qualifiedname>
+        <briefdescription>
+<para>Get the tensor format of runner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>TensorFormat : NHWC / HCHW</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>format<sp/>=<sp/>runner-&gt;get_tensor_format();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal"><sp/>(format)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>vart::Runner::TensorFormat::NCHW:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>vart::Runner::TensorFormat::NHWC:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="219" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1ad42f3fc078debc25be1562ebdb91ccbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::vector&lt; const xir::Tensor * &gt;</type>
+        <definition>virtual std::vector&lt; const xir::Tensor * &gt; get_input_tensors</definition>
+        <argsstring>()=0</argsstring>
+        <name>get_input_tensors</name>
+        <qualifiedname>vart::Runner::get_input_tensors</qualifiedname>
+        <briefdescription>
+<para>Get all input tensors of runner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>All input tensors. A vector of raw pointer to the input tensor.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal">inputTensors<sp/>=<sp/>runner-&gt;get_input_tensors();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>input<sp/>:<sp/>inputTensor)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>input-&gt;get_name();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>input-&gt;get_shape();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>input-&gt;get_element_num();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="235" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1a01a98ca8e96e4b9ffd502bb0de0046b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::vector&lt; const xir::Tensor * &gt;</type>
+        <definition>virtual std::vector&lt; const xir::Tensor * &gt; get_output_tensors</definition>
+        <argsstring>()=0</argsstring>
+        <name>get_output_tensors</name>
+        <qualifiedname>vart::Runner::get_output_tensors</qualifiedname>
+        <briefdescription>
+<para>Get all output tensors of runner. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>All output tensors. A vector of raw pointer to the output tensor.</para>
+</simplesect>
+Sample code: <programlisting><codeline><highlight class="normal">outputTensors<sp/>=<sp/>runner-&gt;get_output_tensors();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>output<sp/>:<sp/>outputTensor)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output-&gt;get_name();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output-&gt;get_shape();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>output-&gt;get_element_num();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="250" column="23"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classvart_1_1_runner_ext_1a2d06613bafd66a3db2cbdbf8b30cada8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::unique_ptr&lt; RunnerExt &gt;</type>
+        <definition>static std::unique_ptr&lt; RunnerExt &gt; create_runner</definition>
+        <argsstring>(const xir::Subgraph *subgraph, xir::Attrs *attrs)</argsstring>
+        <name>create_runner</name>
+        <qualifiedname>vart::RunnerExt::create_runner</qualifiedname>
+        <param>
+          <type>const xir::Subgraph *</type>
+          <declname>subgraph</declname>
+        </param>
+        <param>
+          <type>xir::Attrs *</type>
+          <declname>attrs</declname>
+        </param>
+        <briefdescription>
+<para>Factory fucntion to create an instance of runner by subgraph and attrs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>subgraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR Subgraph </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>attrs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR attrs object, this object is shared among all runners on the same graph. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An instance of runner. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="38" column="26"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::unique_ptr&lt; <ref refid="classvart_1_1_runner" kindref="compound">Runner</ref> &gt;</type>
+        <definition>static std::unique_ptr&lt; Runner &gt; create_runner</definition>
+        <argsstring>(const xir::Subgraph *subgraph, const std::string &amp;mode=std::string(&quot;&quot;))</argsstring>
+        <name>create_runner</name>
+        <qualifiedname>vart::Runner::create_runner</qualifiedname>
+        <param>
+          <type>const xir::Subgraph *</type>
+          <declname>subgraph</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>mode</declname>
+          <defval>std::string(&quot;&quot;)</defval>
+        </param>
+        <briefdescription>
+<para>Factory function to create an instance of DPU runner by subgraph. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>subgraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR Subgraph </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>1 mode supported: &apos;run&apos; - DPU runner. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An instance of DPU runner.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="comment">//<sp/>This<sp/>API<sp/>can<sp/>be<sp/>used<sp/>like:</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart::Runner::create_runner</ref>(subgraph,<sp/></highlight><highlight class="stringliteral">&quot;run&quot;</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="129" column="26"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1a8c7560df8d7d56a34d0460237c0b1402" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::unique_ptr&lt; <ref refid="classvart_1_1_runner" kindref="compound">Runner</ref> &gt; &gt;</type>
+        <definition>static std::vector&lt; std::unique_ptr&lt; Runner &gt; &gt; create_runner</definition>
+        <argsstring>(const std::string &amp;model_directory)</argsstring>
+        <name>create_runner</name>
+        <qualifiedname>vart::Runner::create_runner</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>model_directory</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="159" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_runner_1ad6ff892533067e379b0f7b4835b5f6f6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::unique_ptr&lt; <ref refid="classvart_1_1_runner" kindref="compound">Runner</ref> &gt;</type>
+        <definition>static std::unique_ptr&lt; Runner &gt; create_runner_with_attrs</definition>
+        <argsstring>(const xir::Subgraph *subgraph, xir::Attrs *attrs)</argsstring>
+        <name>create_runner_with_attrs</name>
+        <qualifiedname>vart::Runner::create_runner_with_attrs</qualifiedname>
+        <param>
+          <type>const xir::Subgraph *</type>
+          <declname>subgraph</declname>
+        </param>
+        <param>
+          <type>xir::Attrs *</type>
+          <declname>attrs</declname>
+        </param>
+        <briefdescription>
+<para>Factory function to create an instance of DPU runner by subgraph, and attrs. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>subgraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR Subgraph</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>attrs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>XIR attrs object, this object is shared among all runners on the same graph.</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>attrs[&quot;mode&quot;]</parametername>
+<parametername>1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>mode supported: &apos;run&apos; - DPU runner.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An instance of DPU runner. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="148" column="26"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classvart_1_1_runner_1a48731a0ec91dd7e29ee3d77751de0046" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>TensorFormat</name>
+        <qualifiedname>vart::Runner::TensorFormat</qualifiedname>
+        <enumvalue id="classvart_1_1_runner_1a48731a0ec91dd7e29ee3d77751de0046ad066db54b89b0912e7e7c6da51e2da51" prot="public">
+          <name>NHWC</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classvart_1_1_runner_1a48731a0ec91dd7e29ee3d77751de0046a6b99f356fe3b30a2a850b5ea897c289f" prot="public">
+          <name>NCHW</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="163" column="3" bodyfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="163" bodyend="163"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>RunnerExt</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Runner</label>
+        <link refid="classvart_1_1_runner"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>RunnerExt</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Runner</label>
+        <link refid="classvart_1_1_runner"/>
+      </node>
+    </collaborationgraph>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" line="20" column="1" bodyfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner_ext.hpp" bodystart="20" bodyend="72"/>
+    <listofallmembers>
+      <member refid="classvart_1_1_runner_ext_1a2d06613bafd66a3db2cbdbf8b30cada8" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>create_runner</name></member>
+      <member refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" prot="public" virt="non-virtual" ambiguityscope="vart::Runner::"><scope>vart::RunnerExt</scope><name>create_runner</name></member>
+      <member refid="classvart_1_1_runner_1a8c7560df8d7d56a34d0460237c0b1402" prot="public" virt="non-virtual" ambiguityscope="vart::Runner::"><scope>vart::RunnerExt</scope><name>create_runner</name></member>
+      <member refid="classvart_1_1_runner_1ad6ff892533067e379b0f7b4835b5f6f6" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>create_runner_with_attrs</name></member>
+      <member refid="classvart_1_1_runner_1aa02286793adeba583522dfc326e63cdb" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>execute_async</name></member>
+      <member refid="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" prot="public" virt="pure-virtual" ambiguityscope="vart::BaseRunner::"><scope>vart::RunnerExt</scope><name>execute_async</name></member>
+      <member refid="classvart_1_1_runner_1ad42f3fc078debc25be1562ebdb91ccbf" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>get_input_tensors</name></member>
+      <member refid="classvart_1_1_runner_ext_1a478b6c63337f3752d362524b30a7b134" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>get_inputs</name></member>
+      <member refid="classvart_1_1_runner_1a01a98ca8e96e4b9ffd502bb0de0046b9" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>get_output_tensors</name></member>
+      <member refid="classvart_1_1_runner_ext_1af4cf84463ef9feb0d02c6b7e5bed25ab" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>get_outputs</name></member>
+      <member refid="classvart_1_1_runner_1a2996a37558eadcba72a1b982424c67bb" prot="public" virt="virtual"><scope>vart::RunnerExt</scope><name>get_tensor_format</name></member>
+      <member refid="classvart_1_1_runner_ext_1ab5521c15a09dd0acc9eedcbbc3b3b6ed" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>operator=</name></member>
+      <member refid="classvart_1_1_runner_ext_1ad2ade6b989c5f8fe14d22cd271548522" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>RunnerExt</name></member>
+      <member refid="classvart_1_1_runner_ext_1a20bc9df28182b2fd5763b36ecc626c38" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>RunnerExt</name></member>
+      <member refid="classvart_1_1_runner_1a48731a0ec91dd7e29ee3d77751de0046" prot="public" virt="non-virtual"><scope>vart::RunnerExt</scope><name>TensorFormat</name></member>
+      <member refid="classvart_1_1_runner_1ac7678c1789b8f7dc606af799a08898bc" prot="public" virt="pure-virtual"><scope>vart::RunnerExt</scope><name>wait</name></member>
+      <member refid="classvart_1_1_base_runner_1a677e6d7a70447e9a747d1f955c490d40" prot="public" virt="virtual"><scope>vart::RunnerExt</scope><name>~BaseRunner</name></member>
+      <member refid="classvart_1_1_runner_1a5682a18df20288c1de981ab2ca71cc3b" prot="public" virt="virtual"><scope>vart::RunnerExt</scope><name>~Runner</name></member>
+      <member refid="classvart_1_1_runner_ext_1aee8650372d2ba8b1fe7940aed06d4b0c" prot="public" virt="virtual"><scope>vart::RunnerExt</scope><name>~RunnerExt</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

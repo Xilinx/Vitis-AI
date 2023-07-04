@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ int main(int argc, char* argv[]) {
   Mat img_r = cv::imread(argv[2]);
 
   auto fadnet = vitis::ai::FadNet::create();
+  if (!fadnet) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   // Create a dpu task object.
   vector<pair<Mat, Mat>> imgs;
   for (size_t i = 0; i < fadnet->get_input_batch(); ++i)

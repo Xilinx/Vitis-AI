@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,9 +73,9 @@ class HFnetImp : public HFnet {
   virtual int getInputHeight() const override;
 
  private:
-  vector<vector<float>> netvlad(const vitis::ai::library::OutputTensor otensor1,
-	     const vitis::ai::library::OutputTensor otensor2, size_t count);
-  void set_input(vitis::ai::library::InputTensor tensor, float mean, float scale, vector<Mat>& img);
+  vector<vector<float>> netvlad(const vitis::ai::library::OutputTensor& otensor1,
+	     const vitis::ai::library::OutputTensor& otensor2, size_t count);
+  void set_input(vitis::ai::library::InputTensor& tensor, float mean, float scale, vector<Mat>& img);
   void hfnet_run(const vector<cv::Mat>& input_images);
   bool verifyOutput(size_t count);
 
@@ -351,8 +351,8 @@ bool HFnetImp::verifyOutput(size_t count) {
   return true;
 }
 
-vector<vector<float>> HFnetImp::netvlad(const vitis::ai::library::OutputTensor otensor1,
-	     const vitis::ai::library::OutputTensor otensor2, size_t count) {
+vector<vector<float>> HFnetImp::netvlad(const vitis::ai::library::OutputTensor& otensor1,
+	     const vitis::ai::library::OutputTensor& otensor2, size_t count) {
   size_t vladH = otensor1.height;
   size_t vladW = otensor1.width;
   float scale3 = tensor_scale(otensor1);
@@ -414,7 +414,7 @@ vector<vector<float>> HFnetImp::netvlad(const vitis::ai::library::OutputTensor o
   return fc_input;
 }
 
-void HFnetImp::set_input(vitis::ai::library::InputTensor tensor, float mean, float scale, vector<Mat>& img) {
+void HFnetImp::set_input(vitis::ai::library::InputTensor& tensor, float mean, float scale, vector<Mat>& img) {
   float scale0 = vitis::ai::library::tensor_scale(tensor);
   size_t isize = tensor.size / tensor.batch;
   __TIC__(RESIZE)

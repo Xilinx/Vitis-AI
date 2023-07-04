@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ static std::vector<xir::OpDef> my_op_defs() {
 static void add_op_defs() {
   auto safe_add_op = [](const xir::OpDef& def) {
     auto factory = xir::op_def_factory();
-    for (auto t1 : factory->get_registered_ops()) {
+    for (auto& t1 : factory->get_registered_ops()) {
       if (def.name() == t1) {
         return;
       }

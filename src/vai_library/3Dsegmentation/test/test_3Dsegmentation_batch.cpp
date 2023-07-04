@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,10 @@ using namespace vitis::ai;
 int main(int argc, char *argv[]) {
   // bool preprocess = !(getenv("PRE") != nullptr);
   auto det = vitis::ai::Segmentation3D::create(argv[1], false);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   size_t batch_size = det->get_input_batch();
   vector<vector<vector<float>>> all_arrays(batch_size);
   vector<string> all_path;

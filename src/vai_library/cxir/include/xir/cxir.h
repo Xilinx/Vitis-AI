@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -454,13 +454,13 @@ enum xir_tensor_data_type_t xir_tensor_get_data_type(xir_tensor_t tensor);
  *
  * @return Number of elements.
  */
-int32_t xir_tensor_get_element_num(xir_tensor_t tensor);
+int64_t xir_tensor_get_element_num(xir_tensor_t tensor);
 /**
  * @brief Get the number of data in the tensor.
  *
  * @return Number of data.
  */
-int32_t xir_tensor_get_data_size(xir_tensor_t tensor);
+uint64_t xir_tensor_get_data_size(xir_tensor_t tensor);
 /**
  * @brief Get the Attrs object of the tensor.
  *

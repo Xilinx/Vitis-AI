@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,10 @@ int main( int argc, char *argv[])
   std::string model_1 = argv[2];
   auto centerpoint = vitis::ai::CenterPoint::create(
           model_0, model_1);
+  if (!centerpoint) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }   
   std::vector<std::vector<float>> inputs(centerpoint->get_input_batch());
   for (auto i = 0u; i < centerpoint->get_input_batch(); i++) {
     auto input_file = std::string(argv[i % (argc - 3) + 3]);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,9 @@ static ModelInfo get_model_zise(const std::string& filename) {
     auto device = c->get_attr<std::string>("device");
     if (device == "DPU") {
       auto inputs = c->get_sorted_input_tensors();
-      for (auto input : inputs) {
+      if(inputs.size()) {
+        auto input = inputs[0];
+        // for (auto input : inputs) {
         int height = input->get_shape().at(1);
         int width = input->get_shape().at(2);
         //        std::cout << "model width: " << width  << " model heigth: " <<

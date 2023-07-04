@@ -5,6 +5,10 @@
 ```
 $ pip install -r requirements.txt
 ```
+# OnBoard
+
+Onboard is a tool designed to collect data during the model inference process, allowing users to visualize it using TensorBoard. 
+To experience the onboard feature, please enable the onboard parameter in the run.sh file.
 
 # Run Inception_v3
 

@@ -1,4 +1,4 @@
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import math
 import logging
 import decimal
 import json
+import vaitraceSetting
 from copy import deepcopy
 from writer.parser.timelineUtil import *
 from writer.parser.tracepointUtil import *
@@ -165,19 +166,20 @@ class DPUEventParser():
 
     def getDpuAieClk(self, dpu_arch):
 
-        if dpu_arch == "DPUCVDX8G":
-            MEPLL_CTRL = 0xF70A0100
-            ME_CORE_REF_CTRL = 0xF70A0138
-            PMCPLL_CTRL = 0xF1260040
-            NOCPLL_CTRL = 0xF1260050
-        elif dpu_arch == "DPUCV2DX8G":
-            MEPLL_CTRL = 0xF6D10100
-            ME_CORE_REF_CTRL = 0xF6D10138
-            PMCPLL_CTRL = 0xF1260040
-            NOCPLL_CTRL = 0xF1260050
+        idcode = '0x' + vaitraceSetting.getChipId().get('idcode',{})[-7:]
+        mepll_base_addr_dict = {"0x4ca8093": 0xf70a0000, "0x4cd3093": 0xf6d10000,"0x4cc8093": 0xf6420000,
+                "0x4cc0093": 0xf6300000, "0x4cd0093": 0xf6d10000, "0x4c98093": 0xf6d10000, "0x4c9b093": 0xf6d10000}
+        mepll_base_addr =  mepll_base_addr_dict.get(idcode, 0)
+        if mepll_base_addr == 0 :
+            logging.warning("Not support %s aie clk " % hostname)
+            return 1
+        MEPLL_CTRL = mepll_base_addr + 0x100
+        ME_CORE_REF_CTRL = mepll_base_addr + 0x138
+        PMCPLL_CTRL = 0xF1260040
+        NOCPLL_CTRL = 0xF1260050
         HSM0_REF_CTRL = 0xF1260148
-        ref_clk = 33333000
-
+        
+        ref_clk = int(os.popen('cat /sys/kernel/debug/clk/ref_clk/clk_rate').read())
         hsm0_ref = int(os.popen(f"devmem {HSM0_REF_CTRL} 32").read(), 16)
 
         if (hsm0_ref & 0x7) == 0:
@@ -187,30 +189,14 @@ class DPUEventParser():
         else:
             print("get a error value from hsm0")
 
-        if ((n_p_pll & 0x30000) >> 16) == 0:
-            clkoutdiv = 1
-        elif ((n_p_pll & 0x30000) >> 16) == 1:
-            clkoutdiv = 2
-        elif ((n_p_pll & 0x30000) >> 16) == 2:
-            clkoutdiv = 4
-        elif ((n_p_pll & 0x30000) >> 16) == 3:
-            clkoutdiv = 8
-
+        clkoutdiv = math.pow(2, ((n_p_pll & 0x30000) >> 16))
         n_p_cla = (n_p_pll & 0xFF00) >> 8  # bit 15:8
         n_p_clk = ref_clk * n_p_cla / clkoutdiv
         hsm0_cal = (hsm0_ref & 0x3ff00) >> 8  # bit 17:8
         hsm0_clk = n_p_clk / hsm0_cal
         mepll = int(os.popen(f"devmem {MEPLL_CTRL} 32").read(), 16)
         mepll_cal = (mepll & 0xff00) >> 8  # bit 15:8
-
-        if ((mepll & 0x30000) >> 16) == 0:  # bit17:16
-            me_clkoutdiv = 1
-        elif ((mepll & 0x30000) >> 16) == 1:
-            me_clkoutdiv = 2
-        elif ((mepll & 0x30000) >> 16) == 2:
-            me_clkoutdiv = 4
-        elif ((mepll & 0x30000) >> 16) == 3:
-            me_clkoutdiv = 8
+        me_clkoutdiv = math.pow(2, ((mepll & 0x30000) >> 16))
 
         me_core = int(os.popen(f"devmem {ME_CORE_REF_CTRL} 32").read(), 16)
         me_core_cal = (me_core & 0x3ff00) >> 8  # bit17:8
@@ -395,18 +381,23 @@ class DPUEventParser():
 
                 if (cu.arch == "DPUCVDX8G") or (cu.arch == "DPUCV2DX8G"):
                     cu.aie_freq = self.getDpuAieClk(cu.arch)
+                    if (cu.aie_freq == 1):
+                        cu.peak_ops = 1
+                        return
 
                 if cu.arch == "DPUCZDX8G":  # mpsoc
-                    if cu_query.get("is_vivado_flow", False) == True:
-                        cu.axilite_freq = 100 * 1000 * 1000
                     macs = int(cu.type[1:])
                     ops = (macs * (cu.pl_freq))
                 elif (cu.arch == "DPUCVDX8G") or (cu.arch == "DPUCV2DX8G"):  # versal-1
-                    cpb_n = int(cu.type[1:3])
-                    batch_index = cu.type.index('B')
-                    batch_n = int(cu.type[batch_index + 1])
-                    if (len(cu.type) >= 8):
-                        cu_n = int(cu.type[7])
+                    cpb_list = re.findall(r'C(\d+)', cu.type)
+                    cpb_n = int(cpb_list[0])
+                    batch_list = re.findall(r'B(\d+)', cu.type)
+                    batch_n = int(batch_list[0])
+                    cu_n_judge = cu.type.find("CU")
+                    if cu_n_judge != -1:
+                        reg_cu_n = re.compile(r'(?<=CU)\d+')
+                        cu_list = reg_cu_n.findall(cu.type)
+                        cu_n = int(cu_list[0])
                     else:
                         cu_n = 1
 
@@ -530,9 +521,13 @@ class DPUEventParser():
                     "o_tensor_shape", "")).replace(",", "_")
 
                 if runmachine == "aarch64":
+                    if (dpu_core.peak_ops == 1):
+                        logging.warning("Effic is runtime ops!")
                     effic = (workload * batch / hw_rt) / (dpu_core.peak_ops) * 1000
                 elif runmachine == "x86_64":
                     effic = 0
+
+                performance = workload * batch * 1000 / hw_rt #hw_rt = ms
 
                 load_img_size = int(self.xmodelInfo.get(
                     subg_idx, {}).get("load_io_img_size", 0))
@@ -552,6 +547,8 @@ class DPUEventParser():
                 mem_io_bw = mem_io / hw_rt * 1000  # to MB
                 #print(subg_name, cu_name, min_t, avg_t, max_t, runs, workload, write_fm_size)
 
+                inst_size = int(self.xmodelInfo.get(subg_idx, {}).get("mc_size", 0))
+
                 prt_data_set = {
                     "subg_name": subg_name,
                     "runs": runs,
@@ -568,12 +565,13 @@ class DPUEventParser():
                     "mem_io_bw": uConv(mem_io_bw, "MB"),
                     "mem_io": uConv(mem_io, "MB"),
                     "hw_rt": uConv(hw_rt),
-                    "rank_id": rank_id
+                    "rank_id": rank_id,
+                    "inst_size": inst_size
                 }
 
                 txt_fmt = "{subg_name},{runs},{display_name},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{rank_id},\n"
                 vtf_fmt = "{subg_name},{runs},{display_name},{min_t:.3f},{avg_t:.3f},{max_t:.3f},{workload:.3f},{effic:.3f},{mem_io:.3f},{mem_io_bw:.3f},\n"
-                json_fmt = f"{subg_name},{runs},{cu_name},{batch},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{depth},{it},{ot},\n"
+                json_fmt = f"{subg_name},{runs},{cu_name},{batch},{min_t},{avg_t},{max_t},{workload},{effic},{read_wb_size},{read_fm_size},{write_fm_size},{mem_io_bw},{hw_rt},{depth},{it},{ot},{performance},{inst_size}\n"
 
                 if (fmt == "txt"):
                     ret.append(txt_fmt.format(**prt_data_set))

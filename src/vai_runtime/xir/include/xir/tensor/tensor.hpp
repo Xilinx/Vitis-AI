@@ -166,7 +166,7 @@ class XIR_DLLESPEC Tensor {
    *
    * @return The number of data.
    */
-  virtual const std::int32_t get_element_num() const = 0;
+  virtual const std::int64_t get_element_num() const = 0;
 
   /**
    * @brief Get the data type of the current Tensor object.
@@ -192,7 +192,7 @@ class XIR_DLLESPEC Tensor {
    *
    * @return Number of elements.
    */
-  virtual const std::int32_t get_data_size() const = 0;
+  virtual const std::uint64_t get_data_size() const = 0;
 
   /**
    * @brief Get the Attrs object of the current Tensor object.
@@ -246,7 +246,13 @@ class XIR_DLLESPEC Tensor {
    */
   template <typename Dtype>
   const Dtype get_attr(const std::string& key) const {
-    return xir::stdx::any_cast<Dtype>(this->get_attr(key));
+    // suppress coverity complain
+    try{
+      return xir::stdx::any_cast<Dtype>(this->get_attr(key));
+    }catch(std::exception & e){
+      std::cerr <<"Should never run here with exception " << e.what() <<"\n";
+      abort();
+    }
   }
 
   /**

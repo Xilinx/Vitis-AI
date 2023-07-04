@@ -4,7 +4,7 @@ To support multiple quantization configurations, vai_q_pytorch provides quantiza
 
 In order to make the customized configuration take effect, we only need to pass the configuration file to torch_quantizer API. 
 ```shell
-config_file = "./pytorch_quantize_config.json"
+config_file = "./configs/mix_precision_config.json"
 quantizer = torch_quantizer(quant_mode=quant_mode, 
                             module=model, 
                             input_args=(input), 
@@ -27,6 +27,7 @@ quantizable_data_type: tensor types to be quantized in model.
 ```
 The second part is the quantization parameters used by the quantizer, which are listed as follows.
 ```shell
+datatype: data type used in quantization, option: int, bfloat16, float16, float32
 bit_width: bit width used in quantization.
 method: method used to calibrate the quantization “scale”, options: maxmin, percentile, entropy, mse, diffs.
 round_mode: rounding method in quantization process, options: half_even, half_up, half_down, std_round.
@@ -37,14 +38,16 @@ narrow_range: whether to use symmetric integer range for signed quantization, op
 scale_type: scale type used in quantization process, options: float, poweroftwo.
 calib_statistic_method: method to choose one optimal “scale” if got different scales using multiple batch data, option: modal, max, mean, median.
 ```
+Note:
+If datatype is set to bfloat16, float16 or float32, the other quantization parameters can be ignored.
 
 ### Example
 
-There is example code in example/resnet18_quant.py, which could use the file example/quantize_config.json as its configuration file. Run command with "--config_file pytorch_quantize_config.json" to quantize model.
+There are example configuration files in the directory "./example/configs/". Each configuratioin files could be used with command "--config_file xxx_config.json" to quantize model.
 ```shell
 cd example
-python resnet18_quant.py --quant_mode calib --config_file pytorch_quantize_config.json
-python resnet18_quant.py --quant_mode test --config_file pytorch_quantize_config.json
+python resnet18_quant.py --quant_mode calib --config_file ./configs/int_config.json
+python resnet18_quant.py --quant_mode test --config_file ./configs/int_config.json
 ```
 
 ### Hierarchical Configuration
@@ -65,19 +68,20 @@ Details of default configuration are shown below.
 "include_bias_corr": true,
 "target_device": "DPU",
 "quantizable_data_type": ["input", "weights", "bias", "activation"],
-"bit_width": 8, "method": "diffs", "round_mode": "std_round", "symmetry": true, "per_channel": false, "signed": true, "narrow_range": false, "scale_type": "poweroftwo", "calib_statistic_method": "modal"
+"datatype": "int", "bit_width": 8, "method": "diffs", "round_mode": "std_round", "symmetry": true, "per_channel": false, "signed": true, "narrow_range": false, "scale_type": "poweroftwo", "calib_statistic_method": "modal"
 ```
 
 #### Model Configurations
-In the example configuration file "example/pytorch_quantize_config.json", the global quantizer settings are set under their respective keywords. And global quantization parameters must be set under the "overall_quantize_config" keyword. As shown below.
+In the example configuration file "int_config.json", all tensors in the model are set as same int8 quantization configurations. In this case, just set the global quantization parameters, and these parameters must be set under the "overall_quantize_config" keyword. As shown below.
 ```shell
-"convert_relu6_to_relu": false,
-"convert_silu_to_hswish": false,
-  "include_cle": false,
+  "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
+  "include_cle": true,
   "keep_first_last_layer_accuracy": false,
   "keep_add_layer_accuracy": false,
-  "include_bias_corr": false,
+  "include_bias_corr": true,
   "target_device": "CPU",
+  "onnx_opset_version": 14,
   "quantizable_data_type": [
     "input",
     "weights",
@@ -85,6 +89,7 @@ In the example configuration file "example/pytorch_quantize_config.json", the gl
     "activation"
   ],
   "overall_quantize_config": {
+    "datatype": "int",
     "bit_width": 8,
     "method": "maxmin",
     "round_mode": "half_even",
@@ -96,12 +101,34 @@ In the example configuration file "example/pytorch_quantize_config.json", the gl
     "calib_statistic_method": "max"
   }
 ```
+
+Similar as "int_config.json", all tensors in the model are set as same bfloat16 quantization configurations in "bfloat16_config.json". And only "datatype" is set in the global quantization parameters. As shown below.
+```shell
+  "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
+  "include_cle": true,
+  "keep_first_last_layer_accuracy": false,
+  "keep_add_layer_accuracy": false,
+  "include_bias_corr": true,
+  "target_device": "CPU",
+  "onnx_opset_version": 14,
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "datatype": "bfloat16"
+  }
+```
+
 Optionally, the quantization configuration of different tensors in the model can be set separately. And the configurations must be set in "tensor_quantize_config" keyword. <br>
-And in the example configuration file, we just change the quantization method of activation to "mse". The rest of the parameters are used the same as the global parameters.
+In example configuration file "mix_precision_config.json", global datatype of quantization is "bfloat16", and we just change the datatype of bias to "float16". The rest of the parameters are used the same as the global parameters.
 ```shell
 "tensor_quantize_config": {
-    "activation": {
-      "method": "mse"
+    "bias": {
+      "datatype": "float16"
     }
   }
 ```
@@ -114,54 +141,24 @@ Layer quantization configurations must be added in the "layer_quantize_config" l
 - If setting based on layer name, the model needs to run the calibration process firstly, then pick the required layer name from the generated .py file in quantized_result directory. Besides, the “layer_type” parameter should be null.
 - Same as model configurations, the quantization configuration of different tensors in the layer can be set separately. And they must be set in "tensor_quantize_config" keywords. <br>
 
-In the example configuration file, there are two layer configurations. One is based on layer type, the other is based on layer name.<br>
-In the layer configuration based on layer type, torch.nn.Conv2d layer need to set to specific quantization parameters.<br>
-And the "per_channel" parameter of weight is set to "true", "method" parameter of activation is set to "entropy". 
+In the example configuration file "mix_precision_config.json", there are two layer configurations. One is based on layer type, the other is based on layer name.<br>
+In the layer configuration based on layer type, different from global bfloat16 quantization, all tensors of Conv2d layer are modified to int8 quantization.<br> 
+Besides, "round_mode" of activation in Conv2d is set to "half_up" specially.
 ```shell
 {
-  "layer_type": "torch.nn.Conv2d",
+  "layer_type": "Conv2d",
   "layer_name": null,
   "quantizable_data_type": [
+    "input",
     "weights",
     "bias",
     "activation"
   ],
   "overall_quantize_config": {
+    "datatype": "int",
     "bit_width": 8,
     "method": "maxmin",
-    "round_mode": "half_even",
-    "symmetry": true,
-    "per_channel": false,
-    "signed": true,
-    "narrow_range": false,
-    "scale_type": "float",
-    "calib_statistic_method": "max"
-  },
-  "tensor_quantize_config": {
-    "weights": {
-      "per_channel": true
-    },
-    "activation": {
-      "method": "entropy"
-    }
-  }
-}
-```
-In the layer configuration based on layer name, the layer named "ResNet::ResNet/Conv2d[conv1]/input.2" need to set to specific quantization parameters.<br>
-And the round_mode of activation in this layer is set to "half_up". 
-```shell
-{
-  "layer_type": null,
-  "layer_name": "ResNet::ResNet/Conv2d[conv1]/input.2",
-  "quantizable_data_type": [
-    "weights",
-    "bias",
-    "activation"
-  ],
-  "overall_quantize_config": {
-    "bit_width": 8,
-    "method": "maxmin",
-    "round_mode": "half_even",
+    "round_mode": "std_round",
     "symmetry": true,
     "per_channel": false,
     "signed": true,
@@ -176,7 +173,38 @@ And the round_mode of activation in this layer is set to "half_up".
   }
 }
 ```
-The layer name "ResNet::ResNet/Conv2d[conv1]/input.2" is picked from generated file "quantize_result/ResNet.py" of example code "example/resnet18_quant.py". <br>
+In the layer configuration based on layer name, the layer named "ResNet::ResNet/Conv2d[conv1]/ret.3" is set to int16 quanzation.<br>
+And the weights in this layer is set to per_channel quantization. 
+```shell
+{
+  "layer_type": null,
+  "layer_name": "ResNet::ResNet/Conv2d[conv1]/ret.3",
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "datatype": "int",
+    "bit_width": 16,
+    "method": "maxmin",
+    "round_mode": "half_even",
+    "symmetry": true,
+    "per_channel": false,
+    "signed": true,
+    "narrow_range": false,
+    "scale_type": "float",
+    "calib_statistic_method": "max"
+  },
+  "tensor_quantize_config": {
+    "weights": {
+      "per_channel": true
+    }
+  }
+}
+```
+The layer name "ResNet::ResNet/Conv2d[conv1]/ret.3" is picked from generated file "quantize_result/ResNet.py" of example code "example/resnet18_quant.py". <br>
 - Run the example code with command "python resnet18_quant.py --subset_len 100". The quantize_result/ResNet.py file is generated.  
 - In the file, the name of first convolution layer is "ResNet::ResNet/Conv2d[conv1]/input.2". 
 - Copy the layer name to quantization configuration file if this layer is set to specific configuration.
@@ -191,7 +219,7 @@ class ResNet(torch.nn.Module):
 ```
 
 #### Configuration Restrictions
-Due to the restrict of DPU device, if quantized models need to be deployed in DPU device, the quantization configuration should meet the restrictions as below.
+Due to the restrict of DPU device, if int quantization is used, and quantized models need to be deployed in DPU device, the quantization configuration should meet the restrictions as below.
 ```shell
 method: diffs or maxmin
 round_mode: std_round for weights, bias, and input; half_up for activation.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,10 @@ int main(int argc, char* argv[]) {
   }
   std::string model = argv[1] + string("_acc");
   auto net = vitis::ai::PointPillars::create(model, argv[2]);
+  if (!net) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   LoadListNames(std::string(argv[3]), bins);
   LoadListNames(std::string(argv[4]), rgbs);
@@ -205,8 +209,8 @@ void get_display_data(int k, DISPLAY_PARAM& g_v) {
   for (int i = 0; i < 4; i++) {
     g_v.p2rect[i].resize(4);
     for (int j = 0; j < 4; j++) {
-      for (int k = 0; k < 4; k++) {
-        g_v.p2rect[i][j] += g_v.P2[i][k] * g_v.rect[k][j];
+      for (int kk = 0; kk < 4; kk++) {
+        g_v.p2rect[i][j] += g_v.P2[i][kk] * g_v.rect[kk][j];
       }
     }
   }

@@ -59,18 +59,16 @@ vai_runtime
 
 ## Quick Start For Embedded
 ### Setting Up the Host
-For `MPSOC`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-1-setup-cross-compiler) to set up the host for embedded.  
-For `VCK190`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck190.html#step-1-setup-cross-compiler) to set up the host for embedded.
+For `VEK280`, follow [Setting Up the Host](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-host)) to set up the host for edge.
 
 ### Setting Up the Target
-For `MPSOC`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck190.html#step-2-setup-the-target) to set up the target.  
-For `VCK190`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-2-setup-the-target) to set up the target.
-	  
+For `VEK280`, follow [Setting Up the Target](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#setup-the-target) to set up the target.
+	 	  
 ### Running Vitis AI Examples
 
-Follow [Running Vitis AI Examples](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_mpsoc.html#step-3-run-the-vitis-ai-examples) to run Vitis AI examples.
+Follow [Running Vitis AI Examples](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/vek280.html#run-the-vitis-ai-examples) to run Vitis AI examples.
 
-Note: When you update from VAI1.3 to VAI2.0, VAI2.5 or VAI3.0, refer to the following to modify your compilation options.
+Note: When you update from VAI1.3 to VAI2.0, VAI2.5, VAI3.0 or VAI3.5, refer to the following to modify your compilation options.
 1. For Petalinux 2021.1 and above, it uses OpenCV4, and for Petalinux 2020.2, it uses OpenCV3. So set the `OPENCV_FLAGS` as needed. You can refer to the following.
 ```
 result=0 && pkg-config --list-all | grep opencv4 && result=1
@@ -84,25 +82,16 @@ fi
 ## Quick Start For Data Center
 ### Setting Up the Host
 
-For demonstration purposes, we provide the following pre-compiled DPU IP with VART Sample support. You can choose one of them according to your own Accelerator Card.
-
-| No\. | Accelerator Card | DPU IP |
-| ---- | ---- | ----   |
-| 1 | VCK5000-PROD | DPUCVDX8H_4pe_miscdwc |
-| 2 | VCK5000-PROD | DPUCVDX8H_6pe_dwc     |
-| 3 | VCK5000-PROD | DPUCVDX8H_6pe_misc    |
-| 4 | VCK5000-PROD | DPUCVDX8H_8pe_normal  |
-
-For `VCK5000-PROD` Versal Card, follow [Setup VCK5000 Accelerator Card](https://xilinx.github.io/Vitis-AI/docs/board_setup/board_setup_vck5000.html#setting-up-a-versal-accelerator-card) to set up the host.
+For `V70` Versal Card, follow [Setup V70 Accelerator Card](https://xilinx.github.io/Vitis-AI/3.5/html/docs/quickstart/v70.html#versal-v70-setup) to set up the host.
 
 ### Running Vitis AI Examples
 In the docker system, `/workspace/examples/vai_runtime/` is the path for the following example. If you encounter any path errors in running examples, check to see if you follow the steps above to set the host. Then, follow the steps below to download the model and run the sample, take `resnet50` as an example.
 
-1. Download the [vitis_ai_runtime_r3.0.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz) package and unzip it.
+1. Download the [vitis_ai_runtime_r3.5.x_image_video.tar.gz](https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz) package and unzip it.
 	```
 	cd /workspace/examples
-	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.0.0_image_video.tar.gz -O vitis_ai_runtime_r3.0.0_image_video.tar.gz
-	tar -xzvf vitis_ai_runtime_r3.0.0_image_video.tar.gz -C vai_runtime
+	wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz -O vitis_ai_runtime_r3.5.0_image_video.tar.gz
+	tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C vai_runtime
 	```
 2. Download the model.
 
@@ -111,33 +100,13 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
 	  sudo mkdir /usr/share/vitis_ai_library/models
 	```
 
-	* For DPUCVDX8H_4pe_miscdwc DPU IP, install the model package as follows.
+	* For DPUCV2DX8G_v70 DPU IP, install the model package as follows.
 	```
-	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
-	  tar -xzvf resnet50-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+	  wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
+	  tar -xzvf resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
 	  sudo cp resnet50 /usr/share/vitis_ai_library/models -r
 	```
 
-        * For DPUCVDX8H_6pe_dwc DPU IP, install the model package as follows.
-        ```
-          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-          tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
-        ```
-
-        * For DPUCVDX8H_6pe_misc DPU IP, install the model package as follows.
-        ```
-          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-          tar -xzvf resnet50-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
-        ```
-
-        * For DPUCVDX8H_8pe_normal DPU IP, install the model package as follows.
-        ```
-          wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-          tar -xzvf resnet50-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-          sudo cp resnet50 /usr/share/vitis_ai_library/models -r
-        ```
 3. Compile the example.
 	```
 	cd /workspace/examples/vai_runtime/resnet50
@@ -150,7 +119,7 @@ In the docker system, `/workspace/examples/vai_runtime/` is the path for the fol
 	**Note that different Versal cards DPU IP correspond to different model files, which cannot be used alternately.** 
 
 
- <summary><b>Launching Commands for VART Samples on VCK5000-PROD </b></summary>
+ <summary><b>Launching Commands for VART Samples on V70 </b></summary>
  
 | No\. | Example Name             | Command                                                   |
 | :--- | :----------------------- | :-------------------------------------------------------- |
