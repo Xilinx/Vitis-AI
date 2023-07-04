@@ -20,7 +20,7 @@ Iterative pruning and one-step pruning belong to the coarse-grained pruning cate
 ## Installation
 We provide two ways to install: [From Source](#from-source) and [Docker Image](#docker-image), respectively.
 ### From Source
-It is recommended to use an [Anaconda](https://www.anaconda.com/distribution/#download-section) environment.
+It is recommended to use an [Anaconda](https://www.anaconda.com/download) environment.
 
 #### Envrionment Setup
 Export the environment variable `CUDA_HOME`:
@@ -67,7 +67,7 @@ $ docker pull xilinx/vitis-ai-opt-pytorch-rocm:latest
 ```
 
 For CUDA docker image, there is no prebuilt one and you have to build it yourself.
-You can read [this](https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions. 
+You can read [this](https://xilinx.github.io/Vitis-AI/3.5/html/docs/install/install.html#option-2-build-the-docker-container-from-xilinx-recipes) for detailed instructions.
 
 ## Iterative Pruning
 The method includes two stages: model analysis and pruned model generation.
