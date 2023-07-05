@@ -22,8 +22,7 @@ project_name=$(basename ${script_path})
 # cmake args
 declare -a args
 args+=(-DBUILD_TEST=ON)
-args+=(-DENABLE_CPU_RUNNER=ON)
-args+=(-DENABLE_SIM_RUNNER=ON)
+args+=(-DENABLE_DPU_RUNNER=ON)
 args+=(-DBUILD_SHARED_LIBS=ON)
 
 # parse options
