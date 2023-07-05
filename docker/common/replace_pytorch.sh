@@ -19,7 +19,7 @@ NNDCT_REPO="${NNDCT_REPO:-https://github.com/Xilinx/Vitis-AI.git}"
 NNDCT_SRC="${NNDCT_SRC:-src/vai_quantizer/vai_q_pytorch}"
 BRANCH="${BRANCH:-master}"
 
-valid_torch_version=("1.4" "1.7.1" "1.8.0" "1.12.1")
+valid_torch_version=("1.4" "1.7.1" "1.8.0" "1.12.1" "2.0.0")
 if [ -z "$1" ]; then
   echo "Usage: $0 torch_version"
   echo "  i.e: 1.4 "
@@ -45,7 +45,7 @@ done
 echo -e "\n#### Creating a new conda environment by cloning vitis-ai-pytorch and activate it..."
 sudo chmod 777 /opt/vitis_ai/conda 
 cd /scratch/
-wget -O conda-channel.tar.gz --progress=dot:mega http://xcogpuvai02:8000/3.5/conda-channel-3.5.0-tar.gz
+wget -O conda-channel.tar.gz --progress=dot:mega https://www.xilinx.com/bin/public/openDownload?filename=conda-channel-3.5.0.tar.gz
 tar -xzvf conda-channel.tar.gz
 source /opt/vitis_ai/conda/etc/profile.d/conda.sh
 sudo conda env export -n vitis-ai-pytorch >/tmp/pytorch.yaml
@@ -112,6 +112,8 @@ for torch_to_install  in ${torch_version[@]}; do
      install_version="torch==1.8.0+cu111 torchvision==0.9.0+cu111 torchaudio==0.8.0 -f https://download.pytorch.org/whl/torch_stable.html"
    elif [ $torch_to_install == "1.12.1" ];then
      install_version="torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116"
+   elif [ $torch_to_install == "2.0.0" ];then
+     install_version="torch==2.0.0+cu117 torchvision==0.15.1+cu117 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117"
    else
      echo -e "\e[91m>>>> please provide the detailed torch version install list in the script, refer to the other torch versions <<<<\e[m"
      exit 2
@@ -129,6 +131,8 @@ for torch_to_install  in ${torch_version[@]}; do
      install_version="torch==1.8.0+cpu torchvision==0.9.0+cpu torchaudio==0.8.0 -f https://download.pytorch.org/whl/torch_stable.html"
    elif [ $torch_to_install == "1.12.1" ];then
      install_version="torch==1.12.1+cpu torchvision==0.13.1+cpu torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cpu"
+   elif [ $torch_to_install == "2.0.0" ];then
+     install_version="torch==2.0.0+cpu torchvision==0.15.1+cpu torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cpu"
    else
      echo "please provide the detailed torch version install list in the script, refer to the other torch versions "
      exit 2
