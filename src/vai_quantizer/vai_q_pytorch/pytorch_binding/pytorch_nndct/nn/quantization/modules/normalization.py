@@ -5,7 +5,6 @@ from torch import nn
 from pytorch_nndct.nn.nonlinear import approx
 from pytorch_nndct.nn.nonlinear import mode
 from nndct_shared.utils import NndctOption
-from nndct_shared.utils import NndctScreenLogger, QWarning
 
 class LayerNorm(nn.LayerNorm):
 
@@ -16,7 +15,7 @@ class LayerNorm(nn.LayerNorm):
                eps=1e-5,
                elementwise_affine=True,
                approx_mode=mode.ApproxModes.NO_APPROX,
-               rt_spec=None,
+               rt_spec = None,
                **kwargs):
     super(LayerNorm, self).__init__(normalized_shape, eps, elementwise_affine, **kwargs)
 
@@ -34,11 +33,11 @@ class LayerNorm(nn.LayerNorm):
     return True
 
   def forward(self, input):
-    if mode.is_quant_input_output(self.approx_mode):
+    if mode.is_ip_v70_bert(self.approx_mode):
       quantized_weight = self.weight_quantizer(self.weight)
       quantized_bias = self.bias_quantizer(
           self.bias) if self.bias is not None else None
-      return torch.nn.functional.layer_norm(input,
+      return torch.nn.functional.layer_norm(input, 
                                             self.normalized_shape,
                                             quantized_weight,
                                             quantized_bias,
@@ -69,12 +68,13 @@ class LayerNorm(nn.LayerNorm):
     assert type(mod) == cls._FLOAT_MODULE, \
         '{}.from_float() only accepts {}, but got {}'.format(
           cls.__name__, cls._FLOAT_MODULE, type(mod))
-
+    
     if rt_spec.config:
       approx_mode = rt_spec.config.approx_mode
+    elif NndctOption.nndct_ip_v70_bert_qat.value:
+      approx_mode = mode.ApproxModes.IP_V70_BERT
     else:
-      NndctScreenLogger().warning2user(QWarning.QAT_ACTIVATION_APPROX_MODE, f"There is no approx_mode in config file for layernorm, we set it to quant_input_output as defaut.")
-      approx_mode = mode.ApproxModes.QIO
+      raise ValueError("approx_mode could nor be None")
 
     norm = cls(
         mod.normalized_shape,

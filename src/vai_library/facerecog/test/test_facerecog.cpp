@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,6 @@ using namespace cv;
 
 int main(int argc, char *argv[]) {
     auto recog = FaceRecog::create("facerec_resnet20", true);
-    if (!recog) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-    }   
     cout << "image url " << argv[1] << " " //
          << "inner_x " << argv[2] << " "   //
          << "inner_y " << argv[3] << " "   //

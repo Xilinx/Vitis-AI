@@ -1,0 +1,9 @@
+{
+  "data_format": "bfp",
+  "bfp_bitwidth": 16,
+  "bfp_tile_size": 8,
+  "round_mode": "round_even",
+  "approx_mode": "no_approx",
+  "training": false
+}
+

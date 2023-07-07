@@ -136,7 +136,7 @@ def _log_prefix(level, timestamp=None, file_and_line=None):
   return s
 
 
-def get_logger(name=None, level=None, file_name=None, only2file=False):
+def get_logger(name, level=None, file_name=None, only2file=False):
   """Return logger instance."""
   # global _logger
 

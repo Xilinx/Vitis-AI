@@ -152,7 +152,7 @@ class XGraph(object):
     # if bit_width is None or fix_point is None:
     #   return None
     bit_info = _get_fix_info(key_name, quant_info)
-    if bit_info is None or bit_info[0] is None: 
+    if bit_info is None:
       return None
     bit_width, fix_point = bit_info[0]
     if bit_width is None or fix_point is None:

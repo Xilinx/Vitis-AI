@@ -1,0 +1,89 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_bin_pointpainting, ./test_performance_pointpainting, ./test_accuracy_pointpilalrs_nuscenes must be followed by specified model names as params.
+  Valid model name:
+    seg_model: semanticfpn_nuimage_576_320_pt
+    pointpillars_model_0: pointpainting_nuscenes_40000_64_0_pt 
+    pointpillars_model_1: pointpainting_nuscenes_40000_64_1_pt 
+  
+  run command like this: 
+    ./test_bin_pointpainting [seg_model] [pointpillars_model_0] [pointpillars_model_1] [anno_file_name]
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_bin_pointpainting  semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt ./sample_pointpainting.info
+    output : 
+batch : 0
+label: 0 bbox: -6.38332 -29.8247 -2.50183 1.95018 4.32805 1.61833 3.39159 1.8125 7.75 score: 0.843895
+label: 1 bbox: -7.192 22.072 -1.22268 2.70013 8.78905 3.36681 3.01659 0 0 score: 0.851953
+label: 1 bbox: -7.688 27.1276 -1.24364 2.6145 6.73778 3.09355 2.95409 0 0 score: 0.743168
+label: 7 bbox: -16.9891 14.5705 -1.62501 0.663449 0.640378 1.99149 1.11591 0.0625 0 score: 0.562177
+label: 7 bbox: -14.5091 21.08 -1.01547 0.663449 0.640378 1.87083 3.2575 -0.0625 -0.125 score: 0.531209
+label: 7 bbox: -15.7469 17.6695 -1.12531 0.623253 0.565132 1.87083 1.67841 0 0 score: 0.453262
+label: 7 bbox: -14.2589 20.088 -0.958795 0.663449 0.640378 1.75748 0.865908 0 0 score: 0.377541
+label: 7 bbox: -15.6854 19.1574 -0.958795 0.663449 0.60158 1.75748 5.20409 0.0625 0.0625 score: 0.307358
+
+
+   if batch size is not equal to 1, you can run with more parameters like this:
+   sample : ./test_bin_pointpainting  semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt 1531281439800013.info 1531281442299946.info 1531281440299931.info
+
+   output:
+batch : 0
+label: 0 bbox: -0.927316 -23.8727 -2.07115 1.95018 4.60718 1.61833 3.32909 1.625 7.9375 score: 0.798187
+label: 5 bbox: -3.60823 -8.68 -1.79385 0.639324 1.58246 1.19486 6.47069 0 -0.0625 score: 0.453262
+label: 5 bbox: -13.0322 -1.12823 -1.5939 0.600589 1.48659 1.27192 3.20409 0 -0.0625 score: 0.320821
+label: 7 bbox: -12.2134 35.8371 -1.06864 0.706238 0.725644 1.75748 6.40819 -0.0625 -0.0625 score: 0.362969
+
+batch : 1
+abel: 0 bbox: -6.38332 -29.8247 -2.50183 1.95018 4.32805 1.61833 3.39159 1.8125 7.75 score: 0.843895
+label: 1 bbox: -7.192 22.072 -1.22268 2.70013 8.78905 3.36681 3.01659 0 0 score: 0.851953
+label: 1 bbox: -7.688 27.1276 -1.24364 2.6145 6.73778 3.09355 2.95409 0 0 score: 0.743168
+label: 7 bbox: -16.9891 14.5705 -1.62501 0.663449 0.640378 1.99149 1.11591 0.0625 0 score: 0.562177
+label: 7 bbox: -14.5091 21.08 -1.01547 0.663449 0.640378 1.87083 3.2575 -0.0625 -0.125 score: 0.531209
+label: 7 bbox: -15.7469 17.6695 -1.12531 0.623253 0.565132 1.87083 1.67841 0 0 score: 0.453262
+label: 7 bbox: -14.2589 20.088 -0.958795 0.663449 0.640378 1.75748 0.865908 0 0 score: 0.377541
+label: 7 bbox: -15.6854 19.1574 -0.958795 0.663449 0.60158 1.75748 5.20409 0.0625 0.0625 score: 0.307358
+
+batch : 2
+label: 0 bbox: -1.736 -25.544 -2.17882 1.95018 4.32805 1.61833 3.20409 0.4375 6.5 score: 0.859664
+label: 5 bbox: -13.2558 -4.712 -1.63486 0.564201 1.79316 1.19486 3.01659 0 -0.125 score: 0.531209
+label: 5 bbox: -4.10423 -13.144 -1.80315 0.639324 1.68452 1.05446 3.20409 0 -0.0625 score: 0.377541
+label: 7 bbox: -10.7254 31.8691 -1.06864 0.663449 0.681679 1.75748 3.14159 0.25 0.5 score: 0.377541
+label: 7 bbox: -21.9491 33.5415 -0.795713 0.663449 0.681679 1.651 1.42841 -0.5625 0 score: 0.334589
+label: 8 bbox: -10.664 0.318761 -1.82515 0.396945 0.37914 0.827337 5.97069 0 0 score: 0.422505
+
+
+
+Performance: 
+    ./test_performance_pointpainting semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt pointpainting test_performance_pointpainting.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_pointpainting_nuscenes <model_name_0> <model_name_1> <model_name_2> <info_list_filename> <output_filename>
+    ./test_accuracy_pointpainting_seg <model_name_0> <model_name_1> <model_name_2> <image_list_filename> <output_filename>
+
+    sample:
+    ./test_accuracy_pointpainting_nuscenes semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt info_list.txt result.txt
+    ./test_accuracy_pointpainting_seg semanticfpn_nuimage_576_320_pt pointpainting_nuscenes_40000_64_0_pt pointpainting_nuscenes_40000_64_1_pt image_list.txt result.txt

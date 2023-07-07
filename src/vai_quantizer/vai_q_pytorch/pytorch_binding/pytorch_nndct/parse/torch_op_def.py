@@ -1022,6 +1022,7 @@ class TorchTensor(base_op.Constant):
     self.set_attr(self.AttrName.DATA, data)
 
 
+
 class TorchMul(base_op.BinaryOp):
 
   def __init__(self, *args, **kwargs):
@@ -1346,44 +1347,6 @@ class TorchZeros(base_op.ConstFromShape):
     assert isinstance(size, (list, tuple))
     self.set_attr(self.AttrName.SHAPE, list(size))
 
-
-class TorchPadNd(base_op.PadNd):
-  mode_map = {
-    "'replicate'": "SYMMETRIC",
-    "'constant'": "CONSTANT",
-    "'reflect'": "REFLECT",
-  }
-
-  def __init__(self):
-    super().__init__()
-    utils.op_register(self.type, "pad")
-
-
-  @property
-  def pad(self):
-    return self.get_attr(self.AttrName.PAD_WITH)
-  
-  @pad.setter
-  def pad(self, value):
-    self.set_attr(self.AttrName.PAD_WITH, value)
-
-  @property
-  def mode(self):
-    mode = self.get_attr(self.AttrName.MODE)
-    mode_map_r = {v: k for k, v in self.mode_map.items()}
-    return mode_map_r[mode]
-
-  @mode.setter
-  def mode(self, mode):
-    self.set_attr(self.AttrName.MODE, self.mode_map[mode])
-
-  @property
-  def value(self):
-    return self.get_attr(self.AttrName.CONSTANT_VALUES)
-
-  @value.setter
-  def value(self, constant):
-    self.set_attr(self.AttrName.CONSTANT_VALUES, constant)
 
 class TorchPad(base_op.Pad):
   mode_map = {"'constant'": 0,

@@ -1,0 +1,56 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+
+  add environment parameter DEBUG_USE_NEW_SCHEDULE=0 before executable files.
+
+  ./test_textmountain_onnx, ./test_performance_textmountain_onnx, ./test_accuracy_textmountain_onnx first param followed must be with model name.
+  Valid model name:
+    textmountain_onnx_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_textmountain_onnx /usr/share/vitis_ai_library/models/textmountain_onnx_pt/textmountain_onnx_pt.onnx sample_textmountain.jpg
+    output : 
+batch-0
+30,213,31,34,924,40,923,218,0.999417
+271,261,667,261,667,453,271,453,0.997254
+0,698,78,698,78,832,0,832,0.996355
+123,838,126,695,488,704,484,847,0.999369
+537,704,939,704,939,842,537,842,0.99937
+78,885,464,885,464,1024,78,1024,0.999271
+516,917,834,917,834,1024,516,1024,0.999177
+521,1066,746,1066,746,1210,521,1210,0.99957
+161,1093,469,1093,469,1237,161,1237,0.99933
+
+Performance:
+sample: ./test_performance_textmountain_onnx /usr/share/vitis_ai_library/models/textmountain_onnx_pt/textmountain_onnx_pt.onnx -s 60 -t 1 ./test_performance_textmountain.list
+
+
+Accuracy:
+    test accuracy of textmountain_onnx_pt:
+    ./test_accuracy_textmountain_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    sample:
+    ./test_accuracy_textmountain_onnx /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx textmountain_dataset/ image.list result.txt -t 2

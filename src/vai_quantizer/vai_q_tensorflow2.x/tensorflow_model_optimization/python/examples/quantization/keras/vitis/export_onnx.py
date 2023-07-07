@@ -72,8 +72,19 @@ model.save('float.h5')
 from tensorflow_model_optimization.quantization.keras import vitis_quantize
 
 quantizer = vitis_quantize.VitisQuantizer(model)
+# import pdb; pdb.set_trace()
 quantized_model = quantizer.quantize_model(
     calib_dataset=train_images[0:10],
     include_cle=False,
     output_format="onnx",
     include_fast_ft=False)
+# quantized_model.save('quantized.h5')
+
+# # Load Quantized Model
+# quantized_model = keras.models.load_model('quantized.h5')
+
+# Evaluate Quantized Model
+# quantized_model.compile(
+#     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+#     metrics=['sparse_categorical_accuracy'])
+# quantized_model.evaluate(test_images, test_labels, batch_size=500)

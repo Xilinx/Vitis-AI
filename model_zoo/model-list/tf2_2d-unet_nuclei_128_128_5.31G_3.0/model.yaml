@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: 2d-unet segmentation on nuclei dataset.
+input size: 128*128
+float ops: 5.31G
+task: segmentation
+framework: tensorflow 2.x
+prune: 'no'
+version: 3.0
+files:
+- name: tf2_2d-unet_nuclei_128_128_5.31G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_2d-unet_nuclei_128_128_5.31G_3.0.zip
+  checksum: 6d5a7adf24beea5e874d757a7a085744
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 386cbef79fe3f1195e2e629ac94f6484
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck190-r3.0.0.tar.gz
+  checksum: 6a0d146bfdd26095f4bc0e393a0b332e
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 29b6477ba9fe1a7ab5bdaba00f28c83c
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 2faa542f5dbca3131acab32d45708940
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: ef41d4166eb00218b2e77ddfa4b034e1
+- name: medical_seg_cell_tf2
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=medical_seg_cell_tf2-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: ce015568efe7b8e6fccc64ea791eb80d
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

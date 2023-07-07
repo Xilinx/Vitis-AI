@@ -29,14 +29,15 @@ from nndct_shared.quantization import quantize_tensors
 from .quant_noise import eval_qnoise
 import pytorch_nndct.utils as py_utils
 import torch.nn.functional as F
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+from distutils.version import LooseVersion
+
 __all__ = ['GELU']
 
 class deephi_GELU(torch.nn.GELU):
   r"""DeePhi GELU operation, support float and double"""
 
   def __init__(self, approximate=None):
-    if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0"):
+    if torch.__version__ >= LooseVersion('1.12.0'):
       super(deephi_GELU, self).__init__(approximate)
     else:
       super(deephi_GELU, self).__init__()
@@ -47,8 +48,33 @@ class deephi_GELU(torch.nn.GELU):
   def gelu(self, x):
     return 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
 
+  def generate_gelu_table(self, bw, input_scale, output_scale, table_name):
+    def gelu_numpy(x):
+      """Gaussian Error Linear Unit.
+
+      This is a smoother version of the RELU.
+      Original paper: https://arxiv.org/abs/1606.08415
+      Args:
+        x: float Tensor to perform activation.
+
+      Returns:
+        `x` with the GELU activation applied.
+      """
+      cdf = 0.5 * (1.0 + np.tanh(
+          (np.sqrt(2 / np.pi) * (x + 0.044715 * np.power(x, 3)))))
+      return x * cdf
+
+    inputs_table_positive = np.arange(0, 2**(bw - 1)).astype(np.float32)
+    inputs_table_negatice = np.arange(-(2**(bw - 1)), 0).astype(np.float32)
+    inputs_table = np.hstack((inputs_table_positive, inputs_table_negatice))
+
+    outputs_table = gelu_numpy(inputs_table / (2**(input_scale)))
+    outputs_table_int = np.clip(np.round(outputs_table * (2**(output_scale))), -(2**(bw - 1)), 2**(bw - 1) - 1)
+
+    return outputs_table_int
+
   def forward(self, input):
-    if self.quant_mode <= 0 or (not self.node.in_quant_part) or NndctOption.nndct_gemm88.value:
+    if self.quant_mode <= 0 or (not self.node.in_quant_part):
       return super().forward(input)
 
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
@@ -60,10 +86,24 @@ class deephi_GELU(torch.nn.GELU):
       # Method 1: Dynamic table look up with 8 bw
       if NndctOption.nndct_op_gelu_mode.value == "dynamic_table" or NndctOption.nndct_ip_v70_bert.value:
         output = self.gelu(qinput)
+        output = quantize_tensors([output], self.node)[0]
+
+        # # Code for Golden Verification
+        # input_name = self.node.in_nodes[0]
+        # input_node = self.quantizer.configer.get_Nndctnode(input_name)
+        # if not self.quantizer.configer.node_output_quantizable(input_node):
+        #   input_name = input_node.in_nodes[0]
+        # bw = self.quantizer.get_quant_config(self.node.name, False)[0]
+        # fragpos = self.quantizer.get_quant_config(input_name, False)[1]
+        # output_scale = self.quantizer.get_quant_config(self.node.name, False)[1]
+        # gelu_table = self.generate_gelu_table(bw, fragpos, output_scale, self.node.name)
+        # qinput_int = torch.where(qinput >=0, qinput * (2**(fragpos)), qinput * (2**(fragpos)) + 2**bw)
+        # gelu_table = torch.from_numpy(gelu_table).to(input.device)
+        # output = gelu_table[qinput_int.to(torch.long)]
+        # output = output / (2**(output_scale))
 
       # Method 0: Quant input and output of Softmax  
-      elif compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0"):
-
+      elif torch.__version__ >= LooseVersion('1.12.0'):
         output = F.gelu(qinput, approximate=self.approximate)
       else:
         output = F.gelu(qinput)

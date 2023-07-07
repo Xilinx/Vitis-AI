@@ -51,8 +51,7 @@ class Tensor(object):
         np.dtype('int32'): 'int32',
         np.dtype('int16'): 'int16',
         np.dtype('int8'): 'int8',
-        np.dtype('bool'): 'bool',
-        np.dtype('uint8'): 'uint8'
+        np.dtype('bool'): 'bool'
     }
     if dtype in self._dtype_map:
       self._dtype = self._dtype_map[dtype]

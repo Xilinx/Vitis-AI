@@ -82,16 +82,15 @@ def merge_multi_graphs_to_single_graph(graphs, graph_name="Nndctgraph"):
   top_block = Block(top_graph, None, input_node, return_node)
   top_graph.set_top_block(top_block)
   for graph in graphs:
-    block_node = convert_graph_to_block_node(top_graph, graph)
+    block_node = convert_graph_to_block_node(top_graph, top_block, graph)
     if not block_node.in_node_list():
       top_graph.append_node(block_node)
   return top_graph
 
-
-def convert_graph_to_block_node(top_graph, graph):
+def convert_graph_to_block_node(top_graph, top_block, graph):
   op = base_op.CustomOp(NNDCT_OP.BLOCK)
   block_node = Node(name=graph.name, op=op, in_quant_part=True)
-  block_node.owning_block = top_graph.block
+  block_node.owning_block = top_block
   block_node.owning_graph = top_graph
   block_node.add_block(graph.block)
   for block in graph.all_blocks():
@@ -108,44 +107,6 @@ def convert_graph_to_block_node(top_graph, graph):
     top_graph.add_param_name(param_name)
 
   return block_node
-
-
-def convert_block_node_to_graph(block_node):
-  top_graph = Graph(block_node.name)
-  top_block = block_node.blocks[0]
-  top_graph.add_block(top_block)
-  top_graph.set_top_block(top_block)
-  top_block.owning_graph = top_graph
-
-  def node_visitor(node, fn):
-    if node.blocks:
-      for block in node.blocks:
-        for b_n in block:
-          node_visitor(node, fn)
-    else:
-      fn(node)
-  
-  def visit_fn(n):
-    n.owning_graph = top_graph
-    for i_t in n.in_tensors:
-      top_graph.add_tensor(i_t)
-    for o_t in n.out_tensors:
-      top_graph.add_tensor(o_t)
-
-    for _, p_t in n.op.params.items():
-      top_graph.add_param_name(p_t.name)
-  
-  for node in top_block.nodes:
-    node_visitor(node, visit_fn)
-  
-  return top_graph
-
-
-
-
-
-
-
 
   
      

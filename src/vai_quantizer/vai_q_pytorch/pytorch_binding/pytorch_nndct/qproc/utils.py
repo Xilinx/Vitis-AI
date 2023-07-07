@@ -20,7 +20,6 @@ import importlib.util
 import os
 import sys
 from typing import Any, NoReturn, Optional, Sequence, Tuple, Union, List
-import itertools
 
 import torch
 import torch.nn as nn
@@ -31,7 +30,7 @@ import pytorch_nndct.utils.jit_utils as jit_utils
 import pytorch_nndct.utils.module_util as module_util
 from nndct_shared.base import FrameworkType
 from nndct_shared.compile import DevGraphOptimizer
-from nndct_shared.nndct_graph import Graph, convert_block_node_to_graph
+from nndct_shared.nndct_graph import Graph
 from nndct_shared.optimization import QuantOptimizer
 from nndct_shared.utils import (GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP,
                                 NndctDebugLogger, NndctOption,
@@ -42,14 +41,10 @@ from pytorch_nndct.export import get_script_writer
 from pytorch_nndct.nn import stacked_lstm
 from pytorch_nndct.nn.modules import channel_scale, reluk
 from pytorch_nndct.parse import TorchParser
-from pytorch_nndct.utils import TorchSymbol, TorchGraphSymbol
+from pytorch_nndct.utils import TorchSymbol
 from pytorch_nndct.utils.module_util import to_device, get_module_name
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
-
+from pytorch_nndct.utils.jit_utils import get_torch_version
 from .ModuleHooker import ModuleHooker
-
-
-graph_counter = itertools.count(0)
 
 def _reload_module(module_file_name: str, module_name: str) -> torch.nn.Module:
 
@@ -70,7 +65,7 @@ def recreate_nndct_module(graph: Graph, enable_quant: bool, export_file: str) ->
   return nndct_module
 
 def parse_module(module: Union[torch.nn.Module, torch.jit.ScriptModule],
-                 input_data,
+                 input_args: Union[torch.Tensor, Sequence[Any]],
                  enable_opt: bool = True,
                  graph_name: Optional[str] = None) -> Graph:
 
@@ -79,31 +74,26 @@ def parse_module(module: Union[torch.nn.Module, torch.jit.ScriptModule],
       replace_relu6_with_reluk(module)
     elif NndctOption.nndct_relu6_replace.value == 'relu':
       replace_relu6_with_relu(module)
-  
-  if NndctOption.nndct_convert_relu6_to_relu.value:
-    replace_relu6_with_relu(module)
   if NndctOption.nndct_convert_sigmoid_to_hsigmoid.value:
     replace_sigmoid_with_hsigmoid(module)
   if NndctOption.nndct_convert_silu_to_hswish.value:
     replace_silu_with_hswish(module)
+  
+  # if NndctOption.nndct_wes.value:
+  #   insert_scale_after_conv2d(module)
  
-  # replace affine=false with affine=true
+  # replace affine=False with affine=True
   replace_batchnorm_affine_false_with_true(module)
- 
-  # replace affine=false with affine=true
-  replace_layernorm_affine_false_with_true(module)
-
   parser = TorchParser()
   graph = parser(get_module_name(module) if graph_name is None else graph_name,
-                 module, input_data)
+                 module, input_args)
   if enable_opt:
     graph = quant_optimize(graph)
-  
-  graph.assign_node_topological_name(prefix=f"{graph.name}{TorchGraphSymbol.GRAPH_SCOPE_SYM}")
-  
+    
   if NndctOption.nndct_parse_debug.value >= 3:
       NndctDebugLogger.write(f"nndct quant graph:\n{graph}")
   return graph
+
 
 def quant_optimize(graph: Graph):
   optimizer = QuantOptimizer() 
@@ -212,9 +202,10 @@ def set_input_dump_status(module, turn_on) -> NoReturn:
   ModuleHooker.turn_on_input_dump(
       module) if turn_on else ModuleHooker.turn_off_input_dump(module)
 
+
 def prepare_quantizable_module(
     module: torch.nn.Module,
-    input_args,
+    input_args: Union[torch.Tensor, Sequence[Any]],
     export_folder: str,
     state_dict_file: Optional[str] = None,
     quant_mode: int = 1, 
@@ -226,29 +217,19 @@ def prepare_quantizable_module(
   if isinstance(state_dict_file, str):
     state_dict = torch.load(state_dict_file)
     module.load_state_dict(state_dict)
-  
+
   export_file = os.path.join(export_folder, get_module_name(module) + TorchSymbol.SCRIPT_SUFFIX)
   
   # switch to specified device
   NndctScreenLogger().info(f"=>Quant Module is in '{device.type}'.")
-
-  if NndctOption.nndct_fx_mode.value is True:
-    module, input_args.args = to_device(module, input_args.args, device)
-    from pytorch_nndct.utils.jit_utils import set_training
-    with set_training(module, False):
-      if isinstance(module, torch.fx.GraphModule):
-        gm = module
-      else:
-        gm = torch.fx.symbolic_trace(module)
-      graph, quant_module = prepare_from_fx(gm, input_args.args)
-      quant_module = quant_module.to(device)
-  else:
-    # parse origin module to graph
-    NndctScreenLogger().info(f"=>Parsing {get_module_name(module)}...")
-    graph = parse_module(module, input_args)
-    NndctScreenLogger().info(f"=>Quantizable module is generated.({export_file})")
-    # recreate quantizable module from graph
-    quant_module = recreate_nndct_module(graph, True, export_file).to(device)
+  module, input_args = to_device(module, input_args, device)
+  
+  # parse origin module to graph
+  NndctScreenLogger().info(f"=>Parsing {get_module_name(module)}...")
+  graph = parse_module(module, input_args)
+  NndctScreenLogger().info(f"=>Quantizable module is generated.({export_file})")
+  # recreate quantizable module from graph
+  quant_module = recreate_nndct_module(graph, True, export_file).to(device)
   quant_module.train(mode=module.training)
   
   # hook module with graph
@@ -264,48 +245,6 @@ def prepare_quantizable_module(
     set_input_dump_status(quant_module, True)
 
   return quant_module, graph
-
-
-def prepare_from_fx(gm: "GraphModule", example_inputs: List[torch.Tensor]):
-  """
-  convert gm to a quantizable gm and prepare nndct_graph 
-  """
-  import copy
-  import types
-  from torch.fx.experimental.normalize import NormalizeArgs
-  from pytorch_nndct.fx.optimization.overrides import fuse_conv_bn, QuantizeModule
-  from pytorch_nndct.fx.optimization.normalize import normalize
-  from pytorch_nndct.fx.fx_translator import GraphTranslator  
-  from pytorch_nndct.fx.meta_prop import collect_value_meta
-  from pytorch_nndct.nn.modules.nndct_quant_model import NndctQuantModel
-  from pytorch_nndct.nn import forward_processor
-  from torch._subclasses import FakeTensorMode
-  from pytorch_nndct.quantization.torchquantizer import TORCHQuantizer
-
-  # 1. fuse batchnorm
-  gm = fuse_conv_bn(gm)
-
-  # 2. inplace replace activation
-
-  # 3. convert "+" to torch.add
-  gm = normalize(gm)
-  # Make args and kwargs visible in fx graph
-  
-  collect_value_meta(gm, example_inputs, mode=FakeTensorMode())
-  gm = NormalizeArgs(gm).transform()
-  graph_translator = GraphTranslator(gm, next(graph_counter))
-  graph_translator.build(*example_inputs)
-  quantizable_gm = QuantizeModule(gm, graph_translator.graph).transform()
-  quant_opt_graph = quant_optimize(graph_translator.graph)
-  # NndctQuantModel.forward = forward_processor(quantizable_gm.__class__.forward)
-  quant_module = NndctQuantModel()
-  quant_module.forward = types.MethodType(forward_processor(quantizable_gm.__class__.forward), quant_module)
-  ModuleHooker.hook_module_with_quantizer(quantizable_gm, None)
-  for k, v in quantizable_gm.__dict__.items():
-    # for partial graphs, quantizer always exists in quantizable module
-    quant_module.__dict__[k] = copy.deepcopy(v)
-  quant_opt_graph.assign_node_topological_name(prefix=f"{quant_opt_graph.name}{TorchGraphSymbol.GRAPH_SCOPE_SYM}")
-  return quant_opt_graph, quant_module
 
 
 def replace_relu6_with_relu(module: torch.nn.Module):
@@ -341,7 +280,7 @@ def replace_silu_with_hswish(module: torch.nn.Module):
     for op_name, c_op in op.named_children():
       if isinstance(c_op, torch.nn.SiLU):
         op._modules[op_name] = torch.nn.Hardswish()
-  if (compare_torch_version(CmpFlag.GREATER_EQUAL, "1.7.0")) and any([isinstance(submodule, torch.nn.SiLU) for submodule in module.modules()]):
+  if (get_torch_version() >= 170) and any([isinstance(submodule, torch.nn.SiLU) for submodule in module.modules()]):
     module.apply(_replace_func)
     NndctScreenLogger().warning2user(QWarning.REPLACE_SILU, f"SiLU has been replaced by Hardswish.")
     
@@ -363,21 +302,6 @@ def replace_batchnorm_affine_false_with_true(module: torch.nn.Module):
         NndctScreenLogger().warning2user(QWarning.BATCHNORM_AFFINE, f"{op_name} attribute affine=False has been replaced by affine=True when parsing the model.")
 
   if any([isinstance(submodule, (torch.nn.BatchNorm1d, torch.nn.BatchNorm2d, torch.nn.BatchNorm3d)) for submodule in module.modules()]):
-    module.apply(_replace_func)
-    
-def replace_layernorm_affine_false_with_true(module: torch.nn.Module):
-  def _replace_func(op):
-    for op_name, c_op in op.named_children():
-      # by default: gamma=1, beta=0
-      if isinstance(c_op, torch.nn.LayerNorm) and not c_op.elementwise_affine:
-        c_op_new = torch.nn.LayerNorm(normalized_shape=c_op.normalized_shape, eps=c_op.eps, elementwise_affine=True)
-      if isinstance(c_op, torch.nn.LayerNorm) and not c_op.elementwise_affine:
-        device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
-        c_op_new = c_op_new.to(device)
-        op._modules[op_name] = c_op_new 
-        NndctScreenLogger().warning2user(QWarning.LAYERNORM_AFFINE, f"{op_name} attribute elementwise_affine=False has been replaced by elementwise_affine=True when parsing the model.")
-
-  if any([isinstance(submodule, torch.nn.LayerNorm) for submodule in module.modules()]):
     module.apply(_replace_func)
     
 def insert_scale_after_conv2d(module: torch.nn.Module):
@@ -414,22 +338,24 @@ def insert_scale_after_batchnorm2d(module: torch.nn.Module):
     module.apply(_insert_func)
     NndctScreenLogger().warning(f"ChannelScale has been inserted after batchnorm2d.")
 
-
-def _deploy_optimize(quant_model, nndct_graph, need_partition):
+def get_deploy_graph_list(quant_model, nndct_graph, need_partition=True):
   g_optmizer = DevGraphOptimizer(nndct_graph)
   # sync model data with dev graph
+
   connect_module_with_graph(quant_model, g_optmizer.dev_graph, recover_param=False)
   update_nndct_blob_data(quant_model, g_optmizer.dev_graph, only_update_shape=False)
   g_optmizer.strip_redundant_ops()
   g_optmizer.update_op_attrs()
   g_optmizer.convert_shape_tensor_to_const()
   g_optmizer.constant_folding()
+  g_optmizer.fuse_pad()
   g_optmizer.fuse_transpose_matmul()
   g_optmizer.layout_tranform()    
   g_optmizer.fuse_redundant_transpose()
+  # connect_module_with_graph(quant_model, g_optmizer.dev_graph, recover_param=False)
+  # update_nndct_blob_data(quant_model, g_optmizer.dev_graph, only_update_shape=False)
+  # connect_module_with_graph(quant_model, nndct_graph, recover_param=False)  
   g_optmizer.update_node_data()
-  g_optmizer.normalize_pad_nd()
-  g_optmizer.fuse_pad()
   g_optmizer.convert_reshapelike_to_reshape()
   g_optmizer.merge_permute_to_linear()
   g_optmizer.merge_consecutive_reshape()
@@ -445,22 +371,6 @@ def _deploy_optimize(quant_model, nndct_graph, need_partition):
   deploy_graphs = g_optmizer.partition_by_quant_part() if need_partition is True else []
   connect_module_with_graph(quant_model, nndct_graph, recover_param=False)  
   return deploy_graphs, g_optmizer.dev_graph
-
-
-def get_deploy_graph_list(quant_model, nndct_graph, need_partition=True):
-  if isinstance(quant_model, list):
-    graph_list = []
-    for node in nndct_graph.nodes:
-      if node.op.type == NNDCT_OP.BLOCK:
-        graph_list.append(convert_block_node_to_graph(node))
-    assert len(quant_model) == len(graph_list)
-    deploy_graphs = []
-    for model, graph in zip(quant_model, graph_list):
-      _, dev_graph = _deploy_optimize(model, graph, False)
-      deploy_graphs.append(dev_graph)
-    return [deploy_graphs], None
-  else:
-    return _deploy_optimize(quant_model, nndct_graph, need_partition)
 
 
 def convert_lstm(ori_module: torch.nn.Module, device):
@@ -498,8 +408,8 @@ def _get_node_scope(node):
     return node.name.split("::")[0]
 
 def _valid_bnfp(bnfp):
-  if bnfp is None:
-      return False
+  if bnfp == None:
+    return False
   return not(bnfp[0] == 67108864 and bnfp[1] == 4096)
 
 def insert_fix_neuron_in_script_model(script_model, quantizer):
@@ -533,7 +443,7 @@ def insert_fix_neuron_in_script_model(script_model, quantizer):
                                           name=tensor_name,
                                           tensor_type='param')
           if fix_node is not None:
-            jit_utils.insert_after_node(script_graph, const_node, fix_node)              
+            jit_utils.insert_after_node(script_graph, const_node, fix_node, torch_value_name)              
 
 
 
@@ -567,7 +477,7 @@ def insert_fix_neuron_in_script_model(script_model, quantizer):
                                             tensor_type='output',
                                             index = index)
         if fix_node is not None:
-          jit_utils.insert_after_input(script_graph, input_node, fix_node, torch_value_name)
+          jit_utils.insert_after_node(script_graph, input_node, fix_node, torch_value_name, idx)
       else:
         torch_value_name = jit_utils.nndct_name_2_jit_name(nndct_node_name)
         fw_node = jit_utils.find_fw_node_by_name(script_graph, torch_value_name, recursive=True)
@@ -590,7 +500,7 @@ def insert_fix_neuron_in_script_model(script_model, quantizer):
                                             tensor_type='output',
                                             index=index)
         if fix_node is not None:
-          jit_utils.insert_after_node(script_graph, fw_node, fix_node, idx)
+          jit_utils.insert_after_node(script_graph, fw_node, fix_node, torch_value_name, idx)
 
   for nndct_node_name in quant_config["input"].keys():
     if _get_node_scope(nndct_node_name) != get_module_name(script_model):
@@ -640,7 +550,7 @@ def insert_mul_after_avgpool(script_model, quantizer):
     fw_node = jit_utils.find_fw_node_by_name(script_graph, torch_value_name)      
     mul_node = jit_utils.create_mul_node(script_graph, jit_utils.get_node_output_at(fw_node, 0), scale)
     if mul_node is not None:
-      jit_utils.insert_after_node(script_graph, fw_node, mul_node)
+      jit_utils.insert_after_node(script_graph, fw_node, mul_node, torch_value_name)
   
   script_graph = script_model.graph
   nndct_graph = quantizer.Nndctgraph
@@ -668,6 +578,10 @@ def insert_mul_after_avgpool(script_model, quantizer):
   return script_model
 
 
+def register_input_checker(module, module_gen_from_script):
+  ModuleHooker.hook_module_with_input_device_checker(module, module_gen_from_script)
+
+
 def remove_quant_dequant_stub(script_model):
   g = script_model.graph
   jit_utils.remove_quant_dequant_stub(g)
@@ -679,7 +593,5 @@ def quant_model_inferenced(quant_model: Union[torch.nn.Module, List[torch.nn.Mod
     return all([qmod.is_inferenced for qmod in quant_model])
   else:
     return quant_model.is_inferenced
-
-
 
 

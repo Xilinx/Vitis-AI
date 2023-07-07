@@ -119,7 +119,7 @@ class QuantizeConvNd(Transform):
     return NodePattern('Conv1d|Conv2d|Conv3d|ConvTranspose2d|ConvTranspose3d')
 
   def replace(self, model, match):
-    float_to_quantized = {
+    float_to_qat = {
         nn.Conv1d: nnq.QuantizedConv1d,
         nn.Conv2d: nnq.QuantizedConv2d,
         nn.Conv3d: nnq.QuantizedConv3d,
@@ -127,26 +127,10 @@ class QuantizeConvNd(Transform):
         nn.ConvTranspose3d: nnq.QuantizedConvTranspose3d,
     }
     matched_module = match.node.module
-    quantized_cls = float_to_quantized[type(matched_module)]
+    qat_cls = float_to_qat[type(matched_module)]
     mod_util.replace_modules(
         model, match.node.name,
-        quantized_cls.from_float(matched_module, match.node.spec))
-
-class QuantizeBatchNormNd(Transform):
-
-  def pattern(self):
-    return NodePattern('BatchNorm2d|BatchNorm3d')
-
-  def replace(self, model, match):
-    float_to_quantized = {
-        nn.BatchNorm2d: nnq.QuantizedBatchNorm2d,
-        nn.BatchNorm3d: nnq.QuantizedBatchNorm3d,
-    }
-    matched_module = match.node.module
-    quantized_cls = float_to_quantized[type(matched_module)]
-    mod_util.replace_modules(
-        model, match.node.name,
-        quantized_cls.from_float(matched_module, match.node.spec))
+        qat_cls.from_float(matched_module, match.node.spec))
 
 class QuantizeLinear(Transform):
 

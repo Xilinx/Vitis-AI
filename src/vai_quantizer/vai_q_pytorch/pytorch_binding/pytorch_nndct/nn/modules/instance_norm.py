@@ -21,8 +21,7 @@ from torch.autograd import Variable
 import math
 
 from nndct_shared.utils import NndctOption, NndctScreenLogger, QError
-from nndct_shared.quantization import kernel_need_quant
-from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors, kernel_need_quant
 from nndct_shared.quantization import maybe_get_quantizer
 import pytorch_nndct.utils as py_utils
 import torch.nn.functional as F
@@ -42,13 +41,12 @@ class deephi_InstanceNorm(torch.nn.modules.instancenorm._InstanceNorm):
     self.param_quantized = False
  
   def forward(self, input):
+    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
+ 
     if not kernel_need_quant(self.quantizer, self.node):
-      output = super().forward(input)
+      output = super().forward(qinput)
       output = quantize_tensors([output], self.node)[0]
       return output
-    
-    # quantize input tensor
-    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
     
     params = []
     if self.weight is not None:
@@ -58,7 +56,7 @@ class deephi_InstanceNorm(torch.nn.modules.instancenorm._InstanceNorm):
     param_names = self.params_name[:len(params)]
     if len(params) != len(param_names):
       NndctScreenLogger().error2user(QError.PARAM_NUMBER, f"Parameter number error in node {self.node} for InstanceNorm operator!")
- 
+
     if (not self.param_quantized) and len(params) > 0:
       inplace = self.quantizer is not None and self.quantizer.inplace
       # quantize weights and bias

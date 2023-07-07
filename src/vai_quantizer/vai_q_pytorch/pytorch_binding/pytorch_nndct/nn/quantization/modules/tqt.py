@@ -105,16 +105,20 @@ class FakeQuantizer(nn.Module):
 
 class TQTQuantizer(FakeQuantizer):
 
-  def __init__(self, bitwidth, tensor_type, rounding_mode):
+  def __init__(self, bitwidth, tensor_type, method = None):
     super(TQTQuantizer, self).__init__(bitwidth)
 
-    valid_tensor_types = ['param', 'input', 'output']
+    valid_tensor_types = ['weight', 'act']
     if tensor_type not in valid_tensor_types:
       raise ValueError(
           "'tensor_type' must be one of {}".format(valid_tensor_types))
     self.tensor_type = tensor_type
 
-    self.rounding_mode = rounding_mode
+    # See TorchQuantizer::do_quantize() in quantization/torchquantizer.py
+    if method is not None:
+      self.method = method
+    else:
+      self.method = 3 if tensor_type == 'weight' else 2
     self.quantize_fn_cls = tqt_ops.TQTQuantize
 
     self.log_threshold = nn.Parameter(torch.tensor([0.0]))
@@ -180,27 +184,36 @@ class TQTQuantizer(FakeQuantizer):
 
         return threshold[np.argmin(d)]
 
-    init_scheme = {'param': _3sd, 'input': _kl_j, 'output': _kl_j}
+    init_scheme = {'weight': _3sd, 'act': _kl_j}
     #init_scheme = {'weight': _max, 'act': _kl_j}
     data = x.detach().cpu().numpy()
     th = init_scheme[self.tensor_type](data)
     # TODO(yuwang): Check if th < 0.
     return torch.tensor([th], dtype=x.dtype, device=x.device)
 
-  def _forward_pass_input(self, x, log_threshold, domain, rounding_mode):
+  def _forward_pass_input(self, x, log_threshold, domain, method):
     return x
 
-  def _quantize(self, x, log_threshold, domain, rounding_mode):
-    return self.quantize_fn_cls.apply(x, log_threshold, domain, rounding_mode)
-
-  def _quantize_with_warmup(self, x, log_threshold, domain, rounding_mode):
+  def _quantize(self, x, log_threshold, domain, method):
+    return self.quantize_fn_cls.apply(x, log_threshold, domain,
+                                      method)
+  def _quantize_with_warmup(self, x, log_threshold, domain, method):
     self.disable_warmup()
-    log_threshold.data[0] = torch.log2(self._init_threshold(x))[0]
-    return self._quantize(x, log_threshold, domain, rounding_mode)
+    log_threshold.data = torch.log2(self._init_threshold(x))
+    return self._quantize(x, log_threshold, domain, method)
 
   def forward(self, x):
-    return self._forward_fn(x, self.log_threshold, self.domain,
-                            self.rounding_mode)
+    #if self.quant_enabled[0] == 0:
+    #  return x
+
+    #if self.warmup_enabled[0] == 1:
+    #  self.warmup_enabled[0] = 0
+    #  threshold = self._init_threshold(x)
+    #  self.log_threshold.data = torch.log2(threshold)
+
+    #return self.quantize_fn_cls.apply(x, self.log_threshold, self.domain,
+    #                                  self.method)
+    return self._forward_fn(x, self.log_threshold, self.domain, self.method)
 
   def enable_quant(self, enabled=True):
     self.quant_enabled[0] = 1 if enabled else 0
@@ -233,8 +246,8 @@ class TQTQuantizer(FakeQuantizer):
     self.freeze_quant(False)
 
   def extra_repr(self):
-    return 'quant_enabled={}, bitwidth={}, rounding_mode={}'.format(
-        self.quant_enabled, self.bitwidth, self.rounding_mode)
+    return 'quant_enabled={}, bitwidth={}, method={}'.format(
+        self.quant_enabled, self.bitwidth, self.method)
 
   def _save_to_state_dict(self, destination, prefix, keep_vars):
     super(TQTQuantizer, self)._save_to_state_dict(destination, prefix,
@@ -251,8 +264,9 @@ class TQTQuantizer(FakeQuantizer):
     if self.quant_enabled[0] == 0:
       self._forward_fn = self._forward_pass_input
 
-  def get_fix_position(self):
-    """
+  def export_quant_info(self):
+    """Export trained threshold to TorchQuantizer's quant info [bitwidth, fp].
+
     (1) TQT: qx = clip(round(fx / scale)) * scale, scale = 2^ceil(log2t) / 2^(b-1)
     (2) NndctFixNeron: qx = clip(round(fx * scale)) * (1 / scale), scale = 2^fp
     Let (1) equals (2), we can get
@@ -263,21 +277,12 @@ class TQTQuantizer(FakeQuantizer):
     """
     bitwidth = self.bitwidth.item()
     ceil_log2t = torch.ceil(self.log_threshold).item()
-    return int(bitwidth - 1 - ceil_log2t)
+    return [[bitwidth, int(bitwidth - 1 - ceil_log2t)]]
 
-  def export_quant_info(self):
-    """Export trained threshold to TorchQuantizer's quant info [bitwidth, fp].
-    """
-    return [[self.bitwidth.item(), self.get_fix_position()]]
-
-  def import_quant_info(self, bitwidth, fix_position):
-    if not (isinstance(bitwidth, int) and isinstance(fix_position, int)):
-      raise ValueError(
-          f'bitwidth and fixed position must be an integer, but got ({bitwidth}, {fix_position})'
-      )
-
+  def import_quant_info(self, qinfo):
+    bitwidth, fp = qinfo
     self.bitwidth[0] = bitwidth
-    self.log_threshold.data = torch.tensor([bitwidth - 1 - fix_position],
+    self.log_threshold.data = torch.tensor([bitwidth - 1 - fp],
                                            dtype=self.log_threshold.dtype)
     self.disable_warmup()
 

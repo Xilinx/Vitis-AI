@@ -28,9 +28,11 @@ from nndct_shared.base.key_names import NNDCT_OP
 from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.nndct_graph import base_tensor
 
+
 class DataFormat(object):
   channel_first = "channel first"
   channel_last = "channel_last"
+
 
 class DataFormatMap(object):
   """A dict mapping of framework and op type to its data format.
@@ -95,11 +97,6 @@ def layout_transformer(src_layout, dst_layout):
   for axis in dst_layout:
     axes.append(src_layout.index(axis))
   return tuple(axes)
-
-def param_layout_transformer(src_framework, dst_framework, ndim):
-  src_format = DataFormatMap.param_format(src_framework, ndim)
-  dst_format = DataFormatMap.param_format(dst_framework, ndim)
-  return layout_transformer(src_format, dst_format)
 
 def convert_blob_tensor_format(tensor: base_tensor.Tensor, src_framework: str,
                                dst_framework: str) -> base_tensor.Tensor:
@@ -185,7 +182,7 @@ def permute_axes(axes, order):
     return axes
   if len(axes) != len(order):
     raise RuntimeError("The data shape should consistent with length of order")
-
+  
   new_axes = [None] * len(axes)
   for i, j in enumerate(order):
     new_axes[i] = axes[j]

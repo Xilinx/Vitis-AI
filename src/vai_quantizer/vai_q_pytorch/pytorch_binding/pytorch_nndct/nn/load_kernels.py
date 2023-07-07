@@ -4,7 +4,6 @@ import sys
 import torch
 from torch.utils.cpp_extension import load, _import_module_from_library
 from nndct_shared.utils import create_work_dir, NndctScreenLogger, QError, QWarning
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _aot = False
@@ -14,8 +13,10 @@ for name in os.listdir(_cur_dir):
     _aot = True
     break
 
+
 new_kernel = False
-if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.7.0"):
+torch_version = torch.__version__.split('.')
+if int(torch_version[0]) == 1 and int(torch_version[1]) >= 7:
   new_kernel = True
 
 if _aot:

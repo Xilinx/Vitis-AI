@@ -1,0 +1,23 @@
+name: vitis-ai-lstm
+
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - dctc_lstm
+  - tf_nndct
+  - pytorch_nndct_lstm
+  - pydot
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - pillow

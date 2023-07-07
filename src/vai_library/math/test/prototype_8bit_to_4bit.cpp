@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@
 #include <iostream>
 #include <random>
 #include <sstream>
-#include <array>
 #include <type_traits>
 #include <vitis/ai/env_config.hpp>
 
@@ -35,7 +34,7 @@ using Clock = std::chrono::high_resolution_clock;
 template <typename N>
 std::string to_string(N d) {
   std::ostringstream str;
-  const bool  is_signed = std::is_signed<
+  auto is_signed = std::is_signed<
       typename std::remove_reference<decltype(d[0])>::type>::value;
   str << (is_signed ? "s" : "u") << ("dq"[(sizeof(d) / 8u) - 1u]) << "[";  //
   unsigned char* p = (unsigned char*)&d;

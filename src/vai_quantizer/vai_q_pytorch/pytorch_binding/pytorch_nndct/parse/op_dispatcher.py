@@ -26,8 +26,6 @@ from .torch_op_def import *
 from .parse_utils import *
 from pytorch_nndct.utils import SchemaHelper, TorchOpClassType, convert_type_str
 from pytorch_nndct.utils.jit_utils import *
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
-
 class OpCreator(object):
 
   op_convert_map = {
@@ -70,15 +68,9 @@ class OpCreator(object):
   def _convolution(self, input, weight, bias, stride, padding, dilation,
                    transposed, output_padding, groups, benchmark, deterministic,
                    cudnn_enabled, *args):
-    '''
-    input: 1D:(N,Cin,Lin) 2D:(N,Cin,Hin,Win) 3D: (N,Cin,Din,Hin,Win)
-    conv2d    weight:
-            (out_channels, in_channels/groups, kernel_size_0, kernel_size_1)
-    transpose conv2d weight: 
-            (in_channels, out_channels/groups, kernel_size_0, kernel_size_1)
-    '''
     if (weight and weight.node != None) or (bias and bias.node != None):
       raise("weight or bias is not a constant param!")
+      
     weight_size = weight.shape
     if transposed:
       weight_size[0], weight_size[1] = weight_size[1], weight_size[0]
@@ -101,10 +93,7 @@ class OpCreator(object):
       op.set_config('in_channels', weight_size[1])
       op.set_config('out_channels', weight_size[0] * groups)
     else:
-      # When groups == in_channels and out_channels == K * in_channels, where K is a positive integer, 
-      # this operation is also known as a “depthwise convolution”.
-      input_channel = weight_size[1] * groups
-      if groups != 1 and groups == input_channel and weight_size[0] % input_channel == 0:
+      if weight_size[1] == 1 and groups == weight_size[0]:
         if weight.ndim == 4:
           op = TorchConv2d(NNDCT_OP.DEPTHWISE_CONV2D)
         elif weight.ndim == 5:
@@ -119,7 +108,7 @@ class OpCreator(object):
         elif weight.ndim == 3:
           op = TorchConv1d(NNDCT_OP.CONV1D)
          
-      op.set_config('in_channels', input_channel)
+      op.set_config('in_channels', weight_size[1] * groups)
       op.set_config('out_channels', weight_size[0])
   
       
@@ -321,17 +310,16 @@ class OpCreator(object):
     op.set_config("output_size", args[1])
     return op
 
-  def addmm(self, input, mat1, mat2, beta=None, alpha=None):
-    op = TorchBaseOperation(NNDCT_OP.ADDMM, "addmm")
-    op.set_config("input", input)
-    op.set_config("mat1", mat1)
-    op.set_config("mat2", mat2)
-    return op
-
-  def t_addmm(self, bias, input, weight, beta=None, alpha=None):
+  def addmm(self, bias, input, weight, beta=None, alpha=None):
     if (weight and weight.node != None) or (bias and bias.node != None):
       raise("weight or bias is not a constant param!")
-    if len(weight.shape) <=2:
+    
+    if (bias.node is not None) or (weight.node is not None):
+      op = TorchBaseOperation(NNDCT_OP.ADDMM, "addmm")
+      op.set_config("input", bias)
+      op.set_config("mat1", input)
+      op.set_config("mat2", weight)
+    else:
       op = TorchLinear()
       weight_size = weight.shape
       op.set_param(op.ParamName.WEIGHTS, weight)
@@ -410,16 +398,6 @@ class OpCreator(object):
     op.set_config("num_parameters", weight.shape[0])
     op.set_config("init", 0.25)
     op.set_param(op.ParamName.WEIGHT, weight)
-    return op
-
-  def sqrt(self, input):
-    op = TorchUnaryOp(NNDCT_OP.SQRT, "sqrt")
-    op.set_config('input', input)
-    return op
-
-  def sqrt_(self, input):
-    op = TorchUnaryOp(NNDCT_OP.SQRT, "sqrt")
-    op.set_config('input', input)
     return op
 
   def add(self, *args):
@@ -836,21 +814,38 @@ class OpCreator(object):
     return op
 
   def sub(self, *args):
-    op = TorchBinaryOp(NNDCT_OP.SUB, "sub", force_to_primitive=True)
-    op.set_config('input', args[0])
-    op.set_config('other', args[1])
-    if args[2] is not None:
-      op.set_config('alpha', args[2])
-    return op
+    supported_schemas = [
+      'aten::sub(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::sub(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+      'aten::sub(Tensor self, Tensor other, Scalar alpha=1, Tensor out) -> Tensor'
+    ]
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchBinaryOp(NNDCT_OP.SUB, "sub")
+      op.set_config('input', args[0])
+      op.set_config('other', args[1])
+      if args[2] is not None:
+        op.set_config('alpha', args[2])
+      return op
+    else:
+      return self.default(self.cur_node, 'aten::sub', *args)
   
+
   def rsub(self, *args):
-    op = TorchBinaryOp(NNDCT_OP.RSUB, "rsub", force_to_primitive=True)
-    op.set_config('input', args[0])
-    op.set_config('other', args[1])
-    if args[2] is not None:
-      op.set_config('alpha', args[2])
-    return op
-  
+    supported_schemas = [
+      'aten::rsub(Tensor self, Tensor other, Scalar alpha=1) -> Tensor',
+      'aten::rsub(Tensor self, Scalar other, Scalar alpha=1) -> Tensor',
+    ]
+    schema_handler = SchemaHelper(self.cur_node.schema)
+    if schema_handler.toString() in supported_schemas:
+      op = TorchBinaryOp(NNDCT_OP.RSUB, "rsub")
+      op.set_config('input', args[0])
+      op.set_config('other', args[1])
+      if args[2] is not None:
+        op.set_config('alpha', args[2])
+      return op
+    else:
+       return self.default(self.cur_node, 'aten::rsub', *args)
 
   def exp(self, input, *args):
     op = TorchExp()
@@ -1017,18 +1012,6 @@ class OpCreator(object):
       op.set_config('device',  f"'{device}'")
     else:
       op.set_config('device', f"'{self._device_type}'")
-    return op
-
-  def pad(self, *args):
-    "aten::pad(Tensor self, int[] pad, str mode='constant', float? value) -> Tensor"
-    if args[2] not in ["constant", "reflect", "replicate"] or args[3] in [float("inf"), float("-inf")]:
-      return self.default(self.cur_node, 'aten::pad', *args)
-    op = TorchPadNd()
-    op.set_config('input', args[0])
-    op.set_config('pad', args[1])
-    op.set_config('mode', f"'{args[2]}'")
-    value = 0.0 if args[3] is None else args[3]
-    op.set_config('value', value)
     return op
 
   def constant_pad_nd(self, input, pad, value):
@@ -1216,11 +1199,11 @@ class OpCreator(object):
   def index_put_(self, input, indices, value, accumulate, *args):
     op = TorchBaseOperation(
         NNDCT_OP.INDEX_INPUT_INPLACE,
-        "index_put_",
-        force_to_primitive=True)
+        NNDCT_OP.INDEX_INPUT_INPLACE,
+        force_to_primitive=False)
     op.set_config("input", input)
-    indices = ["slice(None)" if idx is None else idx for idx in indices]
     op.set_config("indices", indices)
+    # op.set_config("indices", [index if index is not None else ":" for index in indices])
     op.set_config("values", value)
     op.set_config("accumulate", bool(accumulate))
     return op
@@ -1231,10 +1214,10 @@ class OpCreator(object):
     op.set_config("dim", dim)
     return op
 
-  def bmm(self, input, other):
-    op = TorchMatmul()
+  def bmm(self, input, mat2):
+    op = TorchBaseOperation(NNDCT_OP.BMM, "bmm")
     op.set_config("input", input)
-    op.set_config("other", other)
+    op.set_config("mat2", mat2)
     return op
 
   def embedding_bag(self,
@@ -1363,7 +1346,7 @@ class OpCreator(object):
     if weight is not None or bias is not None:
       op.set_config('elementwise_affine', True)
     else:
-      op.set_config('elementwise_affine', False)
+      op.set_config('ielementwise_affine', False)
     return op
 
   def new_zeros(self, input, *args):
@@ -1572,7 +1555,7 @@ class OpCreator(object):
 
 
   def default(self, node, op_type, *args):
-    if compare_torch_version(CmpFlag.GREATER, "1.4.0"):
+    if get_torch_version() > 140:
       return self.auto_infer_op(node, op_type, args)
 
     if node.schema is None:
@@ -1718,66 +1701,6 @@ class OpCreator(object):
   def _shape_as_tensor(self, input):
     op = TorchBaseOperation(NNDCT_OP.SHAPE_AS_TENSOR, "_shape_as_tensor")
     op.set_config("input", input)
-    return op
-
-  
-
-  def arange(self, *args):
-    supported_schemas = [
-      'aten::arange(Scalar end, int? dtype, int? layout, Device? device, bool? pin_memory) -> Tensor',
-      'aten::arange(Scalar start, Scalar end, int? dtype, int? layout, Device? device, bool? pin_memory) -> Tensor',
-      'aten::arange(Scalar start, Scalar end, Scalar step, int? dtype, int? layout, Device? device, bool? pin_memory) -> Tensor',
-      'aten::arange(Scalar start, Scalar end, Scalar step, Tensor out) -> Tensor',
-      'aten::arange(Scalar end, Tensor out) -> Tensor'
-    ]
-
-    schema_handler = SchemaHelper(self.cur_node.schema)
-    op = TorchArange()
-    if schema_handler.toString() == supported_schemas[0]:
-      op.set_config("end", args[0])
-      if args[1]:
-        op.set_config("dtype",  scalar_type_to_pytorch_type[args[1]])
-      if args[3]:
-        if isinstance(args[3], str):
-          op.set_config("device", f"'{args[3]}'")
-        else:
-          op.set_config("device", args[3])
-
-    elif schema_handler.toString() == supported_schemas[1]:
-      op.set_config("start",  args[0])
-      op.set_config("end",   args[1])
-      if args[2]:
-        op.set_config("dtype",  scalar_type_to_pytorch_type[args[2]])
-      if args[4]:
-        if isinstance(args[4], str):
-          op.set_config("device", f"'{args[4]}'")
-        else:
-          op.set_config("device", args[4])
-
-
-    elif schema_handler.toString() == supported_schemas[2]:
-      op.set_config("start",  args[0])
-      op.set_config("end",   args[1])
-      op.set_config("step",   args[2])
-      if args[3]:
-        op.set_config("dtype",  scalar_type_to_pytorch_type[args[3]])
-      if args[5]:
-        if isinstance(args[5], str):
-          op.set_config("device", f"'{args[5]}'")
-        else:
-          op.set_config("device", args[5])
-
-    elif schema_handler.toString() == supported_schemas[3]:
-      op.set_config("start",  args[0])
-      op.set_config("end",   args[1])
-      op.set_config("step",   args[2])
-    
-    elif schema_handler.toString() == supported_schemas[4]:
-      op.set_config("end",   args[0])
-
-    else:
-      return self.default(self.cur_node, 'aten::arange', *args)
-
     return op
 
   

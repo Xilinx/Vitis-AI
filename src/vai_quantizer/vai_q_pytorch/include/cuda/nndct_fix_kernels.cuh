@@ -19,80 +19,136 @@
 
 #ifndef _NNDCT_FIX_KERNELS_CUH_
 #define _NNDCT_FIX_KERNELS_CUH_
-
-template<typename Real>
-__device__ void _vai_round_device(const Real& x, int& y, int method){
-  if(2==method){  //half_up
-    if(x<0 && (x-floor(x))==0.5) {
-      y = ceil(x);
-    }else{
-      y = round(x);
-    }
-  }else if(3==method){ //c++ std::round: negative half_down, positive half_up
-    y = round(x);
-  }else if(4==method){ // floor
-    y = floor(x);
-  }else if(5==method){ // negative half_up, positive half_even 
-    if(x<0 && (x-floor(x))==0.5) {
-      y = ceil(x);
-    }else if(x - floor(x) == 0.5){
-      if( int(floor(x)) % 2 == 0){
-        y = floor(x);
-      }else{
-        y = ceil(x);
-      }
-    }else{
-      y = round(x);
-    }
-  }else if(6==method){ // towards zero: negative half_up, positive half_down (vs method 3)
-    if(x<0 && (x-floor(x))==0.5) {
-      y = ceil(x);
-    }else if(x>0 && (x-floor(x))==0.5){
-      y = floor(x);
-    }else{
-      y = round(x);
-    }
-  }else if(7==method){ // up
-    y = ceil(x);
-  }else if(8==method){ // half_even
-    if(x<0 && (x-floor(x))==0.5) {
-      if(int(ceil(x)) % 2 == 0){
-        y = ceil(x);
-      }else{
-        y = floor(x);
-      }
-    }else if(x - floor(x) == 0.5) {
-      if( int(floor(x)) % 2 == 0){
-        y = floor(x);
-      }else{
-        y = ceil(x);
-      }
-    }else{
-      y = round(x);
-    }
-  }
-}
-
 template<typename Real>
 __device__ void _fix_neuron_v2_device(const Real& src,int& res,
   int val_min, int val_max,Real val_amp,int zero_point,int method){
   Real res_real_= src*val_amp;
   //method: 
-  // 2: half_up 
-  // 3: c++ std::round: negative half_down, positive half_up
-  // 4: floor
-  // 5: negative half_up, positive half_even
-  // 6: towards zero: negative half_up, positive half_down (vs method 3)
-  // 7: up
-  // 8: half_even 
-  _vai_round_device(res_real_, res, method);
-
+  //5: old RNN
+  //2: special round for -x.5, 
+  //3: standard round
+  //4: new RNN
+  if(4==method){ //floor
+    res = floor(res_real_);
+  }else if(2==method){  //half_up
+    if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }else{
+      res = round(res_real_);
+    }
+  }else if(3==method){ //std_round
+    res = round(res_real_);
+  }else if(5==method){
+    if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }else if(res_real_ - floor(res_real_) == 0.5){
+      if( int(floor(res_real_)) % 2 == 0){
+        res = floor(res_real_);
+      }else{
+        res = ceil(res_real_);
+      }
+    }else{
+      res = round(res_real_);
+    }
+  }else if(6==method){ //half_down
+    if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }else if(res_real_>0 && (res_real_-floor(res_real_))==0.5){
+      res = floor(res_real_);
+    }else{
+      res = round(res_real_);
+    }
+  }else if(7==method){ //ceil
+    res = ceil(res_real_);
+  }else if(-1==method){ //half_even
+    if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      if(int(ceil(res_real_)) % 2 == 0){
+        res = ceil(res_real_);
+      }else{
+        res = floor(res_real_);
+      }
+    }else if(res_real_ - floor(res_real_) == 0.5) {
+      if( int(floor(res_real_)) % 2 == 0){
+        res = floor(res_real_);
+      }else{
+        res = ceil(res_real_);
+      }
+    }else{
+      res = round(res_real_);
+    }
+  }
   res = res + zero_point;
   if (res > val_max) {
       res = val_max;
   } else if (res < val_min) {
       res=val_min;
   }
+
+  /*
+  if(4==method){ //floor
+    res = floor(res_real_);
+    if (res > val_max) {
+      res = val_max;
+    } else if (res < val_min) {
+      res=val_min;
+    }
+  }else if(2==method){  
+    if(res_real_ > val_max) {
+      res = val_max;
+    }else if(res_real_ < val_min) {
+      res=val_min;
+    }else if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }
+    else{
+      res = round(res_real_);
+    }
+  }else if(3==method){ //half_up
+    if(res_real_ > val_max) 
+      res = val_max;
+    else if(res_real_ < val_min)
+      res=val_min;
+    else
+      res = round(res_real_);
+  }else if(5==method){
+    if(res_real_ > val_max) {
+      res = val_max;
+    }else if(res_real_ < val_min) {
+      res=val_min;
+    }else if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }else if(res_real_ - floor(res_real_) == 0.5){
+      if( int(floor(res_real_)) % 2 == 0){
+        res = floor(res_real_);
+      }else{
+        res = ceil(res_real_);
+      }
+    }else{
+      res = round(res_real_);
+    }
+  }else if(6==method){ //half_down
+    if(res_real_ > val_max) {
+      res = val_max;
+    }else if(res_real_ < val_min) {
+      res=val_min;
+    }else if(res_real_<0 && (res_real_-floor(res_real_))==0.5) {
+      res = ceil(res_real_);
+    }else if(res_real_>0 && (res_real_-floor(res_real_))==0.5){
+      res = floor(res_real_);
+    }else{
+      res = round(res_real_);
+    }
+  }else if(7==method){ //ceil
+    if(res_real_ > val_max) {
+      res = val_max;
+    }else if(res_real_ < val_min) {
+      res=val_min;
+    }else {
+      res = ceil(res_real_);
+    }
+  }*/
+  //printf( "$$$$$$$$$$$ res_real_: %f res: %d method: %d zero_point: %d \n", res_real_, res, method, zero_point); 
+  //res = res + zero_point;
 }
 
 template<typename Real>
@@ -244,8 +300,10 @@ template<typename Real>
 __device__ void _amp_floor_device(Real &result,const Real val_amp,const int val_min,const int val_max){
   int result_= floor(result*val_amp);
   if (result_ > val_max) {
+    //result_ %=val_max;
     result_ = val_max;
   } else if (result_ < val_min) {
+    //result_ %= -val_max;
     result_ = val_min;
   }
   result=(Real)(result_);
@@ -265,8 +323,10 @@ template<typename Real>
 __device__ void _floor_device(Real &result,const int val_min,const int val_max){
   int result_ = floor(result);
   if (result_ > val_max) {
+    //result_ %=val_max;
     result_ = val_max;
   } else if (result_ < val_min) {
+    //result_ %= -val_max;
     result_ = val_min;
   }
   result=(Real)(result_);
@@ -286,8 +346,10 @@ __device__ void _dimiI_floor_device(Real &result,
   const Real val_amp,const Real val_min,const Real val_max){
   result/=val_amp;
   if (result > val_max) {
+    //result %=val_max;
     result = val_max;
   } else if (result < val_min) {
+    //result %= -val_max;
     result = val_min;
   }
 }
@@ -305,8 +367,10 @@ __device__ void _fix_neuron_v2_device_tmp(Real& result,Real val_amp,
       result_= (!dimi)? ceil(result*val_amp):ceil(result*(1/val_amp));
     }
     if (result_ > val_max) {
+      //result_ %=val_max;
       result_ = val_max;
     } else if (result_ < val_min) {
+      //result_ %= -val_max;
       result_ = val_min;
     }
     if(keep_scale){

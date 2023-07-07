@@ -34,8 +34,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
-
+from distutils.version import LooseVersion
 from torch.nn import init
 from torch.nn.modules.utils import _pair
 from torch.nn.modules.utils import _triple
@@ -282,7 +281,6 @@ class _ConvBnNd(nn.modules.conv._ConvNd):
   def extra_repr(self):
     return super(_ConvBnNd, self).extra_repr()
 
-  # Modified from https://github.com/IntelLabs/distiller/blob/master/distiller/quantization/sim_bn_fold.py#L87
   def forward(self, x, output_size=None):
     """
     See https://arxiv.org/pdf/1806.08342.pdf section 3.2.2.
@@ -533,8 +531,7 @@ class _ConvTransposeBnNd(_ConvBnNd, nn.modules.conv._ConvTransposeMixin):
     self._transpose_fn = [
         F.conv_transpose1d, F.conv_transpose2d, F.conv_transpose3d
     ][dim - 1]
-
-    if compare_torch_version(CmpFlag.LESS, "1.12.0"):
+    if torch.__version__ < LooseVersion('1.12.0'):
       self._conv_forward = self._conv_forward_prior_torch112
     else:
       self._conv_forward = self._conv_forward_from_torch112

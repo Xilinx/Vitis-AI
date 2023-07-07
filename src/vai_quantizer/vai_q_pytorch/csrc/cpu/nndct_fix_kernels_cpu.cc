@@ -22,44 +22,9 @@
 #include <stdlib.h>
 #include <algorithm>
 //#include <iostream>
-//#include <bitset>
 #include "../../include/cpu/nndct_fix_kernels_cpu.h"
 #include "../../include/cpu/nndct_cpu_math.h"
 
-template<typename Dtype>
-static void _cpu_vai_round(const int N, 
-                           const Dtype* src, 
-                           Dtype* dst, 
-                           int method){
-  for(int index=0; index < N; index ++){
-    int result_ = 0;
-    _vai_round_cpu(src[index], result_, method);
-    dst[index] = result_;
-  }
-}
-
-template<typename Dtype>
-void cpu_vai_round(const int N, 
-                   const Dtype* src, 
-                   Dtype* dst, 
-                   int method){
-  _cpu_vai_round(N, 
-                 src, 
-                 dst, 
-                 method);
-}
-
-template
-void cpu_vai_round<float>(const int N, 
-                          const float* src, 
-                          float* dst, 
-                          int method);
-
-template
-void cpu_vai_round<double>(const int N, 
-                           const double* src, 
-                           double* dst, 
-                           int method);
 
 template<typename Dtype>
 static void _fix_neuron_v1(const int N, 
@@ -122,6 +87,7 @@ static void _fix_neuron_v2(const int N,
       dst[index] = (Dtype(result_)-Dtype(zero_point)) * (1 / val_amp);
     else
       dst[index] = result_;
+    
   }
 }
 
@@ -428,165 +394,19 @@ void cpu_tanh_table_lookup<double>(const int N,
                                     const double* table,
                                     double* output,
                                     int fragpos);
-
+// Layernorm isqrt AIE2, float32 iteration
 static inline int float2int_cpu(const float x){
-  return *(int*)&x; 
+ return *(int*)&x; 
 }
 
 static inline float int2float_cpu(const int x){
   return *((float *)&x);
 }
 
-// int32 bitwise to bfloat16 with 32 bitwidth
-static inline float int2bfloat_cpu(const int x){
-  int itmp = x; // int32
-  if ((itmp&0x00008000) == 0x00008000) { // half even
-    if ((itmp&0xFFFF) > 0x00008000 || (((itmp&0xFFFF) == 0x00008000) && (itmp&0x10000) == 0x10000)){
-      itmp += 0x10000;
-    }
-  }
-  itmp &= 0xFFFF0000;
-  return *(float *)&itmp; // int32 bitwise to float32
-}
-
-// float32 bitwise to bfloat16 with 32 bitwidth
-static inline float float2bfloat_cpu(const float x){
-  int itmp = *(int*)&x; // float32 bitwise to int32
-  if ((itmp&0x00008000) == 0x00008000) { // half even
-    if ((itmp&0xFFFF) > 0x00008000 || (((itmp&0xFFFF) == 0x00008000) && (itmp&0x10000) == 0x10000)){
-      itmp += 0x10000;
-    }
-  }
-  itmp &= 0xFFFF0000;
-  return *(float *)&itmp; // int32 bitwise to float32
-}
-
-static inline int float2short_cpu(const float x){
-  float itmp = float2bfloat_cpu(x);
-  return *(int*)&itmp; 
-}
-
-// downshift one bit for short x
-static inline int short_downshift_onebit_cpu(const int x){ // input: fake short
-  int y, a, b;
-  y = x >> 17;
-  a = (x >> 16) & 1;
-  if (y&1 == 1) // half2even
-    y += a;
-  return y << 17; // fake short
-}
-
-// aie sqrt(x) = x*(1/sqrt(x)) 
-// with Newton iteration for 1/sqrt(x) 
-void _sqrt(const float& x, float& out){
-  float x2, y, y3h; 
-  int i;
-  x2 = x*0.5;
-  y = x;
-  i = float2int_cpu(y); // bitwise float32 to int32 
-  i = (0x5f37 - (i >> 17)) << 16; // int32 -> int16 -> int32
-  y = int2float_cpu(i); // initial value: bitwise int32 to float32
-
-  // one step Newton iteration: y = y*(1.5 - (x2*y*y)) = 1.5*y - x2*y*y*y
-  y3h = 1.5*y;  // float32
-  y3h = float2bfloat_cpu(y3h); // bfloat with 32 bitwidth
-
-  out = y*x2;  // float32
-  out = float2bfloat_cpu(out); // bfloat with 32 bitwidth
-
-  out = out*y;  // float32
-  out = float2bfloat_cpu(out); // bfloat with 32 bitwidth
-
-  out = out*y;
-  out = float2bfloat_cpu(out); // bfloat with 32 bitwidth
-  
-  out = y3h - out; // float32: 1/sqrt(x) = 1.5*y - x2*y*y*y
-  out = float2bfloat_cpu(out); // bfloat with 32 bitwidth
-
-  out = x*out; // sqrt(x) = x*(1/sqrt(x))
-  out = float2bfloat_cpu(out); // bfloat with 32 bitwidth
-}
-
-template<typename Dtype>
-static void _aie_sqrt(const int N, 
-                      const Dtype* src, 
-                      Dtype* dst){
-  for(int index=0; index < N; index++){
-    float result_ = 1.0;
-    _sqrt(src[index], result_); 
-    dst[index] = result_; // auto cast: float to Dtype
-  }
-}
-
-template<typename Dtype>
-void cpu_aie_sqrt(const int N, const Dtype* src, Dtype* dst){ 
-  _aie_sqrt(N, src, dst);
-}
-
-template
-void cpu_aie_sqrt<float>(const int N, const float* src, float* dst); 
-
-template
-void cpu_aie_sqrt<double>(const int N, const double* src, double* dst);
-
-// aie isqrt bfloat16 iteration
-// 1/sqrt(x)
 void _isqrt(const float& x, float& y){
-  float x2, y2, mul2, mul, sub, threehalfs; 
-  int i;
-  x2  = x*0.5;
-  x2 = float2bfloat_cpu(x2); // bitwise float32 to bfloat16
-
-  i = float2short_cpu(x); // bitwise float32 to short (int16) 
-  i = (0x5f37 - (short_downshift_onebit_cpu(i) >> 17)) << 16;
-
-  y = int2bfloat_cpu(i); // initial value: bitwise int32 to bfloat16
-  threehalfs = float2bfloat_cpu(1.5);
-
-  // 4-steps-Newton iteration: y = y*(1.5 - (x2*y*y))
-  for(int i=0; i<4; i++){
-    y2 = y*y;
-    y2 = float2bfloat_cpu(y2); // bfloat with 32 bitwidth
-
-    mul2 = x2*y2;
-    mul2 = float2bfloat_cpu(mul2);
-
-    sub = threehalfs - mul2;
-    sub = float2bfloat_cpu(sub);
-
-    mul = y*sub;
-    y = float2bfloat_cpu(mul);
-  }
-}
-
-template<typename Dtype>
-static void _aie_isqrt(const int N, 
-                       const Dtype* src, 
-                       Dtype* dst){
-  for(int index=0; index < N; index++){
-    float result_ = 1.0;
-    _isqrt(src[index], result_); 
-    dst[index] = result_; // auto cast: float to Dtype
-  }
-}
-
-template<typename Dtype>
-void cpu_aie_isqrt(const int N, const Dtype* src, Dtype* dst){ 
-  _aie_isqrt(N, src, dst);
-}
-
-template
-void cpu_aie_isqrt<float>(const int N, const float* src, float* dst); 
-
-template
-void cpu_aie_isqrt<double>(const int N, const double* src, double* dst);
-
-// Layernorm isqrt float32 iteration
-// 1/sqrt(x)
-void isqrt(const float& x, float& y){
   float x2, threehalfs; 
   int i;
-  x2 = x*0.5;
+  x2  = x*0.5;
   y = x;
   threehalfs = 1.5;
   i = float2int_cpu(y); // bitwise float32 to int32 
@@ -600,11 +420,11 @@ void isqrt(const float& x, float& y){
 
 template<typename Dtype>
 static void _layernorm_isqrt(const int N, 
-                             const Dtype* src, 
-                             Dtype* dst){
+                          const Dtype* src, 
+                          Dtype* dst){
   for(int index=0; index < N; index++){
     float result_ = 1.0;
-    isqrt(src[index], result_); 
+    _isqrt(src[index], result_); 
     dst[index] = result_; // auto cast: float to Dtype
   }
 }

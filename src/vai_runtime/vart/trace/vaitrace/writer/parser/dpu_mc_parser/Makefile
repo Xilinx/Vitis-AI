@@ -1,4 +1,6 @@
-# Copyright 2022-2023 Advanced Micro Devices Inc.
+
+# Copyright (C) Xilinx .Ltd, 2019. All rights reserved.
+#
 
 CC=$(CROSS_COMPILE)g++
 

@@ -86,14 +86,6 @@ void LogSoftmaxSub(Tensor Tinput,
                     Tensor Tsum,
                     int64_t device_id);
 
-void AIESqrt(Tensor Tinput, 
-             Tensor Toutput,
-             int64_t device_id);
-
-void AIEISqrt(Tensor Tinput, 
-              Tensor Toutput,
-              int64_t device_id);
-
 void LayernormISqrt(Tensor Tinput, 
                     Tensor Toutput,
                     int64_t device_id);
@@ -103,7 +95,7 @@ void LayernormInvSqrt(Tensor Tinput,
                     int64_t device_id);
 
 void InverseAIE2(Tensor Tinput, 
-                 Tensor Toutput, 
-                 int64_t device_id);
+                     Tensor Toutput, 
+                     int64_t device_id);
 
 #endif

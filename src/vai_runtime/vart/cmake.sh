@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2022-2023 Advanced Micro Devices Inc.
+# Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ project_name=$(basename ${script_path})
 # cmake args
 declare -a args
 args+=(-DBUILD_TEST=ON)
-args+=(-DENABLE_CPU_RUNNER=ON)
-args+=(-DENABLE_SIM_RUNNER=ON)
+args+=(-DENABLE_DPU_RUNNER=ON)
 args+=(-DBUILD_SHARED_LIBS=ON)
 
 # parse options

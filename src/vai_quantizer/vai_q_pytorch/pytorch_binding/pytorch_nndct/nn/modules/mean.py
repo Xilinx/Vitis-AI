@@ -32,20 +32,6 @@ class deephi_Mean(torch.nn.Module):
     self.node = None
 
   def forward(self, input, dim, keepdim):
-    if self.quantizer is None or self.quant_mode is None or NndctOption.nndct_quant_off.value:
-      return self._fp32_forward(input, dim, keepdim)
-    else:
-      return self._forward(input, dim, keepdim)
-
-  def _fp32_forward(self, input, dim, keepdim):
-    if dim is None:
-      output = torch.mean(input)
-    else:
-      output = torch.mean(input, dim, keepdim)
-
-    return output
-
-  def _forward(self, input, dim, keepdim):
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
     if dim is None:
       output = torch.mean(qinput)
@@ -74,4 +60,10 @@ class deephi_Mean(torch.nn.Module):
   
 @py_utils.register_quant_op
 def Mean(*args, **kwargs):
+  #quant_mode,_ = maybe_get_quantizer()
+  #if quant_mode==None:
+  #    return
+  quant_mode, _ = maybe_get_quantizer()
+  if quant_mode is None or NndctOption.nndct_quant_off.value:
+    return torch.mean
   return deephi_Mean(*args, **kwargs)

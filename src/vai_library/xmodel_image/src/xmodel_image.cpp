@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,7 @@ namespace vitis {
 namespace ai {
 
 std::unique_ptr<XmodelImage> XmodelImage::create(const std::string& filename) {
-     // suppress coverity complain
-     try{
-       return std::make_unique<XmodelImageImp>(filename);
-     }catch(std::exception & e){
-       std::cerr <<"Should never run here with exception " << e.what() <<"\n";
-       abort();
-     } 
+  return std::make_unique<XmodelImageImp>(filename);
 }
 
 }  // namespace ai

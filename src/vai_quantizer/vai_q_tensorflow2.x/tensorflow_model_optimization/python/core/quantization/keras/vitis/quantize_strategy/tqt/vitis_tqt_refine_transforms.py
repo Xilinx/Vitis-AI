@@ -43,8 +43,7 @@ def _make_quantizer(quantizer_type_name, quantizer_params):
 class ConvertTQTToPof2SQuantizeStrategy(transforms.Transform):
   """Convert quantize strategy of quantized layers from tqt to pof2s."""
 
-  def __init__(self, use_fixneuron_quant=0):
-    self.use_fixneuron_quant = use_fixneuron_quant
+  def __init__(self):
     super(ConvertTQTToPof2SQuantizeStrategy, self).__init__()
 
   def pattern(self):
@@ -56,39 +55,21 @@ class ConvertTQTToPof2SQuantizeStrategy(transforms.Transform):
     if layer_type == 'Vitis>VitisQuantize':
       quantizer = match_layer.layer['config']['quantizer']
       if quantizer['class_name'] == 'Vitis>TQTQuantizer':
-        # VitisQuantize's fixneuron quantize mode is always 1 for activation
-        use_fixneuron_quant_mode = 1 if self.use_fixneuron_quant else 0
         tqt_quantizer = deserialize_keras_object(quantizer)
-        pof2s_quantizer = tqt_quantizer.convert_to_pof2s_quantizer(
-                use_fixneuron_quant_mode)
+        pof2s_quantizer = tqt_quantizer.convert_to_pof2s_quantizer()
         quantizer.update(serialize_keras_object(pof2s_quantizer))
     elif layer_type == 'Vitis>QuantizeWrapper':
       quantize_config = match_layer.layer['config']['quantize_config']
       if not quantize_config['class_name'] == 'Vitis>NoQuantizeConfig':
         config = quantize_config['config']
-
-        for k, v in config.items():
-          # generate fixneuron quantize mode, 1 for activation, 2 for weights
-          use_fixneuron_quant_mode = 0
-          if k == 'activation_quantizers' or k == 'output_quantizers':
-            if self.use_fixneuron_quant : use_fixneuron_quant_mode = 1
-          elif k == 'weight_quantizers' or k == 'bias_quantizers':
-            if self.use_fixneuron_quant : use_fixneuron_quant_mode = 2
-          else:
-            continue
-
-          # skip blank quantizer
-          if v == []:
-            continue
-
-          quantizers = config[k]
-          for quantizer in quantizers:
-            if quantizer['quantizer_type'] != 'TQTQuantizer':
-              continue
+        quantizers = config['weight_quantizers'] + config[
+            'bias_quantizers'] + config['activation_quantizers'] + config[
+                'output_quantizers']
+        for quantizer in quantizers:
+          if quantizer['quantizer_type'] == 'TQTQuantizer':
             tqt_quantizer = _make_quantizer(quantizer['quantizer_type'],
                                             quantizer['quantizer_params'])
-            pof2s_quantizer = tqt_quantizer.convert_to_pof2s_quantizer(
-                    use_fixneuron_quant_mode)
+            pof2s_quantizer = tqt_quantizer.convert_to_pof2s_quantizer()
             quantizer.update({
                 'quantizer_type': 'Pof2SQuantizer',
                 'quantizer_params': pof2s_quantizer.get_config()

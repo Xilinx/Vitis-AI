@@ -27,7 +27,6 @@
 #ifdef TORCH_LIBRARY
 TORCH_LIBRARY(vai, m) {
   m.def("fix_neuron", fix_neuron);
-  m.def("fix_neuron_per_channel", fix_neuron_per_channel);
   m.def("diffs_fix_pos", diffs_fix_pos);
   m.def("SigmoidTableLookup", SigmoidTableLookup);
   m.def("SigmoidSimulation", SigmoidSimulation);
@@ -42,16 +41,12 @@ TORCH_LIBRARY(vai, m) {
   m.def("ExpApprAIE2", ExpApprAIE2);
   m.def("LogSoftmaxFastLn", LogSoftmaxFastLn);
   m.def("LogSoftmaxSub", LogSoftmaxSub);
-  m.def("AIESqrt", AIESqrt);
-  m.def("AIEISqrt", AIEISqrt);
-  m.def("LayernormISqrt", LayernormISqrt);
+   m.def("LayernormISqrt", LayernormISqrt);
   m.def("LayernormInvSqrt", LayernormInvSqrt);
   m.def("InverseAIE2", InverseAIE2);
   m.def("to_bfp", to_bfp);
   m.def("to_bfp_v2", to_bfp_v2);
-  //m.def("to_bfp_prime(Tensor input, int bit_width, int block_size, int sub_block_size, int sub_block_shift_bits, int rounding_mode, Tensor output) -> Tensor");
-  m.def("to_bfp_prime_shared", to_bfp_prime_shared);
-  m.def("Round", Round);
+  //m.def("to_bfp_v2(Tensor input, int bit_width, int block_size, Tensor output) -> Tensor");
 }
 #else
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
@@ -60,7 +55,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("TanhTableLookup", &TanhTableLookup, "TanhTableLookup");
   m.def("TanhSimulation", &TanhSimulation, "TanhSimulation");
   m.def("FixNeuronV2", &FixNeuronV2, "FixNeuronV2");
-  m.def("Round", &Round, "Round");
   m.def("DiffsFixPos", &DiffsFixPos, "DiffsFixPos");
   m.def("SoftmaxExpApproximate", &SoftmaxExpApproximate, "SoftmaxExpApproximate");
   m.def("SoftmaxLOD", &SoftmaxLOD, "SoftmaxLOD");
@@ -69,8 +63,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("InverseAIE2", &InverseAIE2, "InverseAIE2");
   m.def("to_bfp", &to_bfp, "to_bfp");
   m.def("to_bfp_v2", &to_bfp_v2, "to_bfp_v2");
-  m.def("AIESqrt", &AIESqrt, "AIESqrt");
-  m.def("AIEISqrt", &AIEISqrt, "AIEISqrt");
   m.def("LayernormISqrt", &LayernormISqrt, "LayernormISqrt");
 }
 #endif

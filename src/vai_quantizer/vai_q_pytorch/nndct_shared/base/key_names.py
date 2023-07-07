@@ -144,10 +144,6 @@ class NNDCT_KEYS(object):
   #deploy
   DEPLOY_CHECK_DATA_FOLDER = 'deploy_check_data'
 
-  #dynamo
-  WEGO_DYNAMO_SCRIPTER = 'wego_dynamo_scripter'
-  GRAPH_COUNTER = 'graph_counter'
-
 class NNDCT_OP(object):
   ADAPTIVEAVGPOOL2D = 'nndct_adaptive_avg_pool2d'
   ADD = 'nndct_elemwise_add'
@@ -160,6 +156,7 @@ class NNDCT_OP(object):
   BASIC_GRU = 'nndct_basic_gru'
   BASIC_LSTM = 'nndct_basic_lstm'
   BATCH_NORM = 'nndct_batch_norm'
+  INSTANCE_NORM = 'nndct_instance_norm'
   BATCH_TO_SPACE_ND = 'nndct_batch_to_space_nd'
   BIAS_ADD = 'nndct_bias_add'
   BIDIRECTIONAL_RNN = 'nndct_bidirectional_rnn'
@@ -167,9 +164,6 @@ class NNDCT_OP(object):
   BUFFER_GET_NEXT = 'nndct_buffer_get_next'
   BLOCK = 'nndct_block'
   CAST = 'nndct_cast'
-  CALL_FUNCTION = "nndct_call_function"
-  CALL_MODULE = "nndct_call_module"
-  CALL_METHOD = "nndct_call_method"
   CEIL = 'nndct_ceil'
   CHANNEL_SCALE = 'nndct_channel_scale'
   CORRELATION1D_ELEMWISE = 'nndct_correlation1d_elemwise'
@@ -200,7 +194,6 @@ class NNDCT_OP(object):
   DTYPE = 'nndct_dtype'
   DIV = 'nndct_elemwise_div'
   DROPOUT = 'nndct_dropout'
-  ELU = 'nndct_elu'
   EMBEDDING = 'nndct_embedding'
   EMBEDDING_BAG = 'nndct_embedding_bag'
   EMPTY = 'nndct_empty'
@@ -208,7 +201,6 @@ class NNDCT_OP(object):
   EXP = 'nndct_elemwise_exp'
   EXPAND = 'nndct_expand'
   EXPAND_AS = 'nndct_expand_as'
-  EXPONENTIAL = 'nndct_exponential'
   FLATTEN = 'nndct_flatten'
   FLOOR = 'nndct_floor'
   FLOOR_DIV = 'nndct_floor_divide'
@@ -230,7 +222,6 @@ class NNDCT_OP(object):
   INPLACE_COPY = 'nndct_copy_'
   INPUT = 'nndct_input'
   INPUT_WITH_DEFAULT = 'nndct_input_with_default'
-  INSTANCE_NORM = 'nndct_instance_norm'
   INT = 'nndct_int'
   INTERPOLATE = 'nndct_interpolate'
   IRFFT = 'nndct_irfft'
@@ -255,11 +246,7 @@ class NNDCT_OP(object):
   MERGE = 'nndct_merge'
   MIN = 'nndct_min'
   MISH = 'nndct_mish'
-  # e.g tf.math.multiply x * y, y can be a num or a tensor with same shape with x 
-  MULTIPLY = 'nndct_elemwise_mul' 
-  # e.g tf.keras.layers.multiply 
-  # Takes a list of tensors, all of the same shape, and returns a single tensor (same shape).
-  MULTIPLYLAYER = 'nndct_multiply_layer'
+  MULTIPLY = 'nndct_elemwise_mul'
   NANQUANTILE = 'nndct_nanquantile'
   NEG = 'nndct_neg'
   NOOP = 'nndct_noop'
@@ -269,7 +256,6 @@ class NNDCT_OP(object):
   ONE_HOT = 'nndct_one_hot'
   PACK = 'nndct_pack'
   PAD = 'nndct_pad'
-  PAD_ND = "nndct_pad_nd"
   PERMUTE = 'nndct_permute'
   PIXEL_SHUFFLE = 'nndct_pixel_shuffle'
   PIXEL_UNSHUFFLE = 'nndct_pixel_unshuffle'
@@ -287,7 +273,6 @@ class NNDCT_OP(object):
   REORG = 'nndct_reorg'
   REPEAT = 'nndct_repeat'
   RESHAPE = 'nndct_reshape'
-  RESCALING = 'nndct_rescaling'
   RESIZE = 'nndct_resize'
   RESIZE_3D = 'nndct_resize_3d'
   RESIZE_NEAREST_3D = 'nndct_resize_nearest_3d'
@@ -305,8 +290,6 @@ class NNDCT_OP(object):
   SCALAR_SUB = 'nndct_sub'
   SCALAR_REMAINDER = 'nndct_scalar_remainder'
   SELECT = 'nndct_select'
-  SELU = 'nndct_selu'
-  SEPARABLECONV2D = 'nndct_separableconv2D'
   SHAPE = 'nndct_shape'
   SHAPE_AS_TENSOR = 'nndct_shape_as_tensor'
   SIGMOID = 'nndct_sigmoid'
@@ -314,12 +297,9 @@ class NNDCT_OP(object):
   SLICE = 'nndct_slice'
   SLICE_TENSOR_INPLACE_COPY = 'nndct_slice_tensor_inplace_copy'
   SOFTMAX = 'nndct_softmax'
-  SOFTPLUS = 'nndct_softplus'
-  SOFTSIGN = 'nndct_softsign'
   SPACE_TO_BATCH_ND = 'nndct_space_to_batch_nd'
   SPARSE_SOFTMAX_CROSS_ENTROPY = 'nndct_sparse_softmax_cross_entropy_with_logits'
   SPLIT = 'nndct_split'
-  SQRT = 'nndct_sqrt'
   SQUARE = 'nndct_square'
   SQUEEZE = 'nndct_squeeze'
   STACK = 'nndct_stack'
@@ -329,7 +309,6 @@ class NNDCT_OP(object):
   STRIDED_SLICE_INPLACE_COPY = 'nndct_strided_slice_inplace_copy'
   SUB = 'nndct_elementwise_sub'
   SUM = 'nndct_sum'
-  SWISH = 'nndct_swish'
   TANH = 'nndct_tanh'
   TENSOR = 'nndct_tensor'
   TENSOR_ARRAY_GATHER = 'nndct_tensor_array_gather'

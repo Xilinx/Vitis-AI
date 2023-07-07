@@ -298,14 +298,13 @@ class ModuleHooker(object):
             end = op.quantizer.configer.quant_output(op.node.name).name
             #bit_width, fix_point = op.quantizer.quant_config['output'][end]
             node_name = op.node.name.replace('/', '_')
-            if end in op.quantizer.quant_config['output'].keys():
-              if index is None:
-                bit_width, fix_point = op.quantizer.get_quant_config(end, False, 'output')
-                current_output_path = os.path.join(output_path, node_name + "_fix")
-              else:
-                bit_width, fix_point = op.quantizer.get_quant_config(end, False, 'output', index)
-                index_str = str(index)
-                current_output_path = os.path.join(output_path, node_name + "_fix_i" + index_str)
+            if index is None:
+              bit_width, fix_point = op.quantizer.get_quant_config(end, False, 'output')
+              current_output_path = os.path.join(output_path, node_name + "_fix")
+            else:
+              bit_width, fix_point = op.quantizer.get_quant_config(end, False, 'param', index)
+              index_str = str(index)
+              current_output_path = os.path.join(output_path, node_name + "_fix_i" + index_str)
             if op.__called_times_== 0:
               nndct_utils.create_work_dir(current_output_path)
               shape_file_name = os.path.join(current_output_path, 'shape.txt')
@@ -401,7 +400,7 @@ class ModuleHooker(object):
     def _graph2module(op):
       node = getattr(op, "node", None)
       for param_type, tensor in node.op.params.items():
-        if node.has_bound_params() and node.op.type != NNDCT_OP.LAYER_NORM: # LayerNorm weight, bias not change format
+        if node.has_bound_params():
           py_tensor_util.param_to_torch_format(tensor)
 
         data = np.copy(tensor.data)
@@ -445,7 +444,7 @@ class ModuleHooker(object):
           torch_tensor = torch_tensor.to(device=GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE))
           module.register_parameter(param_name, safe_torch_nn_Parameter(torch_tensor, tensor.requires_grad))
 
-        if node.has_bound_params() and node.op.type != NNDCT_OP.LAYER_NORM:
+        if node.has_bound_params():
           py_tensor_util.param_to_nndct_format(tensor)
 
     # No one will call it and will be removed later.

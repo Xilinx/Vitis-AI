@@ -3,11 +3,7 @@ from pytorch_nndct.nn.quantization.modules.activation import GELU
 from pytorch_nndct.nn.quantization.modules.activation import Sigmoid
 from pytorch_nndct.nn.quantization.modules.activation import Softmax
 from pytorch_nndct.nn.quantization.modules.activation import Tanh
-from pytorch_nndct.nn.quantization.modules.batchnorm import QuantizedBatchNorm2d
-from pytorch_nndct.nn.quantization.modules.batchnorm import QuantizedBatchNorm3d
 from pytorch_nndct.nn.quantization.modules.bfp import BFPQuantizer
-from pytorch_nndct.nn.quantization.modules.bfp import BFPPrimeQuantizer
-from pytorch_nndct.nn.quantization.modules.bfp import BFPPrimeSharedQuantizer
 from pytorch_nndct.nn.quantization.modules.conv import QuantizedConv1d
 from pytorch_nndct.nn.quantization.modules.conv import QuantizedConv2d
 from pytorch_nndct.nn.quantization.modules.conv import QuantizedConv3d
@@ -17,9 +13,8 @@ from pytorch_nndct.nn.quantization.modules.conv_fused import QuantizedConvBatchN
 from pytorch_nndct.nn.quantization.modules.conv_fused import QuantizedConvBatchNorm3d
 from pytorch_nndct.nn.quantization.modules.conv_fused import QuantizedConvTransposeBatchNorm2d
 from pytorch_nndct.nn.quantization.modules.conv_fused import QuantizedConvTransposeBatchNorm3d
-from pytorch_nndct.nn.quantization.modules.fp import BFloat16Quantizer
-from pytorch_nndct.nn.quantization.modules.fp import FP32Quantizer
-from pytorch_nndct.nn.quantization.modules.fp import FP8Quantizer
+from pytorch_nndct.nn.quantization.modules.data_types import BFloat16Quantizer
+from pytorch_nndct.nn.quantization.modules.data_types import FP32Quantizer
 from pytorch_nndct.nn.quantization.modules.linear import QuantizedLinear
 from pytorch_nndct.nn.quantization.modules.normalization import LayerNorm
 from pytorch_nndct.nn.quantization.modules.pooling import DPUAdaptiveAvgPool2d

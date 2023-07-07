@@ -87,9 +87,9 @@ class XirCompiler(object):
     for node in compile_graph.nodes:
       if node.op.type == NNDCT_OP.RETURN:
           continue
-      #print("convert...:", node.op.type, node.name, node.out_tensors[0].shape, node.in_quant_part)
-      #import sys
-      #sys.stdout.flush()
+      # print("convert...:", node.op.type, node.name, node.in_quant_part)
+      # import sys
+      # sys.stdout.flush()
       try:
         NNDCTIR2XIR_CONVERTOR.get(node.op.type, (node.op.type, custom_xop))[1](xgraph, node, quant_config_info)
       except Exception as e:

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,10 +57,6 @@ int main(int argc, char* argv[]) {
 
   bool preprocess = !(getenv("PRE") != nullptr);
   auto facefeature = vitis::ai::FaceFeature::create(argv[1], preprocess);
-  if (!facefeature) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }  
   int width = facefeature->getInputWidth();
   int height = facefeature->getInputHeight();
 
@@ -68,7 +64,7 @@ int main(int argc, char* argv[]) {
   LoadImageNames(image_list_name, names);
 
   ofstream out_file(feature_output_name);
-  for (auto& name : names) {
+  for (auto name : names) {
     cv::Mat image = cv::imread(name);
     if (image.empty()) {
       std::cout << "cannot load " << name << std::endl;

@@ -16,4 +16,3 @@ tqdm
 pyyaml
 validators
 requests
-tensorboard>=2.12.0

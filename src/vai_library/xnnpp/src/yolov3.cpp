@@ -202,7 +202,6 @@ std::vector<YOLOv3Result> yolov3_post_process(
   auto layername =
       std::vector<std::string>(config.yolo_v3_param().layer_name().begin(),
                                config.yolo_v3_param().layer_name().end());
-  auto iou_type = config.yolo_v3_param().iou_type();
   std::vector<vitis::ai::library::OutputTensor> output_tensors;
   for (auto i = 0u; i < layername.size(); i++) {
     for (auto j = 0u; j < output_tensors_unsorted.size(); j++) {
@@ -289,7 +288,7 @@ std::vector<YOLOv3Result> yolov3_post_process(
         return box[6 + k];
       });
       vector<size_t> result_k;
-      applyNMS(boxes, scores, nms_thresh, conf_thresh, result_k, iou_type);
+      applyNMS(boxes, scores, nms_thresh, conf_thresh, result_k);
       transform(result_k.begin(), result_k.end(), back_inserter(res),
                 [&boxes](auto& k) { return boxes[k]; });
     }
@@ -321,4 +320,3 @@ std::vector<YOLOv3Result> yolov3_post_process(
 
 }  // namespace ai
 }  // namespace vitis
-

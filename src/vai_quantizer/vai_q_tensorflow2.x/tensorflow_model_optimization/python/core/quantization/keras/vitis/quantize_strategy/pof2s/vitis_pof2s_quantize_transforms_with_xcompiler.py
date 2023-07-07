@@ -60,90 +60,6 @@ logger = common_utils.VAILogger
 keras = tf.keras
 
 
-class LayersInputQuantize(transforms.Transform):
-  """Quantize the inputs of the quantized layers. As the graph may be separated by
-  some unquantizable layers, the quantized layers following those layers should have
-  quantized inputs.
-
-  Unquantizable Layer + QuantizeWrapper => Unquantizable Layer + QuantizeLayer + QuantizeWrapper
-  """
-
-  def __init__(self, quantize_registry, mode):
-    super(LayersInputQuantize, self).__init__()
-    input_quantize_config = quantize_registry.get_input_quantize_config()
-    input_quantizer = input_quantize_config['input_quantizer']
-    self.allow_multi_consumers = True
-    self.input_quantizer = vitis_quantize_configs._make_quantizer(
-        input_quantizer['quantizer_type'], input_quantizer['quantizer_params'])
-    self.mode = mode
-    self.quant_layers = ['Vitis>QuantizeWrapper']
-    self.qat_layers = [
-        'Vitis>VitisConvBNQuantize', 'Vitis>VitisDepthwiseConvBNQuantize'
-    ]
-
-  def pattern(self):
-    return LayerPattern('|'.join(self.quant_layers + self.qat_layers), {},
-                        [LayerPattern('.*')])
-
-  def replacement(self, match_layer):
-    input_layer_node = match_layer.input_layers[0]
-    metadata = match_layer.metadata
-
-    input_layer_type = input_layer_node.layer['class_name']
-    if input_layer_type in [
-        'InputLayer', 'Vitis>VitisQuantize'
-    ] or input_layer_type in (self.quant_layers + self.qat_layers):
-      return match_layer
-
-    input_layer_name = input_layer_node.layer['config']['name']
-
-    match_layer_name = match_layer.layer['config']['name']
-    quant_layer = vitis_quantize.VitisQuantize(
-        self.input_quantizer,
-        self.mode,
-        name='{}_{}'.format('quant', input_layer_name))
-    layer_config = keras.layers.serialize(quant_layer)
-    layer_config['name'] = quant_layer.name
-
-    quant_metadata = copy.deepcopy(metadata)
-    ins_res = quant_metadata.get('inspect_result', None)
-    if ins_res:
-      ins_res.device = 'INPUT'
-      ins_res.origin_layers = []
-
-    quant_layer_node = LayerNode(
-        layer_config, input_layers=[input_layer_node], metadata=quant_metadata)
-
-    match_layer.input_layers = [quant_layer_node]
-
-    match_layer_type = match_layer.layer['class_name']
-    if match_layer_type in self.qat_layers:
-      logger.debug('Quantize input of layer: {}({}).'.format(
-          match_layer.layer['config']['conv_layer']['config']['name'],
-          match_layer.layer['config']['conv_layer']['class_name']))
-    else:
-      logger.debug('Quantize input of layer: {}({}).'.format(
-          match_layer.layer['config']['layer']['config']['name'],
-          match_layer.layer['config']['layer']['class_name']))
-
-    return match_layer
-
-  def custom_objects(self):
-    objs = vitis_quantizers._types_dict()
-    objs.update(vitis_quantize_configs._types_dict())
-    objs.update({
-        'QuantizeAwareActivation':
-            vitis_quantize_aware_activation.QuantizeAwareActivation,
-        'NoQuantizeActivation':
-            vitis_quantize_aware_activation.NoQuantizeActivation,
-        'QuantizeWrapper':
-            vitis_quantize_wrapper.QuantizeWrapper,
-        'VitisQuantize':
-            vitis_quantize.VitisQuantize,
-    })
-    return objs
-
-
 class LayerInspect(transforms.Transform):
   """Base class for Inspector and Hardware-aware quantization."""
 
@@ -453,11 +369,8 @@ class PadMergeInspect(LayerInspect):
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
 
-      if list(set(['pad', 'pad-fix']) & set(xcompiler_return_op_types)) != []:
-        pad_ins_res.device = 'CPU'
-        pad_ins_res.add_notes(
-            '`ZeroPadding2D` padding with "CONSTANT"(value=0) not supported by target'
-        )
+      if len(pattern_xir_ops) == 0:
+        pad_ins_res.device = 'DPU'
       else:
         for xir_op in pattern_xir_ops:
           if 'device' in xir_op.get_attrs() and xir_op.get_attrs(
@@ -468,11 +381,30 @@ class PadMergeInspect(LayerInspect):
                 'depthwise-conv2d-fix', 'avgpool2d', 'maxpool2d', 'pool-fix',
                 'downsample-fix'
             ]:
+              if ('pad' and 'pad-fix') not in xcompiler_return_op_types:
+                pad_ins_res.device = xir_op.get_attrs()['device']
+              if 'CPU' == xir_op.get_attrs()['device']:
+                if self.patition_msg_name in xir_op.get_attrs():
+                  pad_ins_res.add_notes(
+                      xir_op.get_attrs()[self.patition_msg_name])
+                else:
+                  pad_ins_res.add_notes(
+                      '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
+                      .format(op_type=xir_op.get_type()))
+            elif xir_op.get_type() in ['pad', 'pad-fix']:
               pad_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
-                msg = 'Folded into next layer {}.'.format(
-                    merge_layer_node.layer['config']['name'])
-                pad_ins_res.add_notes(msg)
+                if self.patition_msg_name in xir_op.get_attrs():
+                  pad_ins_res.add_notes(
+                      xir_op.get_attrs()[self.patition_msg_name])
+                else:
+                  pad_ins_res.add_notes(
+                      '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
+                      .format(op_type=xir_op.get_type()))
+          else:
+            pad_ins_res.add_notes(
+                '`ZeroPadding2D` padding with "CONSTANT"(value=0) not supported by target'
+            )
 
     return match_layer
 
@@ -908,8 +840,6 @@ class ConvlikeSwishQuantize(LayerInspect):
           xir_op for xir_op in graph_o.get_ops()
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
-      hsig_xir_ops = ['hard-sigmoid', 'hard-sigmoid-fix']
-      mul_xir_ops = ['mul', 'eltwise-fix']
 
       if len(pattern_xir_ops) == 0:
         conv_ins_res.device = 'CPU'
@@ -928,15 +858,11 @@ class ConvlikeSwishQuantize(LayerInspect):
                 'transposed-conv2d-fix'
             ]:
               conv_ins_res.device = xir_op.get_attrs()['device']
-
-              if list(set(hsig_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('hard-sigmoid' and
+                  'hard-sigmoid-fix') not in xcompiler_return_op_types:
                 vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
-              if list(set(mul_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('mul' and 'eltwise-fix') not in xcompiler_return_op_types:
                 mul_ins_res.device = xir_op.get_attrs()['device']
-                if 'CPU' == xir_op.get_attrs()['device']:
-                  msg = 'Folded into previous layer {}.'.format(
-                      mul_layer_node.layer['config']['name'])
-                  mul_ins_res.add_notes(msg)
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
                   conv_ins_res.add_notes(
@@ -946,7 +872,7 @@ class ConvlikeSwishQuantize(LayerInspect):
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in hsig_xir_ops:
+            elif xir_op.get_type() in ['hard-sigmoid', 'hard-sigmoid-fix']:
               vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -957,7 +883,7 @@ class ConvlikeSwishQuantize(LayerInspect):
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in mul_xir_ops:
+            elif xir_op.get_type() in ['mul', 'eltwise-fix']:
               mul_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -1083,8 +1009,6 @@ class DwConv2dSwishQuantize(LayerInspect):
           xir_op for xir_op in graph_o.get_ops()
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
-      hsig_xir_ops = ['hard-sigmoid', 'hard-sigmoid-fix']
-      mul_xir_ops = ['mul', 'eltwise-fix']
       if len(pattern_xir_ops) == 0:
         dwconv_ins_res.device = 'CPU'
         dwconv_ins_res.add_notes(self.not_excepted_msg)
@@ -1096,14 +1020,11 @@ class DwConv2dSwishQuantize(LayerInspect):
         for xir_op in pattern_xir_ops:
           if xir_op.get_type() in ['depthwise-conv2d', 'depthwise-conv2d-fix']:
             dwconv_ins_res.device = xir_op.get_attrs()['device']
-            if list(set(hsig_xir_ops) & set(xcompiler_return_op_types)) == []:
+            if ('hard-sigmoid' and
+                'hard-sigmoid-fix') not in xcompiler_return_op_types:
               vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
-            if list(set(mul_xir_ops) & set(xcompiler_return_op_types)) == []:
+            if ('mul' and 'eltwise-fix') not in xcompiler_return_op_types:
               mul_ins_res.device = xir_op.get_attrs()['device']
-              if 'CPU' == xir_op.get_attrs()['device']:
-                msg = 'Folded into previous layer {}.'.format(
-                    mul_layer_node.layer['config']['name'])
-                mul_ins_res.add_notes(msg)
             if 'CPU' == xir_op.get_attrs()['device']:
               if self.patition_msg_name in xir_op.get_attrs():
                 dwconv_ins_res.add_notes(
@@ -1113,7 +1034,7 @@ class DwConv2dSwishQuantize(LayerInspect):
                     '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                     .format(op_type=xir_op.get_type()))
 
-          elif xir_op.get_type() in hsig_xir_ops:
+          elif xir_op.get_type() in ['hard-sigmoid', 'hard-sigmoid-fix']:
             vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
             if 'CPU' == xir_op.get_attrs()['device']:
               if self.patition_msg_name in xir_op.get_attrs():
@@ -1125,7 +1046,7 @@ class DwConv2dSwishQuantize(LayerInspect):
                     '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                     .format(op_type=xir_op.get_type()))
 
-          elif xir_op.get_type() in mul_xir_ops:
+          elif xir_op.get_type() in ['mul', 'eltwise-fix']:
             mul_ins_res.device = xir_op.get_attrs()['device']
             if 'CPU' == xir_op.get_attrs()['device']:
               if self.patition_msg_name in xir_op.get_attrs():
@@ -1228,7 +1149,6 @@ class ConvlikeHsigmoidQuantize(LayerInspect):
           xir_op for xir_op in graph_o.get_ops()
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
-      hsig_xir_ops = ['hard-sigmoid', 'hard-sigmoid-fix']
 
       if len(pattern_xir_ops) == 0:
         conv_ins_res.device = 'CPU'
@@ -1244,17 +1164,18 @@ class ConvlikeHsigmoidQuantize(LayerInspect):
                 'transposed-conv2d-fix'
             ]:
               conv_ins_res.device = xir_op.get_attrs()['device']
-              if list(set(hsig_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('hard-sigmoid' and
+                  'hard-sigmoid-fix') not in xcompiler_return_op_types:
                 vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
-                  conv_ins_res.add_notes(
+                  vitis_sigmoid_ins_res.add_notes(
                       xir_op.get_attrs()[self.patition_msg_name])
                 else:
-                  conv_ins_res.add_notes(
+                  vitis_sigmoid_ins_res.add_notes(
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
-            elif xir_op.get_type() in hsig_xir_ops:
+            elif xir_op.get_type() in ['hard-sigmoid', 'hard-sigmoid-fix']:
               vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -1355,8 +1276,6 @@ class DwConv2dHsigmoidQuantize(LayerInspect):
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
 
-      hsig_xir_ops = ['hard-sigmoid', 'hard-sigmoid-fix']
-
       if len(pattern_xir_ops) == 0:
         dwconv_ins_res.device = 'CPU'
         dwconv_ins_res.add_notes(self.not_excepted_msg)
@@ -1371,18 +1290,19 @@ class DwConv2dHsigmoidQuantize(LayerInspect):
                 'depthwise-conv2d', 'depthwise-conv2d-fix'
             ]:
               dwconv_ins_res.device = xir_op.get_attrs()['device']
-              if list(set(hsig_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('hard-sigmoid' and
+                  'hard-sigmoid-fix') not in xcompiler_return_op_types:
                 vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
-                  dwconv_ins_res.add_notes(
+                  vitis_sigmoid_ins_res.add_notes(
                       xir_op.get_attrs()[self.patition_msg_name])
                 else:
-                  dwconv_ins_res.add_notes(
+                  vitis_sigmoid_ins_res.add_notes(
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in hsig_xir_ops:
+            elif xir_op.get_type() in ['hard-sigmoid', 'hard-sigmoid-fix']:
               vitis_sigmoid_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -1407,181 +1327,6 @@ class DwConv2dHsigmoidQuantize(LayerInspect):
         input_layers=[dwconv_quant_layer_node],
         metadata=vitis_sigmoid_metadata)
     return vitis_sigmoid_quant_layer_node
-
-
-class ConvlikeActInspect(LayerInspect):
-  """Inspect Convlike+Act(Multi-branch), by Xcompiler decision."""
-
-  def __init__(self, input_model, mode, target):
-
-    super(ConvlikeActInspect, self).__init__(input_model, mode, target)
-    self.allow_multi_consumers = True
-    self.pattern_xcompiler_op_types = [
-        'matmul', 'conv2d', 'conv2d-fix', 'transposed-conv2d',
-        'transposed-conv2d-fix', 'relu', 'relu6', ' leaky-relu', 'prelu'
-    ]
-
-  def pattern(self):
-    return LayerPattern(
-        'ReLU|LeakyReLU|PReLU|Activation', {},
-        [LayerPattern('Dense|Conv2D|Conv2DTranspose|DepthwiseConv2D', {}, [])])
-
-  def replacement(self, match_layer):
-
-    if match_layer.layer['class_name'] == 'Activation' and match_layer.layer[
-        'config']['activation'] not in ['relu', 'relu6']:
-      return match_layer
-
-    act_layer_node = match_layer
-    act_layer = self.input_model.get_layer(
-        act_layer_node.layer['config']['name'])
-    act_metadata = act_layer_node.metadata
-    act_ins_res = act_metadata.get('inspect_result', None)
-    conv_layer_node = act_layer_node.input_layers[0]
-    act_type = conv_layer_node.layer['config']['activation']
-
-    if act_type != 'linear' and act_type['class_name'] not in [
-        'Vitis>NoQuantizeActivation'
-    ]:
-      return match_layer
-
-    # match conv-like+relu-like
-    match_name = conv_layer_node.layer['name']
-    act_name = ''
-    n = 0
-    config_layers = self.input_model.get_config()['layers']
-    for layer_config in config_layers:
-      if layer_config['inbound_nodes'] != []:
-        for i in layer_config['inbound_nodes'][0]:
-          if i[0] == match_name:
-            n += 1
-            if layer_config['class_name'] in [
-                'Activation', 'Relu', 'LeakyReLU', 'PReLU'
-            ]:
-              act_name = layer_config['name']
-
-    if act_layer.name != act_name or n == 1:
-      return match_layer
-
-    conv_layer_name = conv_layer_node.layer['config']['name']
-    conv_layer = self.input_model.get_layer(conv_layer_name)
-    conv_metadata = conv_layer_node.metadata
-    conv_ins_res = conv_metadata.get('inspect_result', None)
-    conv_layer_quantize_config = conv_metadata.get('quantize_config')
-
-    if not conv_layer_quantize_config:
-      if conv_layer_node.layer['class_name'] in [
-          'Dense', 'Conv2D', 'Conv2DTranspose'
-      ]:
-        conv_layer_quantize_config = self.quant_config['conv_layer']
-      elif conv_layer_node.layer['class_name'] in ['DepthwiseConv2D']:
-        conv_layer_quantize_config = self.quant_config['dwconv_layer']
-    if match_layer.layer['class_name'] == 'Activation':
-      act_layer_quantize_config = self.quant_config['act_layer']
-    elif match_layer.layer['class_name'] in ['ReLU', 'LeakyReLU']:
-      act_layer_quantize_config = self.quant_config['output_layer']
-    elif match_layer.layer['class_name'] in ['PReLU']:
-      act_layer_quantize_config = self.quant_config['PReLU_layer']
-
-    conv_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        conv_layer, conv_layer_quantize_config, self.mode)
-
-    act_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        act_layer, act_layer_quantize_config, self.mode)
-
-    conv_quant_layer_with_xcompiler = conv_layer
-    act_quant_layer_with_xcompiler = act_quant_layer
-
-    conv_layer_config = conv_layer_node.layer
-    conv_layer_config['config']['activation'] = keras.activations.serialize(
-        vitis_quantize_aware_activation.NoQuantizeActivation())
-    conv_inspect_layer = keras.layers.deserialize(conv_layer_config)
-    conv_inspect_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        conv_inspect_layer, conv_layer_quantize_config, self.mode)
-    act_inspect_layer = keras.layers.deserialize(act_layer_node.layer)
-    act_inspect_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        act_inspect_layer, act_layer_quantize_config, self.mode)
-
-    inputs = conv_layer.input
-    x = vitis_quantize.VitisQuantize(
-        self.input_quantizer, self.mode, name='quant_input_layer')(
-            inputs)
-    x = conv_inspect_quant_layer(x)
-    x = act_inspect_quant_layer(x)
-    quantized_model = tf.keras.Model(inputs=inputs, outputs=x)
-
-    graph_o = self.generate_xcompiler_model(quantized_model)
-    xcompiler_return_op_types = [
-        xir_op.get_type() for xir_op in graph_o.get_ops()
-    ]
-    pattern_xir_ops = [
-        xir_op for xir_op in graph_o.get_ops()
-        if xir_op.get_type() in self.pattern_xcompiler_op_types
-    ]
-    for xir_op in pattern_xir_ops:
-      if 'device' in xir_op.get_attrs() and xir_op.get_attrs()['device'] in [
-          'CPU', 'DPU'
-      ]:
-        if xir_op.get_type() in [
-            'matmul', 'conv2d', 'conv2d-fix', 'transposed-conv2d',
-            'transposed-conv2d-fix'
-            'depthwise-conv2d', 'depthwise-conv2d-fix'
-        ]:
-          if conv_ins_res:
-            conv_ins_res.device = xir_op.get_attrs()['device']
-
-          if not set(['relu', 'relu6', 'leaky-relu', 'prelu'
-                     ]) & set(xcompiler_return_op_types):
-            if act_ins_res:
-              act_ins_res.device = xir_op.get_attrs()['device']
-          if 'CPU' == xir_op.get_attrs()['device']:
-            if conv_ins_res:
-              if self.patition_msg_name in xir_op.get_attrs():
-                conv_ins_res.add_notes(
-                    xir_op.get_attrs()[self.patition_msg_name])
-              else:
-                conv_ins_res.add_notes(
-                    '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                    .format(op_type=xir_op.get_type()))
-
-        elif xir_op.get_type() in ['relu', 'relu6', ' leaky-relu', 'prelu']:
-          if act_ins_res:
-            act_ins_res.device = xir_op.get_attrs()['device']
-          if 'CPU' == xir_op.get_attrs()['device']:
-            act_quant_layer_with_xcompiler = act_layer
-            if act_ins_res:
-              if self.patition_msg_name in xir_op.get_attrs():
-                act_ins_res.add_notes(
-                    xir_op.get_attrs()[self.patition_msg_name])
-              else:
-                act_ins_res.add_notes(
-                    '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                    .format(op_type=xir_op.get_type()))
-      else:
-        if xir_op.get_type() in [
-            'matmul', 'conv2d', 'conv2d-fix', 'transposed-conv2d',
-            'transposed-conv2d-fix', 'depthwise-conv2d', 'depthwise-conv2d-fix'
-        ]:
-          conv_ins_res.add_notes(
-              '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-              .format(op_type=xir_op.get_type()))
-        elif xir_op.get_type() in ['relu', 'relu6', 'leaky-relu', 'prelu']:
-          act_quant_layer_with_xcompiler = act_layer
-          act_ins_res.add_notes(
-              '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-              .format(op_type=xir_op.get_type()))
-
-    conv_quant_layer_node = LayerNode.from_layer(
-        conv_quant_layer_with_xcompiler,
-        weights=conv_layer_node.weights,
-        metadata=conv_metadata)
-
-    act_quant_layer_node = LayerNode.from_layer(
-        act_quant_layer_with_xcompiler,
-        input_layers=[conv_quant_layer_node],
-        weights=match_layer.weights,
-        metadata=act_metadata)
-    return act_quant_layer_node
 
 
 class ConvlikeActQuantize(LayerInspect):
@@ -1672,8 +1417,6 @@ class ConvlikeActQuantize(LayerInspect):
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
 
-      act_xir_ops = ['relu', 'relu6', ' leaky-relu', 'prelu']
-
       if len(pattern_xir_ops) == 0:
         conv_ins_res.device = 'CPU'
         conv_ins_res.add_notes(self.not_excepted_msg)
@@ -1690,24 +1433,20 @@ class ConvlikeActQuantize(LayerInspect):
                 'transposed-conv2d-fix'
             ]:
               conv_ins_res.device = xir_op.get_attrs()['device']
-
-              if list(set(act_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('relu' and 'relu6' and ' leaky-relu' and
+                  'prelu') not in xcompiler_return_op_types:
                 act_ins_res.device = xir_op.get_attrs()['device']
-                if 'CPU' == xir_op.get_attrs()['device']:
-                  msg = 'Folded into previous layer {}.'.format(
-                      act_layer_node.layer['config']['name'])
-                  act_ins_res.add_notes(msg)
 
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
-                  conv_ins_res.add_notes(
+                  act_ins_res.add_notes(
                       xir_op.get_attrs()[self.patition_msg_name])
                 else:
-                  conv_ins_res.add_notes(
+                  act_ins_res.add_notes(
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in act_xir_ops:
+            elif xir_op.get_type() in ['relu', 'relu6', ' leaky-relu', 'prelu']:
               act_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -1825,7 +1564,6 @@ class DwConv2dActQuantize(LayerInspect):
           xir_op for xir_op in graph_o.get_ops()
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
-      act_xir_ops = ['relu', 'relu6', ' leaky-relu', 'prelu']
 
       if len(pattern_xir_ops) == 0:
         dwconv_ins_res.device = 'CPU'
@@ -1840,22 +1578,19 @@ class DwConv2dActQuantize(LayerInspect):
                 'depthwise-conv2d', 'depthwise-conv2d-fix'
             ]:
               dwconv_ins_res.device = xir_op.get_attrs()['device']
-              if list(set(act_xir_ops) & set(xcompiler_return_op_types)) == []:
+              if ('relu' and 'relu6' and ' leaky-relu' and
+                  'prelu') not in xcompiler_return_op_types:
                 act_ins_res.device = xir_op.get_attrs()['device']
-                if 'CPU' == xir_op.get_attrs()['device']:
-                  msg = 'Folded into previous layer {}.'.format(
-                      act_layer_node.layer['config']['name'])
-                  act_ins_res.add_notes(msg)
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
-                  dwconv_ins_res.add_notes(
+                  act_ins_res.add_notes(
                       xir_op.get_attrs()[self.patition_msg_name])
                 else:
-                  dwconv_ins_res.add_notes(
+                  act_ins_res.add_notes(
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in act_xir_ops:
+            elif xir_op.get_type() in ['relu', 'relu6', ' leaky-relu', 'prelu']:
               act_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -2053,173 +1788,6 @@ class DwConv2dQuantize(LayerInspect):
     return quant_layer_node
 
 
-class EltwiseReluInspect(LayerInspect):
-  """Inspect Add+ReLU(Multi-branch), by Xcompiler decision."""
-
-  def __init__(self, input_model, mode, target):
-    super(EltwiseReluInspect, self).__init__(input_model, mode, target)
-    self.allow_multi_consumers = True
-    self.pattern_xcompiler_op_types = [
-        'add', 'relu', 'eltwise-fix', 'depthwise-fix'
-    ]
-
-  def pattern(self):
-    return LayerPattern('ReLU|Activation', {}, [LayerPattern('Add', {}, [])])
-
-  def replacement(self, match_layer):
-
-    if match_layer.layer['class_name'] == 'Activation' and match_layer.layer[
-        'config']['activation'] not in ['relu']:
-      return match_layer
-
-    relu_layer_node = match_layer
-    relu_layer = self.input_model.get_layer(
-        relu_layer_node.layer['config']['name'])
-    relu_metadata = relu_layer_node.metadata
-    relu_ins_res = relu_metadata.get('inspect_result', None)
-
-    add_layer_node = relu_layer_node.input_layers[0]
-    add_layer_name = add_layer_node.layer['config']['name']
-
-    add_layer = self.input_model.get_layer(add_layer_name)
-    add_metadata = add_layer_node.metadata
-
-    add_ins_res = add_metadata.get('inspect_result', None)
-    add_layer_quantize_config = add_metadata.get('quantize_config')
-    relu_layer_quantize_config = relu_metadata.get('quantize_config')
-
-    # match add+relu
-    match_name = add_layer_node.layer['name']
-    act_name = ''
-    n = 0
-    config_layers = self.input_model.get_config()['layers']
-
-    for layer_config in config_layers:
-      if layer_config['inbound_nodes'] != []:
-        for i in layer_config['inbound_nodes'][0]:
-          if i[0] == match_name:
-            n += 1
-            if layer_config['class_name'] in ['Activation', 'Relu']:
-              act_name = layer_config['name']
-
-    if relu_layer.name != act_name or n == 1:
-      return match_layer
-
-    if not add_layer_quantize_config:
-      add_layer_quantize_config = self.quant_config['output_layer']
-
-    if not relu_layer_quantize_config:
-      if match_layer.layer['class_name'] == 'Activation' and match_layer.layer[
-          'config']['activation'] in ['relu']:
-        relu_layer_quantize_config = self.quant_config['act_layer']
-
-      elif match_layer.layer['class_name'] in ['ReLU']:
-        relu_layer_quantize_config = self.quant_config['output_layer']
-
-    add_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        add_layer, add_layer_quantize_config, self.mode)
-
-    relu_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        relu_layer, relu_layer_quantize_config, self.mode)
-
-    add_quant_layer_with_xcompiler = add_layer
-    relu_quant_layer_with_xcompiler = relu_quant_layer
-
-    add_layer_config = add_layer_node.layer
-    add_inspect_layer_quantize_config = vitis_quantize_configs.NoQuantizeConfig(
-    )
-
-    add_inspect_layer = keras.layers.deserialize(add_layer_config)
-    add_inspect_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        add_inspect_layer, add_inspect_layer_quantize_config, self.mode)
-
-    relu_inspect_layer = keras.layers.deserialize(relu_layer_node.layer)
-    relu_insect_quant_layer = vitis_quantize_wrapper.QuantizeWrapper(
-        relu_inspect_layer, relu_layer_quantize_config, self.mode)
-
-    inputs = add_layer.input
-    input_list = []
-    for i, input in enumerate(inputs):
-      x = vitis_quantize.VitisQuantize(
-          self.input_quantizer,
-          self.mode,
-          name='{}_{}'.format('quant_input_layer', str(i)))(
-              input)
-      input_list.append(x)
-    x = add_inspect_quant_layer(input_list)
-    x = relu_insect_quant_layer(x)
-    quantized_model = tf.keras.Model(inputs=inputs, outputs=x)
-
-    graph_o = self.generate_xcompiler_model(quantized_model)
-
-    xcompiler_return_op_types = [
-        xir_op.get_type() for xir_op in graph_o.get_ops()
-    ]
-    pattern_xir_ops = [
-        xir_op for xir_op in graph_o.get_ops()
-        if xir_op.get_type() in self.pattern_xcompiler_op_types
-    ]
-
-    for xir_op in pattern_xir_ops:
-      if 'device' in xir_op.get_attrs() and xir_op.get_attrs()['device'] in [
-          'CPU', 'DPU'
-      ]:
-        if xir_op.get_type() in ['eltwise-fix', 'depthwise-fix']:
-          if add_ins_res:
-            add_ins_res.device = xir_op.get_attrs()['device']
-          if not set(['add', 'relu']) & set(xcompiler_return_op_types):
-            if relu_ins_res:
-              relu_ins_res.device = xir_op.get_attrs()['device']
-          if 'CPU' == xir_op.get_attrs()['device']:
-            if add_ins_res:
-              if self.patition_msg_name in xir_op.get_attrs():
-                add_ins_res.add_notes(
-                    xir_op.get_attrs()[self.patition_msg_name])
-              else:
-                add_ins_res.add_notes(
-                    '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                    .format(op_type=xir_op.get_type()))
-
-        elif xir_op.get_type() in ['add', 'relu']:
-          if relu_ins_res:
-            relu_ins_res.device = xir_op.get_attrs()['device']
-          if 'CPU' == xir_op.get_attrs()['device']:
-            relu_quant_layer_with_xcompiler = relu_layer
-            if relu_ins_res:
-              if self.patition_msg_name in xir_op.get_attrs():
-                relu_ins_res.add_notes(
-                    xir_op.get_attrs()[self.patition_msg_name])
-              else:
-                relu_ins_res.add_notes(
-                    '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                    .format(op_type=xir_op.get_type()))
-      else:
-        if xir_op.get_type() in ['add', 'eltwise-fix', 'depthwise-fix']:
-          if add_ins_res:
-            add_ins_res.add_notes(
-                '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                .format(op_type=xir_op.get_type()))
-
-        elif xir_op.get_type() in ['relu']:
-          relu_quant_layer_with_xcompiler = relu_layer
-          if relu_ins_res:
-            relu_ins_res.add_notes(
-                '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
-                .format(op_type=xir_op.get_type()))
-
-    add_layer_node = LayerNode.from_layer(
-        add_quant_layer_with_xcompiler,
-        weights=match_layer.input_layers[0].weights,
-        metadata=add_metadata)
-
-    relu_layer_node = LayerNode.from_layer(
-        relu_quant_layer_with_xcompiler,
-        input_layers=[add_layer_node],
-        weights=match_layer.weights,
-        metadata=relu_metadata)
-    return relu_layer_node
-
-
 class EltwiseReluQuantize(LayerInspect):
   """Quantizes EltwiseRelu, by wrapping them with QuantizeWrappers.
 
@@ -2301,7 +1869,6 @@ class EltwiseReluQuantize(LayerInspect):
           xir_op for xir_op in graph_o.get_ops()
           if xir_op.get_type() in self.pattern_xcompiler_op_types
       ]
-      add_mul_xir_ops = ['mul', 'add', 'relu']
 
       if len(pattern_xir_ops) == 0:
         add_mul_ins_res.device = 'CPU'
@@ -2315,23 +1882,18 @@ class EltwiseReluQuantize(LayerInspect):
           )['device'] in ['CPU', 'DPU']:
             if xir_op.get_type() in ['eltwise-fix', 'depthwise-fix']:
               add_mul_ins_res.device = xir_op.get_attrs()['device']
-              if list(set(add_mul_xir_ops)
-                      & set(xcompiler_return_op_types)) == []:
+              if ('mul' and 'add' and 'relu') not in xcompiler_return_op_types:
                 relu_ins_res.device = xir_op.get_attrs()['device']
-                if 'CPU' == xir_op.get_attrs()['device']:
-                  msg = 'Folded into previous layer {}.'.format(
-                      add_mul_layer_name)
-                  relu_ins_res.add_notes(msg)
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
-                  add_mul_ins_res.add_notes(
+                  relu_ins_res.add_notes(
                       xir_op.get_attrs()[self.patition_msg_name])
                 else:
-                  add_mul_ins_res.add_notes(
+                  relu_ins_res.add_notes(
                       '`{op_type}` is not supported by target, or `{op_type}` instance does not meet the conditions supported by the target.'
                       .format(op_type=xir_op.get_type()))
 
-            elif xir_op.get_type() in add_mul_xir_ops:
+            elif xir_op.get_type() in ['mul', 'add', 'relu']:
               relu_ins_res.device = xir_op.get_attrs()['device']
               if 'CPU' == xir_op.get_attrs()['device']:
                 if self.patition_msg_name in xir_op.get_attrs():
@@ -2693,12 +2255,10 @@ quantize_pattern_dict = collections.OrderedDict({
     "DwConv2dSwishQuantize": DwConv2dSwishQuantize,
     "ConvlikeHsigmoidQuantize": ConvlikeHsigmoidQuantize,
     "DwConv2dHsigmoidQuantize": DwConv2dHsigmoidQuantize,
-    "ConvlikeActInspect": ConvlikeActInspect,
     "ConvlikeActQuantize": ConvlikeActQuantize,
     "DwConv2dActQuantize": DwConv2dActQuantize,
     "ConvlikeQuantize": ConvlikeQuantize,
     "DwConv2dQuantize": DwConv2dQuantize,
-    "EltwiseReluInspect": EltwiseReluInspect,
     "EltwiseReluQuantize": EltwiseReluQuantize,
     "EltwiseQuantize": EltwiseQuantize,
     "FlattenReshapeQuantize": FlattenReshapeQuantize,

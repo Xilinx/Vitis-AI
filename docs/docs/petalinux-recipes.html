@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Vitis AI Linux Recipes &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_notes_3.0.html">Current Release</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="board_setup/board_setup.html">Target Setup Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">Integrating the DPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Formal Vitis AI Documents</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Vitis AI Linux Recipes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/petalinux-recipes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vitis-ai-linux-recipes">
+<h1>Vitis AI Linux Recipes<a class="headerlink" href="#vitis-ai-linux-recipes" title="Permalink to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The instructions refer to the sources found in the <code class="docutils literal notranslate"><span class="pre">/src/petalinux_recipes</span></code> folder within the Vitis™ AI repository.</p>
+</div>
+<p>There are two ways to install the Vitis AI libraries:</p>
+<ul class="simple">
+<li><p>To rebuild the system by configuring PetaLinux (Build-Time).</p></li>
+<li><p>To install VAI3.0 to the target leveraging a pre-built package (Run-Time). See the board setup instructions for details of the online installation <a class="reference internal" href="board_setup/vai_install_to_target.html"><span class="doc">process</span></a>.</p></li>
+</ul>
+<section id="rebuilding-the-system-by-configuring-petalinux">
+<h2>Rebuilding the System by Configuring PetaLinux<a class="headerlink" href="#rebuilding-the-system-by-configuring-petalinux" title="Permalink to this heading">¶</a></h2>
+<p>If users want to install VAI3.0 into the rootfs when generating system image with PetaLinux, users need to use the VAI3.0 recipes. You can obtain the recipes for VAI3.0 in the following two ways:</p>
+<ul class="simple">
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> in this repo.</p></li>
+<li><p>Upgrading PetaLinux eSDK.</p></li>
+</ul>
+<section id="using-recipes-vitis-ai">
+<h3>Using recipes-vitis-ai<a class="headerlink" href="#using-recipes-vitis-ai" title="Permalink to this heading">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> enables <strong>Vitis flow by default</strong>. If want to use the Vivado® flow, please comment the following line in <code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai/vart/vart_3.0.bb</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#PACKAGECONFIG_append = &quot; vitis&quot;</span>
+</pre></div>
+</div>
+</div>
+<ol class="arabic">
+<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">recipes-vitis-ai</span></code> folder to <code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/project-spec/meta-user/</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp Vitis-AI/src/petalinux_recipes/recipes-vitis-ai &lt;petalinux project&gt;/project-spec/meta-user/
+</pre></div>
+</div>
+</li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/project-spec/meta-user/conf/user-rootfsconfig</span></code>
+file, appending the following lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span>
+<span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">dev</span>
+<span class="n">CONFIG_vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span><span class="o">-</span><span class="n">dbg</span>
+</pre></div>
+</div>
+</li>
+<li><p>Source PetaLinux tool and run <code class="docutils literal notranslate"><span class="pre">petalinux-config</span> <span class="pre">-c</span> <span class="pre">rootfs</span></code> command. Select the following option.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Select</span> <span class="n">user</span> <span class="n">packages</span> <span class="o">---&gt;</span>
+<span class="n">Select</span> <span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="n">vitis</span><span class="o">-</span><span class="n">ai</span><span class="o">-</span><span class="n">library</span>
+</pre></div>
+</div>
+<p>Then, save it and exit.</p>
+</li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">petalinux-build</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp Vitis-AI/src/petalinux_recipes/recipes-vai-kernel &lt;petalinux project&gt;/project-spec/meta-user/
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="using-upgrade-petalinux-esdk">
+<h3>Using Upgrade PetaLinux eSDK<a class="headerlink" href="#using-upgrade-petalinux-esdk" title="Permalink to this heading">¶</a></h3>
+<p>Run the following commands to upgrade the PetaLinux.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> &lt;petalinux-v2022.2&gt;/settings
+petalinux-upgrade -u ‘http://petalinux.xilinx.com/sswreleases/rel-v2022/sdkupdate/2022.2_update1/’ -p ‘aarch64’
+</pre></div>
+</div>
+<p>Then, you can find <code class="docutils literal notranslate"><span class="pre">vitis-ai-library_3.0.bb</span></code> recipe in <code class="docutils literal notranslate"><span class="pre">&lt;petalinux</span> <span class="pre">project&gt;/components/yocto/layers/meta-vitis-ai</span></code>.</p>
+<p>For details about PetaLinux upgrading, refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/petalinux-upgrade-Option">PetaLinux Upgrade</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">2022.2_update1</span></code> will be released approximately 1 month after Vitis 3.0 release. The name of <code class="docutils literal notranslate"><span class="pre">2022.2_update1</span></code> may be changed. Modify it accordingly.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+                  <style>
+                        .footer {
+                        position: fixed;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        }
+                  </style>
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on February 9, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

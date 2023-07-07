@@ -1,7 +1,7 @@
-Buggy
-Convertible
-Coupe
-Hatchback
-Limousine
-Minivan
+Buggy,
+Convertible,
+Coupe,
+Hatchback,
+Limousine,
+Minivan,
 Sedan

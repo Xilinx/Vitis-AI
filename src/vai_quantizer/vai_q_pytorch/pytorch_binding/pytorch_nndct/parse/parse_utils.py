@@ -18,7 +18,6 @@
 
 from nndct_shared.nndct_graph.base_tensor import Tensor
 from pytorch_nndct.utils import TorchGraphSymbol
-from .rich_in_out_helper import FlattenInOutModelForTrace
 _GRAPH_SCOPE_SYM = TorchGraphSymbol.GRAPH_SCOPE_SYM
 
 # IGNORE_STATEDICT_KEYS = ['num_batches_tracked']
@@ -76,10 +75,8 @@ def get_full_name(graph_name: str, name: str) -> str:
   Returns:
      str: full name
   """
-  name = _GRAPH_SCOPE_SYM.join([graph_name, name])
-  name = FlattenInOutModelForTrace.recovery_tensor_name(name)
-  name = FlattenInOutModelForTrace.recovery_node_scope_name(name)  
-  return name
+
+  return _GRAPH_SCOPE_SYM.join([graph_name, name])
 
 
 def get_short_name(full_name: str) -> str:

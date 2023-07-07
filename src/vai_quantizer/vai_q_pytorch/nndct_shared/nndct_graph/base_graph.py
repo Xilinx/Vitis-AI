@@ -16,8 +16,6 @@
 
 import json
 import sys
-import itertools
-import re
 from typing import Dict, List, NoReturn, Union, Sequence
 from abc import ABC, abstractmethod, abstractproperty
 from nndct_shared import utils as nndct_utils
@@ -99,6 +97,7 @@ class Graph(GraphBase):
     self._nodes_by_name = {}
     self._nodes_by_id = {}
 
+
     self._end_tensors = []
     self._copy_tensor_map = {}
 
@@ -139,7 +138,6 @@ class Graph(GraphBase):
     node.scope_name = src_node.scope_name
     node.source_range = src_node.source_range
     node.target_device = src_node.target_device
-    node.normalized_name = src_node.normalized_name
     converted_nodes.append(src_node.name)
     for out in src_node.out_tensors:
       if out.name in local_map:
@@ -382,6 +380,13 @@ class Graph(GraphBase):
   def end_tensors(self):
     return [tensor for tensor in self.return_node.in_tensors]
 
+  # @property
+  # def copy_tensor_map(self):
+  #   return self._copy_tensor_map
+
+  # @copy_tensor_map.setter
+  # def copy_tensor_map(self, tensor_map):
+  #   self._copy_tensor_map = tensor_map
 
   @property
   def inputs(self):
@@ -474,47 +479,4 @@ class Graph(GraphBase):
     for tensor in self.tensors:
       tensor.clean_data()
 
-  def assign_node_topological_name(self, prefix="", suffix=""):
-    count = itertools.count(0)  
-    illegal_char_regex = re.compile('[^0-9a-zA-Z_]+')
-    def _assgin_nodes(nodes):
-      sorted_nodes = self.top_sort_nodeset(list(nodes))
-      for n in sorted_nodes:
-        if n.blocks:
-          for block in n.blocks:
-            _assgin_nodes(block.nodes)
-        else:
-          candidate = illegal_char_regex.sub("_", n.op.type)
-          n.normalized_name = f"{prefix}{candidate}_{next(count)}{suffix}"
-
-    _assgin_nodes(self.nodes)
-
-  def simple_description(self):
-    """
-    Only describe op type topological info.
-    """
-    def get_node_simple_info(node):
-      node_des = {}
-      node_des['op'] = node.op.type
-      node_des["input_ops"] = [node.owning_graph.node(inode).op.type for inode in node.in_nodes]
-      node_des["output_ops"] = [node.owning_graph.node(onode).op.type for onode in node.out_nodes]
-      if node.blocks:
-        for i, block in enumerate(node.blocks):
-          node_des[f'block_{i}'] = []
-          for n in self.top_sort_nodeset(list(block.nodes)):
-            node_des[f'block_{i}'].append(get_node_simple_info(n))
-      return node_des
-    graph_des = {}
-    graph_des['nodes'] = []
-    for n in self.top_sort_nodeset(list(self.nodes)):
-      graph_des['nodes'].append(get_node_simple_info(n))
-    graph_str = json.dumps(graph_des, indent=2, separators=(',', ': '))
-    return graph_str 
-
-  def get_md5(self):
-    import hashlib
-    graph_str = self.simple_description()
-    md = hashlib.md5()
-    md.update(graph_str.encode("utf-8"))
-    return md.hexdigest()
 

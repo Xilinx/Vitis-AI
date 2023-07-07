@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,10 +91,6 @@ int main(int argc, char *argv[]) {
   //                                           "facerec_resnet20",
   //                                           true);
   auto detectrecog = FaceDetectRecog::create(argv[1], true);
-  if (!detectrecog) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }  
 
   __TIC__(RECOG_MAT_FIXED_NORMAL)
   auto result = detectrecog->run_fixed(image_normal);

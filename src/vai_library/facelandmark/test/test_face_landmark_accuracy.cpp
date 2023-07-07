@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,10 +70,6 @@ int main(int argc, char *argv[]) {
   }
 
   auto landmark = FaceLandmark::create("face_landmark");
-  if (!landmark) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }  
 
   int width = landmark->getInputWidth();
   int height = landmark->getInputHeight();
@@ -83,7 +79,7 @@ int main(int argc, char *argv[]) {
 
   vector<string> names;
   LoadImageNames(argv[1], names);
-  for (auto& name : names) {
+  for (auto name : names) {
     std::cout << __FILE__ << ":" << __LINE__ << ":" << __func__ << ":"
               << "image " << name << " " << std::endl;
     cv::Mat image = cv::imread(g_input_img + name);

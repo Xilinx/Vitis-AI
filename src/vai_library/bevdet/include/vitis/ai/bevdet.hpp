@@ -81,9 +81,8 @@ class BEVdet {
   /**
    * @brief Factory function to get an instance of derived classes of class
    * BEVdet.
-   * @param model_name0 Model_0's name
-   * @param model_name1 Model_1's name
-   * @param model_name2 Model_2's name
+   * @param model_name Model name
+   * @param use_aie Whether to use aie to accelerate , default value is false.
    * @return An instance of BEVdet class.
    *
    */

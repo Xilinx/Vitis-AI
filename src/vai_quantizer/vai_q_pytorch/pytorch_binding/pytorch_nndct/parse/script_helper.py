@@ -261,9 +261,7 @@ class TorchScriptModuleHandler(object):
     
     # nd(>2) linear (JIRA 2646)
     node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["matmul", "add"]),
-                                                     PatternType(pattern=["matmul", "add_"]),
-                                                     PatternType(pattern=["t_matmul", "add"]),
-                                                     PatternType(pattern=["t_matmul", "add_"])])
+                                                     PatternType(pattern=["matmul", "add_"])])
     OptPass.merge_matmul_with_add(raw_graph, node_sets)                                                
 
       

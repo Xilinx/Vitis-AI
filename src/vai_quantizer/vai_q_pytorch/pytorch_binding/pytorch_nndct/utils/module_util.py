@@ -20,7 +20,6 @@ import torch
 import types
 
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.pruning.pruner import load_pruning_info
 from pytorch_nndct.utils import TorchGraphSymbol
 from pytorch_nndct.utils import tensor_util
 
@@ -195,71 +194,6 @@ def state_dict_from_node(node):
 
     state_dict[tensor.name] = torch.from_numpy(data)
   return state_dict
-
-def transform_to_slim_model(model, state_dict, json_path):
-  """Transform a sparse model to a slim model by pruning results.
-
-    Args:
-      model: A sparse torch.nn.Module instance.
-      path: File path that saves pruning results.
-
-    Returns:
-      A slim model.
-
-  """
-  module_pruning_info = load_pruning_info(json_path).module_pruning_info
-
-  def change_tensor(tensor, pruning_info, axises=[0, 1]):
-    tensor = tensor.cpu()
-    removed_inputs = pruning_info.removed_inputs
-    removed_outputs = pruning_info.removed_outputs
-    if tensor.ndim in [2, 4, 5]:
-      new_tensor = np.delete(tensor, removed_outputs, axis=axises[0])
-      new_tensor = np.delete(new_tensor, removed_inputs, axis=axises[1])
-    elif tensor.ndim == 1:
-      new_tensor = np.delete(tensor, removed_outputs, axis=0)
-    else:
-      pass
-    return new_tensor
-
-  for key, module in model.named_modules():
-    weight_key = key + '.weight'
-    if key not in module_pruning_info:
-      continue
-    pruning_info = module_pruning_info[key]
-
-    bias_key = key + '.bias'
-    if isinstance(module, (nn.BatchNorm2d, nn.BatchNorm3d)):
-      state_dict[weight_key] = change_tensor(state_dict[weight_key],
-                                             pruning_info)
-      state_dict[bias_key] = change_tensor(state_dict[bias_key], pruning_info)
-      running_mean_key = key + '.running_mean'
-      state_dict[running_mean_key] = change_tensor(state_dict[running_mean_key],
-                                                   pruning_info)
-      running_var_key = key + '.running_var'
-      state_dict[running_var_key] = change_tensor(state_dict[running_var_key],
-                                                  pruning_info)
-
-    elif isinstance(module, (nn.Conv2d, nn.Conv3d)):
-      state_dict[weight_key] = change_tensor(state_dict[weight_key],
-                                             pruning_info)
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(state_dict[bias_key], pruning_info)
-
-    elif isinstance(module, (nn.ConvTranspose2d, nn.ConvTranspose3d)):
-      state_dict[weight_key] = change_tensor(
-          state_dict[weight_key], pruning_info, axises=[1, 0])
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(state_dict[bias_key], pruning_info)
-
-    elif isinstance(module, nn.Linear):
-      state_dict[weight_key] = change_tensor(state_dict[weight_key],
-                                             pruning_info)
-      if bias_key in state_dict:
-        state_dict[bias_key] = change_tensor(state_dict[bias_key], pruning_info)
-    else:
-      pass
-  return slim_model_from_state_dict(model, state_dict)
 
 def slim_model_from_state_dict(model, state_dict):
   """Modify modules according to their weights in the state dict and
@@ -455,19 +389,6 @@ def to_device(module, input_args, device):
 
 def get_module_name(module):
   if isinstance(module, torch.jit.ScriptModule):
-    module_name = module.original_name
+    return module.original_name
   else:
-    module_name = module._get_name()
-  from pytorch_nndct.parse.rich_in_out_helper import FlattenInOutModelForTrace
-  if module_name == FlattenInOutModelForTrace.getModelName():
-    if isinstance(module, torch.jit.ScriptModule):
-      origin_name = FlattenInOutModelForTrace.getOriginModelNameFormString(str(module.graph))
-      if origin_name is not None:
-        return origin_name
-      else:
-        return module_name
-    else:
-      names = [k for k in dir(module) if 'nndct_st_' in k]
-      if len(names) > 0:
-        return names[0]
-  return module_name
+    return module._get_name()

@@ -77,7 +77,7 @@ class Node(NodeBase):
     self._idx = -1
     self._scope_name = ""
     self._source_range = ""
-    self._normalized_name = ""
+
 
     self._in_tensors = []
     self._out_tensors = []
@@ -94,7 +94,6 @@ class Node(NodeBase):
     self._graph = None
     self._neighbor_nodes = [None, None]
     self._target_device = None
-    
 
   def __repr__(self):
     return f"Node(name={self.name}, id={self.idx}, op_type={self.op.type}, quant_state={self.in_quant_part})"
@@ -527,13 +526,3 @@ class Node(NodeBase):
   @source_range.setter
   def source_range(self, source_range):
     self._source_range = source_range
-
-
-  @property
-  def normalized_name(self):
-    return self._normalized_name
-
-  @normalized_name.setter
-  def normalized_name(self, name):
-    self._normalized_name = name
-

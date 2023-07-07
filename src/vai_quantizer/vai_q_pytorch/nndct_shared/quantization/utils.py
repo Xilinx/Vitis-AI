@@ -87,11 +87,10 @@ def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output', met
   
   qtensors = []
   if quant_mode in [1, 3]:
-    qfunc = quantizer.calibrate
+    qfunc = quantizer.do_scan
   elif quant_mode == 2:
-    qfunc = quantizer.quantize
+    qfunc = quantizer.do_quantize
   tname = node.name
-  datatype = 'int'
   for idx in range(len(tensors)):
     if tensor_type == 'param':
       tname = tensor_names[idx]
@@ -99,17 +98,13 @@ def quantize_tensors(tensors, node, tensor_names=None, tensor_type='output', met
     else:
       index = idx
     if (quantizer.need_quantize_tensor(tname, tensor_type)):
-      if NndctOption.nndct_only_int_quant.value is False:
-        datatype = quantizer.get_quant_dtype(tname, tensor_type) if tensor_type=='param' else \
-        quantizer.get_quant_dtype(node.name, tensor_type)
       qtensors.append(qfunc(
         tensors[idx],
         tname,
         node,
         tensor_type,
         index,
-        method=method,
-        datatype=datatype))
+        method=method))
     else:
       qtensors.append(tensors[idx])
 
@@ -130,11 +125,8 @@ def quant_reluk_params(node, channel_max):
     #print('qmode = %d, q_end: %d activation: %s' %
     #         (quant_mode, is_quant_end, output_name))
     if quant_mode == 2:
-      datatype = 'int'
-      if NndctOption.nndct_only_int_quant.value is False:
-        datatype = quantizer.get_quant_dtype(node.name, tensor_type='output')
-      channel_max = quantizer.quantize(
-        channel_max, output_name, node, tensor_type='output', datatype=datatype)
+      channel_max = quantizer.do_quantize(
+        channel_max, output_name, node, tensor_type='output')
 
   return channel_max
 
@@ -152,13 +144,11 @@ def quant_channel_scale_params(node, channel_scale):
     #print('qmode = %d, q_end: %d activation: %s' %
     #         (quant_mode, is_quant_end, output_name))
     if quant_mode == 2:
-      datatype = 'int'
-      if NndctOption.nndct_only_int_quant.value is False:
-        datatype = quantizer.get_quant_dtype(node.name, tensor_type='output')
-      channel_scale = quantizer.quantize(
-        channel_scale, output_name, node, tensor_type='output', datatype=datatype)
+      channel_scale = quantizer.do_quantize(
+        channel_scale, output_name, node, tensor_type='output')
 
   return channel_scale
+
 
 class QuantizeData(object):
   def __init__(self, name, data):

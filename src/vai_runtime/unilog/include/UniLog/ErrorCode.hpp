@@ -31,25 +31,23 @@
 // using namespace std;
 
 class ErrorCodeFactory;
-class ErrorCode {
+class UNILOG_DLLESPEC ErrorCode {
 public:
   ErrorCode() = delete;
-  UNILOG_DLLESPEC ErrorCode(const std::string &errID,
-                            const std::string &errDsp = "",
-                            const std::string &errDebugInfo = "")
+  ErrorCode(const std::string &errID, const std::string &errDsp = "",
+            const std::string &errDebugInfo = "")
       : errID_(errID), errDsp_(errDsp), _errDebugInfo_(errDebugInfo){};
-  UNILOG_DLLESPEC ErrorCode(const ErrorCode &errCode);
+  ErrorCode(const ErrorCode &errCode);
 
-  UNILOG_DLLESPEC const std::string &getErrID() const { return this->errID_; }
-  UNILOG_DLLESPEC const std::string &getErrDsp() const { return this->errDsp_; }
-  UNILOG_DLLESPEC const std::string &getErrDebugInfo() const;
-  UNILOG_DLLESPEC const std::string &getErrMsg() const {
+  const std::string &getErrID() const { return this->errID_; }
+  const std::string &getErrDsp() const { return this->errDsp_; }
+  const std::string &getErrDebugInfo() const;
+  const std::string &getErrMsg() const {
     return this->errMsg_;
-  } // non-violated read
-  UNILOG_DLLESPEC std::string
-  extractErrMsg(); // violated read, it will destroy after read
+  }                            // non-violated read
+  std::string extractErrMsg(); // violated read, it will destroy after read
 
-  UNILOG_DLLESPEC ErrorCode &operator<<(const std::string &errMsg);
+  ErrorCode &operator<<(const std::string &errMsg);
 
 private:
   std::string errID_;
@@ -72,6 +70,9 @@ public:
 
 private:
   ErrorCodeFactory() {}
+
+private:
+  std::map<std::string, std::shared_ptr<ErrorCode>> mapErrorCode_;
 };
 
 class UNILOG_DLLESPEC ErrorCodeRegister {

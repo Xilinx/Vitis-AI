@@ -422,70 +422,14 @@ void LogSoftmaxSub(Tensor Tinput,
 }
 
 template <typename Dtype>
-void _AIESqrt(Tensor Tinput, 
-              Tensor Toutput, 
-              int64_t device_id)
-{
-    auto input = Tinput.data<Dtype>();
-    auto output = Toutput.data<Dtype>();
-    int64_t num_ele = Tinput.numel();
- 
-    if (device_id == 0)
-      cuda_aie_sqrt(num_ele, input, output);
-    else if (device_id == 1)
-      cpu_aie_sqrt(num_ele, input, output);
-}
-
-void AIESqrt(Tensor Tinput, 
-             Tensor Toutput,
-             int64_t device_id){
-  if (Tinput.dtype() == at::kFloat)
-    _AIESqrt<float>(Tinput, 
-                    Toutput,
-                    device_id);
-  else if (Tinput.dtype() == at::kDouble)
-    _AIESqrt<double>(Tinput, 
-                     Toutput,
-                     device_id);
-}
-
-template <typename Dtype>
-void _AIEISqrt(Tensor Tinput, 
-               Tensor Toutput, 
-               int64_t device_id)
-{
-    auto input  = Tinput.data<Dtype>();
-    auto output  = Toutput.data<Dtype>();
-    int64_t num_ele = Tinput.numel();
-   
-    if (device_id == 0)
-      cuda_aie_isqrt(num_ele, input, output);
-    else if (device_id == 1)
-      cpu_aie_isqrt(num_ele, input, output);
-}
-
-void AIEISqrt(Tensor Tinput, 
-              Tensor Toutput,
-              int64_t device_id){
-  if (Tinput.dtype() == at::kFloat)
-    _AIEISqrt<float>(Tinput, 
-                     Toutput,
-                     device_id);
-  else if (Tinput.dtype() == at::kDouble)
-    _AIEISqrt<double>(Tinput, 
-                      Toutput,
-                      device_id);
-}
-
-template <typename Dtype>
 void _LayernormISqrt(Tensor Tinput, 
-                     Tensor Toutput, 
-                     int64_t device_id)
+                         Tensor Toutput, 
+                         int64_t device_id)
 {
     auto input  = Tinput.data<Dtype>();
     auto output  = Toutput.data<Dtype>();
     int64_t num_ele = Tinput.numel();
-   
+    
     if (device_id == 0)
       cuda_layernorm_isqrt(num_ele, input, output);
     else if (device_id == 1)
@@ -493,16 +437,16 @@ void _LayernormISqrt(Tensor Tinput,
 }
 
 void LayernormISqrt(Tensor Tinput, 
-                    Tensor Toutput,
-                    int64_t device_id){
+                         Tensor Toutput,
+                         int64_t device_id){
   if (Tinput.dtype() == at::kFloat)
     _LayernormISqrt<float>(Tinput, 
-                           Toutput,
-                           device_id);
+                               Toutput,
+                               device_id);
   else if (Tinput.dtype() == at::kDouble)
     _LayernormISqrt<double>(Tinput, 
-                            Toutput,
-                            device_id);
+                                Toutput,
+                                device_id);
 }
 
 template <typename Dtype>

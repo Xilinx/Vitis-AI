@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 
 #include <cmath>
 #include <cstdint>
-#include <cstring>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
@@ -596,7 +595,6 @@ int main(int argc, char* argv[]) {
 
   float* output = new float[total];
   float* output_neon = new float[total];
-  memset(output_neon, 0, sizeof(float)*total);
   __TIC__(softmax_c)
   softmax_c(d, scale, cls, group, output);
   __TOC__(softmax_c)

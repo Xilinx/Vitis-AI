@@ -1,2 +1,0 @@
-from tf_nndct.pruning import get_pruning_runner
-from tf_nndct.pruning import IterativePruningRunner

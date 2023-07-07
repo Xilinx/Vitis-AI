@@ -1,0 +1,45 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: EfficientDet-D2 on COCO.
+input size: 768*768
+float ops: 11.06G
+task: object detection
+framework: tensorflow
+prune: 'no'
+version: 3.0
+files:
+- name: tf_efficientdet-d2_coco_768_768_11.06G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_efficientdet-d2_coco_768_768_11.06G_3.0.zip
+  checksum: 56205c63b1db78005d41f1a3376b8ddc
+- name: efficientdet_d2_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: f15d6532aee4200e0b00253f08b559aa
+- name: efficientdet_d2_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-vck190-r3.0.0.tar.gz
+  checksum: 7566ce898f726d49b39c4eee831c728f
+- name: efficientdet_d2_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=efficientdet_d2_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 93b31ca35ee226d9bd73b2edb95021e5
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

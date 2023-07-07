@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Release Notes 3.0 &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Vitis AI Host (Developer) Machine Requirements" href="system_requirements.html" />
+    <link rel="prev" title="Vitis AI - A Brief Introduction" href="../workflow.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Current Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-and-github-repository">Documentation and Github Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-containers-and-gpu-support">Docker Containers and GPU Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-zoo">Model Zoo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorflow-2-cnn-quantizer">TensorFlow 2 CNN Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorflow-1-cnn-quantizer">TensorFlow 1 CNN Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pytorch-cnn-quantizer">PyTorch CNN Quantizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiler">Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pytorch-optimizer">PyTorch Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorflow-2-optimizer">TensorFlow 2 Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime-and-library">Runtime and Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#profiler">Profiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu-ip-zynq-ultrascale-dpuczdx8g">DPU IP - Zynq Ultrascale+ DPUCZDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu-ip-versal-aie-targets-dpucvdx8g">DPU IP - Versal AIE Targets DPUCVDX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge">DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h">DPU IP - CNN - Alveo Data Center DPUCVDX8H</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dpu-ip-cnn-v70-data-center-dpucv2dx8g">DPU IP - CNN - V70 Data Center DPUCV2DX8G</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#legacy-alveo-dpu-support">Legacy Alveo DPU Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wego">WeGO</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#known-issues">Known Issues</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../board_setup/board_setup.html">Target Setup Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Integrating the DPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_documentation.html">Formal Vitis AI Documents</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Release Notes 3.0</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/reference/release_notes_3.0.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-notes-3-0">
+<h1>Release Notes 3.0<a class="headerlink" href="#release-notes-3-0" title="Permalink to this heading">¶</a></h1>
+<section id="documentation-and-github-repository">
+<h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Migrated core documentation to <a class="reference external" href="https://xilinx.github.io/Vitis-AI/">Github.IO</a>.</p></li>
+<li><p>Incorporated offline HTML documentation for air-gapped users.</p></li>
+<li><p>Restructured user documentation.</p></li>
+<li><p>Restructured repository directory structure for clarity and ease-of-use.</p></li>
+</ul>
+</section>
+<section id="docker-containers-and-gpu-support">
+<h2>Docker Containers and GPU Support<a class="headerlink" href="#docker-containers-and-gpu-support" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Migrated from multi-framework to per framework Docker containers.</p></li>
+<li><p>Enabled Docker ROCm GPU support for quantization and pruning.</p></li>
+</ul>
+<section id="model-zoo">
+<h3>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Updated Model Zoo with commentary regarding dataset licensing restrictions</p></li>
+<li><p>Added 14 new models and deprecated 28 models for a total of 130 models</p></li>
+<li><p>Added super resolution 4x, as well as 2D and 3D semantic segmentation for Medical applications</p></li>
+<li><dl class="simple">
+<dt>Optimized models for benchmarks:</dt><dd><ul>
+<li><p>MLPerf: 3D-Unet</p></li>
+<li><p>FAMBench: MaskRCNN</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Provides optimized backbones supporting YoloX, v4, v5, v6 and EfficientNet-Lite</p></li>
+<li><p>Ease-of-use enhancements, including replacing markdown-format performance tables with a downloadable Model Zoo spreadsheet</p></li>
+<li><p>Added 72 PyTorch and TensorFlow models for AMD EPYC™ CPUs, targeting deployment with ZenDNN</p></li>
+<li><p>Added models to support AMD GPU architectures based on ROCm and MLGraphX</p></li>
+</ul>
+</section>
+<section id="tensorflow-2-cnn-quantizer">
+<h3>TensorFlow 2 CNN Quantizer<a class="headerlink" href="#tensorflow-2-cnn-quantizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Based on TensorFlow 2.10</p></li>
+<li><p>Updated the Model Inspector to for improved accuracy of partitioning results expected from the DPU compiler.</p></li>
+<li><p>Added support for datatype conversions for float models, including FP16, BFloat16, FP32, and double.</p></li>
+<li><p>Added support for exporting quantized ONNX format models (to support the ONNX Runtime).</p></li>
+<li><p>Added support for new layer types including SeparableConv2D and PReLU.</p></li>
+<li><p>Added support for unsigned integer quantization.</p></li>
+<li><p>Added support for automatic modification of input shapes for models with variable input shapes.</p></li>
+<li><p>Added support to align the input and output quantize positions for Concat and Pooling layers.</p></li>
+<li><p>Added error codes and improved the readability of the error and warning messages.</p></li>
+<li><p>Various bug fixes.</p></li>
+</ul>
+</section>
+<section id="tensorflow-1-cnn-quantizer">
+<h3>TensorFlow 1 CNN Quantizer<a class="headerlink" href="#tensorflow-1-cnn-quantizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Separated the quantizer code from the TensorFlow code, making it a plug-in module to the official TensorFlow code base.</p></li>
+<li><p>Added support for exporting quantized ONNX format models (to support the ONNX Runtime).</p></li>
+<li><p>Added support for datatype conversions for float models, including FP16, BFloat16, FP32 and double.</p></li>
+<li><p>Added support for additional operations, including Max, Transpose, and DepthToSpace.</p></li>
+<li><p>Added support for aligning input and output quantize positions of Concat and Pooling operations.</p></li>
+<li><p>Added support for automatic replacement of Softmax with DPU-accelerated Softmax.</p></li>
+<li><p>Added error codes and improved the readability of the error and warning messages.</p></li>
+<li><p>Various bug fixes.</p></li>
+</ul>
+</section>
+<section id="pytorch-cnn-quantizer">
+<h3>PyTorch CNN Quantizer<a class="headerlink" href="#pytorch-cnn-quantizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support PyTorch 1.11 and 1.12.</p></li>
+<li><p>Support exporting torch script format quantized model.</p></li>
+<li><p>QAT supports exporting trained model to ONNX and torch script.</p></li>
+<li><p>Support FP16 model quantization.</p></li>
+<li><p>Optimized Inspector to support more pattern types, and backward compatible of device assignment.</p></li>
+<li><p>Cover more PyTorch operators: more than 560 types of PyTorch operators are supported.</p></li>
+<li><p>Enhanced parsing to support control flow parsing.</p></li>
+<li><p>Enhanced message system with more useful message text.</p></li>
+<li><p>Support fusing and quantization of BatchNorm without affine calculation.</p></li>
+</ul>
+</section>
+<section id="compiler">
+<h3>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for new operators, including: strided_slice, cost volume, correlation 1D &amp; 2D, argmax, group conv2d, reduction_max, reduction_mean</p></li>
+<li><p>Added support for Versal™ AIE-ML architectures DPUCV2DX8G (V70 and Versal AI Edge)</p></li>
+<li><p>Focused effort to improve the intelligibility of error and partitioning messages</p></li>
+</ul>
+</section>
+<section id="pytorch-optimizer">
+<h3>PyTorch Optimizer<a class="headerlink" href="#pytorch-optimizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for fine-grained model pruning (sparsity)</p></li>
+<li><p>OFA support for convolution layers with kernel sizes = (1,3) and dialation</p></li>
+<li><p>OFA support for ConvTranspose2D</p></li>
+<li><p>Added pruning configuration that allows users to specify pruning hyper-parameters</p></li>
+<li><p>Specific exception types are defined for each type of error</p></li>
+<li><p>Enhanced parallel model analysis with increased robustness</p></li>
+<li><p>Support for PyTorch 1.11 and 1.12</p></li>
+</ul>
+</section>
+<section id="tensorflow-2-optimizer">
+<h3>TensorFlow 2 Optimizer<a class="headerlink" href="#tensorflow-2-optimizer" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for Keras ConvTranspose2D, Conv3D, ConvTranspose3D</p></li>
+<li><p>Added support TFOpLambda operator</p></li>
+<li><p>Added pruning configuration that allows users to specify pruning hyper-parameters</p></li>
+<li><p>Specific exception types are defined for each type of error</p></li>
+<li><p>Added support for TensorFlow 2.10</p></li>
+</ul>
+</section>
+<section id="runtime-and-library">
+<h3>Runtime and Library<a class="headerlink" href="#runtime-and-library" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added support for Versal AI Edge VEK280 evaluation kit and Alveo™ V70 accelerator cards (Early Access)</p></li>
+<li><p>Added support for ONNX runtime, with eleven ONNX-specific examples</p></li>
+<li><p>Added four new model libraries to the Vitis™ AI Library and support for fifteen additional models</p></li>
+<li><p>Focused effort to improve the intelligibility of error messages</p></li>
+</ul>
+</section>
+<section id="profiler">
+<h3>Profiler<a class="headerlink" href="#profiler" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Added Profiler support for DPUCV2DX8G (VEK280 Early Access)</p></li>
+<li><p>Added Profiler support for Versal DDR bandwidth profiling</p></li>
+</ul>
+</section>
+<section id="dpu-ip-zynq-ultrascale-dpuczdx8g">
+<h3>DPU IP - Zynq Ultrascale+ DPUCZDX8G<a class="headerlink" href="#dpu-ip-zynq-ultrascale-dpuczdx8g" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded to enable Vivado™ and Vitis 2022.2 release</p></li>
+<li><p>Added support for 1D and 2D Correlation, Argmax and Max</p></li>
+<li><p>Reduced resource utilization</p></li>
+<li><p>Timing closure improvements</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-targets-dpucvdx8g">
+<h3>DPU IP - Versal AIE Targets DPUCVDX8G<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8g" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded to enable Vivado and Vitis 2022.2 release</p></li>
+<li><p>Added support for 1D and 2D Correlation</p></li>
+<li><p>Added support for Argmax and Max along the channel dimension</p></li>
+<li><p>Added support for Cost-Volume</p></li>
+<li><p>Reduced  resource utilization</p></li>
+<li><p>Timing closure improvements</p></li>
+</ul>
+</section>
+<section id="dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge">
+<h3>DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Early access release supporting early adopters with an early, unoptimized AIE-ML DPU</p></li>
+<li><p>Supports most 2D operators (currently does not support 3D operators)</p></li>
+<li><p>Batch size support from 1~13</p></li>
+<li><p>Supports more than 90 Model Zoo models</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-alveo-data-center-dpucvdx8h">
+<h3>DPU IP - CNN - Alveo Data Center DPUCVDX8H<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Upgraded to enable Vitis 2022.2 release</p></li>
+<li><p>Timing closure improvements via scripts supplied for .xo workflows</p></li>
+</ul>
+</section>
+<section id="dpu-ip-cnn-v70-data-center-dpucv2dx8g">
+<h3>DPU IP - CNN - V70 Data Center DPUCV2DX8G<a class="headerlink" href="#dpu-ip-cnn-v70-data-center-dpucv2dx8g" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Early access release supporting early adopters with an unoptimized DPU</p></li>
+<li><p>Supports most 2D operators (currently does not support 3D operators)</p></li>
+<li><p>Batch size 13 support</p></li>
+<li><p>Supports more than 70 Model Zoo models</p></li>
+</ul>
+</section>
+<section id="legacy-alveo-dpu-support">
+<h3>Legacy Alveo DPU Support<a class="headerlink" href="#legacy-alveo-dpu-support" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Vitis AI support for the DPUCAHX8H/DPUCAHX8H-DWC IP, and Alveo™ U50LV and U55C cards was discontinued with the release of Vitis AI 3.0. The final release to support these targets was Vitis AI 2.5.0.</p></li>
+</ul>
+</section>
+<section id="wego">
+<h3>WeGO<a class="headerlink" href="#wego" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Integrated WeGO with the Vitis-AI Quantizer to enable on-the-fly quantization and improve easy-of-use</p></li>
+<li><p>Introduced serialization and deserialization with the WeGO flow to offer the capability of building once and running anytime</p></li>
+<li><p>Incorporated AMD ZenDNN into WeGO, enabling additional optimization for AMD EPYC CPU targets</p></li>
+<li><p>Improve WeGO robustness to offer a better developer experience and support a wider range of models</p></li>
+</ul>
+</section>
+</section>
+<section id="known-issues">
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Bitstream loading error occurs when the AIE-ML DPU application running on the VEK280 kit is interrupted manually</p></li>
+<li><p>HDMI not functional for the early access VEK280 image. The issue will be fixed in the next release</p></li>
+</ul>
+<p>AMD, the AMD Arrow logo, and combinations thereof are trademarks of Advanced Micro Devices, Inc.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+                  <style>
+                        .footer {
+                        position: fixed;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        }
+                  </style>
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../workflow.html" class="btn btn-neutral float-left" title="Vitis AI - A Brief Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="system_requirements.html" class="btn btn-neutral float-right" title="Vitis AI Host (Developer) Machine Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on February 9, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

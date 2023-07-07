@@ -21,54 +21,28 @@ from pytorch_nndct.nn.quantization.ops import bfp_ops
 
 class BFPQuantizer(nn.Module):
 
-  def __init__(self, bitwidth, block_size, axis, rounding_mode='round_even'):
+  def __init__(self,
+               bitwidth,
+               axis,
+               round_mode='round_even',
+               tile_size=8,
+               is_prime=False,
+               memory_format='channels_first',
+               epsilon=torch.pow(torch.tensor(2.0), -23)):
     super(BFPQuantizer, self).__init__()
 
     self.bitwidth = bitwidth
-    self.block_size = block_size
     self.axis = axis
-    self.rounding_mode = rounding_mode
+    self.round_mode = round_mode
+    self.tile_size = tile_size
+    self.epsilon = epsilon
 
-    self._forward_fn = bfp_ops.quantize_to_bfp
-
-  def forward(self, input):
-    return self._forward_fn(input, self.bitwidth, self.block_size, self.axis,
-                            self.rounding_mode)
-
-  def extra_repr(self):
-    return 'bitwidth={}, block_size={}, axis={}, rounding_mode={}'.format(
-        self.bitwidth, self.block_size, self.axis, self.rounding_mode)
-
-class BFPPrimeQuantizer(BFPQuantizer):
-
-  def __init__(self, bitwidth, block_size, axis, rounding_mode='round_even'):
-    super(BFPPrimeQuantizer, self).__init__(bitwidth, block_size, axis,
-                                            rounding_mode)
-
-    self._forward_fn = bfp_ops.quantize_to_bfp_prime
-
-class BFPPrimeSharedQuantizer(BFPPrimeQuantizer):
-
-  def __init__(self,
-               bitwidth,
-               block_size,
-               sub_block_size,
-               sub_block_shift_bits,
-               axis,
-               rounding_mode='round_to_nearest'):
-    super(BFPPrimeSharedQuantizer, self).__init__(bitwidth, block_size, axis,
-                                                  rounding_mode)
-    self.sub_block_size = sub_block_size
-    self.sub_block_shift_bits = sub_block_shift_bits
-    self._forward_fn = bfp_ops.quantize_to_bfp_prime_shared
+    self._forward_fn = bfp_ops.quantize_to_bfp_prime if is_prime else bfp_ops.quantize_to_bfp
 
   def forward(self, input):
-    return self._forward_fn(input, self.bitwidth, self.block_size,
-                            self.sub_block_size, self.sub_block_shift_bits,
-                            self.axis, self.rounding_mode)
+    return self._forward_fn(input, self.bitwidth, self.tile_size,
+                            self.axis, self.round_mode, self.epsilon)
 
   def extra_repr(self):
-    return ('bitwidth={}, block_size={}, sub_block_size={}, '
-            'sub_block_shift_bits={}, axis={}, rounding_mode={}').format(
-                self.bitwidth, self.block_size, self.sub_block_size,
-                self.sub_block_shift_bits, self.axis, self.rounding_mode)
+    return 'bitwidth={}, tile_size={}, axis={}, round_mode={}, epsilon={}'.format(
+        self.bitwidth, self.tile_size, self.axis, self.round_mode, self.epsilon)

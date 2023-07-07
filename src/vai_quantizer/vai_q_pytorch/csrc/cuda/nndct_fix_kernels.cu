@@ -25,41 +25,6 @@
 #include "../../include/cuda/table_data.h"
 
 template<typename Dtype>
-__global__ static void _cuda_vai_round(const int N, 
-                                       const Dtype* src, 
-                                       Dtype* dst, 
-                                       int method){
-  NNDCT_KERNEL_LOOP(index, N){
-    int result_ = 0;
-    _vai_round_device(src[index], result_, method);
-    dst[index] = result_;
-  }
-}
-
-template<typename Dtype>
-void cuda_vai_round(const int N, 
-                    const Dtype* src, 
-                    Dtype* dst, 
-                    int method){
-  _cuda_vai_round<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
-    N, 
-    src, 
-    dst, 
-    method);
-}
-
-template
-void cuda_vai_round<float>(const int N, 
-                           const float* src,
-                           float* dst, 
-                           int method);
-template
-void cuda_vai_round<double>(const int N, 
-                            const double* src,
-                            double* dst, 
-                            int method);
-
-template<typename Dtype>
 __global__ static void _fix_neuron_v1(const int N, 
                                       const Dtype* src, 
                                       const Dtype* fragpos, 
@@ -481,43 +446,6 @@ __device__ static inline int float2int_cuda(float x){
 
 __device__ static inline float int2float_cuda(int x){
   return *((float *)&x);
-}
-
-__device__ static inline float int2bfloat_cuda(int x){
-  int itmp = x;
-  if ((itmp&0x00008000) == 0x00008000) { // half even
-    if ((itmp&0xFFFF) > 0x00008000 || (((itmp&0xFFFF) == 0x00008000) && (itmp&0x10000) == 0x10000)){
-      itmp += 0x10000;
-    }
-  }
-  itmp &= 0xFFFF0000;
-  return *(float *)&itmp;
-}
-
-__device__ static inline float float2bfloat_cuda(float x){
-  int itmp =  *(int*)&x;
-  if ((itmp&0x00008000) == 0x00008000) { // half even
-    if ((itmp&0xFFFF) > 0x00008000 || (((itmp&0xFFFF) == 0x00008000) && (itmp&0x10000) == 0x10000)){
-      itmp += 0x10000;
-    }
-  }
-  itmp &= 0xFFFF0000;
-  return *(float *)&itmp;
-}
-
-__device__ static inline int float2short_cuda(float x){
-  float itmp = float2bfloat_cuda(x);
-  return *(int*)&itmp; 
-}
-
-// downshift one bit for short x
-__device__ static inline int short_downshift_onebit_cuda(int x){ // input: fake short
-  int y, a, b;
-  y = x >> 17;
-  a = (x >> 16) & 1;
-  if (y&1 == 1) // half2even
-    y += a;
-  return y << 17; // fake short
 }
 
 __device__ float exp_sim(short x)
@@ -1191,137 +1119,11 @@ void cuda_log_softmax_sub<double>(const int N,
                                     double* output,
                                     const double* sum);
 
-// aie sqrt(x) = x*(1/sqrt(x)) with Newton iteration for 1/sqrt(x) 
-__device__ float _sqrt(const float x){
-  float x2, y, y3h, out; 
-  int i;
-  x2 = x*0.5;
-  y = x;
-  i = float2int_cuda(y); // bitwise float32 to int32 
-  i = (0x5f37 - (i >> 17)) << 16; // int32 -> int16 -> int32
-  y = int2float_cuda(i); // initial value: bitwise int32 to float32
-
-  // one step Newton iteration: y = y*(1.5 - (x2*y*y)) = 1.5*y - x2*y*y*y
-  y3h = 1.5*y;  // float32
-  y3h = float2bfloat_cuda(y3h); // bfloat with 32 bitwidth
-
-  out = y*x2;  // float32
-  out = float2bfloat_cuda(out); // bfloat with 32 bitwidth
-
-  out = out*y;  // float32
-  out = float2bfloat_cuda(out); // bfloat with 32 bitwidth
-
-  out = out*y;
-  out = float2bfloat_cuda(out); // bfloat with 32 bitwidth
-  
-  out = y3h - out; // float32: 1/sqrt(x) = 1.5*y - x2*y*y*y
-  out = float2bfloat_cuda(out); // bfloat with 32 bitwidth
-
-  out = x*out; // sqrt(x) = x*(1/sqrt(x))
-  out = float2bfloat_cuda(out); // bfloat with 32 bitwidth
-
-  return out;
-}
-
-template<typename Dtype>
-__global__ static void _aie_sqrt(const int N,
-                                 const Dtype* input,
-                                 Dtype* output) {
-  NNDCT_KERNEL_LOOP(i, N){
-    output[i] = _sqrt(input[i]);
-  }
-}
-
-template<typename Dtype>
-void cuda_aie_sqrt(const int N,
-                   const Dtype* input,
-                   Dtype* output)
-{
-  _aie_sqrt<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
-      N,
-      input,
-      output);
-  
-} 
-
-template
-void cuda_aie_sqrt<float>(const int N,
-                          const float* input,
-                          float* output);
-template
-void cuda_aie_sqrt<double>(const int N,
-                           const double* input,
-                           double* output);
-
-/*
-AIE2 isqrt, bfloat16 iteration
-*/
-__device__ float _isqrt(float x){
-  float x2, y, y2, mul2, mul, sub, threehalfs; 
-  int i;
-
-  x2  = x*0.5;
-  x2 = float2bfloat_cuda(x2); // bitwise float32 to bfloat16
-
-  y = x;
-  i = float2short_cuda(y); // bitwise float32 to short (int16) 
-  i = (0x5f37 - (short_downshift_onebit_cuda(i) >> 17)) << 16; // fake short 
-  y = int2bfloat_cuda(i); // initial value: bitwise short to bfloat16
-  threehalfs = float2bfloat_cuda(1.5); // bfloat16
-
-  // 4-steps-Newton iteration: y = y*(1.5 - (x2*y*y))
-  for(int i=0; i<4; i++){
-    y2 = y*y;
-    y2 = float2bfloat_cuda(y2); // bfloat with 32 bitwidth
-
-    mul2 = x2*y2;
-    mul2 = float2bfloat_cuda(mul2);
-
-    sub = threehalfs - mul2;
-    sub = float2bfloat_cuda(sub);
-
-    mul = y*sub;
-    y = float2bfloat_cuda(mul);
-  }
-
-  return y;
-}
-
-template<typename Dtype>
-__global__ static void _aie_isqrt(const int N,
-                                  const Dtype* input,
-                                  Dtype* output) {
-  NNDCT_KERNEL_LOOP(i, N){
-    output[i] = _isqrt(input[i]);
-  }
-}
-
-template<typename Dtype>
-void cuda_aie_isqrt(const int N,
-                    const Dtype* input,
-                    Dtype* output)
-{
-  _aie_isqrt<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
-      N,
-      input,
-      output);
-  
-} 
-
-template
-void cuda_aie_isqrt<float>(const int N,
-                           const float* input,
-                           float* output);
-template
-void cuda_aie_isqrt<double>(const int N,
-                            const double* input,
-                            double* output);
-
 /*
 Layernorm isqrt AIE2, float32 iteration
 */
 __device__ float isqrt(float x){
-  float x2, y, threehalfs; 
+  float x1, x2, y, threehalfs; 
   int i;
   x2  = x*0.5;
   y = x;
@@ -1339,8 +1141,8 @@ __device__ float isqrt(float x){
 
 template<typename Dtype>
 __global__ static void _layernorm_isqrt(const int N,
-                                        const Dtype* input,
-                                        Dtype* output) {
+                                         const Dtype* input,
+                                         Dtype* output) {
   NNDCT_KERNEL_LOOP(i, N){
     output[i] = isqrt(input[i]);
   }
@@ -1348,8 +1150,8 @@ __global__ static void _layernorm_isqrt(const int N,
 
 template<typename Dtype>
 void cuda_layernorm_isqrt(const int N,
-                          const Dtype* input,
-                          Dtype* output)
+                            const Dtype* input,
+                            Dtype* output)
 {
   _layernorm_isqrt<<<NNDCT_GET_BLOCKS(N),NNDCT_CUDA_NUM_THREADS>>>(
       N,
@@ -1360,12 +1162,12 @@ void cuda_layernorm_isqrt(const int N,
 
 template
 void cuda_layernorm_isqrt<float>(const int N,
-                                 const float* input,
-                                 float* output);
+                                    const float* input,
+                                    float* output);
 template
 void cuda_layernorm_isqrt<double>(const int N,
-                                  const double* input,
-                                  double* output);
+                                    const double* input,
+                                    double* output);
 
 /*
 Layernorm Inv Sqrt AIE2

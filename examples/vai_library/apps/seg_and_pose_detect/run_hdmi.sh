@@ -1,1 +1,0 @@
- env XLNX_ENABLE_FINGERPRINT_CHECK=0 DEMO_USE_VIDEO_WRITER=1 DEBUG_VEK280_HDMI=1 ./seg_and_pose_detect seg_960_540.avi  pose_960_540.avi  -t 3 -t 3

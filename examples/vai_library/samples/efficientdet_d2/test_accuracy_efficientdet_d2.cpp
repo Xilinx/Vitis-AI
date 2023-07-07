@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,10 +61,6 @@ int main(int argc, char* argv[]) {
   vector<string> names;
 
   auto efficientdet_d2 = vitis::ai::EfficientDetD2::create(kernel, true);
-  if (!efficientdet_d2) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
   auto database_path = std::string(argv[2]);
 
   LoadImageNames(argv[3], names);

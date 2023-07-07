@@ -1,0 +1,12 @@
+name: vitis-ai-optimizer_tensorflow2
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.8
+  - vai_optimizer_tensorflow2_rocm
+  - pip
+  - pip:
+    - tensorflow-rocm==2.10.1.540
+

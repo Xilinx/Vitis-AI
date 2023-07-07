@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2021 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ double get_xrt_ts(void) {
 
   return xrt_time_s;
 #else
-  return get_ts();
+  return 0.0;
 #endif
 };
 

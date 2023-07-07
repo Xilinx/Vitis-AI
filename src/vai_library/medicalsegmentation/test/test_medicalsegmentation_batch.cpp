@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,6 @@ int main(int argc, char *argv[]) {
 
   auto seg =
       vitis::ai::MedicalSegmentation::create("FPN_Res18_Medical_segmentation");
-  if (!seg) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
 
   std::vector<cv::Mat> arg_input_images;
   std::vector<cv::Size> arg_input_images_size;

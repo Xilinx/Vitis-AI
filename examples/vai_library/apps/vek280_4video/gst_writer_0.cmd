@@ -1,1 +1,0 @@
-gst_writer_0.cmd.large

@@ -342,6 +342,8 @@ class ModuleTransformer(object):
         replace_map.update(orig_to_transformed)
 
     # Make sure the topo is up to date.
+    # import pdb
+    # pdb.set_trace()
     self._rebuild_topo(model, model_topo)
     insert_quantizer(model_topo)
 

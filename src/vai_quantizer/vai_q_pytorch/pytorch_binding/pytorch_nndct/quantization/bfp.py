@@ -11,12 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import abc
 
 from torch import nn
-from torch import Tensor
-from typing import Any, NoReturn, Optional, Sequence, Tuple, Union, List
 
 from nndct_shared.base import NNDCT_OP as OpTypes
 from nndct_shared.optimization.commander import OptimizeCommander
@@ -35,7 +34,7 @@ from pytorch_nndct.utils import module_util as mod_util
 
 _spec_generator = registry.Registry('Runtime Spec Generator')
 
-class RegisterRuntimeSpec(object):
+class RegisterSpec(object):
   """A decorator for registering the specification generating function for
   a op type.
 
@@ -43,7 +42,7 @@ class RegisterRuntimeSpec(object):
   raised.
 
   For example,
-    @RegisterRuntimeSpec(OpTypes.CONV2D)
+    @RegisterSpec(OpTypes.CONV2D)
     def spec_for_conv2d():
       ...
   """
@@ -64,10 +63,10 @@ class RegisterRuntimeSpec(object):
 
 class QuantizeScheme(abc.ABC):
 
-  def __init__(self, model, graph, config):
+  def __init__(self, model, graph, runtime_config):
     self.model = model
     self.graph = graph
-    self.config = config
+    self.runtime_config = runtime_config
 
   @abc.abstractmethod
   def get_transforms(self):
@@ -78,54 +77,14 @@ class QuantizeScheme(abc.ABC):
     raise NotImplementedError
 
   def apply(self):
-    node_to_spec = self.get_runtime_specification()
-    for node_name, spec in node_to_spec.items():
-      if len(spec.weight_quantizers) or len(spec.input_quantizers) or len(
-          spec.output_quantizers):
-        module = mod_util.get_module_by_node(self.model, node_name)
-        node = self.graph.node(node_name)
-        # A quantized op must be implemented as a module.
-        if not module:
-          raise ValueError(
-              ('Can not quantize node "{}({})" as it is not a '
-               'torch.nn.Module object, please re-implement this operation '
-               'as a module. The original source range:\n{}').format(
-                   node.name, node.op.type, node.source_range))
+    model_topo = model_topo_mod.build_model_topo(
+        self.graph, self.get_runtime_specification())
 
-    model_topo = model_topo_mod.build_model_topo(self.graph, node_to_spec)
     transformer = mt.ModuleTransformer(self.model, model_topo,
                                        self.get_transforms())
-    return transformer.transform()[0]
+    return transformer.transform()
 
 class BFPQuantizeScheme(QuantizeScheme):
-
-  def __init__(self, model, graph, config):
-    super(BFPQuantizeScheme, self).__init__(model, graph, config)
-
-    prime_mode_to_quantizer = {
-        None: nnq.BFPQuantizer,
-        'normal': nnq.BFPPrimeQuantizer,
-        'shared': nnq.BFPPrimeSharedQuantizer
-    }
-
-    if config.bfp.prime.mode not in prime_mode_to_quantizer:
-      raise ValueError(
-          f'BFP prime mode must be one of {prime_mode_to_quantizer.keys()}, but given {config.bfp.prime.mode}'
-      )
-    self.quantizer_cls = prime_mode_to_quantizer[config.bfp.prime.mode]
-
-    self.bfp_args = self._bfp_args_from_runtime_config()
-
-  def _bfp_args_from_runtime_config(self):
-    args = {
-        'bitwidth': self.config.bfp.bitwidth,
-        'block_size': self.config.bfp.block_size,
-        'rounding_mode': self.config.bfp.rounding_mode,
-    }
-    if self.config.bfp.prime.mode == 'shared':
-      args['sub_block_size'] = self.config.bfp.prime.sub_block_size
-      args['sub_block_shift_bits'] = self.config.bfp.prime.sub_block_shift_bits
-    return args
 
   def get_transforms(self):
     return [
@@ -133,7 +92,6 @@ class BFPQuantizeScheme(QuantizeScheme):
         transforms_mod.QuantizeConv3dBatchNorm(),
         transforms_mod.QuantizeConvNd(),
         transforms_mod.QuantizeLinear(),
-        #transforms_mod.QuantizeBatchNormNd(),
         transforms_mod.ReplaceSoftmax(),
         transforms_mod.ReplaceSigmoid(),
         transforms_mod.ReplaceTanh(),
@@ -144,116 +102,147 @@ class BFPQuantizeScheme(QuantizeScheme):
   def get_runtime_specification(self):
     node_to_spec = {}
     for node in self.graph.nodes:
-      spec = self.default_spec()
-      generator = _spec_generator.get(node.op.type, None)
-      if generator:
-        generator(self, spec)
+      generator = _spec_generator.get(node.op.type, self.__class__.default_spec)
+      spec = generator(self)
+      if not spec or not isinstance(spec, config_mod.LayerRuntimeSpec):
+        raise ValueError(
+            'Expecting a LayerRuntimeSpec object, but got {}'.format(
+                type(spec)))
       node_to_spec[node.name] = spec
     return node_to_spec
 
+  def _bfp_args_from_runtime_config(self):
+    return {
+        'bitwidth':
+            self.runtime_config.bfp_bitwidth,
+        'round_mode':
+            self.runtime_config.round_mode,
+        'tile_size':
+            self.runtime_config.bfp_tile_size,
+        'is_prime':
+            True if self.runtime_config.data_format == 'bfpprime' else False
+    }
+
   def default_spec(self):
-    return config_mod.LayerRuntimeSpec(self.config)
+    return config_mod.LayerRuntimeSpec(self.runtime_config)
 
-  @RegisterRuntimeSpec(OpTypes.CONV2D)
-  def conv_spec(self, spec):
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=1))
-    spec.add_weight_quantizer('weight',
-                              self.quantizer_cls(**self.bfp_args, axis=1))
+  @RegisterSpec(OpTypes.CONV2D)
+  def conv_spec(self):
+    bfp_args = self._bfp_args_from_runtime_config()
+
+    spec = self.default_spec()
+    spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args, axis=1))
+    spec.add_weight_quantizer('weight', nnq.BFPQuantizer(**bfp_args, axis=1))
     spec.add_weight_quantizer('bias', nn.Identity())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.DEPTHWISE_CONV2D)
-  def depthwise_conv_spec(self, spec):
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=1))
-    spec.add_weight_quantizer('weight',
-                              self.quantizer_cls(**self.bfp_args, axis=1))
+  @RegisterSpec(OpTypes.DEPTHWISE_CONV2D)
+  def depth_conv_spec(self):
+    bfp_args = self._bfp_args_from_runtime_config()
+
+    spec = self.default_spec()
+    spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args, axis=1))
+    spec.add_weight_quantizer('weight', nnq.BFPQuantizer(**bfp_args, axis=1))
     spec.add_weight_quantizer('bias', nn.Identity())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.CONVTRANSPOSE2D)
-  def conv_transpose_spec(self, spec):
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=1))
-    spec.add_weight_quantizer('weight',
-                              self.quantizer_cls(**self.bfp_args, axis=1))
+  @RegisterSpec(OpTypes.DENSE)
+  def linear_spec(self):
+    bfp_args = self._bfp_args_from_runtime_config()
+
+    spec = self.default_spec()
+    spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args, axis=-1))
+    spec.add_weight_quantizer('weight', nnq.BFPQuantizer(**bfp_args, axis=-1))
     spec.add_weight_quantizer('bias', nn.Identity())
+    return spec
 
-  #@RegisterRuntimeSpec(OpTypes.BATCH_NORM)
-  #def depthwise_conv_spec(self, spec):
-  #  spec.add_input_quantizer(nnq.BFloat16Quantizer())
-  #  spec.add_weight_quantizer('weight', nnq.BFloat16Quantizer())
-  #  spec.add_weight_quantizer('bias', nnq.BFloat16Quantizer())
-  #  spec.add_weight_quantizer('running_mean', nnq.BFloat16Quantizer())
-  #  spec.add_weight_quantizer('running_var', nnq.BFloat16Quantizer())
-
-  @RegisterRuntimeSpec(OpTypes.DENSE)
-  def linear_spec(self, spec):
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=-1))
-    spec.add_weight_quantizer('weight',
-                              self.quantizer_cls(**self.bfp_args, axis=-1))
-    spec.add_weight_quantizer('bias', nn.Identity())
-
-  @RegisterRuntimeSpec(OpTypes.ADAPTIVEAVGPOOL2D)
-  def adaptive_avg_pool_spec(self, spec):
-    # input: (N, C, H, W) or (C, H, W)
+  @RegisterSpec(OpTypes.ADAPTIVEAVGPOOL2D)
+  def adaptive_avg_pool_spec(self):
+    spec = self.default_spec()
     spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  #@RegisterRuntimeSpec(OpTypes.MULTIPLY)
-  #def multiply_spec(self, spec):
-  #  spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args))
-  #  spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args))
+  @RegisterSpec(OpTypes.ADD)
+  def add_spec(self):
+    spec = self.default_spec()
+    spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.MATMUL)
-  def matmul_spec(self, spec):
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=-1))
-    spec.add_input_quantizer(self.quantizer_cls(**self.bfp_args, axis=-2))
+  #@RegisterSpec(OpTypes.MULTIPLY)
+  #def multiply_spec(self):
+  #  spec = self.default_spec()
+  #  bfp_args = self._bfp_args_from_runtime_config()
+  #  spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args))
+  #  spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args))
+  #  return spec
+
+  @RegisterSpec(OpTypes.MATMUL)
+  def matmul_spec(self):
+    spec = self.default_spec()
+    bfp_args = self._bfp_args_from_runtime_config()
+    spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args, axis=-1))
+    spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args, axis=-2))
     spec.add_output_quantizer(nnq.FP32Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.GELU)
-  def gelu_spec(self, spec):
-    if mode.is_no_approx(self.config.non_linear_approx.mode):
+  @RegisterSpec(OpTypes.SOFTMAX)
+  def softmax_spec(self):
+    spec = self.default_spec()
+    bfp_args = self._bfp_args_from_runtime_config()
+    if not mode.is_exp_poly(self.runtime_config.approx_mode):
       spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.SIGMOID)
-  def sigmoid_spec(self, spec):
-    if mode.is_no_approx(self.config.non_linear_approx.mode):
-      spec.add_input_quantizer(nnq.BFloat16Quantizer())
+  #@RegisterSpec(OpTypes.GELU)
+  @RegisterSpec('aten::gelu')
+  def gelu_spec(self):
+    spec = self.default_spec()
+    spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.SOFTMAX)
-  def softmax_spec(self, spec):
-    if mode.is_no_approx(self.config.non_linear_approx.mode):
+  @RegisterSpec(OpTypes.SIGMOID)
+  def sigmoid_spec(self):
+    spec = self.default_spec()
+    bfp_args = self._bfp_args_from_runtime_config()
+    if self.runtime_config.approx_mode == 'no_approx':
+      spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args))
+    else:
       spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.TANH)
-  def tanh_spec(self, spec):
-    if mode.is_no_approx(config.non_linear_approx.mode):
+  @RegisterSpec(OpTypes.TANH)
+  def tanh_spec(self):
+    spec = self.default_spec()
+    bfp_args = self._bfp_args_from_runtime_config()
+    if self.runtime_config.approx_mode == 'no_approx':
+      spec.add_input_quantizer(nnq.BFPQuantizer(**bfp_args))
+    else:
       spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
-  @RegisterRuntimeSpec(OpTypes.LAYER_NORM)
-  def layernorm_spec(self, spec):
-    if mode.is_no_approx(self.config.non_linear_approx.mode):
-      spec.add_input_quantizer(nnq.BFloat16Quantizer())
-      spec.add_weight_quantizer('weight', nnq.BFloat16Quantizer())
+  @RegisterSpec(OpTypes.LAYER_NORM)
+  def layernorm_spec(self):
+    spec = self.default_spec()
+    #spec.add_input_quantizer(nnq.BFloat16Quantizer())
+    return spec
 
 def _get_graph(model, inputs):
   return parse.TorchParser()(model._get_name(), model, inputs)
 
-def quantize_model(model: nn.Module,
-                   inputs: Tuple[Tensor, ...],
-                   dtype: str = 'mx6',
-                   config_file: str = None) -> nn.Module:
-  if config_file:
-    logging.info(f'Loading config from {config_file}')
-    rt_config = config_mod.RuntimeConfig.from_yaml(config_file)
-  else:
-    logging.info(f'Getting config for {dtype}')
-    rt_config = config_mod.get(dtype)
-  logging.info('RuntimeConfig: {}'.format(rt_config))
+def quantize_model(model, inputs, config_file):
+  runtime_config = config_mod.RuntimeConfig.from_json(config_file)
+  logging.info('RunConfig: {}'.format(runtime_config))
 
-  graph = _get_graph(model, inputs)
+  parser = parse.TorchParser()
+  graph = parser(model._get_name(), model, inputs)
 
   #if not runtime_config.training:
   #  model, graph = equalize_weights_cross_conv_layers(model, inputs)
 
-  scheme = BFPQuantizeScheme(model, graph, rt_config)
-  return scheme.apply()
+  scheme = BFPQuantizeScheme(model, graph, runtime_config)
+  model, model_topo, module_map = scheme.apply()
+  return model
 
 def _attach_node_to_model(model, graph):
   for node in graph.nodes:

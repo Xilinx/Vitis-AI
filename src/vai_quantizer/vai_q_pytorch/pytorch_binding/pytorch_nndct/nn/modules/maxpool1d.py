@@ -22,6 +22,7 @@ from torch.autograd import Variable
 
 from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors
 import pytorch_nndct.utils as py_utils
 
 __all__ = ['MaxPool1d']

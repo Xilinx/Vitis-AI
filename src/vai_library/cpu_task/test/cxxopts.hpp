@@ -1,5 +1,5 @@
 /* 
- *  Copyright 2022-2023 Advanced Micro Devices Inc.
+ *  Copyright 2019 Xilinx Inc.
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -478,17 +478,10 @@ namespace cxxopts
         {
           if (negative)
           {
-              // supress coverity complain
-              // integer_overflow: integer operation result is out of range
-              // if T=int32_t and U=int, then the "-min()" is out of range.
-              // U u0 = static_cast<U>(-(std::numeric_limits<T>::min()+1)); 
-              T t0 = std::numeric_limits<T>::min(); 
-              T t1 = t0<0? -(t0+1) : -t0;
-              U u0 = static_cast<U>(t1); 
-              if (u > u0)
-              {
-                throw argument_incorrect_type(text);
-              }
+            if (u > static_cast<U>(-std::numeric_limits<T>::min()))
+            {
+              throw argument_incorrect_type(text);
+            }
           }
           else
           {
@@ -1119,22 +1112,16 @@ namespace cxxopts
     const OptionValue&
     operator[](const std::string& option) const
     {
-      // suppress coverity complain
-      try{
-        auto iter = m_options.find(option);
+      auto iter = m_options.find(option);
 
-        if (iter == m_options.end())
-        {
-          throw option_not_present_exception(option);
-        }
+      if (iter == m_options.end())
+      {
+        throw option_not_present_exception(option);
+      }
 
-        auto riter = m_results.find(iter->second);
+      auto riter = m_results.find(iter->second);
 
-        return riter->second;
-      }catch(std::exception & e){
-        std::cerr <<"Should never run here with exception " << e.what() <<"\n";
-        abort();
-      } 
+      return riter->second;
     }
 
     const std::vector<KeyValue>&
@@ -1448,11 +1435,7 @@ ParseResult::ParseResult
 , m_positional(std::move(positional))
 , m_next_positional(m_positional.begin())
 {
-  // supress coverity complain
-  try{
-    parse(argc, argv);
-  } catch (...) {
-  }
+  parse(argc, argv);
 }
 
 inline
@@ -1472,57 +1455,52 @@ OptionAdder::operator()
   std::string arg_help
 )
 {
-  // suppress coverity complain
-  try{
-    std::match_results<const char*> result;
-    std::regex_match(opts.c_str(), result, option_specifier);
-  
-    if (result.empty())
+  std::match_results<const char*> result;
+  std::regex_match(opts.c_str(), result, option_specifier);
+
+  if (result.empty())
+  {
+    throw invalid_option_format_error(opts);
+  }
+
+  const auto& short_match = result[2];
+  const auto& long_match = result[3];
+
+  if (!short_match.length() && !long_match.length())
+  {
+    throw invalid_option_format_error(opts);
+  } else if (long_match.length() == 1 && short_match.length())
+  {
+    throw invalid_option_format_error(opts);
+  }
+
+  auto option_names = []
+  (
+    const std::sub_match<const char*>& short_,
+    const std::sub_match<const char*>& long_
+  )
+  {
+    if (long_.length() == 1)
     {
-      throw invalid_option_format_error(opts);
+      return std::make_tuple(long_.str(), short_.str());
     }
-  
-    const auto& short_match = result[2];
-    const auto& long_match = result[3];
-  
-    if (!short_match.length() && !long_match.length())
+    else
     {
-      throw invalid_option_format_error(opts);
-    } else if (long_match.length() == 1 && short_match.length())
-    {
-      throw invalid_option_format_error(opts);
+      return std::make_tuple(short_.str(), long_.str());
     }
-  
-    auto option_names = []
-    (
-      const std::sub_match<const char*>& short_,
-      const std::sub_match<const char*>& long_
-    )
-    {
-      if (long_.length() == 1)
-      {
-        return std::make_tuple(long_.str(), short_.str());
-      }
-      else
-      {
-        return std::make_tuple(short_.str(), long_.str());
-      }
-    }(short_match, long_match);
-  
-    m_options.add_option
-    (
-      m_group,
-      std::get<0>(option_names),
-      std::get<1>(option_names),
-      desc,
-      value,
-      std::move(arg_help)
-    );
-    return *this;
-  }catch(std::exception & e){
-    std::cerr <<"Should never run here with exception " << e.what() <<"\n";
-    abort();
-  } 
+  }(short_match, long_match);
+
+  m_options.add_option
+  (
+    m_group,
+    std::get<0>(option_names),
+    std::get<1>(option_names),
+    desc,
+    value,
+    std::move(arg_help)
+  );
+
+  return *this;
 }
 
 inline
@@ -1661,8 +1639,8 @@ inline
 ParseResult
 Options::parse(int& argc, char**& argv)
 {
-    ParseResult result(m_options, m_positional, argc, argv);
-    return result;
+  ParseResult result(m_options, m_positional, argc, argv);
+  return result;
 }
 
 inline
@@ -1821,12 +1799,7 @@ Options::add_option
 
   if (s.size() > 0)
   {
-    // supress coverity complain
-    try{
-      add_one_option(s, option);
-    }catch(const OptionException& e){
-      std::cerr <<"should never run here. exception: " << e.what() <<" \n";
-    }
+    add_one_option(s, option);
   }
 
   if (l.size() > 0)
@@ -1853,18 +1826,12 @@ Options::add_one_option
   std::shared_ptr<OptionDetails> details
 )
 {
-  // suppress coverity complain
-  try{
-       auto in = m_options.emplace(option, details);
-     
-       if (!in.second)
-       {
-         throw option_exists_error(option);
-       }
-  }catch(std::exception & e){
-    std::cerr <<"Should never run here with exception " << e.what() <<"\n";
-    abort();
-  } 
+  auto in = m_options.emplace(option, details);
+
+  if (!in.second)
+  {
+    throw option_exists_error(option);
+  }
 }
 
 inline

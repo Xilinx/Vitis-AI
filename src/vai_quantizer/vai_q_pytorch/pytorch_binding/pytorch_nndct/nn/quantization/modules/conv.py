@@ -17,8 +17,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import warnings
 
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
-
+from distutils.version import LooseVersion
 from typing import Optional, List, Tuple, Union
 
 from torch import Tensor
@@ -239,7 +238,7 @@ class _QuantizedConvTransposeNd(_QuantizedConvNd,
         F.conv_transpose1d, F.conv_transpose2d, F.conv_transpose3d
     ][dim - 1]
 
-    if compare_torch_version(CmpFlag.LESS, "1.12.0"):
+    if torch.__version__ < LooseVersion('1.12.0'):
       self.forward = self.forward_prior_torch112
     else:
       self.forward = self.forward_from_torch112

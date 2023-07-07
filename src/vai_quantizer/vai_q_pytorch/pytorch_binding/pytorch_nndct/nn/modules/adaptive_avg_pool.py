@@ -20,7 +20,8 @@ import math
 import torch
 
 import pytorch_nndct.utils as py_utils
-from nndct_shared.quantization import maybe_get_quantizer, quantize_tensors
+from nndct_shared.quantization import maybe_get_quantizer
+from nndct_shared.quantization import quantize_tensors 
 from nndct_shared.utils import NndctOption, NndctScreenLogger
 
 __all__ = ['AdaptiveAvgPool2d']

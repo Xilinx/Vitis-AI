@@ -13,16 +13,14 @@
 # limitations under the License.
 
 import copy
+import collections
 import json
-import yaml
-
-from typing import Union
 
 class ConfigDict(object):
 
   def __init__(self, params=None):
     if params:
-      self.load(params)
+      self.load(params, is_strict=False)
 
   def load(self, params):
     for k, v in params.items():
@@ -33,8 +31,17 @@ class ConfigDict(object):
       else:
         self.__dict__[k] = copy.deepcopy(v)
 
+  def _set(self, k, v):
+    if isinstance(v, dict):
+      self.__dict__[k] = ConfigDict(v)
+    else:
+      self.__dict__[k] = copy.deepcopy(v)
+
   def __setattr__(self, k, v):
     """Sets the value of the existing key.
+
+    Note that this does not allow directly defining a new key. Use the
+    `override` method with `is_strict=False` instead.
 
     Args:
       k: the key string.
@@ -43,10 +50,7 @@ class ConfigDict(object):
     Raises:
       KeyError: if k is not defined in the ConfigDict.
     """
-    if isinstance(v, dict):
-      self.__dict__[k] = ConfigDict(v)
-    else:
-      self.__dict__[k] = copy.deepcopy(v)
+    self._set(k, v)
 
   def __getattr__(self, k):
     """Gets the value of the existing key.
@@ -60,7 +64,6 @@ class ConfigDict(object):
     Raises:
       AttributeError: if k is not defined in the ConfigDict.
     """
-
     if k not in self.__dict__.keys():
       raise AttributeError('The key `{}` does not exist. '.format(k))
     return self.__dict__[k]
@@ -73,7 +76,7 @@ class ConfigDict(object):
     """Accesses through built-in dictionary get method."""
     return self.__dict__.get(key, value)
 
-  def as_dict(self):
+  def values(self):
     key_values = {}
     for k, v in self.__dict__.items():
       if isinstance(v, ConfigDict):
@@ -83,89 +86,25 @@ class ConfigDict(object):
     return key_values
 
   def __str__(self):
-    return '{}'.format(self.as_dict())
+    return '{}'.format(self.values())
 
-class Config(ConfigDict):
+class RuntimeConfig(ConfigDict):
+
+  def __init__(self, params=None):
+    self.data_format = 'fp32'
+    self.bfp_bitwidth = 16
+    self.bfp_tile_size = 8
+    self.round_mode = 'round_even'
+    self.approx_mode = 'exp_poly'
+    self.approx_degree = 3
+    self.exp_table_size = 1
+    self.training = False
+    self.load(params)
+
   @classmethod
   def from_json(cls, path):
     with open(path, 'r') as f:
       return cls(json.load(f))
-
-  @classmethod
-  def from_yaml(cls, path):
-    with open(path, 'r') as f:
-      return cls(yaml.load(f, Loader=yaml.FullLoader))
-
-class RuntimeConfig(Config):
-
-  def __init__(self, params=None):
-    self.bfp: BFPConfig = BFPConfig()
-    self.non_linear_approx: NonLinearApproxConfig = NonLinearApproxConfig()
-
-    super(RuntimeConfig, self).__init__(params)
-
-  @classmethod
-  def mx6(cls):
-    cfg = cls()
-    cfg.bfp.bitwidth = 13
-    cfg.bfp.block_size = 16
-    cfg.bfp.prime.mode = PrimeModes.SHARED
-    cfg.bfp.prime.sub_block_size = 2
-    cfg.bfp.prime.sub_block_shift_bits = 1
-    cfg.bfp.rounding_mode = 'round_to_nearest'
-    return cfg
-
-  @classmethod
-  def mx9(cls):
-    cfg = cls.mx6()
-    cfg.bfp.bitwidth = 16
-    return cfg
-
-class BFPConfig(Config):
-  def __init__(self, params=None):
-    self.bitwidth: int = 16
-    self.block_size: int = 8
-    self.rounding_mode: str = 'round_to_nearest'
-    self.prime: BFPPrimeConfig = BFPPrimeConfig()
-
-    super(BFPConfig, self).__init__(params)
-
-class BFPPrimeConfig(Config):
-  def __init__(self, params=None):
-    self.mode: PrimeModes = None
-    self.sub_block_size: int = 2
-    self.sub_block_shift_bits: int = 1
-
-    super(BFPPrimeConfig, self).__init__(params)
-
-class PrimeModes(object):
-  NORMAL = 'normal'
-  SHARED = 'shared'
-
-class NonLinearApproxConfig(Config):
-  def __init__(self, params=None):
-    self.mode: str = 'no_approx'
-    self.degree: int = 3
-    self.exp_table_size: int = 1
-
-    super(NonLinearApproxConfig, self).__init__(params)
-
-class FPConfig(Config):
-  def __init__(self, params=None):
-    self.exp_bits: int = 5
-    self.exp_bias_mode: str = 'ieee'
-    self.exp_bias: Union[None, int] = None
-
-    super(FPConfig, self).__init__(params)
-
-mx6 = RuntimeConfig.mx6
-mx9 = RuntimeConfig.mx9
-
-def get(identifier):
-  globs = globals()
-  if identifier not in globs:
-    raise ValueError(f'Unknown dtype: {identifier}')
-  return globs[identifier]()
 
 class LayerRuntimeSpec(object):
 
@@ -174,52 +113,21 @@ class LayerRuntimeSpec(object):
     self._output_quantizers = []
     self._weight_quantizers = {}
 
-    self._config: RuntimeConfig = config
+    self._config = config
 
   def add_weight_quantizer(self, name, quantizer):
-    self._weight_quantizers[name] = quantizer
-
-  def set_weight_quantizer(self, name, quantizer):
     self._weight_quantizers[name] = quantizer
 
   def add_input_quantizer(self, quantizer):
     self._input_quantizers.append(quantizer)
 
-  def set_input_quantizer(self, index, quantizer):
-    assert isinstance(index, int), f'index must be int, but given {index}'
-    while index > len(self._input_quantizers):
-      self.add_input_quantizer(None)
-    self.add_input_quantizer(quantizer)
-
   def add_output_quantizer(self, quantizer):
     self._output_quantizers.append(quantizer)
-
-  def set_output_quantizer(self, index, quantizer):
-    assert isinstance(index, int), f'index must be int, but given {index}'
-    while index > len(self._output_quantizers):
-      self.add_output_quantizer(None)
-    self.add_output_quantizer(quantizer)
-
-  def maybe_get_weight_quantizer(self, name):
-    if name not in self._weight_quantizers:
-      return None
-    return self._weight_quantizers[name]
 
   def get_weight_quantizer(self, name):
     if name not in self._weight_quantizers:
       raise ValueError('No quantizer for given weight name "{}"'.format(name))
     return self._weight_quantizers[name]
-
-  def _get_io_quantizer(self, index, quantizers):
-    if index >= len(quantizers):
-      raise IndexError(f'Index out of range: {index}')
-    return quantizers[index]
-
-  def get_input_quantizer(self, index):
-    return self._get_io_quantizer(index, self._input_quantizers)
-
-  def get_output_quantizer(self, index):
-    return self._get_io_quantizer(index, self._output_quantizers)
 
   @property
   def weight_quantizers(self):

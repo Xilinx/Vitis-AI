@@ -26,7 +26,6 @@ from setuptools.dist import Distribution
 version_path = os.path.join(
     os.path.dirname(__file__), 'tensorflow_model_optimization', 'python/core')
 sys.path.append(version_path)
-#sys.path.append('tensorflow_model_optimization/python/core/quantization/keras/vitis/vai_q_tensorflow')
 from version import __version__  # pylint: disable=g-import-not-at-top
 
 # TODO(alanchiao): add explicit Tensorflow requirement once Tensorflow
@@ -35,7 +34,7 @@ from version import __version__  # pylint: disable=g-import-not-at-top
 # also installs the gpu package if they need gpu support. The latter allows
 # us (and our dependents) to maintain a single package instead of two.
 REQUIRED_PACKAGES = [
-    'numpy~=1.22',
+    'numpy~=1.14',
     'six~=1.10',
     'enum34~=1.1;python_version<"3.4"',
     'dm-tree~=0.1.1',
@@ -81,7 +80,7 @@ setup(
     # Add in any packaged data.
     include_package_data=True,
     package_data={'': ['*.so', '*.json']},
-    exclude_package_data={'': ['BUILD', '*.h', '*.cc', 'setup.py']},
+    exclude_package_data={'': ['BUILD', '*.h', '*.cc']},
     zip_safe=False,
     distclass=BinaryDistribution,
     cmdclass={

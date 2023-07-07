@@ -49,17 +49,8 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
     self.deviation = 0.0
 
   def forward(self, input):
-    if self.quantizer is None or NndctOption.nndct_quant_off.value is True:
-        return self.fp32_forward(input)
-    else:
-        return self.fake_quantize_forward(input)
-
-  def fp32_forward(self, input):
-    return super().forward(input)
-
-  def fake_quantize_forward(self, input):
     # backup bias for bias correction feature
-    if (not self.param_saved ):
+    if (not self.param_saved):
       if NndctOption.nndct_param_corr.value > 0:
         # backup orignal float parameters
         if self.quant_mode == 1:
@@ -68,11 +59,11 @@ class deephi_Conv2d(torch.nn.modules.conv.Conv2d):
             self.bias_bak = self.bias.detach().clone()
         # adjust bias
         if self.quant_mode == 2 and self.bias is not None:
-          if not self.quantizer.has_bias_corr(self.node):
+          if self.node.name not in self.quantizer.bias_corr.keys():
             NndctScreenLogger().error2user(QError.BIAS_CORRECTION, f"Bias correction file in quantization result directory does not match current model.")
             exit(2)
           self.bias.data = torch.sub(self.bias.data, torch.tensor(
-              self.quantizer.get_bias_corr(self.node),
+              self.quantizer.bias_corr[self.node.name],
               device=self.bias.data.device,
               dtype=self.bias.data.dtype))
       self.param_saved = True

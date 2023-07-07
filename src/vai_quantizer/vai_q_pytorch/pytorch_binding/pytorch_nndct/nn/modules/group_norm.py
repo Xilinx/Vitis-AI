@@ -21,8 +21,7 @@ from torch.autograd import Variable
 import math
 
 from nndct_shared.utils import NndctOption, NndctScreenLogger, QError
-from nndct_shared.quantization import kernel_need_quant
-from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors, kernel_need_quant
 from nndct_shared.quantization import maybe_get_quantizer
 import pytorch_nndct.utils as py_utils
 import torch.nn.functional as F
@@ -43,13 +42,12 @@ class deephi_GroupNorm(torch.nn.modules.normalization.GroupNorm):
 
     
   def forward(self, input):
+    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
+ 
     if not kernel_need_quant(self.quantizer, self.node):
-      output = super().forward(input)
+      output = super().forward(qinput)
       output = quantize_tensors([output], self.node)[0]
       return output
-    
-    # quantize input tensor
-    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
     
     params = []
     if self.weight is not None:
@@ -86,11 +84,11 @@ class deephi_GroupNorm(torch.nn.modules.normalization.GroupNorm):
     input_node = self.quantizer.configer.get_Nndctnode(input_name)
     if not self.quantizer.configer.node_output_quantizable(input_node):
       input_name = input_node.in_nodes[0]
+    ifp = self.quantizer.get_quant_config(input_name, False)[1]
+    wfp = self.quantizer.get_quant_config(self.params_name[0], False, tensor_type='param')[1] if self.affine else None
+    bfp = self.quantizer.get_quant_config(self.params_name[1], False, tensor_type='param')[1] if self.affine else None
 
     if NndctOption.nndct_op_groupnorm_mode.value == "ipu_8bw" and (not self.quantizer.exporting):
-      ifp = self.quantizer.get_quant_config(input_name, False)[1]
-      wfp = self.quantizer.get_quant_config(self.params_name[0], False, tensor_type='param')[1] if self.affine else None
-      bfp = self.quantizer.get_quant_config(self.params_name[1], False, tensor_type='param')[1] if self.affine else None
       output = self.simulateGroupNorm(qinput, self.num_groups, self.affine, qparams[0], qparams[1], ifp, wfp, bfp)
       output = quantize_tensors([output], self.node, method=4)[0]
     else:

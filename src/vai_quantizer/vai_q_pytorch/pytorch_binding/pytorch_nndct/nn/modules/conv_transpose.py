@@ -25,9 +25,8 @@ from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors 
 from .quant_noise import eval_qnoise
 import pytorch_nndct.utils as py_utils
+import pytorch_nndct.utils.jit_utils as jit_utils
 import torch.nn.functional as F
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
-
 __all__ = ['ConvTranspose2d']
 
 class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
@@ -60,11 +59,11 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
             self.bias_bak = self.bias.detach().clone()
         # adjust bias
         if self.quant_mode == 2 and self.bias is not None:
-          if not self.quantizer.has_bias_corr(self.node):
+          if self.node.name not in self.quantizer.bias_corr.keys():
             NndctScreenLogger().error2user(QError.BIAS_CORRECTION, f"Bias correction file in quantization result directory does not match current model.")
             exit(2)
           self.bias.data = torch.sub(self.bias.data, torch.tensor(
-              self.quantizer.get_bias_corr(self.node),
+              self.quantizer.bias_corr[self.node.name],
               device=self.bias.data.device,
               dtype=self.bias.data.dtype))
       self.param_saved = True
@@ -109,7 +108,7 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
 
     # quantize input tensor
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
-    if compare_torch_version(CmpFlag.LESS_EQUAL, "1.11.0"):
+    if jit_utils.get_torch_version() <= 1110:
       output_padding = self._output_padding(qinput, 
                                             None, 
                                             self.stride, 
@@ -134,7 +133,7 @@ class deephi_ConvTranspose2d(torch.nn.modules.conv.ConvTranspose2d):
       #rate = NndctOption.nndct_param_corr_rate.value
       # statistic of quantization error
       if (self.quant_mode == 1 and not self.stop):
-        if compare_torch_version(CmpFlag.LESS_EQUAL, "1.11.0"):
+        if jit_utils.get_torch_version() <= 1110:
           output_padding = self._output_padding(input, 
                                                 None, 
                                                 self.stride, 

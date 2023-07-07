@@ -182,7 +182,6 @@ class OptPass(object):
           strided_node.add_input([ip])
         strided_node.add_output(node.outputs[0])
         strided_slice_nodes[node.name] = strided_node
-        if len(node.out_nodes) > 1: slice_end_point.append(strided_node)
       else:
         node.name = node.inputs[0].node.name
         strided_node = strided_slice_nodes[node.inputs[0].node.name]
@@ -301,10 +300,7 @@ class OptPass(object):
       
       mat_mul, add = node_set
       matmul_nodes.append(mat_mul)
-      if mat_mul.kind == "t_matmul":
-        add.kind = "t_addmm"
-      else:
-        add.kind = "addmm"
+      add.kind = "addmm"
       addmm_inputs = []
       addmm_inputs.extend([add.inputs[1], mat_mul.inputs[0], mat_mul.inputs[1]]) 
       add.inputs.clear()
@@ -330,7 +326,6 @@ class OptPass(object):
         if (t.inputs[0].name not in raw_graph.owning_graph.param_names()) or (addmm.inputs[0].name not in raw_graph.owning_graph.param_names()):
           continue
         
-        node_set[1].kind = "t_addmm"
         t_nodes.append(t)
         addmm.inputs[2] = t.inputs[0]
       else:
@@ -338,7 +333,6 @@ class OptPass(object):
         if (t.inputs[0].name not in raw_graph.owning_graph.param_names()):
           continue
         
-        node_set[1].kind = "t_matmul"
         t_nodes.append(t)
         matmul.inputs[1] = t.inputs[0]
         
@@ -518,7 +512,7 @@ class OptPass(object):
       if isinstance(binary_op.inputs[0], list) or isinstance(binary_op.inputs[1], list):
         continue
 
-      if binary_op.inputs[1].is_plain_value() and binary_op.inputs[1].dtype in ["torch.int", "torch.long", "torch.float", "torch.float32", "torch.double", "torch.float64"]:
+      if binary_op.inputs[0].is_tensor() and binary_op.inputs[1].is_plain_value() and binary_op.inputs[1].dtype in ["torch.int", "torch.long", "torch.float", "torch.float32", "torch.double", "torch.float64"]:
         dtype = binary_op.inputs[0].dtype if binary_op.inputs[0].dtype != "tensor" else binary_op.inputs[1].dtype 
         binary_op.inputs[1].convert_plain_value_to_tensor(dtype, binary_op.inputs[0].device)
         const_node = TorchNode()
@@ -674,29 +668,6 @@ class OptPass(object):
     if remove_nodes:
       raw_graph.reconnect_nodes()
 
-    
-  @staticmethod
-  def merge_weight_size_to_constant(raw_graph, node_sets):
-    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
-    if not nodes_list:
-      return  
-    remove_nodes = []
-    graph_param_names_list = [name for name in raw_graph.owning_graph.param_names()]
-    for nodeset in nodes_list:
-      int_op = nodeset[0]
-      # match aten::size like "weight[-2]"
-      if int_op.inputs[0].name in graph_param_names_list:
-        shape = int_op.inputs[0].shape
-        dim = int_op.inputs[1].data
-        remove_nodes.append(int_op)  
-        int_op.outputs[0]._is_plain_value = True
-        int_op.outputs[0].data = shape[dim]
-
-    for node in remove_nodes:
-      node.destroy()
-    if remove_nodes:
-      raw_graph.reconnect_nodes()
-
 
   @staticmethod
   def remove_tensor2scalar(raw_graph, node_sets):
@@ -720,35 +691,6 @@ class OptPass(object):
       raw_graph.reconnect_nodes()
 
   
-  @staticmethod
-  def remove_simple_op(raw_graph, node_sets):
-    # simple op means op with single input and single output
-    remove_nodes = []
-    nodes_list = OptPass.merge_node_sets_to_list(node_sets)
-    if not nodes_list:
-      return   
- 
-    for nodeset in nodes_list:
-      remove_n = nodeset[0]
-      remove_nodes.append(remove_n)
-      out_nodes = list(remove_n.out_nodes)
-      in_node = remove_n.in_nodes[0]
-      o_offset = in_node.out_nodes.index(remove_n)
-      in_node.out_nodes.pop(o_offset)
-      for out_node in out_nodes:
-        for i, inp in enumerate(out_node.inputs):
-          if inp is remove_n.outputs[0]:
-            out_node.inputs[i] = in_node.outputs[0]
-         
-        in_node.out_nodes.append(out_node)
+   
 
-        for i, i_node in enumerate(out_node.in_nodes):
-          if i_node is remove_n:
-            out_node.in_nodes[i] = in_node
-    
-      
-    for node in remove_nodes:
-      node.destroy()
-      
-    if remove_nodes:
-      raw_graph.reconnect_nodes()
+

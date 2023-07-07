@@ -1,5 +1,3 @@
-:orphan:
-
 Third Party Source
 ==================
 

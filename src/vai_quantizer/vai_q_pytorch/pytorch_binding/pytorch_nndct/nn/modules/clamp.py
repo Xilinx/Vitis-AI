@@ -22,7 +22,7 @@ import math
 
 from nndct_shared.utils import NndctOption, NndctScreenLogger
 from nndct_shared.quantization import maybe_get_quantizer
-from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors 
 from .quant_noise import eval_qnoise
 import pytorch_nndct.utils as py_utils
 

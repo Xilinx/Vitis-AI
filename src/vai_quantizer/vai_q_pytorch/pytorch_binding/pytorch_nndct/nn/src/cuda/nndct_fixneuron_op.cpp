@@ -23,35 +23,6 @@
 #include "../../../../../include/cpu/nndct_fix_kernels_cpu.h"
 
 template <typename Dtype>
-void _Round(Tensor Tinput, Tensor Toutput, int64_t method, int64_t device_id){
-
-  auto input = Tinput.data<Dtype>();
-  auto output = Toutput.data<Dtype>();
-  int64_t num_ele = Tinput.numel();
-
-  if(device_id == 0){
-    cuda_vai_round(num_ele, input, output, method);
-  }else if(device_id == 1){
-    cpu_vai_round(num_ele, input, output, method);
-  } else {
-    LOG(FATAL) << "Unsupported tensor type: " << Tinput.toString();
-  }
-}
-
-template
-void _Round<float>(Tensor Tinput, Tensor Toutput, int64_t method, int64_t device_id);
-
-template
-void _Round<double>(Tensor Tinput, Tensor Toutput, int64_t method, int64_t device_id);
-
-void Round(Tensor Tinput, Tensor Toutput, int64_t method, int64_t device_id){
-  if (Tinput.dtype() == at::kFloat)
-    _Round<float>(Tinput, Toutput, method, device_id);
-  else if (Tinput.dtype() == at::kDouble)
-    _Round<double>(Tinput, Toutput, method, device_id);
-}
-
-template <typename Dtype>
 void _FixNeuronV2(Tensor Tinput,
                  Tensor Toutput,
                  int64_t valmin,
@@ -119,6 +90,7 @@ void FixNeuronV2(Tensor Tinput,
   }
 }
 
+
 at::Tensor fix_neuron(at::Tensor Tinput, int64_t valmin, int64_t valmax, double valamp, int64_t zero_point, int64_t method, int64_t device_id, int64_t inplace){
   if (inplace != 0) {
     if (Tinput.dtype() == at::kFloat) {
@@ -166,71 +138,6 @@ at::Tensor fix_neuron(at::Tensor Tinput, int64_t valmin, int64_t valmax, double 
     } else {
       LOG(FATAL) << "Unsupported tensor type: " << Tinput.toString();
     }
-    return Toutput;
-  }
-}
-
-at::Tensor fix_neuron_per_channel(at::Tensor Tinput, int64_t valmin, int64_t valmax, at::Tensor scale, at::Tensor zero_point, int64_t axis, int64_t method, int64_t device_id, int64_t inplace){
-  if (!(Tinput.dtype() == at::kFloat) && !(Tinput.dtype() == at::kDouble))
-    LOG(FATAL) << "Unsupported tensor type: " << Tinput.toString();
-
-  std::vector<at::Tensor> Tinput_split = at::split(Tinput, 1, axis);
-  if (inplace != 0) {
-    for(int i=0; i<Tinput_split.size(); ++i) {
-      float scale_i = *(scale[i].data<float>());
-      double valamp_i = 1.0/double(scale_i);
-      int64_t zero_point_i = int64_t(*(zero_point[i].data<int8_t>()));
-      if (Tinput.dtype() == at::kFloat) {
-        _FixNeuronV2<float>(Tinput_split[i],
-                            Tinput_split[i],
-                            valmin,
-                            valmax,
-                            valamp_i,
-                            zero_point_i,
-                            method,
-                            device_id);
-      } else if (Tinput.dtype() == at::kDouble) {
-        _FixNeuronV2<double>(Tinput_split[i],
-                             Tinput_split[i],
-                             valmin,
-                             valmax,
-                             valamp_i,
-                             zero_point_i,
-                             method,
-                             device_id);
-      }
-    }
-    at::Tensor Toutput = at::cat(at::TensorList(Tinput_split), axis);
-    return Toutput;
-  } else {
-    std::vector<at::Tensor> Toutput_vector;
-    for(int i=0; i<Tinput_split.size(); ++i) {
-      at::Tensor Toutput_i = at::native::empty_like(Tinput_split[i]);
-      float scale_i = *(scale[i].data<float>());
-      double valamp_i = 1.0/double(scale_i);
-      int64_t zero_point_i = int64_t(*(zero_point[i].data<int8_t>()));
-      if (Tinput.dtype() == at::kFloat) {
-        _FixNeuronV2<float>(Tinput_split[i],
-                            Toutput_i,
-                            valmin,
-                            valmax,
-                            valamp_i,
-                            zero_point_i,
-                            method,
-                            device_id);
-      } else if (Tinput.dtype() == at::kDouble) {
-        _FixNeuronV2<double>(Tinput_split[i],
-                             Toutput_i,
-                             valmin,
-                             valmax,
-                             valamp_i,
-                             zero_point_i,
-                             method,
-                             device_id);
-      }
-      Toutput_vector.push_back(Toutput_i);
-    }
-    at::Tensor Toutput = at::cat(at::TensorList(Toutput_vector), axis);
     return Toutput;
   }
 }

@@ -17,12 +17,8 @@ option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
 if(BUILD_PYTHON)
   if(CMAKE_CROSSCOMPILING)
-    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-    execute_process(
-      COMMAND
-        ${Python3_EXECUTABLE} -c
-        "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))"
-      OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+    find_package (Python3 REQUIRED COMPONENTS Interpreter Development)
+    EXECUTE_PROCESS(COMMAND ${Python3_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
     find_path(
       _PYBIND11_PATH pybind11
       HINTS
@@ -95,14 +91,10 @@ function(vai_add_pybind11_module target_name)
         LIBRARY_OUTPUT_NAME "${ARG_MODULE_NAME}")
     target_link_libraries(${target_name} PRIVATE -l${VAI_PYTHON_LIB})
   else(CMAKE_CROSSCOMPILING)
-    find_package(pybind11 REQUIRED)
     message("target_name is ${target_name}")
     pybind11_add_module(${target_name} SHARED ${ARG_UNPARSED_ARGUMENTS})
-    # we need to add ${PYTHON_LIBRARIES}, otherwise linker error because of
-    # -Wl,--no-undefined
-    target_link_libraries(${target_name} PRIVATE pybind11::module
-                                                 ${PYTHON_LIBRARIES})
-    set_target_properties(${target_name} PROPERTIES OUTPUT_NAME
+    target_link_libraries(${target_name} PRIVATE ${PYTHON_LIBRARIES})
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_NAME
                                                     "${ARG_MODULE_NAME}")
     set_property(
       TARGET ${target_name}
@@ -116,10 +108,7 @@ function(vai_add_pybind11_module target_name)
   if(INSTALL_HOME)
     install(TARGETS ${target_name} DESTINATION lib/python/${ARG_PACKAGE_NAME})
   elseif(INSTALL_USER)
-    install(TARGETS ${target_name}
-            DESTINATION ${PYTHON_SITE_PACKAGES_USER}/${ARG_PACKAGE_NAME})
   else()
-    install(TARGETS ${target_name}
-            DESTINATION ${PYTHON_SITE_PACKAGES}/${ARG_PACKAGE_NAME})
+    install(TARGETS ${target_name} DESTINATION ${PYTHON_SITE_PACKAGES}/${ARG_PACKAGE_NAME})
   endif()
 endfunction(vai_add_pybind11_module)

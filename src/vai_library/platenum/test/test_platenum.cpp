@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,6 @@ using namespace std;
 int main(int argc, char *argv[]) {
   cout << "init " << endl;
   auto det = vitis::ai::PlateNum::create(argv[1], true);
-  if (!det) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
   cout << "init end" << endl;
   int width = det->getInputWidth();
   int height = det->getInputHeight();

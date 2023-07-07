@@ -14,7 +14,6 @@
 
 import torch.nn as nn
 import torch.nn.functional as F
-from nndct_shared.utils import NndctOption
 
 class QuantizedLinear(nn.Linear):
   """A QuantizedLinear module attached with FakeQuantizer module for weight,
@@ -32,16 +31,12 @@ class QuantizedLinear(nn.Linear):
     self.qconfig = qconfig
 
     self.weight_quantizer = qconfig.get_weight_quantizer('weight')
-    if not NndctOption.nndct_gemm88.value:
-      if bias:
-        self.bias_quantizer = qconfig.get_weight_quantizer('bias')
+    if bias:
+      self.bias_quantizer = qconfig.get_weight_quantizer('bias')
 
   def forward(self, input):
     weight = self.weight_quantizer(self.weight)
-    if NndctOption.nndct_gemm88.value:
-      bias = self.bias
-    else:
-      bias = self.bias_quantizer(self.bias) if self.bias is not None else None
+    bias = self.bias_quantizer(self.bias) if self.bias is not None else None
     return F.linear(input, weight, bias)
 
   @property

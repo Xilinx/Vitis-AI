@@ -27,7 +27,6 @@ from .qproc import base as qp
 from .qproc import LSTMTorchQuantProcessor, RNNQuantProcessor
 from .qproc import vaiq_system_info
 from .quantization import QatProcessor
-from .parse.rich_in_out_helper import StandardInputData
 
 # API class
 class torch_quantizer():
@@ -35,7 +34,6 @@ class torch_quantizer():
                quant_mode: str, # ['calib', 'test']
                module: Union[torch.nn.Module, List[torch.nn.Module]],
                input_args: Union[torch.Tensor, Sequence[Any]] = None,
-               input_kwargs: Dict = None,
                state_dict_file: Optional[str] = None,
                output_dir: str = "quantize_result",
                bitwidth: int = None,
@@ -46,11 +44,8 @@ class torch_quantizer():
                qat_proc: bool = False,
                custom_quant_ops: List[str] = None,
                quant_config_file: Optional[str] = None,
-               target: Optional[str] = None,
-               dynamo: bool = False):
+               target: Optional[str] = None):
 
-    self.device = device
-    input_data = StandardInputData(input_args, input_kwargs, device)
     vaiq_system_info(device)
 
     if NndctOption.nndct_target.value:
@@ -89,24 +84,11 @@ class torch_quantizer():
                                                device = device,
                                                lstm_app = lstm_app,
                                                quant_config_file = quant_config_file)
-    elif dynamo:
-      from pytorch_nndct.qproc.base import DynamoQuantProcessor
-
-      self.processor = DynamoQuantProcessor(quant_mode=quant_mode, 
-                                            module=module,
-                                            input_args=input_args,
-                                            output_dir=output_dir,
-                                            bitwidth_w=bitwidth,
-                                            bitwidth_a=bitwidth,
-                                            device=device,
-                                            lstm_app=lstm_app,
-                                            quant_config_file=quant_config_file,
-                                            target=target) 
                                       
     else:
       self.processor = TorchQuantProcessor(quant_mode = quant_mode,
                                            module = module,
-                                           input_data = input_data,
+                                           input_args = input_args,
                                            state_dict_file = state_dict_file,
                                            output_dir = output_dir,
                                            bitwidth_w = bitwidth,
@@ -147,8 +129,8 @@ class torch_quantizer():
   def export_xmodel(self, output_dir="quantize_result", deploy_check=False, dynamic_batch=False):
     self.processor.export_xmodel(output_dir, deploy_check, dynamic_batch)
 
-  def export_onnx_model(self, output_dir="quantize_result", verbose=False, dynamic_batch=False, opset_version=None, native_onnx=True, dump_layers=False, check_model=False, opt_graph=False):
-    self.processor.export_onnx_model(output_dir, verbose, dynamic_batch, opset_version, native_onnx, dump_layers, check_model, opt_graph)
+  def export_onnx_model(self, output_dir="quantize_result", verbose=False, dynamic_batch=False, opset_version=None):
+    self.processor.export_onnx_model(output_dir, verbose, dynamic_batch, opset_version)
      
   def export_traced_torch_script(self, output_dir="quantize_result", verbose=False):
     NndctScreenLogger().warning(
@@ -179,40 +161,6 @@ def dump_xmodel(output_dir="quantize_result", deploy_check=False, app_deploy="CV
   NndctScreenLogger().warning(f"The function dump_xmodel() will retire in future version. Use torch_quantizer.export_xmodel() reversely.")
   qp.dump_xmodel(output_dir, deploy_check, lstm_app)
 
-def load_vai_ops():
-  import numpy as np
-  from pytorch_nndct.nn.modules.fix_ops import NndctRound
-  from onnxruntime_extensions import onnx_op, PyOp
-  
-  @onnx_op(op_type='vai::QuantizeLinear', 
-           inputs=[PyOp.dt_float, PyOp.dt_int32, PyOp.dt_int32, PyOp.dt_float, PyOp.dt_int8, PyOp.dt_int8, PyOp.dt_int8], 
-           outputs=[PyOp.dt_float])
-  def vai_quantize_linear(x, valmin, valmax, scale, zero_point, method, axis_i=None):
-    if np.size(scale) > 1 and axis_i >= -x.ndim and axis_i < x.ndim:
-      dim_list = []
-      for i in range(x.ndim):
-        if i != axis_i:
-          dim_list.append(i)
-      scale = np.expand_dims(scale, dim_list)
-      zero_point = np.expand_dims(zero_point, dim_list)
-    input = torch.from_numpy(np.clip(x/scale + zero_point, valmin, valmax))
-    output = torch.empty_like(input)
-    mth = torch.from_numpy(method)
-    NndctRound(input, output, mth)
-    return output.numpy() 
-  
-  @onnx_op(op_type='vai::DequantizeLinear', 
-           inputs=[PyOp.dt_float, PyOp.dt_float, PyOp.dt_int8, PyOp.dt_int8], 
-           outputs=[PyOp.dt_float])
-  def vai_dequantize_linear(x, scale, zero_point, axis_i=None):
-    if np.size(scale) > 1 and axis_i >= -x.ndim and axis_i < x.ndim:
-      dim_list = []
-      for i in range(x.ndim):
-        if i != axis_i:
-          dim_list.append(i)
-      scale = np.expand_dims(scale, dim_list)
-      zero_point = np.expand_dims(zero_point, dim_list)
-    return scale*(x - zero_point)
 
 class Inspector(object):
   def __init__(self, name_or_fingerprint: str):

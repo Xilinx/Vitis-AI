@@ -26,15 +26,13 @@ from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.nndct_graph import (Graph, Tensor, Block, Node,
                                       reorder_multi_subgraph_nodes)
 from nndct_shared.utils import NndctDebugLogger, NndctOption, NndctScreenLogger, QError, QWarning, QNote
-from pytorch_nndct.utils import build_aten_torch_ops_table, TorchGraphSymbol
+from pytorch_nndct.utils import build_aten_torch_ops_table
 
 from .op_dispatcher import *
 from .parse_utils import *
-from .parser_post_process import change_addmm_to_linear
 from .torch_op_def import TorchUnknownOperation
 from .trace_helper import TorchGraphHandler
-from typing import Mapping
-from .rich_in_out_helper import FlattenInOutModelForTrace, StandardInputData
+
 
 def unknown_op_type_check(graph: Graph):
   unkown_ops = set()
@@ -67,30 +65,20 @@ class TorchParser(object):
   
  
   
-  def __call__(self, graph_name, module, input_data):
+  def __call__(self, graph_name, module, input_args):
     graph_handler = TorchGraphHandler()
     # graph_handler = create_graph_handler(module)
-    if not isinstance(input_data, StandardInputData):
-      if not isinstance(input_data, tuple):
-        input_data = (input_data,)
-      input_data = StandardInputData(input_data,{})
-
-    raw_graph = graph_handler.build_torch_graph(graph_name, module, input_data) 
-    flatten_input, _ = input_data.make_flatten_data()
-    GLOBAL_MAP.set_map(NNDCT_KEYS.DEVICE, self._get_device_info(module, flatten_input))
+    raw_graph = graph_handler.build_torch_graph(graph_name, module, input_args) 
+    GLOBAL_MAP.set_map(NNDCT_KEYS.DEVICE, self._get_device_info(module, input_args))
     NndctScreenLogger().info("Processing ops...")
     nndct_graph = self._convert_graph(raw_graph)
     unknown_op_type_check(nndct_graph)  
     self._convert_blob_tensor_type(nndct_graph)
     self._load_data(nndct_graph, module)
-    self.parser_post_porcess(nndct_graph)
     if NndctOption.nndct_parse_debug.value >= 2:
       NndctDebugLogger.write(f"nndct raw graph:\n{nndct_graph}")
     return nndct_graph
   
-  def parser_post_porcess(self, raw_graph):
-    change_addmm_to_linear(raw_graph)
-   
   def _convert_params(self, raw_graph):
     for value in raw_graph.param_values():
       param_tensor = self._convert_tensor(value)
@@ -364,10 +352,6 @@ class TorchParser(object):
             tensor.from_ndarray(data)
             tensor = tensor_util.convert_parameter_tensor_format(
               tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-      elif node.op.type in [NNDCT_OP.LAYER_NORM]:
-        for param_name, tensor in node.op.params.items():
-          data = cls._get_tensor_data_from_module(module, tensor)
-          tensor.from_ndarray(data)
            
           
       elif node.blocks:

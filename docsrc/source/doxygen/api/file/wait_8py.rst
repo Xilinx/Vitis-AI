@@ -1,4 +1,0 @@
-wait
-====
-
-.. doxygenfile:: wait.py

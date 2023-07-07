@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,10 +57,6 @@ int main(int argc, char *argv[]) {
   }
 
   auto det = vitis::ai::UltraFast::create("ultrafast_pt");
-  if (!det) { // supress coverity complain
-     std::cerr <<"create error\n";
-     abort();
-  }
 
   std::vector<cv::Mat> batch_images;
   std::vector<std::string> batch_images_names;

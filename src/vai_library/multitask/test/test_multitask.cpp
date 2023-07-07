@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,6 @@ using namespace cv;
 
 int main(int argc, char *argv[]) {
   auto det = vitis::ai::MultiTask::create(argv[1]);
-  if (!det) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }  
   auto image = cv::imread(argv[2]);
   cout << "read img" << endl;
   if (image.empty()) {

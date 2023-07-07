@@ -58,8 +58,6 @@ class DeployChecker(object):
         for i, tensor in enumerate(node.out_tensors):
             if i > 0:
               break
-            if depoly_info.quant_info['output'][node.name][i] is None:
-              continue
             bit_width, fix_point = depoly_info.quant_info['output'][node.name][i]
             node.out_tensors[i].from_ndarray(normal_quant_neuron(node.out_tensors[i].data.flatten(), maxamps=[[2**(bit_width - 1)], [2**fix_point]], round_method=-1, as_int=False).reshape(node.out_tensors[i].shape))
 
@@ -125,15 +123,12 @@ class DeployChecker(object):
             round_method=round_method)
 
   def _dump_fixed_model(self, nndct_graph, quant_configs, enable_dump_weight, round_method, select_batch) -> NoReturn:
-      last_layer_dumped = False 
       for node in nndct_graph.reverse_nodes:
         if not node.in_quant_part:
           continue
         if enable_dump_weight:
           for param_type, param_tensor in node.op.params.items():
             if param_tensor.name in quant_configs['param']:
-              if quant_configs['param'][param_tensor.name][0] is None:
-                continue
               bit_width, fix_point = quant_configs['param'][param_tensor.name][0]
               data = param_tensor.data
               if node.op.type in [NNDCT_OP.CONVTRANSPOSE3D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
@@ -157,8 +152,6 @@ class DeployChecker(object):
             if node.name not in quant_configs['output'].keys():
               quantizer = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANTIZER)
               end = quantizer.configer.quant_output(node).name
-              if quant_configs['output'][end][0] is None:
-                continue
               bit_width, fix_point = quant_configs['output'][end][0]
               self.dump_tensor_to_file(
                   node.name + NNDCT_KEYS.FIX_OP_SUFFIX,
@@ -182,14 +175,10 @@ class DeployChecker(object):
                 fix_point,
                 select_batch=select_batch,
                 round_method=round_method)
-            
-            if self._last_only:
-              from pathlib import Path
-              abspath = Path.cwd() / Path(int_file)
-              NndctScreenLogger().info(f'Dumped last quantized layer to file: {abspath}')
-              last_layer_dumped = True
-          
-          if last_layer_dumped is True:
+          if self._last_only:
+            from pathlib import Path
+            abspath = Path.cwd() / Path(int_file)
+            NndctScreenLogger().info(f'Dumped last quantized layer to file: {abspath}')
             break
             
         if node.name in quant_configs['input']:

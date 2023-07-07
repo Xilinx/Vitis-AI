@@ -1,0 +1,76 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_bin_clocs, ./test_performance_clocs must be followed by specified model names as params.
+  Valid model name:
+    model_0:  clocs_yolox_pt
+    model_1:  clocs_pointpillars_kitti_0_pt
+    model_2:  clocs_pointpillars_kitti_1_pt 
+    model_3:  clocs_fusion_cnn_pt
+  
+  run command like this: 
+    ./test_bin_clocs [model_0] [model_1] [model_2] [model_3] [input_file]
+
+  run performance:
+    ./test_performance_clocs [model_0] [model_1] [model_2] [model_3] ./test_performance_clocs.list -t 1 -s 60 
+
+    or you can use env variables to get lower latency like this:
+
+    env DEBUG_CLOCS_MT=1 DEBUG_FUSION_CNN_MT=1  ./test_performance_clocs [model_0] [model_1] [model_2] [model_3] ./test_performance_clocs.list -t 1 -s 60 
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample :./test_bin_clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt ./000001.txt
+    output : 
+batch 0
+label:0 bbox: 58.8517 16.3483 -1.65822 1.61255 3.96142 1.53581 1.71844 score:0.164516
+    or run with more inputs:
+    sample :./test_bin_clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt ./000001.txt ./000002.txt ./000004.txt
+    output :
+batch 0
+label:0 bbox: 58.8517 16.3483 -1.65822 1.61255 3.96142 1.53581 1.71844 score:0.164516
+batch 1
+label:0 bbox: 34.7859 -3.22827 -2.10944 1.6252 3.9 1.512 1.59344 score:0.743168
+label:0 bbox: 37.5671 -3.7788 -2.12793 1.63794 3.99249 1.50024 1.81219 score:0.0503306
+batch 2
+label:0 bbox: 38.3624 15.6517 -1.66536 1.57519 3.55099 1.47698 1.60125 score:0.731059
+label:0 bbox: 51.4023 16.0047 -1.54256 1.6252 3.66371 1.52386 1.56219 score:0.294215
+
+
+
+Performance: 
+    ./test_performance_clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt clocs test_performance_clocs.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_clocs clocs <model_name_0> <model_name_1> <model_name_2> <model_name_3> <info_list_filename> <dataset_repo_name> <output_filename>
+
+    or you can use env variables:
+
+    env DEBUG_CLOCS_MT=1 DEBUG_FUSION_CNN_MT=1 ./test_accuracy_clocs clocs <model_name_0> <model_name_1> <model_name_2> <model_name_3> <info_list_filename> <dataset_repo_name> <output_filename>
+
+    sample:
+    ./test_accuracy_clocs clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt info_list.txt dataset result.txt
+    env DEBUG_CLOCS_MT=1 DEBUG_FUSION_CNN_MT=1 ./test_accuracy_clocs clocs clocs_yolox_pt clocs_pointpillars_kitti_0_pt clocs_pointpillars_kitti_1_pt clocs_fusion_cnn_pt info_list.txt dataset result.txt

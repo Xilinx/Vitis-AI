@@ -62,9 +62,10 @@ class DPUAdaptiveAvgPool2d(torch.nn.modules.AdaptiveAvgPool2d):
 
     if (isinstance(self.output_size,
                    (tuple, list)) and tuple(self.output_size) !=
-        (1, 1)) or (isinstance(self.output_size, int) and
-                    self.output_size != 1):
-      print("[WARNING] For AdaptiveAvgPooling, DPU only supports output_size=1")
+        (1, 1)) or self.output_size != 1:
+      print(
+          "[WARNING] For AdaptiveAvgPooling, DPU only supports output size=1"
+      )
 
     scale = 1.0
     if input.shape[2] == 3 and input.shape[3] == 3:

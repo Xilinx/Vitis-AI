@@ -28,13 +28,13 @@ def _get_exponent_v1(tensor, epsilon=2**-23):
   t_exp = (t + epsilon).log2().floor()
   return max_exp, t_exp
 
-def _get_exponent_v2(tensor):
+def _get_exponent_v2(tensor, epsilon=2**-23):
   _, exp = torch.frexp(tensor)
   # we use fp32's 1.mantissa_bits
   max_exp, _ = exp.max(exp.dim() - 1, keepdim=True)
   return max_exp - 1, 1
 
-def _get_exponent_v3(tensor):
+def _get_exponent_v3(tensor, epsilon=2**-23):
   tensor_shape = list(tensor.shape)
   exponent = torch.ops.vai.calculate_shared_exponent(tensor, tensor_shape[-1])
   tensor_shape[-1] = 1
@@ -127,6 +127,7 @@ def transpose_to_block_wise(input, block_size=8, axis=1):
   # [C', N**H*W] -> [L, B, N*H*W] -> [B, N*H*W, L]
   return input.reshape(-1, block_size, input.shape[-1]).permute(1, 2,
                                                                 0).contiguous()
+
 def transpose_block_to_shape(input, shape, axis=1):
   assert input.shape[0] * input.shape[-1] >= shape[axis]
   ## [B, N*H*W, L] -> [L, B, N*H*W] -> [C', N*H*W] -> [C, N*W*H]
@@ -191,86 +192,96 @@ class BFPQuantize(torch.autograd.Function):
   def backward(ctx, grad_output):
     return grad_output, None, None, None
 
-class BFPQuantizeV1(torch.autograd.Function):
-
-  @staticmethod
-  def forward(ctx, t, bit_width, rounding_mode='round_even'):
-    max_exp, _ = _get_exponent(t)
-    interval, max_v = _min_max_at_exp(max_exp, bit_width)
-    return quantize_ops.quantize(t, interval, rounding_mode, -max_v, max_v)
-
 class BFPQuantizeV2(BFPQuantize):
 
   @staticmethod
-  def forward(ctx, t, bit_width, block_size, rounding_mode='round_even'):
+  def forward(ctx, t, bit_width, block_size, round_mode='round_even'):
     out = torch.empty_like(t)
     return torch.ops.vai.to_bfp(t, bit_width, block_size, out)
 
 class BFPQuantizeV3(BFPQuantize):
 
   @staticmethod
-  def forward(ctx, t, bit_width, block_size, rounding_mode='round_even'):
+  def forward(ctx, t, bit_width, block_size, round_mode='round_even'):
     out = torch.empty_like(t)
     return torch.ops.vai.to_bfp_v2(t, bit_width, block_size, out)
 
-class BFPPrimeQuantize(BFPQuantize):
+def _to_bfp_v1(t,
+               bit_width,
+               round_mode='round_even',
+               epsilon=torch.pow(torch.tensor(2.0), -23)):
+  max_exp, _ = _get_exponent(t, epsilon)
+  interval, max_v = _min_max_at_exp(max_exp, bit_width)
+  return quantize_ops.quantize(t, interval, round_mode, -max_v, max_v)
 
-  @staticmethod
-  def forward(ctx, t, bit_width, rounding_mode='round_even'):
-    max_exp, t_exp = _get_exponent(t)
-    # offset = max_axp - current_exp
-    # prime_bit = 0 if offset >= 1 else 1
-    # shared_exp = max_exp - 1 if prime_bit == 0 else max_exp
-    # offset greater or equal than one
-    offset_ge_one = max_exp - t_exp >= 1
-    shared_exp = offset_ge_one * (-1) + max_exp
-    interval, max_v = _min_max_at_exp(shared_exp, bit_width)
-    return quantize_ops.quantize(t, interval, rounding_mode, -max_v, max_v)
+if onnx_utils.support_onnx_export():
+  _to_bfp_op = torch.ops.vai.to_bfp
+else:
+  from pytorch_nndct.nn.load_kernels import nndct_kernels
+  _to_bfp_op = nndct_kernels.to_bfp
 
-class BFPPrimeSharedQuantize(BFPQuantize):
+def _to_bfp_v2(t,
+               bit_width,
+               block_size,
+               round_mode='round_even'):
+  out = torch.empty_like(t)
+  #return _to_bfp_op(t, 8, bit_width, out)
+  return torch.ops.vai.to_bfp(t, bit_width, block_size, out)
 
-  @staticmethod
-  def forward(ctx,
-              t,
-              bit_width,
-              block_size,
-              sub_block_size,
-              sub_block_shift_bits,
-              rounding_mode='round_to_nearest'):
-    valid_modes = ['round_to_nearest', 'round_toward_zero']
-    if rounding_mode not in valid_modes:
-      raise ValueError(
-          f'Supported rounding mode: {valid_modes}, but given {rounding_mode}.')
+def _to_bfp_v3(t,
+               bit_width,
+               block_size,
+               round_mode='round_even'):
+  out = torch.empty_like(t)
+  return torch.ops.vai.to_bfp_v2(t, bit_width, block_size, out)
 
-    out = torch.empty_like(t)
-    return torch.ops.vai.to_bfp_prime_shared(t, bit_width, block_size,
-                                             sub_block_size,
-                                             sub_block_shift_bits,
-                                             valid_modes.index(rounding_mode),
-                                             out)
+def _to_bfp_prime(t,
+                  bit_width,
+                  round_mode='round_even',
+                  epsilon=torch.pow(torch.tensor(2.0), -23)):
+  max_exp, t_exp = _get_exponent(t, epsilon)
+  # offset = max_axp - current_exp
+  # prime_bit = 0 if offset >= 1 else 1
+  # shared_exp = max_exp - 1 if prime_bit == 0 elese max_exp
+  # offset greater or equal than one
+  offset_ge_one = max_exp - t_exp >= 1
+  shared_exp = offset_ge_one * (-1) + max_exp
+  interval, max_v = _min_max_at_exp(shared_exp, bit_width)
+  t = quantize_ops.quantize(t, interval, round_mode, -max_v, max_v)
+  return t
 
 # input [N, IC, W, H] or [N, IC] or [OC, IC, K, K], or [OC, IC]. IC is important
 def quantize_to_bfp_v1(tensor,
                        bit_width,
                        block_size,
                        axis,
-                       rounding_mode):
+                       round_mode,
+                       epsilon=torch.pow(torch.tensor(2.0), -23)):
+
   shape = tensor.shape
   tensor = transform_to_block_wise(tensor, block_size, axis)
-  tensor = BFPQuantizeV1.apply(tensor, bit_width, rounding_mode)
+  tensor = _to_bfp_v1(tensor, bit_width, round_mode, epsilon)
   return transform_block_to_shape(tensor, shape, axis)
 
 # tensor [N, IC, W, H] or [N, IC] or [OC, IC, K, K], or [OC, IC]. IC is important
-def quantize_to_bfp_v2(tensor, bit_width, block_size, axis, rounding_mode):
+def quantize_to_bfp_v2(tensor,
+                       bit_width,
+                       block_size,
+                       axis,
+                       round_mode):
   shape = tensor.shape
   tensor = transpose_to_block_wise(tensor, block_size, axis)
-  tensor = BFPQuantizeV2.apply(tensor, bit_width, block_size, rounding_mode)
+  tensor = BFPQuantizeV2.apply(tensor, bit_width, block_size, round_mode)
   return transpose_block_to_shape(tensor, shape, axis)
 
-def quantize_to_bfp_v3(tensor, bit_width, block_size, axis, rounding_mode):
+def quantize_to_bfp_v3(tensor,
+                       bit_width,
+                       block_size,
+                       axis,
+                       round_mode):
   shape = tensor.shape
   tensor = pad_to_block_last(tensor, block_size, axis)
-  tensor = BFPQuantizeV3.apply(tensor, bit_width, block_size, rounding_mode)
+  tensor = BFPQuantizeV3.apply(tensor, bit_width, block_size, round_mode)
   return depad_and_transpose(tensor, shape, axis)
 
 quantize_to_bfp = quantize_to_bfp_v3
@@ -278,25 +289,11 @@ quantize_to_bfp = quantize_to_bfp_v3
 def quantize_to_bfp_prime(tensor,
                           bit_width,
                           block_size,
+                          round_mode,
                           axis,
-                          rounding_mode,
                           epsilon=torch.pow(torch.tensor(2.0), -23)):
+
   shape = tensor.shape
   tensor = transform_to_block_wise(tensor, block_size, axis)
-  tensor = _to_bfp_prime(tensor, bit_width, rounding_mode, epsilon)
+  tensor = _to_bfp_prime(tensor, bit_width, round_mode, epsilon)
   return transform_block_to_shape(tensor, shape, axis)
-
-def quantize_to_bfp_prime_shared(tensor, bit_width, block_size, sub_block_size,
-                                 sub_block_shift_bits, axis, rounding_mode):
-
-  if block_size % sub_block_size != 0:
-    raise ValueError(
-        f('The block_size must be divisible by sub_block_size.'
-          '(block_size={block_size}, sub_block_size={sub_block_size})'))
-
-  shape = tensor.shape
-  tensor = pad_to_block_last(tensor, block_size, axis)
-  tensor = BFPPrimeSharedQuantize.apply(tensor, bit_width, block_size,
-                                        sub_block_size, sub_block_shift_bits,
-                                        rounding_mode)
-  return depad_and_transpose(tensor, shape, axis)

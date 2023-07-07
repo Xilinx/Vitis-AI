@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -358,13 +358,7 @@ struct Apply {
   template <typename T0, typename... T>
   std::string do_it(SupportedAttryTypes<T0, T...> tag, const std::any& x) {
     if (x.type() == typeid(T0)) {
-      // suppress coverity complain
-      try{
-        return Op()(std::any_cast<T0>(x));
-      } catch (std::exception& e){
-        std::cerr <<"Should never run here with exception " << e.what() <<"\n";
-        abort();
-      }
+      return Op()(std::any_cast<T0>(x));
     }
     return do_it(SupportedAttryTypes<T...>(), x);
   }
@@ -387,7 +381,7 @@ template <typename K, typename V>
 std::enable_if_t<is_cout_able_v<K> && is_cout_able_v<V>, std::ostream&>
 operator<<(std::ostream& out, const std::map<K, V>& v) {
   out << "{";
-  for (const auto& x : v) {
+  for (const auto x : v) {
     out << "\n\t\"" << x.first << "\" = " << x.second;
   }
   out << "\n}";
@@ -411,7 +405,7 @@ struct ToString {
 
 std::string to_string(const xir::Attrs* attr) {
   std::ostringstream str;
-  for (auto& key : attr->get_keys()) {
+  for (auto key : attr->get_keys()) {
     str << '"' << key
         << "\" = " << Apply<ToString>().do_it(attr->get_attr(key));
     str << std::endl;

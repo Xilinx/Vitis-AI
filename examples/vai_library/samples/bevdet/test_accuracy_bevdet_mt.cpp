@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,13 +191,7 @@ int main(int argc, char* argv[]) {
   std::vector<std::unique_ptr<vitis::ai::BEVdet>> vdet;
   std::vector<std::string> out_fname_t(t_n);
   for (int i = 0; i < t_n; i++) {
-    auto det = vitis::ai::BEVdet::create(argv[1], argv[2], argv[3]);
-    if (!det) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-    }  
-    vdet.emplace_back(std::move(det));
-
+    vdet.emplace_back(vitis::ai::BEVdet::create(argv[1], argv[2], argv[3]));
     out_fname_t[i] = out_fname + "_" + std::to_string(i);
     // std::cout <<" out_fname :" << out_fname_t[i]  << "\n";
     vth.emplace_back(

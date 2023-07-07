@@ -56,12 +56,6 @@ void cuda_fix_neuron_v1(const int N,
                         int method);
 
 template<typename Dtype>
-void cuda_vai_round(const int N, 
-                    const Dtype* src,
-                    Dtype* dst, 
-                    int method);
-
-template<typename Dtype>
 void cuda_fix_neuron_v2(const int N, 
                         const Dtype* src,
                         Dtype* dst, 
@@ -130,19 +124,9 @@ void cuda_log_softmax_sub(const int N,
                             const Dtype* sub);  
 
 template<typename Dtype>
-void cuda_aie_sqrt(const int N,
-                   const Dtype* input,
-                   Dtype* output); 
-
-template<typename Dtype>
-void cuda_aie_isqrt(const int N,
-                    const Dtype* input,
-                    Dtype* output); 
-
-template<typename Dtype>
 void cuda_layernorm_isqrt(const int N,
-                          const Dtype* input,
-                          Dtype* output); 
+                            const Dtype* input,
+                            Dtype* output); 
 
 template<typename Dtype>
 void cuda_layernorm_invsqrt(const int N,

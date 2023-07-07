@@ -1,0 +1,65 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv3 on VOC.
+input size: 416*416
+float ops: 65.63G
+task: detection
+framework: tensorflow
+prune: 'no'
+version: 3.0
+files:
+- name: tf_yolov3_voc_416_416_65.63G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov3_voc_416_416_65.63G_3.0.zip
+  checksum: 1b9b33c0ac54f11217ff3fcef05dfe59
+- name: yolov3_voc_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: a0e6ce191343d723828b72537cca8991
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck190-r3.0.0.tar.gz
+  checksum: e6799d144fa2eabb9ee0579ba1008557
+- name: yolov3_voc_tf
+  type: xmodel
+  board: u200-DPUCADF8H & u250-DPUCADF8H
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-u200-u250-r3.0.0.tar.gz
+  checksum: 3588ddeec012cfa104182eb7113c001c
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 9dc58a28524084b814c2b59ae904dacf
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 23e6ef0baddac18def4578339216fe24
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: ff99f7707399e8f52322287130997475
+- name: yolov3_voc_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_voc_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: ca7fe602d33bb24b33e8a1aed1b7a4f0
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

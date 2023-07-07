@@ -1,12 +1,12 @@
 
 import sys
-from collections.abc import Iterable
+from collections import Iterator, Iterable
 
 FORWARD_DIR = 1
 BACKWARD_DIR = 0
 POSITION_UPPER_BOUND = sys.maxsize 
 POSITION_LOWER_BOUND = - sys.maxsize - 1
-APPEND_INTERVAL = 1099511627776  # 2^40
+APPEND_INTERVAL =  1099511627776 # 2^40
 MID_POSITION = 0
 
 

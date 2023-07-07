@@ -1,0 +1,52 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_fairmot, ./test_performance_fairmot, ./test_video_fairmot first param followed must be with model name.
+  Valid model name:
+    FairMot_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_fairmot FairMot_pt sample_fairmot.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1209 19:26:35.538357 66677 demo.hpp:1183] batch: 0     image: sample_fairmot.jpg
+I1209 19:26:35.539680 66677 process_result.hpp:39] RESULT 1 :   117     227     287     717     0.705785
+I1209 19:26:35.539829 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 155 173 169 189 76
+I1209 19:26:35.539961 66677 process_result.hpp:39] RESULT 1 :   404     99      639     759     0.637031
+I1209 19:26:35.539995 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 51 225 186 189 99
+I1209 19:26:35.540099 66677 process_result.hpp:39] RESULT 1 :   812     326     909     589     0.577495
+I1209 19:26:35.540131 66677 process_result.hpp:41] feat size: [256 x 1] First 5 digits: 81 197 2 189 71
+
+
+
+Performance: 
+    ./test_performance_fairmot FairMot_pt test_performance_fairmot.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_fairmot <model_name> <image_list_file>  <result_file>
+
+    sample:
+    ./test_accuracy_fairmot FairMot_pt image.list result.txt

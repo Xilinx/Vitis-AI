@@ -387,11 +387,10 @@ class TorchQuantScriptWriter(TorchBaseScriptWriter):
     torch_op_attr = py_utils.get_torch_op_attr(torch_op_type)
     if torch_op_attr.op_class_type != TorchOpClassType.UNKNOWN:
       op_name, attrs_str = self._init_op_and_attrs_str(node)
-      return 'self.{module_name} = {op_name}({attrs}) #{node_name}({normalized_name})'.format(module_name=self._gen_module_name(node), 
+      return 'self.{module_name} = {op_name}({attrs}) #{node_name}'.format(module_name=self._gen_module_name(node), 
                                                                           op_name=op_name, 
                                                                           attrs=attrs_str, 
-                                                                          node_name=node.name,
-                                                                          normalized_name=node.normalized_name)
+                                                                          node_name=node.name)
     
   def _init_op_and_attrs_str(self, node: Node) -> str:
     torch_op_type = py_utils.get_torch_op_type(node.op.type)

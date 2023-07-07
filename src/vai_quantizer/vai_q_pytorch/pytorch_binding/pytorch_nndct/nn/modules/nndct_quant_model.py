@@ -17,7 +17,7 @@
 import functools
 import torch
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS
-from nndct_shared.utils import NndctScreenLogger, QWarning
+from nndct_shared.utils import NndctScreenLogger
 from pytorch_nndct.utils.module_util import to_device, collect_input_devices, get_flattened_input_args
 
 
@@ -29,7 +29,7 @@ def forward_processor(forward_func):
       if quant_device is not None:
         input_devices = collect_input_devices(input)
         if any([device != quant_device.type for device in input_devices]):
-          NndctScreenLogger().warning2user_once(QWarning.DEVICE_MISMATCH, f"The Device of input args mismatch with quantizer device type({quant_device.type}).")
+          NndctScreenLogger().warning_once(f"The Device of input args mismatch with quantizer device type({quant_device.type}).")
           _, input = to_device(None, input, device=quant_device)
       if self.is_from_script is True:
         return input

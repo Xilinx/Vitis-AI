@@ -46,14 +46,6 @@ class Add(Functional):
     else:
       return torch.add(input, other, alpha=alpha, out=out)
 
-class Sub(Functional):
-  """Operation equivalent to ``torch.sub(input, other, *, out=None)``"""
-
-  def forward(self, input, other, alpha, out=None):
-    if out is not None:
-      return torch.sub(x, y, alpha=alpha, out=out)
-    return torch.sub(x, y, alpha=alpha)
-
 class AddScalar(Functional):
   """Operation equivalent to ``torch.add(Tensor, float)``"""
 
@@ -165,6 +157,10 @@ class Clamp(Functional):
   def forward(self, input, min=None, max=None):
     return torch.clamp(input, min, max)
 
+  @property
+  def is_quantized(self):
+    return True
+
 class Const(Functional):
   """Const Module """
 
@@ -178,16 +174,3 @@ class Const(Functional):
   def forward(self):
     return self.value
 
-class Transpose(Functional):
-  """Operation equivalent to `torch.nn.functional.transpose(input, dim0, dim1)`"""
-
-  def forward(self, input, dim0, dim1):
-    return torch.transpose(input, dim0, dim1)
-
-class Sqrt(Functional):
-  """Operation equivalent to `torch.sqrt(input, *, out=None)`"""
-
-  def forward(self, input, out=None):
-    if out is not None:
-      return torch.sqrt(input, out=out)
-    return torch.sqrt(input)

@@ -27,7 +27,6 @@
 #ifdef TORCH_LIBRARY
 TORCH_LIBRARY(vai, m) {
   m.def("fix_neuron", fix_neuron);
-  m.def("fix_neuron_per_channel", fix_neuron_per_channel);
   m.def("diffs_fix_pos", diffs_fix_pos);
   m.def("SigmoidTableLookup", SigmoidTableLookup);
   m.def("SigmoidSimulation", SigmoidSimulation);
@@ -42,15 +41,11 @@ TORCH_LIBRARY(vai, m) {
   m.def("ExpApprAIE2", ExpApprAIE2);
   m.def("LogSoftmaxFastLn", LogSoftmaxFastLn);
   m.def("LogSoftmaxSub", LogSoftmaxSub);
-  m.def("AIESqrt", AIESqrt);
-  m.def("AIEISqrt", AIEISqrt);
   m.def("LayernormISqrt", LayernormISqrt);
   m.def("LayernormInvSqrt", LayernormInvSqrt);
   m.def("InverseAIE2", InverseAIE2);
   m.def("to_bfp", to_bfp);
   m.def("to_bfp_v2", to_bfp_v2);
-  m.def("to_bfp_prime_shared", to_bfp_prime_shared);
-  m.def("Round", Round);
 }
 #else
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
@@ -59,7 +54,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("TanhTableLookup",    &TanhTableLookup,    "TanhTableLookup(cpu)");
   m.def("TanhSimulation",     &TanhSimulation,     "TanhSimulation(cpu)");
   m.def("FixNeuronV2",        &FixNeuronV2,        "FixNeuronV2(cpu)");
-  m.def("Round",              &Round,              "Round(cpu)");
   m.def("DiffsFixPos",        &DiffsFixPos,        "DiffsFixPos(cpu)");
   m.def("SoftmaxExpApproximate",        &SoftmaxExpApproximate,        "SoftmaxExpApproximate(cpu)");
   m.def("SoftmaxLOD",        &SoftmaxLOD,        "SoftmaxLOD(cpu)");
@@ -74,8 +68,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
   m.def("InverseAIE2",        &InverseAIE2,        "InverseAIE2(cpu)");
   m.def("to_bfp", &to_bfp, "to_bfp(cpu)");
   m.def("to_bfp_v2", &to_bfp, "to_bfp_v2(cpu)");
-  m.def("AIESqrt", &AIESqrt, "AIESqrt(cpu)");
-  m.def("AIEISqrt", &AIEISqrt, "AIEISqrt(cpu)");
   m.def("LayernormISqrt", &LayernormISqrt, "LayernormISqrt(cpu)");
 }
 #endif

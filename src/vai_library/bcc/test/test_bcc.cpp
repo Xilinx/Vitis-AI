@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,6 @@ int main(int argc, char *argv[]) {
   }
 
   auto net = vitis::ai::BCC::create("bcc_pt");
-  if (!net) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }  
   auto result = net->run(img);
 
   std::cout << result.count << "\n";

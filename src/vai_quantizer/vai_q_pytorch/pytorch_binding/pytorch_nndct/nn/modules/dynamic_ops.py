@@ -1,18 +1,4 @@
-#
-# Copyright 2019 Xilinx Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+# Implementation adapted from OFA: https://github.com/mit-han-lab/once-for-all
 
 # MIT License
 
@@ -36,13 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import torch
-import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn as nn
+import torch
+from torch.nn.parameter import Parameter
 
 __all__ = [
-    'DynamicConv2d', 'DynamicConvTranspose2d', 'DynamicBatchNorm2d',
-    'DynamicLinear'
+    'DynamicSeparableConv2d', 'DynamicConv2d', 'DynamicConvTranspose2d',
+    'DynamicBatchNorm2d', 'DynamicGroupNorm', 'DynamicLinear'
 ]
 
 def get_same_padding(kernel_size):
@@ -64,7 +51,6 @@ def sub_filter_start_end(kernel_size, sub_kernel_size):
   assert end - start == sub_kernel_size
   return start, end
 
-# Modified from https://github.com/mit-han-lab/once-for-all/blob/master/ofa/imagenet_classification/elastic_nn/modules/dynamic_op.py#L122
 class DynamicConv2d(nn.Module):
 
   def __init__(self,
@@ -236,7 +222,6 @@ class DynamicConvTranspose2d(nn.Module):
 
     return y
 
-# Modified from https://github.com/mit-han-lab/once-for-all/blob/master/ofa/imagenet_classification/elastic_nn/modules/dynamic_op.py#L235
 class DynamicBatchNorm2d(nn.Module):
   SET_RUNNING_STATISTICS = False
 
@@ -288,7 +273,28 @@ class DynamicBatchNorm2d(nn.Module):
     y = self.bn_forward(x, self.bn, feature_dim)
     return y
 
-# Modified from https://github.com/mit-han-lab/once-for-all/blob/master/ofa/imagenet_classification/elastic_nn/modules/dynamic_op.py#L373
+class DynamicGroupNorm(nn.GroupNorm):
+
+  def __init__(self,
+               num_groups,
+               num_channels,
+               eps=1e-5,
+               affine=True,
+               channel_per_group=None):
+    super(DynamicGroupNorm, self).__init__(num_groups, num_channels, eps,
+                                           affine)
+    self.channel_per_group = channel_per_group
+
+  def forward(self, x):
+    n_channels = x.size(1)
+    n_groups = n_channels // self.channel_per_group
+    return F.group_norm(x, n_groups, self.weight[:n_channels],
+                        self.bias[:n_channels], self.eps)
+
+  @property
+  def bn(self):
+    return self
+
 class DynamicLinear(nn.Module):
 
   def __init__(self, max_in_features, max_out_features, bias=True):

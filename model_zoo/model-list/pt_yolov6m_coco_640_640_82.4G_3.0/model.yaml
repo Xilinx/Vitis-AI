@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv6m on COCO.
+input size: 640*640
+float ops: 82.4G
+task: 2d detection
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_yolov6m_coco_640_640_82.4G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_yolov6m_coco_640_640_82.4G_3.0.zip
+  checksum: e92132729031c8da9f82aa8c52819f86
+- name: yolov6m_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov6m_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: c683e8f5f1dfb7dab24432fe0f1c1476
+- name: yolov6m_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov6m_pt-vck190-r3.0.0.tar.gz
+  checksum: edab7d18d359fe537c1e59026d2c3aae
+- name: yolov6m_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov6m_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 3816efe1754d91a0c3d28e24ee8f5047
+- name: yolov6m_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov6m_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 99762e7535adc609e2da934b1a5d4657
+- name: yolov6m_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov6m_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 7984344db39d4dd3834e04ab60895dcf
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

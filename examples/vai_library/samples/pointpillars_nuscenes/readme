@@ -1,0 +1,72 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_bin_pointpillars_nuscenes, ./test_performance_pointpillars_nuscenes, ./test_accuracy_pointpilalrs_nuscenes must be followed by specified model names as params.
+  Valid model name:
+    model_0:  pointpillars_nuscenes_40000_64_0_pt
+    model_1:  pointpillars_nuscenes_40000_64_1_pt
+  
+  run command like this: 
+    ./test_bin_pointpillars_nuscenes [model_0] [model_1] [anno_file_name1] [anno_file_name2]
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_bin_pointpillars_nuscenes  pointpillars_nuscenes_40000_64_0_pt pointpillars_nuscenes_40000_64_1_pt ./sample_pointpillars_nuscenes.info 
+    output : 
+batch : 0
+label: 0 bbox: -0.743999 -23.8727 -2.17882 1.83202 4.32805 1.61833 3.14159 0 5.4375 score: 0.880797
+label: 1 bbox: -17.112 44.336 -0.507348 3.05965 9.9593 3.36681 5.97069 0 0 score: 0.320821
+label: 1 bbox: 46.9198 7.192 -2.00296 2.45609 6.32956 2.56464 0.8825 0 0 score: 0.320821
+
+   if batch size is not equal to 1, you can run with more parameters like this:
+   sample : ./test_bin_pointpillars_nuscenes  pointpillars_nuscenes_40000_64_0_pt pointpillars_nuscenes_40000_64_1_pt 1531281439800013.info 1531281442299946.info 1531281440299931.info
+   output : 
+batch : 0
+label: 0 bbox: -0.743999 -23.8727 -2.17882 1.83202 4.32805 1.61833 3.14159 0 5.4375 score: 0.880797
+label: 1 bbox: -17.112 44.336 -0.507348 3.05965 9.9593 3.36681 5.97069 0 0 score: 0.320821
+label: 1 bbox: 46.9198 7.192 -2.00296 2.45609 6.32956 2.56464 0.8825 0 0 score: 0.320821
+
+batch : 1
+label: 0 bbox: -6.38332 -29.512 -2.39416 1.95018 4.32805 1.61833 3.45409 1.9375 7.6875 score: 0.924142
+label: 0 bbox: 42.5913 -30.504 -3.05466 2.07595 5.22062 2.07798 1.1325 0 0 score: 0.437824
+label: 1 bbox: -7.192 21.6716 -1.06189 2.78312 7.17233 2.73005 3.01659 0 0 score: 0.924142
+label: 7 bbox: -14.5091 21.1415 -0.685942 0.706238 0.681679 1.87083 6.14909 0.125 -0.6875 score: 0.437824
+label: 7 bbox: -17.0505 14.5705 -0.73911 0.706238 0.681679 1.75748 4.77409 0 0 score: 0.377541
+
+batch : 2
+label: 0 bbox: -1.736 -25.3607 -2.28649 1.95018 4.32805 1.61833 3.20409 0.4375 6.75 score: 0.952574
+label: 1 bbox: -15.128 40.368 -0.507348 2.87427 9.9593 3.36681 5.97069 0 0 score: 0.5
+label: 7 bbox: -13.7014 0.805452 -1.31363 0.663449 0.681679 1.36873 1.45409 0 0 score: 0.320821
+ 
+
+   
+Performance: 
+    ./test_performance_pointpillars_nuscenes pointpillars_nuscenes_40000_64_0_pt pointpillars_nuscenes_40000_64_1_pt pointpillars_nuscenes test_performance_pointpillars_nuscenes.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_pointpillars_nuscenes <model_name_0> <model_name_1> <info_list_filename> <output_filename>
+
+    sample:
+    ./test_accuracy_pointpillars_nuscenes pointpillars_nuscenes_40000_64_0_pt pointpillars_nuscenes_40000_64_1_pt info_list.txt result.txt

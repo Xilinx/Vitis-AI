@@ -1,3 +1,6 @@
+
+
+#
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -132,15 +135,15 @@ def force_create_dir(dir_name, copy_from_dir=None):
   if os.path.exists(dir_name):
     shutil.rmtree(dir_name)
   os.makedirs(dir_name)
-
+    
   if copy_from_dir:
     copy_folder_files(dir_name, copy_from_dir)
 
 def create_work_dir(dir_name):
   if not os.path.exists(dir_name):
     os.makedirs(dir_name)
-
-
+    
+ 
 
 def print_center_edge(string, to_str=False, blank_line=0, width=120):
   center_str = "{0}>>{1:40}<<{0}".format("=" * 30,

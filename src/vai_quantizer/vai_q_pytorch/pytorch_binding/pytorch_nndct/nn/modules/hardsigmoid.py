@@ -24,7 +24,7 @@ from nndct_shared.quantization import maybe_get_quantizer
 from nndct_shared.quantization import quantize_tensors
 from nndct_shared.utils import NndctOption
 import pytorch_nndct.utils as py_utils
-from nndct_shared.utils import  NNDCT_KEYS, GLOBAL_MAP
+
 __all__ = ['Hardsigmoid']
 
 
@@ -38,14 +38,8 @@ class deephi_Hardsigmoid(torch.nn.Module):
     self.inplace = inplace
 
   def forward(self, input):
-    quant_config = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_CONFIG)
     if self.quant_mode is None or NndctOption.nndct_quant_off.value:
-      return torch.div(F.relu6(torch.add(input, 3.)), 6.)
-    elif(quant_config['target_device'] == "FLEXML"):
-        qinput = quantize_tensors([input],self.node,tensor_type='input')[0]
-        output = torch.nn.functional.hardsigmoid(qinput)
-        output = quantize_tensors([output],self.node)[0]
-        return output
+      return torch.div(F.relu6(torch.add(input, 3.)), 6.) 
     else:
       qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
       output = F.relu6(torch.add(qinput, 3.))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,10 +76,6 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   auto segmentation = vitis::ai::RGBDsegmentation::create(argv[1], true);
-  if (!segmentation) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
 
   string rgb_path = string(argv[2]) + "/";
   string hha_path = string(argv[3]) + "/";
@@ -92,7 +88,7 @@ int main(int argc, char* argv[]) {
   auto a = system(mkdir.c_str());
   if (a == -1) exit(0);
 
-  for (auto& name : names) {
+  for (auto name : names) {
     // auto rgb_name = rgb_path + name;
     istringstream rgb_ss(rgb_path + name);
     string rgb_name;

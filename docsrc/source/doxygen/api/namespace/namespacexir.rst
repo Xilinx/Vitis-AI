@@ -1,4 +1,0 @@
-Namespace xir
-=============
-
-.. doxygennamespace:: xir

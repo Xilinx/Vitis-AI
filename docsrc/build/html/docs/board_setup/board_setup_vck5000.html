@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Setting up a Versal Accelerator Card &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Vitis AI Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Current Release</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="board_setup.html">Target Setup Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Pre-trained, Optimized Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a NN Model for Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Deployment</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a NN Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">System Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">Integrating the DPU</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Third-Party Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">TVM, TensorFlow Lite, ONNX Runtime</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Release Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Formal Vitis AI Documents</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Vitis AI Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">AMD Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Setting up a Versal Accelerator Card</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/board_setup/board_setup_vck5000.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-a-versal-accelerator-card">
+<h1>Setting up a Versal Accelerator Card<a class="headerlink" href="#setting-up-a-versal-accelerator-card" title="Permalink to this heading">¶</a></h1>
+<p>The Xilinx® <strong>DPUCVDX8H</strong> for the Versal VCK5000 is a High Performance CNN processing engine.  The following instructions will help you to install the software and packages required to support the VCK5000.</p>
+<p>As a first step, it is recommended that you select the appropriate DPU configuration for your application:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>No.</p></th>
+<th class="head"><p>Accelerator Card</p></th>
+<th class="head"><p>DPU IP</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_4pe_miscdwc</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_6pe_dwc</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_6pe_misc</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>VCK5000-PROD</p></td>
+<td><p>DPUCVDX8H_8pe_normal</p></td>
+</tr>
+</tbody>
+</table>
+<p>This selection depends on several factors:</p>
+<ul class="simple">
+<li><p><cite>misc</cite> is selected if the models to be deployed leverage pooling and element-wise layers</p></li>
+<li><p><cite>dwc</cite> is selected if the models to be deployed leverage Depthwise Convolution (eg. MobileNets)</p></li>
+<li><p>The number of <cite>pe</cite> or “processing engines” determines both performance and programmable logic resource utilization</p></li>
+</ul>
+<p>If you are just getting started and are uncertain which to choose, you may wish to start with the <cite>DPUCVDX8H_4pe_miscdwc</cite> as it provides the most extensive operator support.  Please refer to <a class="reference external" href="https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h/Configuration-Options">this user guide</a> for more extensive details regarding selection.</p>
+<section id="vck5000-prod-card-setup">
+<h2>VCK5000-PROD Card Setup<a class="headerlink" href="#vck5000-prod-card-setup" title="Permalink to this heading">¶</a></h2>
+<p>A script is provided to drive the VCK5000-PROD card setup process.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis AI 3.0 specifically leverages the 2022.2 versions of the Vitis tools, VCK5000 platform, XRT and XRM.</p>
+</div>
+<p>This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.  Please refer to <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> prior to proceeding.</p>
+<p>Execute this script as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span> <span class="n">install</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">-</span><span class="n">AI</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span>
+<span class="n">source</span> <span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The following installation steps are performed by this script:</p>
+<ol class="arabic simple">
+<li><p>XRT Installation. The <a class="reference external" href="https://github.com/Xilinx/XRT">Xilinx RunTime (XRT)</a> is a combination of userspace and kernel driver components supporting PCIe accelerator cards such as the VCK5000.</p></li>
+<li><p>XRM Installation. The <a class="reference external" href="https://github.com/Xilinx/XRM/">Xilinx Resource Manager (XRM)</a> manages and controls FPGA resources on the host. It is required by the runtime.</p></li>
+<li><p>Installation of the VCK5000-PROD platform.</p></li>
+<li><p>Installation of the DPU xclbin for the VCK5000-PROD platform.</p></li>
+</ol>
+<p>After the script is executed successfully, use the XRT <cite>xbutil</cite> command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">xilinx</span><span class="o">/</span><span class="n">xrt</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">xbutil</span> <span class="n">examine</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Vitis AI 3.0 requires the use of a VCK5000-PROD card. Support for the pre-production VCK5000-ES1 card is not available in this release. If you do not have a production release card, you must use <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v1.4.1">Vitis AI 1.4.1</a>.</p>
+</div>
+</section>
+<section id="docker-container-environment-variable-setup">
+<h2>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h2>
+<p>First, ensure that you have cloned Vitis AI, entered the Vitis AI directory.  Start Docker.</p>
+<p>From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory prior to execution. There are four xclbin files to choose from.  Select the xclbin that matches your chosen DPU configuration.</p>
+<ul>
+<li><p>For the 4PE 350MHz configuration with pooling, elementwise and depthwise convolution support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_4pe_miscdwc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 6PE 350MHz configuration with depthwise convolution support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6pe_dwc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 6PE 350MHz configuration with pooling and elementwise support:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_6PE_misc</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For the 8PE 350MHz base configuration:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">board_setup</span><span class="o">/</span><span class="n">vck5000</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span> <span class="n">DPUCVDX8H_8pe_normal</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+                  <style>
+                        .footer {
+                        position: fixed;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        }
+                  </style>
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on February 9, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

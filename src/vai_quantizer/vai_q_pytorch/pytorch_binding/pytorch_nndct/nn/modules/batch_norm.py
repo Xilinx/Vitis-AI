@@ -44,7 +44,7 @@ class deephi_BatchNorm(torch.nn.modules.batchnorm._BatchNorm):
     param_names = self.params_name[:2]
     
     qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
-
+    
     if (not self.param_quantized):
       inplace = (NndctOption.nndct_quant_off.value or self.quantizer is not None and self.quantizer.inplace)
       # quantize weights and bias

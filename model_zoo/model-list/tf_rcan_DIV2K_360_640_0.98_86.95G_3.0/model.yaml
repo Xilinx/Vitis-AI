@@ -1,0 +1,60 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Pruned_RCAN for Single Image Super-resolution.
+input size: 360*640
+float ops: 86.95G
+task: super-resolution
+framework: tensorflow
+prune: '0.98'
+version: 3.0
+files:
+- name: tf_rcan_DIV2K_360_640_0.98_86.95G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_rcan_DIV2K_360_640_0.98_86.95G_3.0.zip
+  checksum: 070449547e6a5f98a575519c5dd24775
+- name: rcan_pruned_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 69ebe60bb0c2b83bcd73693b61b1a500
+- name: rcan_pruned_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck190-r3.0.0.tar.gz
+  checksum: 0677db9ab1ae7088f4fe3eac4977a492
+- name: rcan_pruned_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: e7dd0f3011e2fb2012396973d2ee2d81
+- name: rcan_pruned_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 339892d609a3cbdd7ae9326992b9478c
+- name: rcan_pruned_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: 77f09035f42eed900c5f271d362f16f0
+- name: rcan_pruned_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-8pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=rcan_pruned_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
+  checksum: 0b496854b1d7d1895ba37597ba213e7a
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

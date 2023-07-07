@@ -42,7 +42,6 @@ from .utils import (connect_module_with_graph,
                     get_deploy_graph_list)
 
 from .adaquant_utils import tensor_size, tensor_size_by_num
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
 
 
 class LayerMutiHook(object):
@@ -136,8 +135,7 @@ class AdaQuant(object):
     for node in self._processor.graph.nodes:
       for _, config_history in self._processor.quantizer.config_history.items():
         if node.name in config_history:
-          for i in range(len(config_history[node.name])):
-            config_history[node.name][i].clear()
+          config_history[node.name].clear()
     for mod in self._processor.quant_model.modules():
       if hasattr(mod, "param_quantized"):
         setattr(mod, "param_quantized", False)
@@ -192,6 +190,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     
     self._last_quant_nodes = self.collect_last_quant_nodes(filter=lambda node: node.name in possible_last_quantized_nodes)
 
+    self._torch_version = torch.__version__.split('.')
   
   def _setup_quantizer(self, quant_mode):
     self._quantizer.quant_mode = quant_mode
@@ -631,8 +630,7 @@ class AdvancedQuantProcessor(torch.nn.Module):
     for node in self.graph.nodes:
       for _, config_history in self.quantizer.config_history.items():
         if node.name in config_history:
-          for i in range(len(config_history[node.name])):
-            config_history[node.name][i].clear()
+          config_history[node.name].clear()
     for mod in self.quant_model.modules():
       if hasattr(mod, "param_quantized"):
         setattr(mod, "param_quantized", False)
@@ -882,7 +880,7 @@ please remove it if there is "torch.no_grad()" in forward process')
     total_loss = AverageMeter("layer_loss")
     best_params = self.get_layer_params(layer)
     # torch version >= 1.6
-    if compare_torch_version('1.6.0',CmpFlag.GREATER_EQUAL):
+    if int(self._torch_version[0]) >= 1 and int(self._torch_version[1]) >= 6:
       act_func_map = {
         NNDCT_OP.RELU: F.relu,
         NNDCT_OP.RELU6: F.relu6,

@@ -19,12 +19,15 @@ class RoundEven(torch.autograd.Function):
 
   @staticmethod
   def forward(ctx, t):
-    return torch.round(t)
+    ctx.save_for_backward(t)
+    t = torch.round(t)
+    return t
 
   @staticmethod
   def backward(ctx, grad_output):
+    t, = ctx.saved_tensors
     grad_input = grad_output.clone()
-    return grad_input
+    return grad_input, None
 
 class RoundAway(torch.autograd.Function):
 

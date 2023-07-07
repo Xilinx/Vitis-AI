@@ -28,6 +28,7 @@ After the wego-tensorflow conda env is activated, please refer to following link
 - [mobilenet_v3](./classification)
 - [efficientnet](./classification)
 - [2dunet](./2dunet)
+- [erfnet](./erfnet)
 
 # License
 

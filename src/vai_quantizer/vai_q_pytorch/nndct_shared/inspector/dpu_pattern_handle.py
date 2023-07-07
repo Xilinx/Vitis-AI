@@ -11,7 +11,6 @@ from nndct_shared.nndct_graph import operator_definition as base_op
 from nndct_shared.utils import (DataXopError, DeviceInfo, DeviceType,
                                 NndctScreenLogger, QError, QNote, QWarning,
                                 create_work_dir, NndctOption)
-from nndct_shared.quantization.fix_pos_adjust import FixPosChecker
 
 from .utils import QuantConfig, convert_quant_config_to_dict
 
@@ -196,8 +195,6 @@ class DPUPatternHandle(object):
     patter_name_str = "_".join([node.op.type for node in nodeset])
     pattern = PatternGraph.create_pattern_graph_from_nodeset(f"{patter_name_str}_{random_suffix}", expanded_heads + nodeset)
     quant_config = self._init_quant_config(nodeset, quant_node)
-    fixpos_check = FakeFixPosChecker(quant_config)
-    fixpos_check(pattern)
     xir_convert = CompilerFactory.get_compiler("xmodel")
     user_name = pwd.getpwuid(os.getuid()).pw_name
     xmodel_dir = os.path.join("/tmp", user_name)
@@ -343,51 +340,3 @@ class CombOpHandle(SingleOpHandle):
       return 
 
     self.process_nndct_pattern(nodeset)
-
-
-class FakeFixPosChecker(FixPosChecker):
-  def __init__(self, ctx):
-    super().__init__(ctx)
-
-  def __call__(self, graph):
-    for node in graph.nodes:
-      fn_lst = self.adjust_relative_and_absolute_fn_map.get(node.op.type, None)
-      if fn_lst is not None:
-        for fn in fn_lst:
-          fn(node, lambda *args: True)
-
-  def get_quant_input_config(self, node, offset):
-    for idx, in_node_name in enumerate(node.in_nodes):
-      if idx == offset:
-        return list(self.ctx.get_output_bw_fp(in_node_name))
-
-  def _get_quant_output_node_info(self, node):
-    bwfp = self.ctx.get_output_bw_fp(node.name)
-    cur_node = node
-    while bwfp is None:
-      assert len(cur_node.out_nodes) == 1
-      for onode in cur_node.out_nodes:
-        bwfp = self.ctx.get_output_bw_fp(onode)
-        cur_node = node.owning_graph.node(onode)
-
-    return cur_node, bwfp
-
-  def get_quant_output_config(self, node):
-    _, bwfp = self._get_quant_output_node_info(node)
-    return list(bwfp)
-
-  def get_quant_output_name(self, node):
-    q_node, _ = self._get_quant_output_node_info(node)
-    return q_node.name
-  
-  def get_quant_param_config(self, name):
-    return list(self.ctx.get_param_bw_fp(name))
-  
-  def set_quant_output_config(self, node, bnfp):
-    self.ctx.set_output_quant_fp_at(node.name, offset=0, fp=bnfp[1])
-  
-  def set_quant_param_config(self, name, bnfp):
-    self.ctx.insert_param_quant_fp(name, bnfp[1])
-
-
-

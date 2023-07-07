@@ -1,0 +1,106 @@
+book_path: /model_optimization/_book.yaml
+project_path: /model_optimization/_project.yaml
+description: A suite of tools for optimizing ML models for deployment and execution. Improve
+ performance and efficiency, reduce latency for inference at the edge.
+landing_page:
+  custom_css_path: /site-assets/css/style.css
+  rows:
+  - heading: >
+      Optimize machine learning models
+    items:
+    - classname: devsite-landing-row-50
+      description: >
+        The <em>TensorFlow Model Optimization Toolkit</em> is a suite of tools
+        for optimizing ML models for deployment and execution. Among many uses,
+        the toolkit supports techniques used to:
+        <ul style="padding-left: 20px">
+          <li>Reduce latency and inference cost for cloud and edge devices (e.g. mobile, IoT).</li>
+          <li>
+            Deploy models to edge devices with restrictions on processing,
+            memory, power-consumption, network usage, and model storage space.
+          </li>
+          <li>
+            Enable execution on and optimize for existing hardware or new special purpose accelerators.
+          </li>
+        </ul>
+        <p style="margin-top: 30px">
+          Choose the model and optimization tool depending on your task:
+        </p>
+      list:
+      - heading: Improve performance with off-the-shelf models
+        description: >
+          In many cases, pre-optimized models can improve the efficiency of your application.
+        path: /model_optimization/guide/get_started
+        icon:
+          icon_name: chevron_right
+          foreground: theme
+          background: grey
+      - heading: Use the TensorFlow Model Optimization Toolkit
+        description: >
+          Try the post-training tools to optimize an already-trained TensorFlow model.
+        path: /model_optimization/guide/get_started
+        icon:
+          icon_name: chevron_right
+          foreground: theme
+          background: grey
+      - heading: Optimize further
+        description: >
+          Use training-time optimization tools and learn about the techniques.
+        path: /model_optimization/guide/optimize_further
+        icon:
+          icon_name: chevron_right
+          foreground: theme
+          background: grey
+
+      code_block: |
+        <pre class = "prettyprint">
+        import tensorflow as tf
+        import tensorflow_model_optimization as tfmot
+
+        model = tf.keras.Sequential([...])
+
+        pruning_schedule = tfmot.sparsity.keras.PolynomialDecay(
+                              initial_sparsity=0.0, final_sparsity=0.5,
+                              begin_step=2000, end_step=4000)
+
+        model_for_pruning = tfmot.sparsity.keras.prune_low_magnitude(
+            model, pruning_schedule=pruning_schedule)
+        ...
+
+        model_for_pruning.fit(...)
+        </pre>
+
+  - classname: devsite-landing-row-cards
+    items:
+    - heading: "TensorFlow Model Optimization Toolkit - Quantization Aware Training"
+      path: https://blog.tensorflow.org/2020/04/quantization-aware-training-with-tensorflow-model-optimization-toolkit.html
+      buttons:
+      - label: "Read on TensorFlow blog"
+        path: https://blog.tensorflow.org/2020/04/quantization-aware-training-with-tensorflow-model-optimization-toolkit.html
+    - heading: "TensorFlow Model Optimization Toolkit - Post Training Integer Quantization"
+      path: https://blog.tensorflow.org/2019/06/tensorflow-integer-quantization.html
+      buttons:
+      - label: "Read on TensorFlow blog"
+        path: https://blog.tensorflow.org/2019/06/tensorflow-integer-quantization.html
+    - heading: "TensorFlow Model Optimization Toolkit - Pruning API"
+      path: https://blog.tensorflow.org/2019/05/tf-model-optimization-toolkit-pruning-API.html
+      buttons:
+      - label: "Read on TensorFlow blog"
+        path: https://blog.tensorflow.org/2019/05/tf-model-optimization-toolkit-pruning-API.html
+
+  - classname: devsite-landing-row-cards
+    items:
+    - heading: "Introducing the Model Optimization Toolkit for TensorFlow"
+      path: https://blog.tensorflow.org/2018/09/introducing-model-optimization-toolkit.html
+      buttons:
+      - label: "Read on TensorFlow blog"
+        path: https://blog.tensorflow.org/2018/09/introducing-model-optimization-toolkit.html
+
+    - heading: "Model Optimization Toolkit on GitHub"
+      path: https://github.com/tensorflow/model-optimization
+      buttons:
+      - label: "View on GitHub"
+        path: https://github.com/tensorflow/model-optimization
+    - heading: ""
+      options:
+      - hidden

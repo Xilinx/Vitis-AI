@@ -1,0 +1,67 @@
+{% set version = "2.0" %}
+
+package:
+  name: vai_q_tensorflow2
+  version: {{ version }}
+
+source:
+  path: ../
+
+build:
+  number: 1
+
+# [u'absl-py (>=0.1.6)', u'astor (>=0.6.0)', u'gast (>=0.2.0)', u'keras-applications (>=1.0.6)', u'keras-preprocessing (>=1.0.5)', u'numpy (>=1.13.3)', u'six (>=1.10.0)', u'protobuf (>=3.6.1)', u'tensorboard (@M@<1.13.0,>=1.12.0)', u'termcolor (>=1.1.0)', u'grpcio (>=1.8.6)', u'wheel (>=0.26)']
+
+requirements:
+  build:
+    # - {{ compiler('c') }}
+    # - {{ compiler('cxx') }}
+
+  host:
+    - python 3.7.*
+    - pip
+    - setuptools
+    # requirements specified by the package itself
+    - six
+    - numpy >=1.16.6,<2.0a0
+    - wheel
+    - mock
+    - future >=0.17.1
+    - tensorflow >=2.3.0,<=2.3.1
+    - keras-applications >=1.0.6
+    - keras-preprocessing >=1.0.5
+    - swig
+    - zlib                     # [linux]
+    - libpng                   # [linux]
+    - libcurl                  # [linux]
+
+
+  run:
+    - python 3.7.*
+    - absl-py >=0.7.0
+    - astor >=0.6.0
+    - backports.weakref >=1.0rc1 # [unix]
+    - enum34 >=1.1.6           # [py2k]
+    - functools32 >=3.2.3      # [py2k]
+    - gast >=0.3.3,<0.3.4.0a0
+    - tensorflow >=2.3
+    - keras-applications >=1.0.8
+    - keras-preprocessing >=1.0.5
+    - mock >=2.0.0             # [py2k]
+    - numpy >=1.16.6,<2.0a0
+    - opt_einsum >=2.3.2
+    - six >=1.10.0
+    - protobuf >=3.6.1
+    - tensorboard >=2.3.0
+    - tensorflow-estimator >=2.3.0
+    - termcolor >=1.1.0
+    - wheel >=0.26             # [py2k]
+    - wrapt >=1.11.1
+    - grpcio >=1.8.6
+    - scipy >=0.15.1
+
+test:
+  requires:
+    - tensorflow
+  commands:
+    - python -c "from tensorflow_model_optimization.quantization.keras import vitis_quantize"

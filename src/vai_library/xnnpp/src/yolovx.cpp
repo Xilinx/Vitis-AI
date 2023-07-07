@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2021 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,8 +84,6 @@ std::vector<YOLOvXResult> yolovx_post_process(
   auto anchor_cnt = yolo_params.anchorcnt();
   auto nms_thresh = yolo_params.nms_threshold();
   auto conf_thresh = yolo_params.conf_threshold();
-  auto iou_type=yolo_params.iou_type();
-
   std::vector<float> stride(yolo_v5_params.stride().begin(),
                             yolo_v5_params.stride().end());
 
@@ -143,7 +141,7 @@ std::vector<YOLOvXResult> yolovx_post_process(
     for (auto i = 0; i < num_classes; i++) {
       vector<size_t> result_k;
       applyNMS(boxes_for_nms[i], scores[i], nms_thresh, conf_thresh, result_k,
-               false, iou_type);
+               false);
       res.reserve(res.size() + result_k.size());
       transform(result_k.begin(), result_k.end(), back_inserter(res),
                 [&](auto& k) { return boxes_for_nms[i][k]; });
@@ -179,4 +177,3 @@ std::vector<YOLOvXResult> yolovx_post_process(
 
 }  // namespace ai
 }  // namespace vitis
-

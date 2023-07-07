@@ -2,7 +2,7 @@ import torch
 import numpy as np
 
 from .coefficient import get_sigmoid_positive_ploy_coeffcients, get_exp_poly_coeffcients, get_gelu_tanh_poly_coeffcients, get_tanh_positive_poly_coeffcients
-from pytorch_nndct.utils.hw_dtype import is_subnormal, is_normal
+from .hw_dtype import is_subnormal, is_normal
 
 def mult_add(a_bf16, b_bf16, c_fp32):
   assert a_bf16.dtype == torch.bfloat16 and b_bf16.dtype == torch.bfloat16
@@ -98,9 +98,9 @@ _AMD_FLOOR = np.floor
 _AMD_FLOOR = torch.floor
 _AMD_ROUND = torch.round
 
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+from distutils.version import LooseVersion
 # torch do not have good support for bfloat16 operations prior to 1.8
-_is_torch_ge_180 = compare_torch_version(CmpFlag.GREATER_EQUAL, "1.8.0")
+_is_torch_ge_180 = LooseVersion(torch.__version__) >= LooseVersion('1.8.0')
 if _is_torch_ge_180:
   _MAX_BFLOAT16 = torch.finfo(torch.bfloat16).max
   _MIN_BFLOAT16 = torch.finfo(torch.bfloat16).min
@@ -261,12 +261,7 @@ def isqrt_approx_bfloat16(x, mantissa_bit=7, exponent_bit=8):
   # gamma = 0.0450466
   # magic_n = np.array(round(3.0/2.0 * 2.0**mantissa_bit * (2.0**(exponent_bit-1) - 1.0 - gamma)), dtype=np.int16)
 
-  # From https://www.mdpi.com/1099-4300/23/1/86/pdf authored by
-  # Walczy, C.J.; Moroz, L.V..; Cie´sli´nski, J.L.
-  # This work is licensed under the Creative Commons Attribution 4.0
-  # International License. To view a copy of this license, visit
-  # http://creativecommons.org/licenses/by/4.0/ or send a letter to
-  # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+  # From https://www.mdpi.com/1099-4300/23/1/86/pdf
   magic_n = np.round(2**mantissa_bit *
                      (3 * (2.0**(exponent_bit - 1) - 1.0) - 1) / 2 +
                      np.round(2**mantissa_bit *
@@ -303,12 +298,7 @@ def isqrt_approx_quake(x, mantissa_bit=23, exponent_bit=8):
                (2.0**(exponent_bit - 1) - 1.0 - gamma)),
       dtype=np.int32)
 
-  # From https://www.mdpi.com/1099-4300/23/1/86/pdf authored by
-  # Walczy, C.J.; Moroz, L.V..; Cie´sli´nski, J.L.
-  # This work is licensed under the Creative Commons Attribution 4.0
-  # International License. To view a copy of this license, visit
-  # http://creativecommons.org/licenses/by/4.0/ or send a letter to
-  # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+  # From https://www.mdpi.com/1099-4300/23/1/86/pdf
   # magic_n = np.round(2**mantissa_bit *(3* (2.0**(exponent_bit-1) - 1.0) - 1) /2 + np.round(2**mantissa_bit * (3.7315712401613957182292407381942955 - 2)/4 - 0.5))
   # magic_n = np.array(magic_n, dtype=np.int32)
 
@@ -333,12 +323,7 @@ def isqrt_approx_walcyzk(x, mantissa_bit=23, exponent_bit=8):
   # gamma = 0.0450466
   # magic_n = np.array(round(3.0/2.0 * 2.0**mantissa_bit * (2.0**(exponent_bit-1) - 1.0 - gamma)), dtype=np.int16)
 
-  # From https://www.mdpi.com/1099-4300/23/1/86/pdf authored by
-  # Walczy, C.J.; Moroz, L.V..; Cie´sli´nski, J.L.
-  # This work is licensed under the Creative Commons Attribution 4.0
-  # International License. To view a copy of this license, visit
-  # http://creativecommons.org/licenses/by/4.0/ or send a letter to
-  # Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+  # From https://www.mdpi.com/1099-4300/23/1/86/pdf
   # magic_n = np.round(2**mantissa_bit *(3* (2.0**(exponent_bit-1) - 1.0) - 1) /2 + np.round(2**mantissa_bit * (3.7315712401613957182292407381942955 - 2)/4 - 0.5))
   magic_n = 0x5f376908  # np.array(magic_n, dtype=np.int32)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,6 @@ int main(int argc, char *argv[]) {
   }
 
   auto det = vitis::ai::Covid19Segmentation::create(argv[1]);  // Init
-  if (!det) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
   auto image = cv::imread(argv[2]);                     // Load an input image;
   if (image.empty()) {
     cerr << "cannot load " << argv[2] << endl;

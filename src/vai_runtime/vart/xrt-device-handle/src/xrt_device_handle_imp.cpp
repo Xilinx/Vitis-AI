@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -466,7 +466,13 @@ uint64_t XrtDeviceHandleImp::get_fingerprint(const std::string& cu_name,
 
 unsigned int XrtDeviceHandleImp::get_bank_flags(const std::string& cu_name,
                                                 size_t device_core_idx) const {
-  return (binstream_->get_bank_id() | XCL_BO_FLAGS_CACHEABLE);
+  auto ret = XCL_BO_FLAGS_CACHEABLE;
+  if (binstream_->is_lpddr()) {
+    ret = 2;
+  } else {
+    ret = XCL_BO_FLAGS_CACHEABLE;
+  }
+  return ret;
 }
 
 std::array<unsigned char, SIZE_OF_UUID> XrtDeviceHandleImp::get_uuid(

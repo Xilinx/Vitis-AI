@@ -57,7 +57,6 @@ while true; do
 	--pack)
 	    shift
             build_package=true
-	    args+=(-DIS_DISTRIBUTION=ON)
 	    case "$1" in
 		deb) args+=(-DCPACK_GENERATOR="DEB");;
 		rpm) args+=(-DCPACK_GENERATOR="RPM");;

@@ -58,11 +58,11 @@ class deephi_Conv1d(torch.nn.modules.conv.Conv1d):
             self.bias_bak = self.bias.detach().clone()
         # adjust bias
         if self.quant_mode == 2 and self.bias is not None:
-          if not self.quantizer.has_bias_corr(self.node):
+          if self.node.name not in self.quantizer.bias_corr.keys():
             NndctScreenLogger().error2user(QError.BIAS_CORRECTION, f"Bias correction file in quantization result directory does not match current model.")
             exit(2)
           self.bias.data = torch.sub(self.bias.data, torch.tensor(
-              self.quantizer.get_bias_corr(self.node),
+              self.quantizer.bias_corr[self.node.name],
               device=self.bias.data.device,
               dtype=self.bias.data.dtype))
       self.param_saved = True

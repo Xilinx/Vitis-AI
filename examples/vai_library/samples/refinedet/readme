@@ -1,0 +1,50 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_refinedet, ./test_jpeg_refinedet_tf, ./test_performance_refinedet, ./test_video_refinedet, ./test_accuracy_refinedet first param followed must be with model name.
+  Valid model name:
+    refinedet_VOC_tf
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_refinedet_tf refinedet_VOC_tf sample_refinedet.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0709 05:51:00.050213  3930 demo.hpp:1183] batch: 0     image: sample_refinedet.jpg
+I0709 05:51:00.050945  3930 process_result_tf.hpp:35] RESULT15:         92      155     420     640     0.999977
+I0709 05:51:00.051111  3930 process_result_tf.hpp:35] RESULT15:         0       193     50      349     0.904579
+I0709 05:51:00.051163  3930 process_result_tf.hpp:35] RESULT15:         20      207     169     399     0.893095
+
+
+
+Performance: 
+    ./test_performance_refinedet refinedet_VOC_tf test_performance_refinedet.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_refinedet_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_refinedet_mt refinedet_VOC_tf image_list.txt result.txt -t 2

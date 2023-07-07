@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,6 @@ int main(int argc, char *argv[]) {
   }
 
   auto ssd = vitis::ai::SSD::create(argv[1], true);
-  if (!ssd) { // supress coverity complain
-     std::cerr <<"create error\n";
-     abort();
-  }
 
   std::ofstream out_fs(RESULT_FILE, std::ofstream::out);
 

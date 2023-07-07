@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,14 +68,10 @@ void LoadImageNames(std::string const& filename,
 
 int main(int argc, char* argv[]) {
   auto det = vitis::ai::PoseDetect::create("ssd_pedestrian_pruned_0_97");
-  if (!det) { // supress coverity complain
-      std::cerr <<"create error\n";
-      abort();
-  }
   vector<string> names;
   LoadImageNames(argv[1], names);
 
-  for (auto & name : names) {
+  for (auto name : names) {
     cout << name << endl;
     cv::Mat image = cv::imread(name);
 

@@ -1,0 +1,55 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv4-CSP on COCO.
+input size: 640*640
+float ops: 121G
+task: 2d detection
+framework: pytorch
+prune: 'no'
+version: 3.0
+files:
+- name: pt_yolov4csp_coco_640_640_121G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_yolov4csp_coco_640_640_121G_3.0.zip
+  checksum: 92c8584df185cdbe66c29a1feb94ffcd
+- name: yolov4_csp_pt
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_csp_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: 1cee479242c0696220bf4898e2169ffb
+- name: yolov4_csp_pt
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_csp_pt-vck190-r3.0.0.tar.gz
+  checksum: 4f9b8181b60eb41ee69af46f5fdc01bf
+- name: yolov4_csp_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_csp_pt-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 18a86b7fb2b6558ef86c671a2e738b3c
+- name: yolov4_csp_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_csp_pt-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: 6d9cfea5a17a7e8d52ca44d131883d8a
+- name: yolov4_csp_pt
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieMISC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_csp_pt-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
+  checksum: db185319591dc3c02a217e89fe292e7b
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

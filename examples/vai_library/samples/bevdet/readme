@@ -1,0 +1,74 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_bevdet, ./test_performance_bevdet first param followed must be with model name.
+  Valid model name:
+    bevdet_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_bevdet bevdet_pt img.list  bin.list
+    output : 
+    label: 7 score: 0.622459 bbox: -4.44375 -10.5563 -1.84475 0.526963 1.78269 1.06449 -2.93491 0 0
+    label: 0 score: 0.577495 bbox: -0.66875 -24.3875 -2.42642 2.02006 4.77073 1.72785 -3.08013 0.625 8
+    label: 1 score: 0.377541 bbox: -14.1438 37.2062 -1.0093 2.55359 6.32019 2.8936 2.77554 0 0
+    label: 7 score: 0.268941 bbox: -3.95 -10.075 -1.85313 0.552252 1.78269 1.08126 -2.93491 0 0
+    label: 8 score: 0.2227 bbox: 34.7 -34.025 -2.73214 0.720273 0.75484 1.83928 2.33239 -0.34375 0.78125
+    label: 8 score: 0.2227 bbox: 33.9125 -33.3 -2.68663 0.709106 0.75484 1.81077 2.32091 -0.3125 0.828125
+    label: 8 score: 0.2227 bbox: 33.125 -32.4875 -2.68663 0.698112 0.75484 1.81077 2.33294 -0.3125 0.796875
+    label: 8 score: 0.2227 bbox: 32.3125 -31.6625 -2.66964 0.720273 0.75484 1.83928 2.32173 -0.3125 0.875
+    label: 8 score: 0.2227 bbox: 31.55 -30.875 -2.70089 0.731616 0.75484 1.83928 2.37841 -0.40625 0.9375
+    label: 1 score: 0.201813 bbox: -15.7188 41.1313 -0.978048 2.55359 6.32019 2.8936 2.75099 0 0
+    label: 8 score: 0.201813 bbox: 33.375 -33.05 -2.74913 0.698112 0.75484 1.81077 2.36743 -0.453125 0.765625
+    label: 8 score: 0.201813 bbox: 31.8 -31.425 -2.76339 0.720273 0.75484 1.83928 2.38989 -0.453125 0.90625
+    label: 8 score: 0.201813 bbox: 30.7875 -30.0875 -2.70089 0.731616 0.778801 1.83928 2.37892 -0.4375 1
+    label: 8 score: 0.201813 bbox: 30 -29.2375 -2.70089 0.731616 0.766727 1.83928 2.43468 -0.34375 0.9375
+    label: 8 score: 0.201813 bbox: -11.525 -14.0375 -1.65878 0.597127 0.606531 1.75505 2.4859 0 0
+    label: 8 score: 0.201813 bbox: -10.8875 -13.8875 -1.70385 0.58787 0.597127 1.78269 2.67795 0 0
+    label: 8 score: 0.201813 bbox: -10.7375 -13.3375 -1.69003 0.58787 0.597127 1.75505 2.7367 -0.015625 0.078125
+    label: 9 score: 0.201813 bbox: -10 29.1875 -1.25375 0.430095 0.443747 0.882497 2.67095 0 0
+    label: 7 score: 0.182426 bbox: -4.85 -10.7063 -1.84475 0.479805 1.75505 1.06449 -2.91951 0 0
+    label: 8 score: 0.182426 bbox: 34.1625 -33.8125 -2.78038 0.698112 0.75484 1.81077 2.36743 -0.46875 0.703125
+    label: 8 score: 0.182426 bbox: 32.55 -32.25 -2.73214 0.687289 0.75484 1.83928 2.3447 -0.46875 0.796875
+    label: 8 score: 0.182426 bbox: -11.6625 -14.725 -1.6726 0.597127 0.616082 1.78269 2.57486 0 0
+    label: 8 score: 0.182426 bbox: -14.85 24.325 -0.819279 0.616082 0.655816 1.70106 -2.76787 -0.015625 0.109375
+    label: 9 score: 0.182426 bbox: -9.8875 28.4625 -1.24691 0.436868 0.443747 0.868815 2.72017 0 0
+    label: 9 score: 0.182426 bbox: -10.1375 29.9875 -1.25375 0.436868 0.443747 0.882497 2.64978 0 0
+    label: 9 score: 0.182426 bbox: -10.725 31.5875 -1.16 0.436868 0.443747 0.882497 2.65637 0 0
+    label: 9 score: 0.182426 bbox: -10.8625 32.375 -1.13979 0.423427 0.423427 0.842084 2.67795 0 0
+    label: 9 score: 0.182426 bbox: -10.95 33.1375 -1.15809 0.416862 0.410399 0.816176 2.65074 0 0
+    label: 8 score: 0.164516 bbox: 35.5 -34.8 -2.79464 0.720273 0.766727 1.83928 2.3447 -0.21875 0.734375
+    label: 8 score: 0.164516 bbox: 31.025 -30.6375 -2.74913 0.720273 0.766727 1.81077 2.40061 -0.53125 0.984375
+    label: 8 score: 0.164516 bbox: -12.3125 -14.8125 -1.6726 0.606531 0.616082 1.78269 2.43297 0 0
+    label: 8 score: 0.164516 bbox: -10.1125 -13.1875 -1.72128 0.578756 0.58787 1.75505 2.91479 -0.09375 0.296875
+
+Performance: 
+    ./test_performance_bevdet bevdet_0_pt bevdet_1_pt bevdet_2_pt bevdet_pt img.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_bevdet_mt <model_name> <image_name_list> <data_path> <result_file_path> [batch]
+
+    sample:
+    ./test_accuracy_bevdet_mt bevdet_pt image.list val acc_aie.json 2

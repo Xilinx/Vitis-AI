@@ -419,12 +419,8 @@ struct CycleDetector : public boost::dfs_visitor<> {
   CycleDetector(bool& has_cycle) : has_cycle_{has_cycle} {}
 
   template <class Edge, class Graph>
-  void back_edge(Edge e, Graph& g) {
+  void back_edge(Edge, Graph&) {
     has_cycle_ = true;
-    auto op_source = g[boost::source(e, g)]->get_name();
-    auto op_target = g[boost::target(e, g)]->get_name();
-    UNI_LOG_DEBUG_WARNING << "Back edge from " << op_source << " to "
-                          << op_target;
   }
 
  private:

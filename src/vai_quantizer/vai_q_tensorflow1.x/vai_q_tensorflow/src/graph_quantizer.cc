@@ -37,11 +37,9 @@ limitations under the License.
 #include "known_patterns.h"
 #include "quantize_utils.h"
 #include "remove_nodes.h"
-#include "replace_softmax.h"
 #include "separate_shared_constants.h"
 #include "strip_unused_nodes.h"
 #include "tensorflow/core/lib/strings/str_util.h"
-#include "transform_utils.h"
 
 namespace tensorflow {
 namespace decent_q {
@@ -222,38 +220,10 @@ NodeConfigMap LocateConvfcBias(const NodeMatch &match,
   const NodeDef &weight_node = match.inputs[0].inputs[1].node;
   if (!CheckDtype(convfc_node)) return ops_to_quantize;
 
-  string bias_node_name = bias_node.name();
   bool updated = UpdateNodeConfigMap(
       weight_node, GetWtConfig(config, convfc_node.op()), ops_to_quantize);
-  // if not find the BatchNorm and BiasAdd
-  if (biasadd_node.op() == "AddV2")
-  {
-    //std::vector<TensorShapeProto> output_shapes;
-    //GetNodeAttr(bias_node, "_output_shapes", &output_shapes);
-    //const TensorShapeProto &shape = output_shapes[0];
-    //int bias_dims = shape.dim_size();
-    //if(bias_dims != 1)
-    //not bias, an elementwise add or can use find bias in node name
-    if(bias_node_name.find("bias") == bias_node_name.npos)
-    {
-      updated = updated && UpdateNodeConfigMap(convfc_node, GetActConfig(config),
-                                              ops_to_quantize);
-      updated = updated && UpdateNodeConfigMap(bias_node, GetActConfig(config),
-                                              ops_to_quantize);
-    }
-    //the node is bias
-    else
-    {
-      updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                       ops_to_quantize);
-    }
-  }
-  else
-  {
-    updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
-                                         ops_to_quantize);
-  }
-  //update the biasadd_node
+  updated = updated && UpdateNodeConfigMap(bias_node, GetWtConfig(config),
+                                           ops_to_quantize);
   updated = updated && UpdateNodeConfigMap(biasadd_node, GetActConfig(config),
                                            ops_to_quantize);
   if (updated) {
@@ -1049,22 +1019,6 @@ NodeConfigMap LocateClipByValue(const NodeMatch &match,
   return ops_to_quantize;
 }
 
-NodeConfigMap LocateStridedSlice(const NodeMatch &match,
-                                 const QuantizeConfig &config,
-                                 std::set<NodeGroup> &node_groups) {
-  NodeConfigMap ops_to_quantize;
-  const NodeDef &stridedslice_node = match.node;
-  if (!CheckDtype(stridedslice_node)) return ops_to_quantize;
-
-  bool updated = UpdateNodeConfigMap(stridedslice_node, GetActConfig(config),
-                                     ops_to_quantize);
-  if (updated) {
-    DLOG_INFO(1) << "Quantize stridedslice: " << stridedslice_node.name() << "("
-                 << stridedslice_node.op() << ")";
-  }
-  return ops_to_quantize;
-}
-
 NodeConfigMap LocateOtherRelu(const NodeMatch &match,
                               const QuantizeConfig &config,
                               std::set<NodeGroup> &node_groups) {
@@ -1163,7 +1117,6 @@ Status QuantizeConfig::FromString(const string config_string) {
   for (int i = 0; i < params.size() - 1; i += 2) {
     string param = params[i];
     string value = params[i + 1];
-    DLOG_WARNING << param << ": " << value;
     if (param == "phase") {
       phase = QuantizePhase(std::stoi(value));
     } else if (param == "weight_bit") {
@@ -1216,14 +1169,9 @@ Status QuantizeConfig::FromString(const string config_string) {
       replace_sigmoid = std::stoi(value);
     } else if (param == "fold_bn_only") {
       fold_bn_only = std::stoi(value);
-    } else if (param == "target_type") {
-      target_type = value;
-    } else if (param == "fold_reshape") {
-      fold_reshape = std::stoi(value);
     } else if (param == "replace_softmax") {
       replace_softmax = std::stoi(value);
     } else {
-      LOG(FATAL) << "Wrong QuantizeConfig Parameter: " << param;
       return errors::InvalidArgument("Wrong QuantizeConfig Parameter: " +
                                      param);
     }
@@ -1288,7 +1236,6 @@ Status GraphQuantizer::_LocateOpsToQuantize(const GraphDef &input_graph_def) {
       {"array", &LocateArray},
       {"avgpool_mul", &LocateAvgpoolMul},
       {"clip_by_value", &LocateClipByValue},
-      {"stridedslice", &LocateStridedSlice},
       {"other_relu", &LocateOtherRelu},
       {"other", &LocateOther},
   });
@@ -2247,9 +2194,6 @@ Status GraphQuantizer::CreateOptimizedGraph(const GraphDef &input_graph_def,
   output_graph_def.Clear();
   GraphDef current_graph_def, processed_graph_def;
 
-  SaveGraphForDebugging(input_graph_def, "opt_input_graph.pb",
-                        _config.output_dir);
-
   current_graph_def = input_graph_def;
   processed_graph_def = input_graph_def;
   // Remove Identity|CheckNumerics
@@ -2260,8 +2204,6 @@ Status GraphQuantizer::CreateOptimizedGraph(const GraphDef &input_graph_def,
       std::pair<string, std::vector<string>>({"op", {string("Identity")}}));
   context_remove_nodes.params.insert(std::pair<string, std::vector<string>>(
       {"op", {string("CheckNumerics")}}));
-  context_remove_nodes.params.insert(
-      std::pair<string, std::vector<string>>({"op", {string("IdentityN")}}));
   TF_RETURN_IF_ERROR(RemoveNodes(current_graph_def, context_remove_nodes,
                                  &processed_graph_def));
   // remove identityN
@@ -2297,15 +2239,15 @@ Status GraphQuantizer::CreateOptimizedGraph(const GraphDef &input_graph_def,
                           _config.output_dir);
   }
 
-  // // Fold constants(encount segment fault error in plugin build)
+  // Fold constants
   // current_graph_def = processed_graph_def;
   // TransformFuncContext context_fold_constants;
   // context_fold_constants.input_names = _config.input_nodes;
   // context_fold_constants.output_names = _config.output_nodes;
   // TF_RETURN_IF_ERROR(FoldConstants(current_graph_def, context_fold_constants,
-  //                                  &processed_graph_def));
+  //&processed_graph_def));
   // SaveGraphForDebugging(processed_graph_def, "fold_constants.pb",
-  //                       _config.output_dir);
+  //_config.output_dir);
 
   // Update Old Batchnorms
   current_graph_def = processed_graph_def;
@@ -2339,35 +2281,10 @@ Status GraphQuantizer::CreateOptimizedGraph(const GraphDef &input_graph_def,
   // Simulate DPU
   if (_config.simulate_dpu == 1 && !_config.fold_bn_only) {
     current_graph_def = processed_graph_def;
-    TF_RETURN_IF_ERROR(SimulateDPU(current_graph_def, &processed_graph_def,
-                                   _config.scale_all_avgpool,
-                                   _config.replace_sigmoid));
+    TF_RETURN_IF_ERROR(SimulateDPU(
+        current_graph_def, &processed_graph_def, _config.scale_all_avgpool,
+        _config.replace_softmax, _config.replace_sigmoid));
     SaveGraphForDebugging(processed_graph_def, "simulate_dpu.pb",
-                          _config.output_dir);
-  }
-
-  if (_config.fold_reshape) {
-    // Inference Reshapes
-    current_graph_def = processed_graph_def;
-    int batch_size = 1;
-    TF_RETURN_IF_ERROR(
-        InferenceShape(current_graph_def, &processed_graph_def, batch_size));
-
-    TransformFuncContext context_strip;
-    context_strip.input_names = _config.input_nodes;
-    context_strip.output_names = _config.output_nodes;
-    TransformFuncParameters *param_strip = &context_strip.params;
-    for (int i = 0; i < _config.input_nodes.size(); i++) {
-      string node_name = _config.input_nodes[i];
-      (*param_strip)["name"].push_back(node_name);
-
-      (*param_strip)["type_for_name"].push_back("float32");
-      (*param_strip)["shape_for_name"].push_back(_config.input_shapes[i]);
-    }
-    current_graph_def = processed_graph_def;
-    TF_RETURN_IF_ERROR(StripUnusedNodes(current_graph_def, context_strip,
-                                        &processed_graph_def));
-    SaveGraphForDebugging(processed_graph_def, "opt_inference_reshapes.pb",
                           _config.output_dir);
   }
 
@@ -2532,14 +2449,6 @@ Status GraphQuantizer::CreateQuantizeCalibrationGraph(
   TF_RETURN_IF_ERROR(
       _InsertFixNeuronOps(current_graph_def, processed_graph_def));
 
-  if (_config.replace_softmax) {
-    current_graph_def = processed_graph_def;
-    TF_RETURN_IF_ERROR(
-        ReplaceSoftmaxWithDPUSoftmax(current_graph_def, &processed_graph_def));
-    SaveGraphForDebugging(processed_graph_def, "replace_softmax_calib.pb",
-                          _config.output_dir);
-  }
-
   // Merge
   current_graph_def = processed_graph_def;
   TF_RETURN_IF_ERROR(MergeGraph(current_graph_def, aux_graph_def,
@@ -2589,9 +2498,9 @@ Status GraphQuantizer::CreateQuantizeTrainingGraph(
   // Simulate DPU
   if (_config.simulate_dpu == 1) {
     current_graph_def = processed_graph_def;
-    TF_RETURN_IF_ERROR(SimulateDPU(current_graph_def, &processed_graph_def,
-                                   _config.scale_all_avgpool,
-                                   _config.replace_sigmoid));
+    TF_RETURN_IF_ERROR(SimulateDPU(
+        current_graph_def, &processed_graph_def, _config.scale_all_avgpool,
+        _config.replace_softmax, _config.replace_sigmoid));
     SaveGraphForDebugging(processed_graph_def, "simulate_dpu_train.pb",
                           _config.output_dir);
   }

@@ -1,0 +1,50 @@
+
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: ssd_mobilenet_v1 on COCO.
+input size: 300*300
+float ops: 2.47G
+task: detection
+framework: tensorflow
+prune: 'no'
+version: 3.0
+files:
+- name: tf_ssdmobilenetv1_coco_300_300_2.47G_3.0
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_ssdmobilenetv1_coco_300_300_2.47G_3.0.zip
+  checksum: 6fe79e9797ef31608d241406d68c9791
+- name: ssd_mobilenet_v1_coco_tf
+  type: xmodel
+  board: zcu102 & zcu104 & kv260
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+  checksum: e2ed8f029f99f8e7f6a904c654e2678f
+- name: ssd_mobilenet_v1_coco_tf
+  type: xmodel
+  board: vck190
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-vck190-r3.0.0.tar.gz
+  checksum: 07e22bc1cd5af2bde5d0781513d13c3c
+- name: ssd_mobilenet_v1_coco_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-4pe
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+  checksum: 81082e18a276da9ffedf72085eeb703c
+- name: ssd_mobilenet_v1_coco_tf
+  type: xmodel
+  board: vck5000-DPUCVDX8H-6pe-aieDWC
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ssd_mobilenet_v1_coco_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
+  checksum: a8a251173561ddaa9809dd08cf682e9f
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

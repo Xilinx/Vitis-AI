@@ -17,7 +17,6 @@
 
 #include <cstring>
 #include <iostream>
-#include <thread>
 
 #include "vitis/ai/env_config.hpp"
 #include "vitis/ai/thread_pool.hpp"

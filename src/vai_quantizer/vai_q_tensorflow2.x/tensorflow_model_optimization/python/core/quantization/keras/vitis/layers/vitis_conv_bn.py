@@ -228,16 +228,7 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
       quantizer_vars = quantizer.build(shape_map[weight], weight, self)
       self._weight_vars.append((weight, quantizer, quantizer_vars))
 
-    quantizable_biases = self.quantize_config.get_quantizable_biases()
-    bias_quantizers = self.quantize_config.get_bias_quantizers()
-
-    self._bias_vars = []
-    for bias, quantizer in zip(quantizable_biases, bias_quantizers):
-      if bias not in shape_map:
-        logger.error('Fail to get shape for {} of layer {}.'.format(bias, self))
-      quantizer_vars = quantizer.build(shape_map[bias], bias, self)
-      self._bias_vars.append((bias, quantizer, quantizer_vars))
-
+    # Build activation quantizers
     self._quantize_activations = []
     for activation, quantizer in self.quantize_config.get_activations_and_quantizers(
         self):
@@ -282,7 +273,7 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
         reduction_axes,
         keep_dims=keep_dims)
 
-  def _quantize_weights_and_biases(self, training):
+  def _quantize_weights(self, training):
     # Quantize the folded kernel and bias
     for weight, quantizer, quantizer_vars in self._weight_vars:
       weight_tensor = getattr(self, weight)
@@ -293,16 +284,6 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
           self._make_quantizer_fn(quantizer, weight_tensor, False, self.mode,
                                   quantizer_vars))
       setattr(self, weight, quantized_weight)
-
-    for bias, quantizer, quantizer_vars in self._bias_vars:
-      bias_tensor = getattr(self, bias)
-      quantized_bias = common_utils.smart_cond(
-          training,
-          self._make_quantizer_fn(quantizer, bias_tensor, True, self.mode,
-                                  quantizer_vars),
-          self._make_quantizer_fn(quantizer, bias_tensor, False, self.mode,
-                                  quantizer_vars))
-      setattr(self, bias, quantized_bias)
 
   def _run_folded_conv(self, inputs, training):
     """Run folded convolution.
@@ -387,7 +368,7 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
       self.kernel = math_ops.mul(self.kernel, corr_scale)
       self.bias = math_ops.add(self.bias, corr_offset)
 
-      self._quantize_weights_and_biases(training)
+      self._quantize_weights(training)
       outputs = self._run_folded_conv(inputs, training)
       # BatchNorm Correction for convolution outputs
       outputs = math_ops.mul(outputs, corr_recip)
@@ -402,7 +383,7 @@ class VitisConvBNQuantize(tf.keras.layers.Layer):
           beta=self.bn_layer.beta,
           epsilon=self.bn_layer.epsilon)
 
-      self._quantize_weights_and_biases(training)
+      self._quantize_weights(training)
       outputs = self._run_folded_conv(inputs, training)
 
     # Bias Add
@@ -591,16 +572,7 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
       quantizer_vars = quantizer.build(shape_map[weight], weight, self)
       self._weight_vars.append((weight, quantizer, quantizer_vars))
 
-    quantizable_biases = self.quantize_config.get_quantizable_biases()
-    bias_quantizers = self.quantize_config.get_bias_quantizers()
-
-    self._bias_vars = []
-    for bias, quantizer in zip(quantizable_biases, bias_quantizers):
-      if bias not in shape_map:
-        logger.error('Fail to get shape for {} of layer {}.'.format(bias, self))
-      quantizer_vars = quantizer.build(shape_map[bias], bias, self)
-      self._bias_vars.append((bias, quantizer, quantizer_vars))
-
+    # Build activation quantizers
     self._quantize_activations = []
     for activation, quantizer in self.quantize_config.get_activations_and_quantizers(
         self):
@@ -642,7 +614,7 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
         reduction_axes,
         keep_dims=keep_dims)
 
-  def _quantize_weights_and_biases(self, training):
+  def _quantize_weights(self, training):
     # Quantize the folded kernel and bias
     for weight, quantizer, quantizer_vars in self._weight_vars:
       weight_tensor = getattr(self, weight)
@@ -653,16 +625,6 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
           self._make_quantizer_fn(quantizer, weight_tensor, False, self.mode,
                                   quantizer_vars))
       setattr(self, weight, quantized_weight)
-
-    for bias, quantizer, quantizer_vars in self._bias_vars:
-      bias_tensor = getattr(self, bias)
-      quantized_bias = common_utils.smart_cond(
-          training,
-          self._make_quantizer_fn(quantizer, bias_tensor, True, self.mode,
-                                  quantizer_vars),
-          self._make_quantizer_fn(quantizer, bias_tensor, False, self.mode,
-                                  quantizer_vars))
-      setattr(self, bias, quantized_bias)
 
   def _run_folded_conv(self, inputs, training):
     """Run folded convolution.
@@ -737,7 +699,7 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
       self.depthwise_kernel = math_ops.mul(self.depthwise_kernel, corr_scale)
       self.bias = math_ops.add(self.bias, corr_offset)
 
-      self._quantize_weights_and_biases(training)
+      self._quantize_weights(training)
       outputs = self._run_folded_conv(inputs, training)
       # BatchNorm Correction for convolution outputs
       outputs = math_ops.mul(outputs, corr_recip)
@@ -752,7 +714,7 @@ class VitisDepthwiseConvBNQuantize(tf.keras.layers.Layer):
           beta=self.bn_layer.beta,
           epsilon=self.bn_layer.epsilon)
 
-      self._quantize_weights_and_biases(training)
+      self._quantize_weights(training)
       outputs = self._run_folded_conv(inputs, training)
 
     # Bias Add

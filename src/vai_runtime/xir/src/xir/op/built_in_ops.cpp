@@ -2079,8 +2079,10 @@ auto groupnorm =
             "normalization."))
         .set_annotation(
             "Applies Group Normalization over a mini-batch of inputs as "
-            "described in `VAI-SRC-CONF-MAP-15`.\n\n"
-            "..math::"
+            "described in"
+            "the paper `Group Normalization "
+            "<https://arxiv.org/abs/1803.08494>`.\n\n"
+            ".. math::"
             "y = frac{x - mathrm{E}[x]}{ sqrt{mathrm{Var}[x] + epsilon}} * "
             "gamma + beta")
         .set_shape_infer(xir::shape_infer_groupnorm);

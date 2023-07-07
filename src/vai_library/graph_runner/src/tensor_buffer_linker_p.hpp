@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Advanced Micro Devices Inc.
+ * Copyright 2019 Xilinx Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class TensorBufferLinkerHostPhy : public TensorBufferLinker {
   virtual void after_invoke_runner(const xir::Subgraph* subgraph) override;
 
  private:
-  std::unique_ptr<vart::TensorBuffer>* replacement_=NULL;
+  std::unique_ptr<vart::TensorBuffer>* replacement_;
   static constexpr int KEEP = 0;
   static constexpr int REPLACE = 1;
   static constexpr int THE_SELECTED = 2;

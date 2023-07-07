@@ -21,12 +21,10 @@ import torch
 import numpy as np
 
 from nndct_shared.quantization import maybe_get_quantizer
-from nndct_shared.quantization import kernel_need_quant
-from nndct_shared.quantization import quantize_tensors
+from nndct_shared.quantization import quantize_tensors, kernel_need_quant
 from nndct_shared.utils import NndctOption
 from .fix_ops import NndctSoftmaxExpApproximate, NndctSoftmaxLOD, NndctSoftmaxSimulationPart1, NndctSoftmaxSimulationPart2, NndctExpApprAIE2, NndctInverseAIE2
 import pytorch_nndct.utils as py_utils
-from pytorch_nndct.nn.nonlinear import approx
 
 __all__ = ['Softmax']
 
@@ -40,20 +38,21 @@ class deephi_Softmax(torch.nn.modules.Softmax):
     self.node = None
 
   def forward(self, input):
+    qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
+
     if (not kernel_need_quant(self.quantizer, self.node) or
-        self.quantizer.exporting) or NndctOption.nndct_gemm88.value:
-      # Method 0: quant input and output  
-      output = super().forward(input)
+        self.quantizer.exporting):
+      # Method 0: quant input and output 
+      output = super().forward(qinput)
       output = quantize_tensors([output], self.node)[0]
 
     else:
-      # quantize input tensor
-      qinput = quantize_tensors([input], self.node, tensor_type='input')[0]
-
       input_name = self.node.in_nodes[0]
       input_node = self.quantizer.configer.get_Nndctnode(input_name)
       if not self.quantizer.configer.node_output_quantizable(input_node):
         input_name = input_node.in_nodes[0]
+      bw = self.quantizer.get_quant_config(self.node.name, False)[0]
+      fragpos = self.quantizer.get_quant_config(input_name, False)[1]
 
       # Method 1: Hardware PL Softmax with 8 bw
       if NndctOption.nndct_op_softmax_mode.value == "hardware_pl":
@@ -97,8 +96,6 @@ class deephi_Softmax(torch.nn.modules.Softmax):
       
       # Method 3: Table Look up for AIE2 Softmax with 8 bw and 16 bw(based on LUT)
       elif NndctOption.nndct_op_softmax_mode.value == "aie2_lut_16bw":
-        bw = self.quantizer.get_quant_config(self.node.name, False)[0]
-        fragpos = self.quantizer.get_quant_config(input_name, False)[1]
 
         if bw == 8 and fragpos < 2:
           if fragpos < 2:
@@ -123,14 +120,37 @@ class deephi_Softmax(torch.nn.modules.Softmax):
       
       # Method 4: Bert with 8 bw
       elif NndctOption.nndct_op_softmax_mode.value == "bert_8bw" or NndctOption.nndct_ip_v70_bert.value:
-        # def generate_exp_table(bw, input_scale, table_name):
-        #   from bfloat16 import bfloat16
-        #   inputs_table_positive = np.arange(0, 2**(bw - 1)).astype(np.float32)
-        #   inputs_table_negatice = np.arange(-(2**(bw - 1)), 0).astype(np.float32)
-        #   inputs_table = np.hstack((inputs_table_positive, inputs_table_negatice))
-        #   outputs_table = np.exp(inputs_table / (2**(input_scale))).astype(bfloat16).astype(np.float32)
-        #   outputs_table[128] = 0
-        #   return outputs_table
+        def generate_exp_table(bw, input_scale, table_name):
+
+          inputs_table_positive = np.arange(0, 2**(bw - 1)).astype(np.float32)
+          inputs_table_negatice = np.arange(-(2**(bw - 1)), 0).astype(np.float32)
+          inputs_table = np.hstack((inputs_table_positive, inputs_table_negatice))
+
+          outputs_table = np.exp(inputs_table / (2**(input_scale)))
+
+          return outputs_table
+
+        def aie_reduce_add_v16(acc_v16):
+          v2 = np.empty([2]).astype(np.float32)
+          acc_v8 = np.empty([8])
+          acc_v4 = np.empty([4])
+          acc_v2 = np.empty([2])
+          acc_v1 = np.empty([1])
+
+          acc_v16 = acc_v16.astype(np.float32)
+          for i in range(8):
+              v2[0],v2[1] = acc_v16[i],acc_v16[i+8]
+              acc_v8[i] = v2.sum()
+          for j in range(4):
+              v2[0],v2[1] = acc_v8[j],acc_v8[j+4]
+              acc_v4[j] = v2.sum()
+          for k in range(2):
+              v2[0],v2[1] = acc_v4[k],acc_v4[k+2]
+              acc_v2[k] = v2.sum()
+          for m in range(1):
+              v2[0],v2[1] = acc_v2[m],acc_v2[m+1]
+              acc_v1[m] = v2.sum()
+          return acc_v1
 
         def compute_inv(x):
           exp_mask     = 0x7F800000
@@ -145,10 +165,13 @@ class deephi_Softmax(torch.nn.modules.Softmax):
           inv_x_val = (np.int32(inv_exponent)<<23) + (np.int32(inv_mantissa)<<16)
           inv_x = inv_x_val.view(np.float32)
           return inv_x
-        bw = self.quantizer.get_quant_config(self.node.name, False)[0]
-        fragpos = self.quantizer.get_quant_config(input_name, False)[1]
+        
+        if self.quant_mode <= 1:
+          output = super().forward(qinput)
+          output = quantize_tensors([output], self.node, method=4)[0]
+          return output
         exp_appr = torch.exp(qinput).bfloat16().float()
-        exp_appr = torch.where(qinput > -128/(2 ** fragpos), exp_appr, 0)
+        exp_appr = torch.where(exp_appr > -128/(2 ** fragpos), exp_appr, 0)
 
 
         # # Code for Golden Verification
@@ -161,13 +184,8 @@ class deephi_Softmax(torch.nn.modules.Softmax):
           sum_v32 = exp_appr.reshape((exp_appr.shape[0],exp_appr.shape[1],exp_appr.shape[2],exp_appr.shape[3]//16,16))
           sum_v32 = sum_v32.permute((0,1,2,4,3))
           sum_v32 = sum_v32.sum(dim = -1)
-          # sum_v32 = sum_v32.sum(dim = -1, keepdim = True)
-          sum_v32_shape = sum_v32.shape
-          sum_v32 = sum_v32.reshape(-1, 16)
-          sum_v32 = py_utils.aie_add_v16(sum_v32)
-          sum_v32_shape = [int(x) for x in sum_v32_shape][:-1] + [1]
-          sum_v32 = sum_v32.reshape(sum_v32_shape)
-
+          sum_v32 = sum_v32.sum(dim = -1, keepdim = True)
+          
           
         else:
           sum_v32 = torch.sum(exp_appr, dim = self.dim, keepdim = True).cpu().numpy()
@@ -178,18 +196,13 @@ class deephi_Softmax(torch.nn.modules.Softmax):
         output = (exp_appr*sum_inv).bfloat16().float()
         output = quantize_tensors([output], self.node, method=4)[0]
 
-      # Method 5: ipu 8bw
-      elif NndctOption.nndct_op_softmax_mode.value == "ipu_8bw":
-        output = approx.softmax_approx_poly(qinput) # bfloat16, default settings: axis=-1, exp_table_size=1, degree=3
-        output = output.float()  # float32
-        output = quantize_tensors([output], self.node, method=4)[0] # round: floor
-      
       # Method 0: Quant input and output of Softmax
       else:
         output = super().forward(qinput)
         output = quantize_tensors([output], self.node)[0]
     
     return output
+
 
 @py_utils.register_quant_op
 def Softmax(*args, **kwargs):

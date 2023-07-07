@@ -50,7 +50,5 @@ class TransMatmulActvHandler(object):
         return False
 
     matmul_node.is_trans_b = is_node_just_exchange_last_two_dim(trans_node) and only_one_child_node(trans_node)
-    trans_node.is_trans_b = matmul_node.is_trans_b
-
     if matmul_node.is_trans_b:
       matmul_node.set_node_attr(matmul_node.op.AttrName.TRANSPOSE_B, True)

@@ -29,9 +29,6 @@ void FixNeuronV2 (Tensor Tinput,
                   int zero_point,
                   int method,
                   int device_id);
-
-void Round(Tensor Tinput, Tensor Toutput, int64_t method, int64_t device_id);
-
 at::Tensor fix_neuron(at::Tensor Tinput,
                       int64_t valmin,
                       int64_t valmax, 
@@ -40,14 +37,4 @@ at::Tensor fix_neuron(at::Tensor Tinput,
                       int64_t method, 
                       int64_t device_id, 
                       int64_t inplace);
-
-at::Tensor fix_neuron_per_channel(at::Tensor Tinput,
-                                  int64_t valmin,
-                                  int64_t valmax, 
-                                  at::Tensor scale, 
-                                  at::Tensor zero_point,
-                                  int64_t axis,
-                                  int64_t method, 
-                                  int64_t device_id, 
-                                  int64_t inplace);
 #endif

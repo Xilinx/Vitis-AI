@@ -15,17 +15,16 @@
 #
 import torch
 
-from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+from distutils.version import LooseVersion
+from .jit_utils import get_torch_version
 
 def get_opset_version():
   if "_onnx_stable_opsets" in torch.onnx.symbolic_helper.__dict__:
     return  torch.onnx.symbolic_helper._onnx_stable_opsets[-1]
   elif "onnx_stable_opsets" in torch.onnx._constants.__dict__:
     return  torch.onnx._constants.onnx_stable_opsets[-1]
-  elif "ONNX_MAX_OPSET" in torch.onnx._constants.__dict__:
-    return  torch.onnx._constants.ONNX_MAX_OPSET
   else:
-    raise RuntimeError("Onnx stable opset version is not found. Please check pytorch version (1.4.0 ~ 1.13.0)")
+    raise RuntimeError("Onnx stable opset version is not found. Please check pytorch version (1.4.0 ~ 1.12.0)")
 
 def support_onnx_export():
-  return compare_torch_version(CmpFlag.GREATER_EQUAL, "1.7")
+  return torch.__version__ >= LooseVersion('1.7')

@@ -17,7 +17,7 @@
 #
 
 from nndct_shared.base import NNDCT_OP
-from nndct_shared.utils import NndctScreenLogger
+
 
 _OP_WITH_PAD = [
   NNDCT_OP.CONV2D,
@@ -35,9 +35,9 @@ class PadFuseHandler(object):
     pad_mode = pad_node.node_attr(pad_node.op.AttrName.MODE)
     pad = pad_node.node_attr(pad_node.op.AttrName.PAD_WITH)
     pad_value = pad_node.node_attr(pad_node.op.AttrName.CONSTANT_VALUES)[0]
-    if pad_mode not in [0, "CONSTANT"] or len(pad) != 8 or pad_value != 0 or any([pad[2 * i] != pad[2 * i + 1] for i in range(4)]) or any(cn.op.type not in _OP_WITH_PAD for cn in pad_node.owning_graph.children(pad_node)):
+    if pad_mode != 0 or len(pad) != 8 or pad_value != 0 or any([pad[2 * i] != pad[2 * i + 1] for i in range(4)]) or any(cn.op.type not in _OP_WITH_PAD for cn in pad_node.owning_graph.children(pad_node)):
       pad_node.merged = False
-      NndctScreenLogger().warning(f"Pad({pad_node.name}) can't be fused")
+      print(f"{pad_node.name} can't be fused")
       return
 
     for cn in pad_node.owning_graph.children(pad_node):

@@ -1,0 +1,57 @@
+/*
+ * Copyright 2019 Xilinx Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+
+  add environment parameter DEBUG_USE_NEW_SCHEDULE=0 before executable files.
+
+  ./test_multitaskv3_onnx, ./test_performance_multitaskv3_onnx, ./test_accuracy_multitaskv3_onnx first param followed must be with model name.
+  Valid model name:
+    multi_task_v3_onnx_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_multitaskv3_onnx /usr/share/vitis_ai_library/models/multi_task_v3_onnx_pt/multi_task_v3_onnx_pt.onnx demo.jpg
+    output : 
+width 512 height 320 
+start running 
+label 0  score: 0.730562 xmin: 377 ymin: 702 width: 323 height: 219
+label 0  score: 0.706313 xmin: 737 ymin: 652 width: 104 height: 77
+label 0  score: 0.61042 xmin: 901 ymin: 645 width: 84 height: 69
+label 0  score: 0.57022 xmin: 0 ymin: 629 width: 252 height: 155
+label 0  score: 0.547627 xmin: 841 ymin: 630 width: 69 height: 66
+label 0  score: 0.531568 xmin: 250 ymin: 644 width: 228 height: 142
+label 0  score: 0.480256 xmin: 418 ymin: 649 width: 101 height: 73
+label 2  score: 0.397829 xmin: 1363 ymin: 640 width: 46 height: 131
+
+
+Performance:
+sample: ./test_performance_multitaskv3_onnx /usr/share/vitis_ai_library/models/multi_task_v3_onnx_pt/multi_task_v3_onnx_pt.onnx -s 60 -t 1 ./test_performance_multitaskv3.list
+
+
+Accuracy:
+    test accuracy of multi_task_v3_onnx_pt:
+    sample:
+    ./test_accuracy_multi_task_v3_onnx_pt /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx seg.list seg/  result.txt segmentation -t 2
+    ./test_accuracy_multi_task_v3_onnx_pt /usr/share/vitis_ai_library/models/resnet50_onnx_pt/resnet50_onnx_pt.onnx det.list det/ image.list.result -t 2

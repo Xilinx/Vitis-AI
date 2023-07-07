@@ -46,8 +46,7 @@ class deephi_Tanh(torch.nn.modules.Tanh):
     if (NndctOption.nndct_quant_off.value or
         self.quantizer is None or
         self.quantizer.exporting or
-        NndctOption.nndct_cv_app.value or
-        NndctOption.nndct_only_int_quant is False):
+        NndctOption.nndct_cv_app.value):
       # Method 0: quant input and output (for CV)
       output = super().forward(qinput)
       output = quantize_tensors([output], self.node)[0]
