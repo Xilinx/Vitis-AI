@@ -49,6 +49,7 @@ CONFIG_vitis-ai-library
 CONFIG_vitis-ai-library-dev
 CONFIG_vitis-ai-library-dbg
 CONFIG_vai-benchmark
+CONFIG_vai-sample
 ```
 
 3. Source PetaLinux tool and run `petalinux-config -c rootfs` command. Select the following option.
@@ -62,9 +63,14 @@ Then, save it and exit.
 
 **Note the following:**
 * The `recipes-vitis-ai/glog` will throw exception info for vitis-ai-library
-* After you run the above successfully, the vitis-ai-library, VART3.5 and the dependent packages will all be installed into rootfs image.  
-* If you want to compile the examples on the target, please select the `vitis-ai-library-dev` and `packagegroup-petalinux-self-hosted`. Then, recompile the system.   
-* If you want to use vaitracer tool, please select the `vitis-ai-library-dbg`. And copy `recipes-vai-kernel` folder to `<petalinux project>/project-spec/meta-user/`. Then, recompile the system.   
+* After you run the above successfully, the vitis-ai-library, VART3.5 and the dependent packages will all be installed into rootfs image.
+* If you want to compile the examples on the target, please select the `vitis-ai-library-dev` and `packagegroup-petalinux-self-hosted`. Then, recompile the system.
+* If you want to install pre-built examples into rootfs, please select *vai-sample* with `petalinux-config -c rootfs` command, and recompile the system.
+```bash
+Select user packages --->
+Select [*] vai-sample
+```
+* If you want to use vaitracer tool, please select the `vitis-ai-library-dbg`. And copy `recipes-vai-kernel` folder to `<petalinux project>/project-spec/meta-user/`. Then, recompile the system.
 ```bash
 cp src/vai_petalinux_recipes/recipes-vai-kernel <petalinux project>/project-spec/meta-user/
 ```
