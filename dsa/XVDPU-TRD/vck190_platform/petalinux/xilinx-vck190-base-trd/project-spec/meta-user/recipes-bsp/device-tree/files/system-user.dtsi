@@ -1,5 +1,0 @@
-/include/ "system-conf.dtsi"
-/ {
-};
-#include "pl-custom.dtsi"
-#include "ina226-power-monitor.dtsi"

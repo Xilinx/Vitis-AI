@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacecreate__runner" kind="namespace" language="Python">
+    <compoundname>create_runner</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacecreate__runner_1a93db456895557acbffc49fc0f456caf1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def create_runner</definition>
+        <argsstring>(subgraph, mode)</argsstring>
+        <name>create_runner</name>
+        <qualifiedname>create_runner.create_runner</qualifiedname>
+        <param>
+          <type>subgraph</type>
+          <defname>subgraph</defname>
+        </param>
+        <param>
+          <type>mode</type>
+          <defname>mode</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/create_runner.py" line="15" column="1" bodyfile="pydoc/create_runner.py" bodystart="15" bodyend="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Factory function to create an instance of DPU runner by subgraph. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>subgraph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>: xir.Subgraph, XIR Subgraph </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mode</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>1 mode supported: &apos;run&apos; - DPU runner. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classvart_1_1_runner" kindref="compound">vart.Runner</ref>, an instance of DPU runner.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal">//<sp/>This<sp/>API<sp/>can<sp/>be<sp/>used<sp/>like:</highlight></codeline>
+<codeline><highlight class="normal">runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart.Runner.create_runner</ref>(subgraph,<sp/></highlight><highlight class="stringliteral">&quot;run&quot;</highlight><highlight class="normal">)</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="pydoc/create_runner.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

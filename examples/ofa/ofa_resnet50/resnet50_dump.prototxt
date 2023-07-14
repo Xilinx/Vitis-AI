@@ -1,0 +1,18 @@
+model {
+   name : "resnet50_dump"
+   kernel {
+     name: "resnet_50_pt_0"
+     mean: 103.53
+     mean: 116.28
+     mean: 123.675
+     scale: 0.017429
+     scale: 0.017507
+     scale: 0.01712475
+   }
+   model_type : CLASSIFICATION
+   classification_param {
+      top_k : 5
+      test_accuracy : false
+      preprocess_type : VGG_PREPROCESS
+   }
+}

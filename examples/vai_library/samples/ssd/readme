@@ -1,0 +1,54 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_ssd, ./test_performance_ssd, ./test_video_ssd first param followed must be with model name.
+  Valid model name:
+    mlperf_ssd_resnet34_tf
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_ssd mlperf_ssd_resnet34_tf sample_ssd.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0709 05:51:18.753609  3990 demo.hpp:1183] batch: 0     image: sample_ssd.jpg
+I0709 05:51:18.753762  3990 process_result.hpp:43] RESULT: 3    506.941 331.609 564.359 370.091 0.995687
+I0709 05:51:18.753878  3990 process_result.hpp:43] RESULT: 3    551.268 333.895 647.708 384.865 0.99344
+I0709 05:51:18.753928  3990 process_result.hpp:43] RESULT: 3    174.231 326.646 291.269 421.854 0.955159
+I0709 05:51:18.753984  3990 process_result.hpp:43] RESULT: 3    0       287.857 203.6   600     0.947692
+I0709 05:51:18.754058  3990 process_result.hpp:43] RESULT: 3    465.873 319.156 517.827 360.119 0.946124
+I0709 05:51:18.754107  3990 process_result.hpp:43] RESULT: 3    254.373 321     306.327 363     0.856711
+I0709 05:51:18.754155  3990 process_result.hpp:43] RESULT: 3    629.963 325.847 794.704 524.407 0.764188
+
+
+
+Performance: 
+    ./test_performance_ssd mlperf_ssd_resnet34_tf test_performance_ssd.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_ssd_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_ssd_mt mlperf_ssd_resnet34_tf image_list.txt result.txt -t 2

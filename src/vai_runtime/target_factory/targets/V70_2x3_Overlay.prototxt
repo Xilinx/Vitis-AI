@@ -1,0 +1,201 @@
+# Copyright 2019 Xilinx Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "V70_2x3_Overlay"
+type: "IPU_PHX"
+isa_version: 0x00
+feature_code: 0x20c242
+
+overlay_info {
+  aienum_row_num: 2
+  aienum_col_num:  3
+  memtile_num: 3
+  shimtile_num: 1
+}
+
+memtile {
+  name: "M0"
+  type: "Virtual"
+  row: 1
+  col: 0
+  bank_num: 16
+  bank_size_per_bank: 65536
+  bd_nums: 48
+  lock_nums: 64
+}
+
+memtile {
+  name: "M1"
+  type: "Virtual"
+  row: 1
+  col: 1
+  bank_num: 16
+  bank_size_per_bank: 65536
+  bd_nums: 48
+  lock_nums: 64
+}
+
+memtile {
+  name: "M2"
+  type: "Virtual"
+  row: 2
+  col: 1
+  bank_num: 16
+  bank_size_per_bank: 65536
+  bd_nums: 48
+  lock_nums: 64
+}
+
+aietile {
+  name: "A0"
+  row: 3
+  col: 0
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+aietile {
+  name: "A0"
+  row: 3
+  col: 1
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+aietile {
+  name: "A0"
+  row: 3
+  col: 2
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+aietile {
+  name: "A0"
+  row: 4
+  col: 0
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+aietile {
+  name: "A0"
+  row: 4
+  col: 1
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+aietile {
+  name: "A0"
+  row: 4
+  col: 0
+  memory_size: 65536
+  stack_size: 6144
+  bd_nums: 16
+  lock_nums: 16
+}
+
+shimtile {
+  name: "S1"
+  row: 0
+  col: 1
+  bd_nums: 16
+  lock_nums: 16
+}
+
+conv_engine {
+  input_channel_parallel: 8
+  output_channel_parallel: 16
+  output_h_parallel: 2
+  output_w_parallel: 8
+  pixel_parallel: 16
+  input_bank: "M0"
+  output_bank: "M0"
+  weight_bank: "M1"
+  bias_bank: "M1"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+  }
+  conv_limit {
+    kernel_size: "1-8"
+    stride: "1-2"
+  }
+}
+
+eltwise_engine {
+  channel_parallel: 32
+  output_h_parallel: 1
+  output_w_parallel: 1
+  pixel_parallel: 2
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  elew_type: add
+}
+
+pool_engine {
+  channel_parallel: 32
+  output_h_parallel: 1
+  output_w_parallel: 1
+  pixel_parallel: 1
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  pool_type: max
+  pool_type: avg
+  nonlinear {}
+  avg_limit {
+    kernel_size: "1-8"
+    stride: "1-2"
+  }
+  max_limit {
+    kernel_size: "1-8"
+    stride: "1-2"
+  }
+}
+
+dwconv_engine {
+  channel_parallel: 8
+  output_h_parallel: 2
+  output_w_parallel: 8
+  pixel_parallel: 16
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  weight_bank: "M0"
+  bias_bank: "M0"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+  }
+  dwconv_limit {
+    kernel_size: "1,2,3,5"
+    stride: "1-2"
+  }
+}

@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv3 on COCO.
+input size: 416*416
+float ops: 65.9G
+task: detection
+framework: tensorflow 2.x
+prune: 'no'
+version: 3.5
+files:
+- name: tf2_yolov3_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf2_yolov3_3.5.zip 
+  checksum: c65a2ae6ff15b49bf55da49bb824f153
+- name: yolov3_coco_416_tf2
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-vek280-r3.5.0.tar.gz
+  checksum: 887a78a5e29d69a80465164202c3e2e9
+- name: yolov3_coco_416_tf2
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov3_coco_416_tf2-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: 86d3b2c1e6c37789252e0cb4847c1257
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

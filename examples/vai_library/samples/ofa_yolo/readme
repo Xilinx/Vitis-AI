@@ -1,0 +1,106 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_ofa_yolo, ./test_performance_ofa_yolo,
+  ./test_video_ofa_yolo, ./test_accuracy_ofa_yolo_mt
+  must be followed by model name. Valid model name for ofa_yolo includes:
+    ofa_yolo_pt
+    ofa_yolo_pruned_0_30_pt
+    ofa_yolo_pruned_0_50_pt
+
+1. compile
+
+    execute the following command:
+      sh build.sh
+
+2. function test
+    copy the compiled executable file and test image to the development board, and run the executable file.
+
+    sample:
+      ./test_jpeg_ofa_yolo ofa_yolo_pt sample_ofa_yolo.jpg
+    output:
+I0519 08:31:08.578583 993650 demo.hpp:1183] batch: 0     image: sample_ofa_yolo.jpg
+I0519 08:31:08.578707 993650 process_result.hpp:36] RESULT: 62	6.67815	166.187	153.322	261.898	0.903013
+I0519 08:31:08.578797 993650 process_result.hpp:36] RESULT: 56	293.95	217.996	351.521	317.013	0.86979
+I0519 08:31:08.578855 993650 process_result.hpp:36] RESULT: 0	410.923	158.31	464.938	299.69	0.846806
+I0519 08:31:08.578915 993650 process_result.hpp:36] RESULT: 56	361.358	217.012	416.712	316.029	0.828451
+I0519 08:31:08.578967 993650 process_result.hpp:36] RESULT: 56	406.325	221.567	441.675	307.923	0.826855
+I0519 08:31:08.579018 993650 process_result.hpp:36] RESULT: 58	232.805	175.803	268.154	212.783	0.733929
+I0519 08:31:08.579066 993650 process_result.hpp:36] RESULT: 75	550.19	298.872	584.395	403.209	0.662223
+I0519 08:31:08.579119 993650 process_result.hpp:36] RESULT: 62	559.894	207.47	640	288.844	0.649159
+I0519 08:31:08.579172 993650 process_result.hpp:36] RESULT: 72	491.003	171.309	514.006	283.862	0.580673
+I0519 08:31:08.579224 993650 process_result.hpp:36] RESULT: 60	471.342	357.868	640	422.132	0.555188
+I0519 08:31:08.579277 993650 process_result.hpp:36] RESULT: 74	448.284	119.209	461.718	142.259	0.530248
+
+    sample:
+      ./test_jpeg_ofa_yolo ofa_yolo_pruned_0_30_pt sample_ofa_yolo.jpg
+    output:
+I0519 08:30:15.972987 993648 demo.hpp:1183] batch: 0     image: sample_ofa_yolo.jpg
+I0519 08:30:15.973130 993648 process_result.hpp:36] RESULT: 62	6.67815	168.228	153.322	263.939	0.907793
+I0519 08:30:15.973249 993648 process_result.hpp:36] RESULT: 56	293.727	217.996	353.503	317.013	0.864474
+I0519 08:30:15.973322 993648 process_result.hpp:36] RESULT: 62	558.552	206.596	640	291.567	0.827859
+I0519 08:30:15.973387 993648 process_result.hpp:36] RESULT: 74	447.842	119.929	461.892	141.99	0.776921
+I0519 08:30:15.973446 993648 process_result.hpp:36] RESULT: 0	407.485	158.31	466.434	299.69	0.77479
+I0519 08:30:15.973515 993648 process_result.hpp:36] RESULT: 56	362.907	218.294	421.093	317.708	0.763392
+I0519 08:30:15.973580 993648 process_result.hpp:36] RESULT: 56	407.826	222.13	444.153	307.1	0.752511
+I0519 08:30:15.973644 993648 process_result.hpp:36] RESULT: 75	166.983	233.962	185.454	266.108	0.721392
+I0519 08:30:15.973701 993648 process_result.hpp:36] RESULT: 72	486.199	171.289	513.963	283.04	0.67767
+I0519 08:30:15.973765 993648 process_result.hpp:36] RESULT: 58	230.825	175.353	266.174	212.334	0.636388
+I0519 08:30:15.973825 993648 process_result.hpp:36] RESULT: 75	550.564	298.992	586.435	398.009	0.61775
+I0519 08:30:15.973892 993648 process_result.hpp:36] RESULT: 60	315.429	219.604	402.573	317.396	0.532546
+
+    sample:
+      ./test_jpeg_ofa_yolo ofa_yolo_pruned_0_50_pt sample_ofa_yolo.jpg
+    output:
+I0519 08:31:57.864174 993652 demo.hpp:1183] batch: 0     image: sample_ofa_yolo.jpg
+I0519 08:31:57.864342 993652 process_result.hpp:36] RESULT: 62	5.67848	166.357	152.322	262.068	0.915659
+I0519 08:31:57.864455 993652 process_result.hpp:36] RESULT: 56	292.567	218.493	352.343	317.51	0.860466
+I0519 08:31:57.864512 993652 process_result.hpp:36] RESULT: 0	412.314	157.699	467.686	299.986	0.832083
+I0519 08:31:57.864569 993652 process_result.hpp:36] RESULT: 62	556.272	206.579	640	287.953	0.791917
+I0519 08:31:57.864622 993652 process_result.hpp:36] RESULT: 56	359.48	216.526	414.834	315.543	0.748686
+I0519 08:31:57.864673 993652 process_result.hpp:36] RESULT: 56	406.835	220.35	443.162	305.321	0.74844
+I0519 08:31:57.864727 993652 process_result.hpp:36] RESULT: 74	447.787	120.06	461.221	143.11	0.718321
+I0519 08:31:57.864773 993652 process_result.hpp:36] RESULT: 75	550.438	301.247	583.999	402.833	0.643152
+I0519 08:31:57.864826 993652 process_result.hpp:36] RESULT: 58	224.974	173.223	268.807	213.525	0.561384
+I0519 08:31:57.864874 993652 process_result.hpp:36] RESULT: 75	239.293	195.315	255.293	212.419	0.514336
+
+3. performance test
+    run test_performance_ofa_yolo to get the performance statistics.
+    ./test_performance_ofa_yolo <model_name> <-t threadnum> <image_list_filename>
+
+    sample:
+      ./test_performance_ofa_yolo ofa_yolo_pt -t 2 test_performance_ofa_yolo.list
+    output:
+      I0506 05:13:50.980345 19692 benchmark.hpp:211] waiting for 0/30 seconds, 2 threads running
+      I0506 05:14:00.980502 19692 benchmark.hpp:211] waiting for 10/30 seconds, 2 threads running
+      I0506 05:14:10.980666 19692 benchmark.hpp:211] waiting for 20/30 seconds, 2 threads running
+      I0506 05:14:20.980906 19692 benchmark.hpp:219] waiting for threads terminated
+      FPS=31.6014
+
+4. accuracy test
+    run test_accuracy_ofa_yolo_mt to get the test result file as:
+    ./test_accuracy_ofa_yolo_mt <model_name> <image_list_filename> <output_filename>
+
+    sample:
+      ./test_accuracy_ofa_yolo_mt ofa_yolo_pt accimage.list result.txt
+    output:
+Performance: 
+    ./test_performance_ofa_yolo ofa_yolo_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
+    ./test_performance_ofa_yolo ofa_yolo_pruned_0_30_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
+    ./test_performance_ofa_yolo ofa_yolo_pruned_0_50_pt test_performance_ofa_yolo.list -s 60 -t <thread> 
+
+
+      result file result.txt

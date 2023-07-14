@@ -1,0 +1,30 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+   copy the compiled executable file and test image to the development board destination.
+
+   run the executable file.
+   note: pointpillars_full_customer_op is the model name.
+
+    # python pointpillars_main.py    ~/pointpillars_full_customer_op.xmodel   sample_pointpillars.bin
+
+   output:
+0 [18.45653382  4.06586637 -1.74428117  1.73001252  4.3507645   1.48856234 1.69500005] 0.8807970779778823
+0 [34.53173046  1.505865   -1.57731246  1.52673069  3.49593749  1.39837491 1.72625005] 0.8519528019683106
+0 [10.85173206  4.70586576 -1.62243296  1.65078948  4.3507645   1.6348659 1.63250005] 0.8354835371034369
+1 [21.36716107 -2.34189333 -1.78980184  0.60000002  1.99434127  1.78491611 4.7272177 ] 0.7772998611746911
+0 [57.8823989  -4.25413332 -1.51336718  1.57519432  3.78000971  1.46548432 1.99187505] 0.679178699175393
+

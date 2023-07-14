@@ -1,0 +1,21 @@
+{
+    "grammarly.selectors": [
+        {
+            "language": "markdown",
+            "scheme": "file"
+        }
+    ],
+    "cSpell.words": [
+        "Alveo",
+        "capabilites",
+        "CMOS",
+        "Kria",
+        "Peta",
+        "preprocess",
+        "RTSP",
+        "Ultrascale",
+        "VART",
+        "VVAS",
+        "Zynq"
+    ]
+}

@@ -1,0 +1,80 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov3, ./test_performance_yolov3, ./test_video_yolov3 first param followed must be with model name.
+  Valid model name:
+    yolov3_voc_tf
+    yolov3_coco_416_tf2
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_yolov3 yolov3_voc_tf sample_yolov3.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1130 11:02:10.470081 22423 demo.hpp:1190] batch: 0     image: sample_yolov3.jpg
+I1130 11:02:10.470196 22423 process_result.hpp:44] RESULT: 6	8.90686	132.615	125.361	254.461	0.999112
+I1130 11:02:10.470325 22423 process_result.hpp:44] RESULT: 6	112.95	137.506	189.258	183.163	0.939668
+I1130 11:02:10.470376 22423 process_result.hpp:44] RESULT: 6	402.753	128.378	512	250.224	0.666963
+I1130 11:02:10.470432 22423 process_result.hpp:44] RESULT: 6	291.458	137.144	332.074	155.318	0.320529
+   
+
+    sample : ./test_jpeg_yolov3 tiny_yolov3_vmss sample_yolov3_vmss.jpg
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1103 13:24:04.871470  5047 process_result.hpp:46] RESULT: 7    226.71  593.893 968.678 1032.64 0.988918
+
+    sample : ./test_jpeg_yolov3 yolov3_coco_416_tf2 sample_yolov3.jpg
+    output : 
+I0530 02:07:58.395725 519058 process_result.hpp:44] RESULT: 0   92.2634 134.684 111.956 158.389 0.376607
+I0530 02:07:58.395861 519058 process_result.hpp:44] RESULT: 2   111.763 137.506 188.071 183.163 0.995223
+I0530 02:07:58.396015 519058 process_result.hpp:44] RESULT: 2   -12.2392        131.704 137.291 253.55  0.994435
+I0530 02:07:58.396116 519058 process_result.hpp:44] RESULT: 2   357.697 143.444 417.126 165.011 0.988971
+I0530 02:07:58.396205 519058 process_result.hpp:44] RESULT: 2   398.145 132.615 512     254.461 0.988122
+I0530 02:07:58.396301 519058 process_result.hpp:44] RESULT: 2   327.152 143.771 358.783 157.925 0.959619
+I0530 02:07:58.396389 519058 process_result.hpp:44] RESULT: 2   290.846 138.551 331.462 152.705 0.913988
+I0530 02:07:58.396476 519058 process_result.hpp:44] RESULT: 2   205.926 138.871 218.234 146.871 0.773242
+I0530 02:07:58.396576 519058 process_result.hpp:44] RESULT: 2   256.975 139.756 269.283 145.986 0.676414
+I0530 02:07:58.396661 519058 process_result.hpp:44] RESULT: 2   184.36  137.603 204.052 156.064 0.535515
+I0530 02:07:58.396745 519058 process_result.hpp:44] RESULT: 2   271.949 141.241 287.753 147.471 0.498764
+I0530 02:07:58.396829 519058 process_result.hpp:44] RESULT: 2   193.414 137.306 208.75  155.768 0.469957
+I0530 02:07:58.396914 519058 process_result.hpp:44] RESULT: 2   173.308 137.306 193     155.768 0.319147
+
+Performance: 
+    ./test_performance_yolov3 yolov3_voc_tf test_performance_yolov3.list -s 60 -t <thread> 
+    ./test_performance_yolov3 yolov3_coco_416_tf2 test_performance_yolov3.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_yolov3_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    tiny_yolov3_vmss uses different command:
+    ./test_accuracy_tiny_yolov3_vmss <image_list_filename> <output_filename>
+
+    yolov3_coco_416_tf2 uses different command:
+    ./test_accuracy_yolov3_coco_416_tf2_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_yolov3_mt yolov3_bdd image_list.txt result.txt -t 2
+    ./test_accuracy_tiny_yolov3_vmss image_list.txt result.txt
+    ./test_accuracy_yolov3_coco_416_tf2_mt yolov3_coco_416_tf2 image_list.txt result.txt -t 2

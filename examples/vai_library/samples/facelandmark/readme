@@ -1,0 +1,48 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_facelandmark, ./test_performance_facelandmark the first param followed must be with model name.
+  Valid model name:
+    face_landmark
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./test_jpeg_facelandmark face_landmark sample_facelandmark.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1209 19:24:54.439440 66663 demo.hpp:1183] batch: 0     image: sample_facelandmark.jpg
+I1209 19:24:54.439532 66663 process_result.hpp:25] points
+I1209 19:24:54.439551 66663 process_result.hpp:27] 0.34375 0.367188
+I1209 19:24:54.439637 66663 process_result.hpp:27] 0.773438 0.367188
+I1209 19:24:54.439666 66663 process_result.hpp:27] 0.59375 0.53125
+I1209 19:24:54.439692 66663 process_result.hpp:27] 0.382812 0.75
+I1209 19:24:54.439721 66663 process_result.hpp:27] 0.726562 0.75 
+
+
+
+Accuracy:
+    ./test_accuracy_facelandmark_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_facelandmark_mt face_landmark image_list.txt result.txt -t 2

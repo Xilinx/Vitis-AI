@@ -1,0 +1,332 @@
+/*
+Copyright 2019 Xilinx Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+syntax = "proto3";
+
+package vitis.ai;
+
+message Target {
+  message BankGroup {
+    string name = 1;
+    string type = 9;
+    uint32 base_id = 2;
+    uint32 bank_num = 3;
+    uint32 bank_width = 4;
+    uint32 bank_depth = 5;
+    uint32 word_width = 6;
+    bool cyclic = 7;
+    message AdjustableWordWidth {
+      uint32 scale = 1;
+      enum WordWidthSwitch {
+        DataBit_x_BankDepth = 0;
+        DataBit_x_BankWidth = 1;
+      }
+      WordWidthSwitch word_width_switch = 2;
+    }
+    AdjustableWordWidth adjustable_word_width = 8;
+  }
+
+  message OverlayInfo {
+    uint32 aienum_row_num = 1;
+    uint32 aienum_col_num = 2;
+    uint32 memtile_num = 3;
+    uint32 shimtile_num = 4;
+  }
+
+  message Aietile {
+    string name = 1;
+    uint32 row = 2;
+    uint32 col = 3;
+    uint32 memory_size = 4;
+    uint32 stack_size = 5;
+    uint32 bd_nums = 6;
+    uint32 lock_nums = 7;
+    uint32 program_memory_size = 8;
+  }
+
+  message Memtile {
+    string name = 1;
+    string type = 2;
+    uint32 row = 3;
+    uint32 col = 4;
+    uint32 bank_num = 5;
+    uint32 bank_size_per_bank = 6;
+    uint32 bd_nums = 7;
+    uint32 lock_nums = 8;
+  }
+
+  message Shimtile {
+    string name = 1;
+    uint32 row = 2;
+    uint32 col = 3;
+    uint32 bd_nums = 4;
+    uint32 lock_nums = 5;
+  }
+
+  message Load {
+    message MeanvalueReduction { string meanvalue_bank = 1; }
+    message FixIFMPortWidth { uint32 port_width = 1; }
+    message WeightSplit { bool wgt_split = 1; }
+    message LoadMode { 
+      enum SrcType {
+        ddr = 0;
+        imm = 1;
+      } 
+      repeated SrcType src_type = 1;
+    }
+    uint32 channel_parallel = 1;
+    repeated string output_bank = 2;
+    MeanvalueReduction meanvalue_reduction = 3;
+    FixIFMPortWidth fix_ifm_port_width = 4;
+    WeightSplit weight_split = 5;
+    LoadMode load_mode = 6;
+  }
+
+  message Save {
+    message FixIFMPortWidth { uint32 port_width = 1; }
+    uint32 channel_parallel = 1;
+    repeated string input_bank = 2;
+    FixIFMPortWidth fix_ifm_port_width = 3;
+    bool argmax = 4;
+  }
+
+  message Nonlinear {
+    enum NonlinearType {
+      relu = 0;
+      prelu = 1;
+      leaky_relu = 2;
+      relu_six = 3;
+      hsigmoid = 4;
+      hswish = 5;
+    }
+    repeated NonlinearType nonlinear_type = 1;
+  }
+
+  message PadLimit {
+    string pad_left = 1;
+    string pad_right = 2;
+    string pad_top = 3;
+    string pad_bottom = 4;
+  }
+
+  message Conv {
+    uint32 input_channel_parallel = 1;
+    uint32 output_channel_parallel = 2;
+    uint32 pixel_parallel = 3;
+    repeated string input_bank = 4;
+    repeated string output_bank = 10;
+    message OutputBankGroup { repeated string output_bank = 1; }
+    repeated OutputBankGroup output_bank_group = 5;
+    string weight_bank = 6;
+    string bias_bank = 7;
+    message ChannelAugmentation { uint32 channel_num = 1; }
+    ChannelAugmentation channel_augmentation = 8;
+    Nonlinear nonlinear = 9;
+    message ConvLimit {
+      string kernel_size = 1;
+      string stride = 2;
+      string stride_out_h = 3;
+    }
+    ConvLimit conv_limit = 11;
+    uint32 output_h_parallel = 12;
+    uint32 output_w_parallel = 13;
+    uint32 cascade_num = 14;
+    uint32 chain_num = 15;
+  }
+
+  message Eltwise {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    Nonlinear nonlinear = 5;
+    enum ElewType {
+      add = 0;
+      mult = 1;
+      sub = 2;
+      max = 3;
+      min = 4;
+      div = 5;
+    }
+    repeated ElewType elew_type = 6;
+    message ConvCascade {
+        uint32 pixel_parallel = 1;
+    }
+    ConvCascade conv_cascade = 7;
+    uint32 output_h_parallel = 8;
+    uint32 output_w_parallel = 9;
+  }
+
+  message Pool {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    enum PoolType {
+      max = 0;
+      avg = 1;
+      max_reduce = 2;
+    }
+    repeated PoolType pool_type = 5;
+    Nonlinear nonlinear = 6;
+    message AvgLimit {
+	    string kernel_size = 1;
+	    string stride = 2;
+    }
+    AvgLimit avg_limit = 7;
+    message MaxLimit {
+	    string kernel_size = 1;
+	    string stride = 2;
+    }
+    MaxLimit max_limit = 8;
+    uint32 output_h_parallel = 9;
+    uint32 output_w_parallel = 10;
+  }
+
+  message Dwconv {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    string weight_bank = 5;
+    string bias_bank = 6;
+    Nonlinear nonlinear = 7;
+    message DwconvLimit {
+      string kernel_size = 1;
+      string stride = 2;
+    }
+    DwconvLimit dwconv_limit = 8;
+    uint32 output_h_parallel = 9;
+    uint32 output_w_parallel = 10;
+  }
+
+  message Move {
+    uint32 input_channel_parallel = 1;
+    uint32 output_channel_parallel = 2;
+    uint32 pixel_parallel = 3;
+    repeated string input_bank = 4;
+    repeated string output_bank = 5;
+  }
+
+  message Threshold {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    string param_bank = 5;
+  }
+
+  message Alu {
+    uint32 channel_parallel = 1;
+    uint32 pixel_parallel = 2;
+    repeated string input_bank = 3;
+    repeated string output_bank = 4;
+    string weight_bank = 5;
+    string bias_bank = 6;
+    enum AluType {
+        dwconv = 0;
+        prelu = 1;
+        avg_pool = 2;
+        max_pool = 3;
+        leaky_relu = 4;
+        max_reduce = 5;
+        dwconv_no_bias = 6;
+        hsigmoid = 7;
+        w16b0 = 8;
+        macc_temp = 9;
+        comp_temp = 10;
+        elew_add = 11;
+        elew_mult = 12;
+        softmax = 13;
+    }
+    repeated AluType alu_type = 7;
+    Nonlinear nonlinear = 8;
+    message AluLimit {
+      string kernel_size = 1;
+      string stride = 2;
+      string stride_out_h = 3;
+    }
+    AluLimit alu_limit = 9;
+    PadLimit pad_limit = 10;
+  }
+
+  message SOP {
+    uint32 channel_parallel = 1;
+    uint32 output_h_parallel = 2;
+    uint32 output_w_parallel = 3;
+    repeated string input_bank = 4;
+    repeated string output_bank = 5;
+    enum SOPType {
+      reshape = 0;
+      hsigmoid = 1;
+      softmax = 2;
+      upsample = 3;
+    }
+    repeated SOPType alu_type = 6;
+    Nonlinear nonlinear = 7;
+    message SOPLimit {
+      string kernel_size = 1;
+      string stride = 2;
+    }
+    SOPLimit sop_limit = 8;
+  }
+
+  string name = 1;
+  string type = 2;
+  uint64 isa_version = 3;
+  uint64 feature_code = 4;
+
+  repeated BankGroup bank_group = 5;
+
+  Load load_engine = 6;
+  Save save_engine = 7;
+  Conv conv_engine = 8;
+  Eltwise eltwise_engine = 9;
+  Pool pool_engine = 10;
+  Dwconv dwconv_engine = 11;
+  Move move_engine = 12;
+  Threshold threshold_engine = 13;
+  Alu alu_engine = 15;
+  uint32 batch = 14;
+
+  string ipu_overlay_type = 16;
+  OverlayInfo overlay_info = 17;
+  repeated Memtile memtile = 18;
+  repeated Aietile aietile = 19;
+  repeated Shimtile shimtile = 20;
+  SOP aie_sp_engine = 21;
+
+  message Kernel {
+      Conv conv_kernel = 1;
+      Eltwise eltwise_kernel = 2;
+      Nonlinear nonlinear_kernel = 3;
+      Pool pool_kernel = 4;
+      Dwconv dwconv_kernel = 5;
+      uint32 pm_size = 6;
+      repeated string ops = 7;
+  }
+
+  repeated Kernel kernels = 22;
+
+  message PDI_partition {
+    string name = 1;
+    string ID = 2;
+    repeated Kernel kernels = 3;
+    uint64 wrapper_size = 4;
+  }
+  
+  repeated PDI_partition PDI = 59;
+}

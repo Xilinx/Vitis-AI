@@ -1,5 +1,0 @@
-/group/xbjlab/dphi_algo/bokangz/project/RNNT1.4_test/hwlib/libxvrnn/build/CMakeFiles/rebuild_cache.dir
-/group/xbjlab/dphi_algo/bokangz/project/RNNT1.4_test/hwlib/libxvrnn/build/CMakeFiles/edit_cache.dir
-/group/xbjlab/dphi_algo/bokangz/project/RNNT1.4_test/hwlib/libxvrnn/build/CMakeFiles/test.dir
-/group/xbjlab/dphi_algo/bokangz/project/RNNT1.4_test/hwlib/libxvrnn/build/CMakeFiles/xrnn.dir
-/group/xbjlab/dphi_algo/bokangz/project/RNNT1.4_test/hwlib/libxvrnn/build/CMakeFiles/xrnn_py.dir

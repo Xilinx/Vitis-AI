@@ -1,0 +1,24 @@
+name: vitis-ai-tensorflow
+
+channels:
+  - conda-forge
+  - anaconda
+
+dependencies:
+  - python=3.6
+  - tensorflow_1.15_cpu_wego
+  - vai_wego_tensorflow
+  - vai_q_tensorflow
+  - vart
+  - vaic
+  - xnnc
+  - xcompiler
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib

@@ -1,9 +1,0 @@
-Tue Dec 28 15:42:33 2021: Server was asked to start on port: '44896'
-Tue Dec 28 15:42:33 2021: Server is using token UUID: '6373b189-de58-4a59-9fe9-c148400457dc'
-Tue Dec 28 15:42:33 2021: Attempting to start server on port '44896'
-Tue Dec 28 15:42:33 2021: XRC main fifo: created main fifo '/tmp/xrcmain6373b189-de58-4a59-9fe9-c148400457dc', fd read = 12
-Tue Dec 28 15:42:33 2021: Running Rule Check Server
-Tue Dec 28 15:42:33 2021: Version 1.6.1
-Tue Dec 28 15:42:33 2021: Rule Check Server: Accepted socket connection from client
-Tue Dec 28 15:42:33 2021: EXCHANGE_TOKEN received, server token: 6373b189-de58-4a59-9fe9-c148400457dc, passed token: 6373b189-de58-4a59-9fe9-c148400457dc
-Tue Dec 28 15:42:33 2021: SESSION_MGR: creating session with session uuid: 'b448ee9b-80d5-4d85-904f-8b913ae6f35e' and name 'link'

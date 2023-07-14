@@ -1,0 +1,35 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+1, compile
+
+    execute the following command:
+
+        bash build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+    
+    sample : ./resnet_v1_50_tf_graph_runner /usr/share/vitis_ai_library/models/resnet_v1_50_tf/resnet_v1_50_tf.xmodel sample_classification.jpg
+             batch_index: 0
+             score[109]  =  0.989221     text: brain coral,
+             score[973]  =  0.00666532   text: coral reef,
+             score[955]  =  0.00314847   text: jackfruit, jak, jack,
+             score[5]    =  0.000156753  text: electric ray, crampfish, numbfish, torpedo,
+             score[115]  =  0.000156753  text: sea slug, nudibranch, 
+
+   

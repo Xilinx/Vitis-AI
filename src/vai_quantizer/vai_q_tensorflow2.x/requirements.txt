@@ -1,0 +1,8 @@
+numpy~=1.22
+six~=1.10
+scipy
+enum34~=1.1
+mock
+dm-tree~=0.1.1
+tensorflow~=2.12
+keras~=2.12

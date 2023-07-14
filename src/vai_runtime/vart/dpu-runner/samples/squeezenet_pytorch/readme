@@ -1,0 +1,35 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Before running the program, please download the corresponding model and install it.
+The model required by this sample is: squeezenet_pt
+You can find the detailed informantion of this model under 
+   Vitis-AI/models/AI-Model-Zoo/model-list/torchvision_squeezenet/model.yaml
+
+In the model.yaml, you will find the model's download links for different platforms. 
+Please choose the corresponding model and download it.
+
+Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
+	wget https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz -O squeezenet_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	mkdir -p /usr/share/vitis_ai_library/models
+	tar -xzvf squeezenet_pt-zcu102_zcu104_kv260-r1.4.0.tar.gz
+	cp squeezenet_pt /usr/share/vitis_ai_library/models -r
+
+For U50, execute the following commands.
+	wget https://www.xilinx.com/bin/public/openDownload?filename=squeezenet_pt-u50-DPUCAHX8H-r1.4.0.tar.gz -O squeezenet_pt-u50-DPUCAHX8H-r1.4.0.tar.gz
+	sudo mkdir -p /usr/share/vitis_ai_library/models
+	tar -xzvf squeezenet_pt-u50-DPUCAHX8H-r1.4.0.tar.gz
+	sudo cp squeezenet_pt /usr/share/vitis_ai_library/models -r 
+

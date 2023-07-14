@@ -1,0 +1,17 @@
+name: vitis-ai-tensorflow2
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.8
+  - vai-wego-tensorflow2=3.5.0
+  - onboard
+  - zendnn-tensorflow2
+    #  - libprotobuf=3.21.9
+  - tensorflow-onnx
+  - vaic
+  - xnnc
+  - xcompiler
+  - target_explorer
+  - rt-engine

@@ -1,3 +1,0 @@
-[connectivity]
-sp=tonemapping_accel_1.in_ptr:HP0
-sp=tonemapping_accel_1.out_ptr:HP3

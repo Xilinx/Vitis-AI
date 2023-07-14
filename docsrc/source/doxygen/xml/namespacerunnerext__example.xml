@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacerunnerext__example" kind="namespace" language="Python">
+    <compoundname>runnerext_example</compoundname>
+    <briefdescription>
+<para>vart.RunnerExt Example </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The vart.RunnerExt Class example is show below.</para>
+<para><programlisting><codeline><highlight class="comment">#<sp/>create<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart.RunnerExt.create_runner</ref>(subgraph,<sp/>“run”)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>get<sp/>input<sp/>and<sp/>output<sp/>tensor<sp/>buffers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">input_tensor_buffers<sp/>=<sp/>runner.get_inputs()</highlight></codeline>
+<codeline><highlight class="normal">output_tensor_buffers<sp/>=<sp/>runner.get_outputs()</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">#<sp/>run<sp/>graph<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">v<sp/>=<sp/>runner.execute_async(input_tensor_buffers,<sp/>output_tensor_buffers)</highlight></codeline>
+<codeline><highlight class="normal">runner.wait(v)</highlight></codeline>
+<codeline><highlight class="normal">output_data<sp/>=<sp/>np.asarray(output_tensor_buffers[0])</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="pydoc/runnerext_example.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

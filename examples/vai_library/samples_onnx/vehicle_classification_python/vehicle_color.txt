@@ -1,0 +1,15 @@
+beige
+black
+blue
+brown
+gold
+green
+grey
+orange
+pink
+purple
+red
+silver
+tan
+white
+yellow

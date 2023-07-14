@@ -1,0 +1,31 @@
+name: vitis-ai-pytorch
+
+channels:
+  - pytorch
+  - conda-forge
+
+dependencies:
+  - python=3.8
+  - pytorch_nndct_cpu
+  - onboard
+  - vaic
+  - vart
+  - xcompiler
+  - networkx
+  - pyyaml
+  - jupyter
+  - ipywidgets
+  - dill
+  - progressbar2
+  - pytest
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - numpy=1.22
+  - pip
+  - pip:
+    - protobuf==3.20.3
+    - ck
+    - orderedset
+    - opencv-contrib-python
+

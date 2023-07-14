@@ -1,0 +1,6 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+cmake=3.16.0=h28c56e5_2
+pybind11=2.3.0=py36hc9558a2_2
+libprotobuf=3.11.4=h8b12597_0

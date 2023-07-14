@@ -1,0 +1,86 @@
+{
+  "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
+  "include_cle": false,
+  "keep_first_last_layer_accuracy": false,
+  "keep_add_layer_accuracy": false,
+  "include_bias_corr": false,
+  "target_device": "CPU",
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "bit_width": 8,
+    "method": "maxmin",
+    "round_mode": "half_even",
+    "symmetry": true,
+    "per_channel": false,
+    "signed": true,
+    "narrow_range": false,
+    "scale_type": "float",
+    "calib_statistic_method": "max"
+  },
+  "tensor_quantize_config": {
+    "activation": {
+      "method": "mse"
+    }
+  },
+  "layer_quantize_config": [
+    {
+      "layer_type": "torch.nn.Conv2d",
+      "layer_name": null,
+      "quantizable_data_type": [
+        "weights",
+        "bias",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "bit_width": 8,
+        "method": "maxmin",
+        "round_mode": "half_even",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "narrow_range": false,
+        "scale_type": "float",
+        "calib_statistic_method": "max"
+      },
+      "tensor_quantize_config": {
+        "weights": {
+          "per_channel": true
+        },
+        "activation": {
+          "method": "entropy"
+        }
+      }
+    },
+    {
+      "layer_type": null,
+      "layer_name": "ResNet::ResNet/Conv2d[conv1]/input.2",
+      "quantizable_data_type": [
+        "weights",
+        "bias",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "bit_width": 8,
+        "method": "maxmin",
+        "round_mode": "half_even",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "narrow_range": false,
+        "scale_type": "float",
+        "calib_statistic_method": "max"
+      },
+      "tensor_quantize_config": {
+        "activation": {
+          "round_mode": "half_up"
+        }
+      }
+    }
+  ]
+}

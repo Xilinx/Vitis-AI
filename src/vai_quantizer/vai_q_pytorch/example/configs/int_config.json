@@ -1,0 +1,28 @@
+{
+  "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
+  "include_cle": true,
+  "keep_first_last_layer_accuracy": false,
+  "keep_add_layer_accuracy": false,
+  "include_bias_corr": true,
+  "target_device": "CPU",
+  "onnx_opset_version": 14,
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "datatype": "int",
+    "bit_width": 8,
+    "method": "maxmin",
+    "round_mode": "half_even",
+    "symmetry": true,
+    "per_channel": false,
+    "signed": true,
+    "narrow_range": false,
+    "scale_type": "float",
+    "calib_statistic_method": "max"
+  }
+}

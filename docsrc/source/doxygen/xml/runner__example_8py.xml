@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="runner__example_8py" kind="file" language="Python">
+    <compoundname>runner_example.py</compoundname>
+    <innernamespace refid="namespacerunner__example">runner_example</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespacerunner__example" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/><sp/><ref refid="classvart_1_1_runner" kindref="compound">vart.Runner</ref><sp/>Example</highlight></codeline>
+<codeline lineno="4"><highlight class="stringliteral"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="stringliteral"><sp/><sp/><sp/><sp/>This<sp/>example<sp/>assumes<sp/>creating<sp/>a<sp/>DPU<sp/>runner<sp/></highlight><highlight class="keyword">from</highlight><highlight class="normal"><sp/>a<sp/>DPU<sp/>subgraph<sp/>(called<sp/>dpu_subgraph).</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>create<sp/>DPU<sp/>runner</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>dpu_runner<sp/>=<sp/><ref refid="classvart_1_1_runner_1ab52aaae2dab3f8ec5763cd0d34af0da9" kindref="member">vart.Runner.create_runner</ref>(dpu_subgraph,<sp/></highlight><highlight class="stringliteral">&quot;run&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>get<sp/>a<sp/>list<sp/>of<sp/>runner<sp/>inputs</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>inputTensors<sp/>=<sp/>dpu_runner.get_input_tensors()</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>optional<sp/>–<sp/>print<sp/>names<sp/>and<sp/>shapes<sp/>of<sp/>each<sp/>input<sp/>tensor</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>inputTensor<sp/></highlight><highlight class="keywordflow">in</highlight><highlight class="normal"><sp/>inputTensors:</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print(</highlight><highlight class="stringliteral">&apos;Input<sp/>tensor<sp/>:&apos;</highlight><highlight class="normal">,inputTensor.name,<sp/>inputTensors.dims)</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>create<sp/>input<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>Important:<sp/>Order<sp/>of<sp/>values<sp/>passed<sp/>to<sp/>DPU<sp/>thru’<sp/>input<sp/>data<sp/>buffer<sp/>must<sp/>match<sp/>the<sp/>order<sp/>of<sp/>tensor<sp/>objects<sp/>returned<sp/>by<sp/>get_input_tensor()<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>inputData<sp/>=<sp/>[]</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>inputTensor<sp/></highlight><highlight class="keywordflow">in</highlight><highlight class="normal"><sp/>inputTensors:</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>inputData.append(some_input_data.reshape(inputTensor.dims))</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">#<sp/>pass<sp/>input<sp/>buffer<sp/>to<sp/>DPU<sp/>runner,<sp/>launch<sp/>and<sp/>wait<sp/>for<sp/>completion</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>job_id<sp/>=<sp/>dpu_runner.execute_async(inputData,outputData)</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>dpu_runner.wait(job_id)<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@endcode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;</highlight></codeline>
+<codeline lineno="30"><highlight class="stringliteral"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/runner_example.py"/>
+  </compounddef>
+</doxygen>

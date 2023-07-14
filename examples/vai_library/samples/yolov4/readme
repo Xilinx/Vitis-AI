@@ -1,0 +1,113 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov4, ./test_performance_yolov4, ./test_video_yolov4 first param followed must be with model name.
+  Valid model name:
+    face_mask_detection_pt
+    yolov4_leaky_416_tf
+    yolov4_leaky_512_tf
+    yolov4_csp_pt
+
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_yolov4 face_mask_detection_pt sample_face_mask.jpg
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0330 06:09:09.521342  2417 demo.hpp:1183] batch: 0     image: sample_face_mask.jpg
+I0330 06:09:09.521709  2417 process_result.hpp:44] RESULT: 0	353.533	122.676	583.533	436.967	0.914165
+
+    sample : ./test_jpeg_yolov4 yolov4_leaky_416_tf sample_yolov4.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0526 01:52:27.207690 60223 process_result.hpp:44] RESULT: 0	88.1787	131.077	100.123	149.538	0.560786
+I0526 01:52:27.207789 60223 process_result.hpp:44] RESULT: 2	5.673	132.408	122.127	254.254	0.995331
+I0526 01:52:27.207851 60223 process_result.hpp:44] RESULT: 2	355.51	143.038	414.939	164.605	0.990851
+I0526 01:52:27.207901 60223 process_result.hpp:44] RESULT: 2	402.152	142.644	512	233.958	0.988311
+I0526 01:52:27.207952 60223 process_result.hpp:44] RESULT: 2	111.021	136.597	189.187	184.797	0.987387
+I0526 01:52:27.208005 60223 process_result.hpp:44] RESULT: 2	323.742	141.474	360.665	159.206	0.848485
+I0526 01:52:27.208048 60223 process_result.hpp:44] RESULT: 2	272.187	139.667	284.494	147.667	0.775378
+I0526 01:52:27.208092 60223 process_result.hpp:44] RESULT: 2	255.296	138.925	271.1	145.156	0.720777
+I0526 01:52:27.208134 60223 process_result.hpp:44] RESULT: 2	284.835	137.754	300.638	150.944	0.663573
+I0526 01:52:27.208178 60223 process_result.hpp:44] RESULT: 2	301.036	136.306	333.503	154.768	0.643914
+I0526 01:52:27.208221 60223 process_result.hpp:44] RESULT: 2	205.538	137.871	217.846	145.871	0.618293
+I0526 01:52:27.208264 60223 process_result.hpp:44] RESULT: 2	152.452	137.386	189.375	166.621	0.618293
+I0526 01:52:27.208308 60223 process_result.hpp:44] RESULT: 2	193.417	137.366	205.725	154.302	0.552065
+I0526 01:52:27.208353 60223 process_result.hpp:44] RESULT: 2	184.172	137.026	203.357	155.2	0.494507
+I0526 01:52:27.208400 60223 process_result.hpp:44] RESULT: 2	334.946	142.771	359.581	156.925	0.434068
+I0526 01:52:27.208446 60223 process_result.hpp:44] RESULT: 2	171.475	134.85	200.23	157.619	0.433013
+I0526 01:52:27.208489 60223 process_result.hpp:44] RESULT: 2	204.333	139.498	216.64	147.498	0.376004
+I0526 01:52:27.208534 60223 process_result.hpp:44] RESULT: 2	169.511	137.138	194.797	155.599	0.37075
+I0526 01:52:27.208580 60223 process_result.hpp:44] RESULT: 2	152.669	136.882	194.358	155.344	0.311417
+
+    sample : ./test_jpeg_yolov4 yolov4_leaky_512_tf sample_yolov4.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0526 01:51:50.369428 60212 process_result.hpp:44] RESULT: 0	91.9334	133.954	110.933	157.066	0.434068
+I0526 01:51:50.369593 60212 process_result.hpp:44] RESULT: 0	88.9459	129.924	97.9209	147.924	0.320446
+I0526 01:51:50.369707 60212 process_result.hpp:44] RESULT: 0	87.6714	132.283	99.1955	150.283	0.318674
+I0526 01:51:50.369820 60212 process_result.hpp:44] RESULT: 2	-8.92278	135.69	133.077	252.125	0.992602
+I0526 01:51:50.369943 60212 process_result.hpp:44] RESULT: 2	355.537	142.409	414.891	165.154	0.987856
+I0526 01:51:50.370057 60212 process_result.hpp:44] RESULT: 2	104.855	140.109	190.982	182.943	0.98054
+I0526 01:51:50.370172 60212 process_result.hpp:44] RESULT: 2	402.971	143.097	512	233.777	0.961547
+I0526 01:51:50.370290 60212 process_result.hpp:44] RESULT: 2	338.003	142.991	357.003	157.009	0.813307
+I0526 01:51:50.370400 60212 process_result.hpp:44] RESULT: 2	256.307	138.885	265.652	145.115	0.812103
+I0526 01:51:50.370508 60212 process_result.hpp:44] RESULT: 2	328.987	142.951	357.024	156.746	0.812103
+I0526 01:51:50.370620 60212 process_result.hpp:44] RESULT: 2	287.218	139.432	298.742	150.35	0.729251
+I0526 01:51:50.370730 60212 process_result.hpp:44] RESULT: 2	206.348	138.49	215.693	146.49	0.724788
+I0526 01:51:50.370839 60212 process_result.hpp:44] RESULT: 2	176.492	136.13	193.497	158.875	0.724788
+I0526 01:51:50.370949 60212 process_result.hpp:44] RESULT: 2	305.235	136.076	329.632	154.076	0.71791
+I0526 01:51:50.371058 60212 process_result.hpp:44] RESULT: 2	180.104	137.249	194.901	155.249	0.676414
+I0526 01:51:50.371170 60212 process_result.hpp:44] RESULT: 2	272.086	139.019	283.611	147.522	0.674633
+I0526 01:51:50.371269 60212 process_result.hpp:44] RESULT: 2	151.959	139.549	187.959	168.754	0.436741
+I0526 01:51:50.371371 60212 process_result.hpp:44] RESULT: 2	264.858	139.375	272.137	145.605	0.429949
+I0526 01:51:50.371469 60212 process_result.hpp:44] RESULT: 2	189.099	137.249	203.896	155.249	0.417059
+I0526 01:51:50.371568 60212 process_result.hpp:44] RESULT: 2	284.793	138.134	300.202	148.406	0.376004
+I0526 01:51:50.371670 60212 process_result.hpp:44] RESULT: 2	123.299	141.863	174.66	179.919	0.319516
+
+    sample : ./test_jpeg_yolov4 yolov4_csp_pt sample_yolov4_csp.jpg
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1122 08:12:25.841295 17109 demo.hpp:1183] batch: 0     image: sample_yolov4_csp.jpg
+I1122 08:12:25.841470 17109 process_result.hpp:44] RESULT: 0	411.102	158.749	464.76	293.848	0.646968
+I1122 08:12:25.841593 17109 process_result.hpp:44] RESULT: 56	289.249	218.078	352.837	315.752	0.813033
+I1122 08:12:25.841681 17109 process_result.hpp:44] RESULT: 56	361.428	219.866	433.159	319.337	0.721392
+I1122 08:12:25.841747 17109 process_result.hpp:44] RESULT: 58	231.992	170.967	266.999	214.485	0.661714
+I1122 08:12:25.841809 17109 process_result.hpp:44] RESULT: 62	4.49465	164.97	155.505	262.644	0.912493
+I1122 08:12:25.841876 17109 process_result.hpp:44] RESULT: 62	558.41	208.214	639.371	290.859	0.626255
+I1122 08:12:25.841943 17109 process_result.hpp:44] RESULT: 72	454.863	170.346	513.299	287.604	0.528604
+I1122 08:12:25.842007 17109 process_result.hpp:44] RESULT: 75	167.12	232.452	186.092	268.098	0.823734
+I1122 08:12:25.842067 17109 process_result.hpp:44] RESULT: 75	549.358	297.721	587.642	400.836	0.676214
+I1122 08:12:25.842133 17109 process_result.hpp:44] RESULT: 75	240.919	198.193	252.919	213.156	0.575294
+
+Performance: 
+    ./test_performance_yolov4 face_mask_detection_pt test_performance_face_mask.list -s 60 -t <thread> 
+    ./test_performance_yolov4 yolov4_leaky_416_tf test_performance_yolov4.list -s 60 -t <thread> 
+    ./test_performance_yolov4 yolov4_leaky_512_tf test_performance_yolov4.list -s 60 -t <thread> 
+    ./test_performance_yolov4 yolov4_csp_pt test_performance_yolov4.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_yolov4_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_yolov4_mt yolov4_leaky_spp_m image_list.txt result.txt -t 2

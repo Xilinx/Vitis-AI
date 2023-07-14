@@ -1,0 +1,58 @@
+#
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+#!/bin/bash
+set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+
+./update_submodule.sh
+
+build_arch=$1
+if test -z "$build_arch"; then
+  build_arch=native
+fi
+
+build_type=$2
+if test -z "$build_type"; then
+  build_type=debug
+fi
+
+if test "$build_arch" = "native"; then
+  build_dir=build_${build_type}
+else
+  build_dir=build_${build_arch}_${build_type}
+fi
+if test "$build_arch" != "native"; then
+  rm -fr $build_dir 2>/dev/null || echo ok >/dev/null
+fi
+mkdir -p $build_dir
+cd $build_dir
+
+if test "$build_arch" != "native"; then
+  build_test_option="-DCMAKE_TOOLCHAIN_FILE=cmake/${build_arch}_tool_chain.cmake"
+fi
+
+echo ${CMAKE_INSTALL_PREFIX}
+
+cmake ${build_arch_option} \
+      -DCMAKE_BUILD_TYPE=${build_type} \
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} \
+      -DBUILD_TEST=ON \
+      ..
+
+make -j VERBOSE=1
+ctest -V

@@ -1,0 +1,34 @@
+{
+	"PreImplementedComponents": {
+		"KernelAbs": "level0_wrapper_pp_pipeline_abs.dcp",
+		"RouteKernelBB": "level0_wrapper_routed_pp_pipeline_bb.dcp",
+		"Routed": "level0_wrapper_postroute_physopt.dcp"
+	},
+	"Constraints": {
+		"Physical": "level0_wrapper_physical_modified.xdc",
+		"PhysicalGolden": "level0_wrapper_physical_golden.xdc",
+		"Pblock": "level0_wrapper_physical_pblock.xdc",
+		"Timing": "level0_wrapper_timing_golden.xdc",
+		"Build": "level0_wrapper_physical_pblock_build.xdc"
+	},
+	"Design": {
+		"AccelModule": "level0_i/ulp/blobfromimage_accel_1",
+		"Top": "level0_wrapper",
+		"BD": "ulp.bd"
+	},
+	"Platform": {
+		"Part": "xcu50-fsvh2104-2-e",
+		"Board": "u50",
+		"XPFM": "xilinx_u50_gen3x4_xdma_2_202010_1"
+	},
+	"Accel": {
+		"num_modules": "1",
+		"modules": "blobfromimage_accel_1"
+	},
+	"ML": {
+		"DPU": "DPUV3E",
+		"NumberOfDPU": "2",
+		"Configuration": "DPUCAHX8H_3ENGINE"
+	},
+	"Path": "."
+}

@@ -1,0 +1,53 @@
+#
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+#
+# TARGET_CROSS = aarch64-linux-gnu-gcc
+#
+# GNU_TARGET_NAME = $(ARCH)-$(TARGET_VENDOR)-$(TARGET_OS)-$(LIBC)$(ABI)
+#                  = aarch64-buildroot-linux-gnu
+#
+#
+if test -z "$BASH"  && test -z "$ZSH_NAME" ; then
+    echo "only bash or zsh is supported"
+fi
+
+if test -n "$BASH"; then
+    SOURCE="${BASH_SOURCE[0]}"
+elif test -n "$ZSH_NAME"; then
+    SOURCE=$0:A
+fi
+
+export XILINX_AI_SDK_SDK="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+export TARGET_CROSS=@TARGET_CROSS@
+export GNU_TARGET_NAME=@GNU_TARGET_NAME@
+export PATH=$PATH:$XILINX_AI_SDK_SDK/host/bin
+export XILINX_AI_SDK_SYSROOT=$XILINX_AI_SDK_SDK/host/$GNU_TARGET_NAME/sysroot
+export ARCH=@ARCH@
+export CROSS_COMPILE=@TARGET_CROSS@
+
+export TARGET_AR=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}ar
+export TARGET_AS=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}as
+export TARGET_CC=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}cc
+export TARGET_CPP=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}cpp
+export TARGET_CXX=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}g++
+export TARGET_LD=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}ld
+export TARGET_NM=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}nm
+export TARGET_RANLIB=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}ranlib
+export TARGET_READELF=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}readelf
+export TARGET_OBJCOPY=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}objcopy
+export TARGET_OBJDUMP=$XILINX_AI_SDK_SDK/host/bin/${CROSS_COMPILE}objdump
+

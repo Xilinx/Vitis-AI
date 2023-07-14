@@ -1,0 +1,15 @@
+name: vitis-ai-tensorflow2
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.8
+  - vai_optimizer_tensorflow2_gpu
+  - vai_q_tensorflow2_gpu
+  - vaic
+  - xnnc
+  - xcompiler
+  - tensorflow-onnx_gpu
+  - vart
+  - rt-engine

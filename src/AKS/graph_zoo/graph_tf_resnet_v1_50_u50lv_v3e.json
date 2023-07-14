@@ -1,0 +1,50 @@
+{
+  "graph_name": "resnet50",
+
+  "node_list": [
+    {
+      "node_name": "preproc",
+      "node_params" : {
+        "ClassificationImreadResizeCCrop": {
+          "net_w" : 224,
+          "net_h" : 224,
+          "net_c": 3,
+          "mean": [ 123, 107, 104],
+          "output_layout" : "NHWC"
+        }
+      },
+      "next_node": ["resnet50_fpga"]
+    },
+
+    {
+      "node_name": "resnet50_fpga",
+      "node_params": {
+        "DPURunner": {
+          "model_file" : "artifacts/u50lv_v3e/resnet_v1_50_tf/resnet_v1_50_tf.xmodel",
+          "num_runners": 8
+        }
+      },
+      "next_node": [  "resnet50_post" ]
+    },
+
+    {
+      "node_name": "resnet50_post",
+      "node_params": {
+        "classificationPostProcess": {}
+      },
+      "next_node": ["resnet50_accuracy"]
+    },
+
+    {
+      "node_name": "resnet50_accuracy",
+      "node_params": {
+        "ClassificationAccuracy": {
+          "ground_truth": "graph_zoo/gold.txt"
+        }
+      },
+      "next_node": []
+    }
+  ],
+
+  "version": "0.1"
+}

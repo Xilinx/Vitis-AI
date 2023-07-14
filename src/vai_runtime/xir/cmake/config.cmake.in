@@ -1,0 +1,39 @@
+#
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+#
+if(TARGET xir::xir)
+  return()
+endif(TARGET xir::xir)
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake")
+set(@PROJECT_NAME@_FOUND True)
+
+get_target_property(TARGET_LOCATION @PROJECT_NAME@::@PROJECT_NAME@ LOCATION)
+message(
+  STATUS
+    "Found importable target @PROJECT_NAME@::@PROJECT_NAME@: ${TARGET_LOCATION}"
+)
+
+get_filename_component(@PROJECT_NAME@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}"
+                       PATH)
+set(@PROJECT_NAME@_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+find_package(Threads REQUIRED)
+find_package(unilog REQUIRED)
+
+if(NOT BUILD_SHARED_LIBS)
+  find_package(Boost REQUIRED)
+  option(Protobuf_USE_STATIC_LIBS "protobuf static lib" OFF)
+  find_package(Protobuf REQUIRED)
+endif(NOT BUILD_SHARED_LIBS)

@@ -1,0 +1,27 @@
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 15/15   #P:4
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| / _-=> migrate-disable
+#                              |||| /     delay
+#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+#              | |         |   |||||     |         |
+        vaitrace-146394  [003] ..... 1800647.569282: sched_process_fork: comm=vaitrace pid=146394 child_comm=vaitrace child_pid=146922
+           sleep-146922  [002] ..... 1800647.572862: sched_process_exec: filename=/bin/sleep pid=146922 old_pid=146922
+           sleep-146922  [002] d.... 1800647.573769: sched_switch: prev_comm=sleep prev_pid=146922 prev_prio=120 prev_state=S ==> next_comm=swapper/2 next_pid=0 next_prio=120
+ systemd-userwor-146268  [003] ..... 1800649.696984: sched_process_exit: comm=systemd-userwor pid=146268 prio=120
+ systemd-userwor-146267  [002] ..... 1800649.697064: sched_process_exit: comm=systemd-userwor pid=146267 prio=120
+ systemd-userwor-146266  [000] ..... 1800649.697108: sched_process_exit: comm=systemd-userwor pid=146266 prio=120
+ systemd-userdbd-744     [002] ..... 1800649.697773: sched_process_fork: comm=systemd-userdbd pid=744 child_comm=systemd-userdbd child_pid=146923
+ systemd-userdbd-744     [002] ..... 1800649.698143: sched_process_fork: comm=systemd-userdbd pid=744 child_comm=systemd-userdbd child_pid=146924
+ systemd-userdbd-744     [002] ..... 1800649.698509: sched_process_fork: comm=systemd-userdbd pid=744 child_comm=systemd-userdbd child_pid=146925
+ systemd-userwor-146923  [003] ..... 1800649.699090: sched_process_exec: filename=/lib/systemd/systemd-userwork pid=146923 old_pid=146923
+ systemd-userwor-146924  [000] ..... 1800649.699275: sched_process_exec: filename=/lib/systemd/systemd-userwork pid=146924 old_pid=146924
+ systemd-userwor-146925  [001] ..... 1800649.699635: sched_process_exec: filename=/lib/systemd/systemd-userwork pid=146925 old_pid=146925
+          <idle>-0       [002] d.... 1800652.573821: sched_switch: prev_comm=swapper/2 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=sleep next_pid=146922 next_prio=120
+           sleep-146922  [002] ..... 1800652.574170: sched_process_exit: comm=sleep pid=146922 prio=120
+           sleep-146922  [002] d.... 1800652.574202: sched_switch: prev_comm=sleep prev_pid=146922 prev_prio=120 prev_state=Z ==> next_comm=swapper/2 next_pid=0 next_prio=120

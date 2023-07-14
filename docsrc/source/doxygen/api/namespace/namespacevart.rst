@@ -1,0 +1,4 @@
+Namespace vart
+==============
+
+.. doxygennamespace:: vart

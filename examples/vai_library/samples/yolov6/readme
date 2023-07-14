@@ -1,0 +1,70 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_yolov6, ./test_performance_yolov6, ./test_video_yolov6 first param followed must be with model name.
+  Valid model name:
+    yolov6m_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_yolov6  yolov6m_pt sample_yolov6.jpg
+    output : 
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1122 08:24:40.235074 17191 demo.hpp:1183] batch: 0     image: sample_yolov6.jpg
+I1122 08:24:40.235204 17191 process_result.hpp:32] RESULT: 62	5.05	166.56	154.45	261.45	0.939913
+I1122 08:24:40.235325 17191 process_result.hpp:32] RESULT: 56	293.75	219.05	352.30	313.94	0.939913
+I1122 08:24:40.235386 17191 process_result.hpp:32] RESULT: 56	362.40	219.05	416.91	315.96	0.893309
+I1122 08:24:40.235442 17191 process_result.hpp:32] RESULT: 0	406.81	156.47	467.38	297.79	0.880797
+I1122 08:24:40.235529 17191 process_result.hpp:32] RESULT: 56	406.81	221.07	443.15	307.89	0.874077
+I1122 08:24:40.235580 17191 process_result.hpp:32] RESULT: 72	445.17	168.58	513.82	285.68	0.743168
+I1122 08:24:40.235635 17191 process_result.hpp:32] RESULT: 62	558.23	206.94	638.99	287.70	0.718594
+I1122 08:24:40.235687 17191 process_result.hpp:32] RESULT: 75	167.07	233.19	186.25	266.50	0.651355
+I1122 08:24:40.235734 17191 process_result.hpp:32] RESULT: 72	489.59	170.60	513.82	283.66	0.607663
+I1122 08:24:40.235785 17191 process_result.hpp:32] RESULT: 39	550.16	297.79	586.50	402.78	0.607663
+I1122 08:24:40.235841 17191 process_result.hpp:32] RESULT: 74	448.20	120.63	461.32	141.83	0.592667
+I1122 08:24:40.235888 17191 process_result.hpp:32] RESULT: 60	315.96	221.07	429.02	309.91	0.562177
+I1122 08:24:40.235939 17191 process_result.hpp:32] RESULT: 58	229.15	176.15	268.01	211.99	0.546738
+I1122 08:24:40.235987 17191 process_result.hpp:32] RESULT: 75	240.76	196.85	252.87	211.99	0.546738
+I1122 08:24:40.236032 17191 process_result.hpp:32] RESULT: 75	361.39	215.52	374.51	229.65	0.453262
+I1122 08:24:40.236075 17191 process_result.hpp:32] RESULT: 60	317.98	223.09	392.68	313.94	0.453262
+I1122 08:24:40.236125 17191 process_result.hpp:32] RESULT: 75	549.65	299.31	586.50	401.26	0.437824
+I1122 08:24:40.236176 17191 process_result.hpp:32] RESULT: 75	351.29	206.94	362.40	230.16	0.422505
+I1122 08:24:40.236220 17191 process_result.hpp:32] RESULT: 58	334.13	174.64	368.45	229.15	0.392337
+I1122 08:24:40.236268 17191 process_result.hpp:32] RESULT: 0	384.10	173.12	405.30	210.98	0.377541
+I1122 08:24:40.236315 17191 process_result.hpp:32] RESULT: 58	333.63	187.26	348.26	214.51	0.362969
+I1122 08:24:40.236359 17191 process_result.hpp:32] RESULT: 60	473.44	354.32	638.99	422.97	0.362969
+I1122 08:24:40.236413 17191 process_result.hpp:32] RESULT: 68	512.30	204.92	527.44	222.08	0.348645
+I1122 08:24:40.236457 17191 process_result.hpp:32] RESULT: 72	483.03	171.61	513.31	286.69	0.320821
+I1122 08:24:40.236506 17191 process_result.hpp:32] RESULT: 58	210.98	174.64	267.51	213.00	0.307358
+I1122 08:24:40.236553 17191 process_result.hpp:32] RESULT: 58	334.13	176.66	358.36	219.05	0.307358
+
+Performance: 
+    ./test_performance_yolov6 yolov6m_pt test_performance_yolov6.list -s 60 -t <thread> 
+
+
+Accuracy:
+    test accuracy of yolov6_m_pt:
+    ./test_accuracy_yolov6_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+    sample:
+    ./test_accuracy_yolov6_mt yolov6m_pt image_list.txt result.txt -t 2

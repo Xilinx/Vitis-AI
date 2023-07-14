@@ -1,0 +1,10 @@
+*~
+build
+GPATH
+GTAGS
+GRTAGS
+#*#
+.#*
+*.swp
+tmp
+

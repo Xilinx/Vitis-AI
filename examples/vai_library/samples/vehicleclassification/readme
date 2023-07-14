@@ -1,0 +1,66 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+Important:
+  ./test_jpeg_vehicleclassification, ./test_performance_vehicleclassification, ./test_video_vehicleclassification, ./test_accuracy_vehicleclassification first param followed must be with model name.
+  Valid model name:
+    vehicle_make_resnet18_pt
+    vehicle_type_resnet18_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_jpeg_vehicleclassification vehicle_make_resnet18_pt sample_vehicleclassification.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0419 01:19:03.748142  8622 demo.hpp:1183] batch: 0     image: sample_vehicleclassification.jpg
+I0419 01:19:03.748263  8622 process_result.hpp:24] r.index 78 Audi, r.score 0.975131
+I0419 01:19:03.748471  8622 process_result.hpp:24] r.index 73 Volkswagen, r.score 0.0178602
+I0419 01:19:03.748606  8622 process_result.hpp:24] r.index 81 BWM, r.score 0.00241711
+I0419 01:19:03.748770  8622 process_result.hpp:24] r.index 39 Toyota, r.score 0.000889205
+I0419 01:19:03.748911  8622 process_result.hpp:24] r.index 150 GreatWall, r.score 0.00032712
+
+    sample : ./test_jpeg_vehicleclassification vehicle_type_resnet18_pt sample_vehicleclassification.jpg
+    output :
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I0419 01:19:15.925132  8623 demo.hpp:1183] batch: 0     image: sample_vehicleclassification.jpg
+I0419 01:19:15.925496  8623 process_result.hpp:24] r.index 3 hatchback, r.score 0.866754
+I0419 01:19:15.925770  8623 process_result.hpp:24] r.index 5 fastback, r.score 0.117302
+I0419 01:19:15.925938  8623 process_result.hpp:24] r.index 2 sedan, r.score 0.0158751
+I0419 01:19:15.926102  8623 process_result.hpp:24] r.index 11 convertible r.score 6.48781e-05
+I0419 01:19:15.926282  8623 process_result.hpp:24] r.index 1 SUV, r.score 3.23009e-06
+
+Performance: 
+    ./test_performance_vehicleclassification vehicle_make_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thread> 
+    ./test_performance_vehicleclassification vehicle_type_resnet18_pt test_performance_vehicleclassification.list -s 60 -t <thread> 
+
+
+Accuracy:
+    ./test_accuracy_vehicleclassification <model_name> <input_list_filename> <output_filename>
+
+    or you can use multi-thread to test, like:
+
+    ./test_accuracy_vehicleclassification_mt <model_name> <image_list_filename> <output_filename> -t <thread>
+
+    sample:
+    ./test_accuracy_vehicleclassification vehicle_make_resnet18_pt image_list.txt result.txt
+    ./test_accuracy_vehicleclassification_mt vehicle_make_resnet18_pt image_list.txt result.txt -t 2
