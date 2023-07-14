@@ -31,10 +31,9 @@ set(LOG_SRC_LIST
 )
 
 # Required Packages
+find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-find_package(pybind11 REQUIRED)
 find_package(unilog REQUIRED)
 find_package(xir REQUIRED)
 find_package(vart COMPONENTS runner REQUIRED)
@@ -48,10 +47,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION "${PROJECT_VERSION_MAJOR}"
 )
 
-message(STATUS "Python   Includes: ${PYTHON_INCLUDE_DIR}")
-message(STATUS "Python3  Includes: ${Python3_INCLUDE_DIRS}")
-message(STATUS "Pybind11 Includes: ${pybind11_INCLUDE_DIR}")
-message(STATUS "Pybind11 version : ${pybind11_VERSION}")
 message(STATUS "Unilog Includes  : ${unilog_INCLUDE_DIRS}")
 message(STATUS "VART Includes    : ${vart_INCLUDE_DIRS}")
 message(STATUS "XIR Includes     : ${xir_INCLUDE_DIRS}")
@@ -60,8 +55,6 @@ message(STATUS "XIR Includes     : ${xir_INCLUDE_DIRS}")
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/>
   $<INSTALL_INTERFACE:aks>
-  PRIVATE ${Python3_INCLUDE_DIRS}
-  PRIVATE ${pybind11_INCLUDE_DIR}
 )
 
 # Required Libs
@@ -69,7 +62,6 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
   PRIVATE ${CMAKE_DL_LIBS}
   PRIVATE ${CMAKE_THREAD_LIBS_INIT}
-  PRIVATE ${PYTHON_LIBRARIES}
   PRIVATE unilog::unilog
   PRIVATE xir::xir
   PRIVATE vart::runner

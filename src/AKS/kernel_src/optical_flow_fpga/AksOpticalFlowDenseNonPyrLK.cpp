@@ -40,7 +40,7 @@
 
 #define STR_VALUE(arg)         #arg
 #define GET_STRING(name)       STR_VALUE(name)
-#define TARGET_DEVICE          GET_STRING(xilinx_u200_gen3x16_xdma_base_1)
+#define TARGET_DEVICE          GET_STRING(xilinx_u200_xdma_201830_2)
 #define CL_EMIT_PROFILING_INFO 1
 
 using namespace std;
@@ -110,21 +110,17 @@ extern "C" {
 
 void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
 {
+  // Optical flow ocl kernel and ocl I/O buffers allocation
+  // lk_kName = params->_stringParams.find("lk_kName") == params->_stringParams.end() ?
+  //   "dense_non_pyr_of_accel" : params->_stringParams["lk_kName"];
+  // of_width = params->_intParams["of_w"];
+  // of_height = params->_intParams["of_h"];
+
   lk_kName = params->_stringParams.find("lk_kName") == params->_stringParams.end() ?
     "dense_non_pyr_of_accel" : params->getValue<std::string>("lk_kName");
   of_width = params->getValue<int>("of_w");
   of_height = params->getValue<int>("of_h");
-
-  if (params->_stringParams.find("xclbin") != params->_stringParams.end()) {
-    xclBinary = params->getValue<std::string>("xclbin");
-  }
-  else if ((std::getenv("XLNX_VART_FIRMWARE") != NULL)) {
-    xclBinary = std::getenv("XLNX_VART_FIRMWARE");
-  }
-  else {
-    std::cout << "[ERROR] Either pass xclbin parameter to the graph node or set XLNX_VART_FIRMWARE";
-    return;
-  }
+  xclBinary = params->getValue<std::string>("xclbin");
 
   unsigned char *kernelbinary;
   cl_int err; cl_int status;          // error code returned from api calls
@@ -144,32 +140,28 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
   cl_uint platform_found = 0;
   err = clGetPlatformIDs(16, platforms, &platform_count);
   if (err != CL_SUCCESS) {
-    cout << "[ERROR] Failed to find an OpenCL platform!";
-    std::cout << "Test failed" << std::endl;
+    printf("Error: Failed to find an OpenCL platform!\n");
+    printf("Test failed\n");
     return ;
   }
-  std::cout << "[INFO] Found " << platform_count << " platforms" << std::endl;
+  printf("INFO: Found %d platforms\n", platform_count);
 
   // Find Xilinx Plaftorm
-  for (cl_uint plat_idx = 0; plat_idx < platform_count; plat_idx++) {
-    err = clGetPlatformInfo(platforms[plat_idx], CL_PLATFORM_VENDOR, 1000,
-                            (void *)cl_platform_vendor,NULL);
+  for (cl_uint iplat=0; iplat<platform_count; iplat++) {
+    err = clGetPlatformInfo(platforms[iplat], CL_PLATFORM_VENDOR, 1000, (void *)cl_platform_vendor,NULL);
     if (err != CL_SUCCESS) {
-      std::cout << "[ERROR] clGetPlatformInfo(CL_PLATFORM_VENDOR) failed!"
-                << std::endl;
-      std::cout << "Test failed" << std::endl;
+      printf("Error: clGetPlatformInfo(CL_PLATFORM_VENDOR) failed!\n");
+      printf("Test failed\n");
       return ;
     }
     if (strcmp(cl_platform_vendor, "Xilinx") == 0) {
-      std::cout << "[INFO] Selected platform " << plat_idx << " from "
-                << cl_platform_vendor << std::endl;
-      platform_id = platforms[plat_idx];
+      printf("INFO: Selected platform %d from %s\n", iplat, cl_platform_vendor);
+      platform_id = platforms[iplat];
       platform_found = 1;
-      break;
     }
   }
   if (!platform_found) {
-    std::cout << "[ERROR] Platform Xilinx not found. Exit." << std::endl;
+    printf("ERROR: Platform Xilinx not found. Exit.\n");
     return ;
   }
 
@@ -178,67 +170,51 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
   cl_uint device_found = 0;
   cl_device_id devices[16];  // compute device id
   char cl_device_name[1001];
-  err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ACCELERATOR, 16, devices,
-                       &num_devices);
-  std::cout << "[INFO] Found " << num_devices << " devices" << std::endl;
+  err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ACCELERATOR, 16, devices, &num_devices);
+  printf("INFO: Found %d devices\n", num_devices);
   if (err != CL_SUCCESS) {
-    std::cout << "[ERROR] Failed to create a device group!" << std::endl;
-    std::cout << "[ERROR] Test failed" << std::endl;
+    printf("ERROR: Failed to create a device group!\n");
+    printf("ERROR: Test failed\n");
     return ;
   }
 
   //iterate all devices to select the target device.
-  cl_uint device_idx = 0;
-  if (std::getenv("XLNX_ENABLE_DEVICES") != NULL) {
-    device_idx = std::stoi(std::getenv("XLNX_ENABLE_DEVICES"));
-    std::cout << "[INFO] Taking the device_idx from XLNX_ENABLE_DEVICES: "
-              << device_idx << std::endl;
-    num_devices = device_idx + 1;
-  }
-  for (; device_idx < num_devices; device_idx++) {
-    err = clGetDeviceInfo(devices[device_idx], CL_DEVICE_NAME, 1024,
-                          cl_device_name, 0);
+  for (cl_uint i=0; i<num_devices; i++) {
+    err = clGetDeviceInfo(devices[i], CL_DEVICE_NAME, 1024, cl_device_name, 0);
     if (err != CL_SUCCESS) {
-      std::cout << "[Error] Failed to get device name for device "
-                << device_idx << std::endl;
-      std::cout << "Test failed" << std::endl;
+      printf("Error: Failed to get device name for device %d!\n", i);
+      printf("Test failed\n");
       return ;
     }
-    std::cout << "CL_DEVICE_NAME " << cl_device_name << std::endl;
+    printf("CL_DEVICE_NAME %s\n", cl_device_name);
     if(strcmp(cl_device_name, target_device_name) == 0) {
-      device_id = devices[device_idx];
+      device_id = devices[i];
       device_found = 1;
-      std::cout << "Selected " << cl_device_name << " as the target device"
-                << std::endl;
-      break;
+      printf("Selected %s as the target device\n", cl_device_name);
     }
   }
 
-  std::cout << "cl device name is " << cl_device_name << std::endl;
+  printf("cl device name is %s \n", cl_device_name);
   if (!device_found) {
-    std::cout << "Target device " << target_device_name << " not found. Exit."
-              << std::endl;
+    printf("Target device %s not found. Exit.\n", target_device_name);
     return ;
   }
 
   // Create a compute context
   context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
   if (!context) {
-    std::cout << "[Error] Failed to create a compute context!" << std::endl;
-    std::cout << "Test failed" << std::endl;
+    printf("Error: Failed to create a compute context!\n");
+    printf("Test failed\n");
     return ;
   }
-  std::cout << "[INFO] Context created on device_id: " << device_id
-            << std::endl;
   //------------------------------------------------------------------------------
   // xclbin
   //------------------------------------------------------------------------------
-  std::cout << "[INFO] loading xclbin " << xclBinary << std::endl;
-  cl_uint n_i0 = load_file_to_memory(xclBinary.c_str(), (char**) &kernelbinary);
+  printf("INFO: loading xclbin %s\n", xclBinary.c_str());
+  cl_uint n_i0 = load_file_to_memory(xclBinary.c_str(), (char **) &kernelbinary);
   if (n_i0 < 0) {
-    std::cout << "failed to load kernel from xclbin: " << xclBinary.c_str()
-              << std::endl;
-    std::cout << "Test failed" << std::endl;
+    printf("failed to load kernel from xclbin: %s\n", xclBinary.c_str());
+    printf("Test failed\n");
     return ;
   }
 
@@ -248,9 +224,8 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
       (const unsigned char **) &kernelbinary, &status, &err);
   free(kernelbinary);
   if ((!program) || (err!=CL_SUCCESS)) {
-    std::cout << "[Error] Failed to create compute program from binary " << err
-              << std::endl;
-    std::cout << "Test failed" << std::endl;
+    printf("Error: Failed to create compute program from binary %d!\n", err);
+    printf("Test failed\n");
     return ;
   }
 
@@ -260,19 +235,18 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
     size_t len;
     char buffer[2048];
 
-    std::cout << "[Error] Failed to build program executable!" << std::endl;
-    clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
-                          sizeof(buffer), buffer, &len);
-    std::cout << buffer << std::endl;
-    std::cout << "Test failed" << std::endl;
+    printf("Error: Failed to build program executable!\n");
+    clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+    printf("%s\n", buffer);
+    printf("Test failed\n");
     return ;
   }
 
   // Create the compute kernel in the program we wish to run
   of_kernel = clCreateKernel(program, lk_kName.c_str(), &err);
   if (!of_kernel || err != CL_SUCCESS) {
-    std::cout << "[Error] Failed to create compute kernel!" << std::endl;
-    std::cout << "Test failed" << std::endl;
+    printf("Error: Failed to create compute kernel!\n");
+    printf("Test failed\n");
     return ;
   } else {
     std::cout << "kernel dense_non_pyr_of_accel open" << std::endl;
@@ -284,8 +258,8 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
   command_queue = clCreateCommandQueue(
       context, device_id, commandQueueProperties, &err);
   if (!command_queue) {
-    std::cout << "[ERROR] Failed to create command queue" << std::endl;
-    std::cout << "[ERROR] code " << err << std::endl;
+    printf("ERROR: Failed to create command queue\n");
+    printf("ERROR: code %i\n", err);
     return;
   }
 
@@ -296,8 +270,7 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
       context, CL_MEM_READ_ONLY,
       (size_t)(of_width*of_height*sizeof(unsigned char)), NULL, &err);
   if (err != CL_SUCCESS) {
-    std::cout << "[ERROR] Failed to create ocl_in_prev_buf " << err
-              << std::endl;
+    printf("ERROR: Failed to create ocl_in_prev_buf %d=\n",err);
     return;
   }
 
@@ -305,8 +278,7 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
       context, CL_MEM_READ_ONLY,
       (size_t)(of_width*of_height *sizeof(unsigned char)), NULL, &err);
   if (err != CL_SUCCESS) {
-    std::cout << "[ERROR] Failed to create ocl_in_cur_buf " << err
-              << std::endl;
+    printf("ERROR: Failed to create ocl_in_cur_buf %d=\n",err);
     return;
   }
 
@@ -314,7 +286,7 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
       context, CL_MEM_READ_WRITE,
       (size_t)(of_width*of_height *sizeof(float)), NULL, &err);
   if (err != CL_SUCCESS) {
-    std::cout << "[ERROR] Failed to create ocl_outx0 " << err << std::endl;
+    printf("ERROR: Failed to create ocl_outx0 %d=\n",err);
     return;
   }
 
@@ -322,7 +294,7 @@ void OpticalFlowDenseNonPyrLK::nodeInit(AKS::NodeParams* params)
       context, CL_MEM_READ_WRITE,
       (size_t)(of_width*of_height *sizeof(float)), NULL, &err);
   if (err != CL_SUCCESS) {
-    std::cout << "[ERROR] Failed to create ocl_outy0 " << err << std::endl;
+    printf("ERROR: Failed to create ocl_outy0 %d=\n",err);
     return;
   }
   flowx.reserve(of_width*of_height);
@@ -340,7 +312,7 @@ int OpticalFlowDenseNonPyrLK::getNumCUs(void)
 
 int OpticalFlowDenseNonPyrLK::exec_async (
     vector<vart::TensorBuffer *>& in, vector<vart::TensorBuffer *>& out,
-    AKS::NodeParams* params, AKS::DynamicParamValues* dynParams)
+    AKS::NodeParams* params, AKS::DynamicParamValues* dynParams) 
 {
 
   // std::cout << "[DBG] Starting OpticalFlowDenseNonPyrLK... " << std::endl;
@@ -361,7 +333,7 @@ int OpticalFlowDenseNonPyrLK::exec_async (
   err |= clSetKernelArg(of_kernel, 5, sizeof(of_width), &of_width);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to clSetKernelArg! = " << err << std::endl;
+    printf("Error: Failed to clSetKernelArg! = %d\n",err);
   }
   // Write prev & curr frame into DDR memory through OCL APIs
   err = clEnqueueWriteBuffer(
@@ -369,14 +341,14 @@ int OpticalFlowDenseNonPyrLK::exec_async (
       (of_width*of_height)*sizeof(unsigned char), prevData, 0, NULL, NULL);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to write to source array error = " << err << std::endl;
+    printf("Error: Failed to write to source array error = %d!\n",err);
   }
   err = clEnqueueWriteBuffer(
       command_queue, ocl_of_in_cur_buf, CL_TRUE, 0,
       (of_width*of_height)*sizeof(unsigned char), currData, 0, NULL, NULL);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to write to source array! = " << err << std::endl;
+    printf("Error: Failed to write to source array! = %d\n",err);
   }
   // Launch OF kernel
   cl_event event;
@@ -384,14 +356,13 @@ int OpticalFlowDenseNonPyrLK::exec_async (
   err = clEnqueueTask(command_queue, of_kernel, 0, NULL, &event);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to clEnqueueTask error " << err << std::endl;
+    printf("Error: Failed to clEnqueueTask error %d!\n",err);
   }
   clFinish(command_queue);
   err = clWaitForEvents(1, (const cl_event*) &event);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to clEnqueueTask clWaitForEvents error "
-              << err << std::endl;
+    printf("Error: Failed to clEnqueueTask clWaitForEvents error %d!\n",err);
   }
 
   cl_event readevent, readevent1;
@@ -401,13 +372,12 @@ int OpticalFlowDenseNonPyrLK::exec_async (
       (of_height*of_width)*sizeof(float), flowx.data(), 0, NULL, &readevent);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to read output array! flowx0 " << err << std::endl;
+    printf("Error: Failed to read output array! flowx0 %d\n", err);
   }
   err = clWaitForEvents(1, &readevent);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to clEnqueueReadBuffer flowx clWaitForEvents error "
-              << err << std::endl;
+    printf("Error: Failed to clEnqueueReadBuffer flowx clWaitForEvents error %d!\n",err);
   }
 
   err = clEnqueueReadBuffer(
@@ -415,13 +385,12 @@ int OpticalFlowDenseNonPyrLK::exec_async (
       (of_height*of_width)*sizeof(float), flowy.data(), 0, NULL, &readevent1);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to read output array! flowy0 " << err << std::endl;
+    printf("Error: Failed to read output array! flowy0  %d\n", err);
   }
   err = clWaitForEvents(1, &readevent1);
   if (err != CL_SUCCESS)
   {
-    std::cout << "[Error] Failed to clEnqueueReadBuffer flowy clWaitForEvents error "
-              << err << std::endl;
+    printf("Error: Failed to clEnqueueReadBuffer flowy clWaitForEvents error %d!\n",err);
   }
 
   auto xFlowDD = new AKS::AksTensorBuffer(xir::Tensor::create(

@@ -18,7 +18,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-project(ClassificationPostProcess VERSION 1.4.0)
+project(ClassificationPostProcess VERSION 3.5.0)
 
 find_package(xir REQUIRED)
 find_package(unilog REQUIRED)

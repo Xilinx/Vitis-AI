@@ -1,0 +1,17 @@
+*.py.swp
+*.pyc
+*.so
+*.so.*
+*.obj
+*.o
+*.exe
+*.tfevents*
+*.nfs*
+*.pyc
+*.events*
+*.swp
+*.bak
+*~
+kernel_src/*/build
+examples/build
+\#*\#

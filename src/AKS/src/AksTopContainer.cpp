@@ -43,6 +43,7 @@ TopContainer::~TopContainer()
 void TopContainer::deleteGlobal()
 {
   delete _global;
+  _global = nullptr;
 }
 
 void TopContainer::addKernel(KernelDef *def)

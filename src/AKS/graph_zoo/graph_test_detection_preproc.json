@@ -1,0 +1,20 @@
+{
+  "graph_name": "test_detection_preproc", 
+  
+  "node_list": [
+    {
+      "node_name": "yolov2_preproc", 
+      "node_params" : {
+        "DetectionImreadPreProcess": {
+          "net_w" : 608, 
+          "net_h" : 608, 
+          "net_c": 3,
+          "mean": [ 104.007, 116.669, 122.679]
+        }
+      },
+      "next_node": []
+    }
+  ],
+  
+  "version": "0.1"
+}

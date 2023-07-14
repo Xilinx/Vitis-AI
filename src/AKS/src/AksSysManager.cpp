@@ -20,7 +20,6 @@
 #include <cstdlib>
 #include <chrono>
 
-#include <pybind11/pybind11.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
@@ -48,7 +47,6 @@ using namespace std;
 using namespace AKS;
 using boost::property_tree::ptree;
 using namespace std::chrono;
-namespace py=pybind11;
 
 #include <dlfcn.h>
 

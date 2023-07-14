@@ -1,0 +1,32 @@
+{
+  "graph_name": "graph_adder", 
+  "node_list": [
+    {
+      "node_name": "add1",
+      "node_params" : {
+        "Add": {
+          "adder" : 10 
+        }
+      },
+      "next_node": ["add2"]
+    },
+    {
+      "node_name": "add2",
+      "node_params" : {
+        "Add": {
+          "adder" : 20 
+        }
+      },
+      "next_node": ["add3"]
+    },
+    {
+      "node_name": "add3",
+      "node_params" : {
+        "Add": {
+          "adder" : 30 
+        }
+      },
+      "next_node": []
+    }
+  ]
+}

@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
 # Project Name and Version
-project(aks VERSION 2.5.0 LANGUAGES C CXX)
+project(aks VERSION 3.5.0 LANGUAGES C CXX)
 
 include(${CMAKE_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
