@@ -1,3 +1,5 @@
+:orphan:
+
 VEK280 DPUCV2DX8G Reference Design
 ==================================
 

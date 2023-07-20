@@ -74,7 +74,7 @@ With the release of the Vitis AI IDE, more than 120 models are released in the V
 What Xilinx Target Device Families and Platforms does Vitis AI Support?
 -----------------------------------------------------------------------
 
-Vitis AI DPUs are available for both Zynq Ultrascale+ MPSoC as well as Versal Edge and Core chip-down designs. The Kria K26 SOM is supported as a production-ready Edge platform, and Alveo accelerator cards are supported for cloud applications. 
+Vitis AI DPUs are available for both Zynq Ultrascale+ MPSoC as well as Versal Edge and Core chip-down designs. The Kria |trade| K26 SOM is supported as a production-ready Edge platform, and Alveo |trade| accelerator cards are supported for cloud applications. 
 
 What does the Vitis AI Library provide?
 ---------------------------------------
@@ -173,3 +173,9 @@ What is the specific AI accelerator that AMD Xilinx provides for Zynq™ Ultrasc
 ------------------------------------------------------------------------------------------------------------
 
 The DPUCZ IP that is provided with the Vitis AI IDE is the specialized accelerator. It is a custom processor that has a specialized instruction set. Graph operators such as CONV, POOL, ELTWISE are compiled as instructions that are executed by the DPU. The DPUCZ bears similarities to a systolic array but has specialized micro-coded engines that are optimized for specific tasks. Some of these engines are optimized for conventional convolution, while some are optimized for tasks such as depth-wise convolution, eltwise and others. We tend to refer to the DPUCZ as a Matrix of (Heterogeneous) Processing Engines.
+
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

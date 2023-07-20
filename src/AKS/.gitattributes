@@ -1,8 +1,0 @@
-*.caffemodel filter=lfs diff=lfs merge=lfs -text
-*.pb filter=lfs diff=lfs merge=lfs -text
-*.npz filter=lfs diff=lfs merge=lfs -text
-*.mdb filter=lfs diff=lfs merge=lfs -text
-*.weights filter=lfs diff=lfs merge=lfs -text
-*.JPEG filter=lfs diff=lfs merge=lfs -text
-*.xclbin filter=lfs diff=lfs merge=lfs -text
-graph_zoo/meta_*/** filter=lfs diff=lfs merge=lfs -text

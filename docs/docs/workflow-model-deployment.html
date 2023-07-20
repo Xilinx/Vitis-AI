@@ -70,14 +70,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/vek280.html">Versal AI Edge VEK280</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/v70.html">Alveo V70</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/v70.html">Alveo™ V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Deploying a Model with Vitis AI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#workflow-for-deploying-a-model">Workflow for Deploying a Model</a></li>
@@ -96,8 +96,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-party Inference Stack Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
@@ -114,8 +114,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
 </ul>
 
         </div>
@@ -170,7 +171,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>The Vitis AI workflow is largely unified for Embedded and Data Center applications but diverges at the deployment stage. There are various reasons for this divergence, including the following:</p>
 <ul class="simple">
 <li><p>Zynq™ Ultrascale+™, Kria™, and Versal™ SoC applications leverage the on-chip processor subsystem (APU) as the host control node for model deployment. Considering optimization and <a class="reference internal" href="#whole-application-acceleration"><span class="std std-ref">Whole Application Acceleration</span></a> of subgraphs deployed on the SoC APU is crucial.</p></li>
-<li><p>Alveo data center card deployments leverage the AMD64 architecture host for execution of subgraphs that cannot be deployed on the DPU.</p></li>
+<li><p>Alveo trade| data center card deployments leverage the AMD64 architecture host for execution of subgraphs that cannot be deployed on the DPU.</p></li>
 <li><p>Zynq Ultrascale+ and Kria designs can leverage the DPU with either the Vivado workflow or the Vitis workflow.</p></li>
 <li><p>Zynq Ultrascale+ and Kria designs built in Vivado do not use XRT.</p></li>
 <li><p>All Vitis designs require the use of XRT.</p></li>
@@ -261,7 +262,7 @@ SDK</a>, which, while not part of Vitis AI, offers many important features for d
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 2, 2023.
+      <span class="lastupdated">Last updated on July 19, 2023.
       </span></p>
   </div>
 

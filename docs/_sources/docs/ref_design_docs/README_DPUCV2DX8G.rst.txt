@@ -1,3 +1,5 @@
+:orphan:
+
 VEK280 DPUCV2DX8G Reference Design
 ==================================
 
@@ -165,7 +167,15 @@ is set as shown below.
 
 **Step1:** Build VEK280 platform
 
-First, build the VEK280 platform in the folder `$TRD_HOME/vek280_platform`, following the instructions in `$TRD_HOME/vek280_platform/README.md`.
+First, build the VEK280 platform in the folder `$TRD_HOME/vek280_platform`, more details refer to the instructions in `$TRD_HOME/vek280_platform/README.md`.
+
+::
+
+   % source <Vitis_install_path>/Vitis/2023.1/settings64.sh
+
+   % source <PetaLinux_install_path>/settings.sh
+
+   % make all
 
 **Step2:** Setup the environment for building the DPUCV2DX8G IP and
 kernel
@@ -447,6 +457,11 @@ Package the RTL kernel as XO file. Then modify 2 files:
 ::
 
    set_param place.preplaceNOC true
+
+5) If your OS is Ubuntu, during AIE compilation step, you may get the error
+   like "[AIE ERROR] XAieSim_GetStackRange():522: Invalid Map file, 2: No 
+   such file or directory", the reason should be that your Ubuntu does not 
+   install the "rename" function, you can install it manually.
 
 .. raw:: html
 

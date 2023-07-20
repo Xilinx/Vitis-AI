@@ -17,6 +17,7 @@ import sys
 import recommonmark
 from recommonmark.transform import AutoStructify
 from recommonmark.parser import CommonMarkParser
+from datetime import date
 
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('_ext'))
@@ -34,7 +35,11 @@ author = 'Advanced Micro Devices, Inc'
 version = '3.5'
 # The full version, including alpha/beta/rc tags
 release = '3.5'
-html_last_updated_fmt = 'July 2, 2023'
+
+# Configure HTML pages build date to today's date
+today = date.today()
+html_last_updated_fmt = today.strftime("%B %d, %Y")
+
 
 # -- General configuration ---------------------------------------------------
 

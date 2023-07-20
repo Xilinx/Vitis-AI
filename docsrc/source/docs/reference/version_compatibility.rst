@@ -36,7 +36,7 @@ Versal |trade| AI Edge with AIE-ML
      - 5.15
 
 	 
-Alveo V70
+Alveo |trade| V70
 
 .. list-table::
    :widths: 25 25 25 25

@@ -30,7 +30,7 @@ The Vitis AI workflow is largely unified for Embedded and Data Center applicatio
 
 -  Zynq |trade| Ultrascale+ |trade|, Kria |trade|, and Versal |trade| SoC applications leverage the on-chip processor subsystem (APU) as the host control node for model deployment. Considering optimization and :ref:`whole-application-acceleration` of subgraphs deployed on the SoC APU is crucial.
 
--  Alveo data center card deployments leverage the AMD64 architecture host for execution of subgraphs that cannot be deployed on the DPU.
+-  Alveo trade| data center card deployments leverage the AMD64 architecture host for execution of subgraphs that cannot be deployed on the DPU.
 
 -  Zynq Ultrascale+ and Kria designs can leverage the DPU with either the Vivado workflow or the Vitis workflow.
 
