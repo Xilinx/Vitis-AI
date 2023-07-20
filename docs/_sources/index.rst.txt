@@ -122,9 +122,9 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    :caption: Quick Start Guides
    :hidden:
 
-   Zynq Ultrascale+ <docs/quickstart/mpsoc>
-   Versal VCK5000 Development Card <docs/quickstart/vck5000>
-   Versal AI Core VCK190 <docs/quickstart/vck190>
+   Zynq™ Ultrascale+™ <docs/quickstart/mpsoc>
+   Versal™ VCK5000 Development Card <docs/quickstart/vck5000>
+   Versal™ AI Core VCK190 <docs/quickstart/vck190>
  
 
 
@@ -135,7 +135,7 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
 
    Overview <docs/workflow>
    DPU IP Details and System Integration <docs/workflow-system-integration>
-   Vitis AI Model Zoo <docs/workflow-model-zoo>
+   Vitis™ AI Model Zoo <docs/workflow-model-zoo>
    Developing a Model for Vitis AI <docs/workflow-model-development>
    Deploying a Model with Vitis AI <docs/workflow-model-deployment>
    
@@ -152,8 +152,8 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    :caption: Additional Information
    :hidden:
 
-   Vitis AI User Guides & IP Product Guides <docs/reference/release_documentation>
-   Vitis AI Developer Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>
+   Vitis™ AI User Guides & IP Product Guides <docs/reference/release_documentation>
+   Vitis™ AI Developer Tutorials <https://github.com/Xilinx/Vitis-AI-Tutorials>
    Third-party Inference Stack Integration <docs/workflow-third-party>
    IP and Tools Compatibility <docs/reference/version_compatibility>
    Frequently Asked Questions <docs/reference/faq>
@@ -175,8 +175,9 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    FINN & Brevitas <https://xilinx.github.io/finn/>
    Inference Server <https://xilinx.github.io/inference-server/>
    Unified Inference Frontend <https://github.com/amd/UIF>   
-   Vitis AI ONNX Runtime Execution Provider <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>
-   Vitis Video Analytics SDK <https://xilinx.github.io/VVAS/>
+   Ryzen™ AI Developer Guide ~July 29 <https://ryzenai.docs.amd.com/en/latest/>
+   Vitis™ AI ONNX Runtime Execution Provider <https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html>
+   Vitis™ Video Analytics SDK <https://xilinx.github.io/VVAS/>
    
    
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

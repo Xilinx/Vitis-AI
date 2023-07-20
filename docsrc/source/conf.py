@@ -17,6 +17,7 @@ import sys
 import recommonmark
 from recommonmark.transform import AutoStructify
 from recommonmark.parser import CommonMarkParser
+from datetime import date
 
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('_ext'))
@@ -34,7 +35,11 @@ author = 'Advanced Micro Devices, Inc'
 version = '3.0'
 # The full version, including alpha/beta/rc tags
 release = '3.0'
-html_last_updated_fmt = 'May 18, 2023'
+
+# Configure HTML pages build date to today's date
+today = date.today()
+html_last_updated_fmt = today.strftime("%B %d, %Y")
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -57,6 +62,7 @@ extensions = [
     'sphinx.ext.githubpages',
 	'recommonmark',
 	'sphinx_markdown_tables',
+    'breathe',
 	#'edit_on_github',
     # Auto-generate section labels.
     'sphinx.ext.autosectionlabel',	
@@ -262,3 +268,13 @@ def setup(app):
             'auto_toc_tree_section': 'Contents',
             }, True)
     app.add_transform(AutoStructify)
+
+
+# -- Breathe configuration -------------------------------------------------
+
+breathe_default_project = "runtime"
+breathe_default_members = ('members',)
+breathe_projects = {
+
+	"runtime": "../source/doxygen/xml"
+	}
