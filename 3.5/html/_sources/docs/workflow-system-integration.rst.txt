@@ -56,7 +56,7 @@ As of the Vitis |trade| 1.2 release, the historic DPUv1/v2/v3 nomenclature was d
 DPU Options
 ~~~~~~~~~~~
 
-Versal |trade| AI Core / AI Edge Series / Alveo V70: DPUCV2DX8G
+Versal |trade| AI Core / AI Edge Series / Alveo |trade| V70: DPUCV2DX8G
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The DPUCV2DX8G is a high-performance, general-purpose convolutional neural network(CNN)
@@ -124,8 +124,8 @@ IP and Reference Designs
    * - DPUCV2DX8G `PG425 <https://docs.xilinx.com/r/en-US/pg425-dpu>`__
      - VE2302(see note)
      - 3.5
-     - `Early Access <https://www.xilinx.com/member/vitis-ai-vek280.html>`__
-     - `Early Access <https://www.xilinx.com/member/vitis-ai-vek280.html>`__
+     - `Early Access <https://account.amd.com/en/member/vitis-ai-ve2302.html>`__
+     - `Early Access <https://account.amd.com/en/member/vitis-ai-ve2302.html>`__
 
    * - DPUCZDX8G `PG338 <https://docs.xilinx.com/r/en-US/pg338-dpu>`__
      - MPSoC & Kria K26

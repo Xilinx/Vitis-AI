@@ -68,14 +68,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal AI Edge VEK280</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo V70</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
@@ -86,8 +86,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/version_compatibility.html">IP and Tools Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
@@ -104,8 +104,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
 </ul>
 
         </div>
@@ -289,7 +290,14 @@ is set as shown below.</p>
 </pre></div>
 </div>
 <p><strong>Step1:</strong> Build VEK280 platform</p>
-<p>First, build the VEK280 platform in the folder <cite>$TRD_HOME/vek280_platform</cite>, following the instructions in <cite>$TRD_HOME/vek280_platform/README.md</cite>.</p>
+<p>First, build the VEK280 platform in the folder <cite>$TRD_HOME/vek280_platform</cite>, more details refer to the instructions in <cite>$TRD_HOME/vek280_platform/README.md</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">Vitis_install_path</span><span class="o">&gt;/</span><span class="n">Vitis</span><span class="o">/</span><span class="mf">2023.1</span><span class="o">/</span><span class="n">settings64</span><span class="o">.</span><span class="n">sh</span>
+
+<span class="o">%</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">PetaLinux_install_path</span><span class="o">&gt;/</span><span class="n">settings</span><span class="o">.</span><span class="n">sh</span>
+
+<span class="o">%</span> <span class="n">make</span> <span class="nb">all</span>
+</pre></div>
+</div>
 <p><strong>Step2:</strong> Setup the environment for building the DPUCV2DX8G IP and
 kernel</p>
 <p>When platform is ready, set the Vitis environment variable as given below.</p>
@@ -569,6 +577,12 @@ preplacing the NoC netlist.</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">set_param</span> <span class="n">place</span><span class="o">.</span><span class="n">preplaceNOC</span> <span class="n">true</span>
 </pre></div>
 </div>
+<ol class="arabic simple" start="5">
+<li><p>If your OS is Ubuntu, during AIE compilation step, you may get the error
+like “[AIE ERROR] XAieSim_GetStackRange():522: Invalid Map file, 2: No
+such file or directory”, the reason should be that your Ubuntu does not
+install the “rename” function, you can install it manually.</p></li>
+</ol>
 <!--
 
 * Copyright 2019 Xilinx Inc.
@@ -599,7 +613,7 @@ preplacing the NoC netlist.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 2, 2023.
+      <span class="lastupdated">Last updated on July 19, 2023.
       </span></p>
   </div>
 

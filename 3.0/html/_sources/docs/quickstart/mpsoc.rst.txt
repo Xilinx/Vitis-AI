@@ -358,7 +358,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 .. code-block:: Bash
 	
 	[Host] $ cd ..
-	[Host] ./docker_run.sh vitis-ai-pytorch-cpu:latest
+	[Host] ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
 
 * Note that when you start Docker appropriate as shown above, your ``/workspace`` folder will correspond to ``/Vitis-AI`` and your initial path in Docker will be ``/workspace``.  If you inspect ``docker_run.sh`` you can see that the -v option is leveraged which links the Docker file system to your Host file system.  Verify that you see the created ``/resnet18`` subfolder in your workspace:
 
@@ -514,7 +514,7 @@ Model Deployment
 
 	[Docker] $ scp -r resnet18_pt root@[TARGET_IP_ADDRESS]:/usr/share/vitis_ai_library/models/
 	
-* The model will be located under the ``/usr/share/vitis_ai_library/models/`` folder along with the other Viitis-AI model examples. 
+* The model will be located under the ``/usr/share/vitis_ai_library/models/`` folder along with the other Vitis-AI model examples. 
 
 2. The `vitis_ai_library_r3.0.0_images.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_images.tar.gz>`__ and `vitis_ai_library_r3.0.0_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.0.0_video.tar.gz>`__ packages 
 contain test images and videos that can be leveraged to evaluate our quantized model and other pre-built Vitis-AI Library examples on the target. 
@@ -560,7 +560,7 @@ If you wish to do so, you can copy the ``result.jpg`` file back to your host and
 
 .. code-block:: Bash
 
-	[Target] $ ./test_video_classification resnet18_pt ~/Vitis-AI/examples/vai_library/apps/pose_960_540.avi -t 8
+	[Target] $ ./test_video_classification resnet18_pt ~/Vitis-AI/examples/vai_library/apps/seg_and_pose_detect/pose_960_540.avi -t 8
 
 6. Users can run real time inference using a USB web camera connected to the target with the command below:
 

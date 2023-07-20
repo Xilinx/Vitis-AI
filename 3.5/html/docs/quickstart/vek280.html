@@ -70,7 +70,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Versal AI Edge VEK280</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Versal™ AI Edge VEK280</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#host-requirements">Host Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#applicable-targets">Applicable Targets</a></li>
@@ -96,13 +96,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="v70.html">Alveo V70</a></li>
+<li class="toctree-l1"><a class="reference internal" href="v70.html">Alveo™ V70</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
 </ul>
@@ -113,8 +113,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis AI User Guides &amp; IP Product Guides</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/version_compatibility.html">IP and Tools Compatibility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
@@ -131,8 +131,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis AI ONNX Runtime Execution Provider</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis Video Analytics SDK</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
 </ul>
 
         </div>
@@ -451,7 +452,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 <li><p>Navigate to the Vitis-AI directory and execute the following command to start Docker.</p></li>
 </ol>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ <span class="nb">cd</span> ..
-<span class="o">[</span>Host<span class="o">]</span> ./docker_run.sh vitis-ai-pytorch-cpu:latest
+<span class="o">[</span>Host<span class="o">]</span> ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
 </pre></div>
 </div>
 <div class="admonition note">
@@ -610,7 +611,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>The model will be located under the <code class="docutils literal notranslate"><span class="pre">/usr/share/vitis_ai_library/models/</span></code> folder along with the other Viitis-AI model examples.</p></li>
+<li><p>The model will be located under the <code class="docutils literal notranslate"><span class="pre">/usr/share/vitis_ai_library/models/</span></code> folder along with the other Vitis-AI model examples.</p></li>
 </ul>
 <p>2. The <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz">vitis_ai_library_r3.5.0_images.tar.gz</a> and <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz">vitis_ai_library_r3.5.0_video.tar.gz</a> packages
 contain test images and videos that can be leveraged to evaluate our quantized model and other pre-built Vitis-AI Library examples on the target.</p>
@@ -656,7 +657,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 <ol class="arabic simple" start="5">
 <li><p>To run the video example, run the following command.  To keep this simple we will use one of the Vitis AI video samples, but users should scp their own video clip to the target in a webm or raw format.</p></li>
 </ol>
-<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ ./test_video_classification resnet18_pt ~/Vitis-AI/examples/vai_library/apps/pose_960_540.avi -t <span class="m">8</span>
+<div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Target<span class="o">]</span> $ ./test_video_classification resnet18_pt ~/Vitis-AI/examples/vai_library/apps/seg_and_pose_detect/pose_960_540.avi -t <span class="m">8</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="6">
@@ -697,7 +698,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
-      <span class="lastupdated">Last updated on July 2, 2023.
+      <span class="lastupdated">Last updated on July 19, 2023.
       </span></p>
   </div>
 

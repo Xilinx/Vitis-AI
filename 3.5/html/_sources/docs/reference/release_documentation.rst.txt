@@ -29,7 +29,7 @@ Vitis AI User Guides / DPU Product Guides
    * - Versal™ AI Edge / AI Core with AIE-ML, VEK280
      - `DPUCV2DX8G (PG425) <https://docs.xilinx.com/r/en-US/pg425-dpucv2>`__
 
-   * - Alveo V70
+   * - Alveo™ V70
      - `DPUCV2DX8G (PG425) <https://docs.xilinx.com/r/en-US/pg425-dpucv2>`__
 
    * - Zynq™ Ultrascale+™, Kria™, ZCU102, ZCU104, K26 SOM
@@ -42,9 +42,6 @@ Vitis AI User Guides / DPU Product Guides
      - `DPUCVDX8H (PG403) <https://docs.xilinx.com/r/en-US/pg403-dpucvdx8h>`__
 
 
-Known Issues
-------------
-- Engineering to add comments
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

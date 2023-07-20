@@ -1,29 +1,31 @@
 echo off 
-REM ###########################################################################
-REM #                                                                         #
-REM # Script: make_gh_pages.bat                                               #
-REM # Purpose: Update release docs from current branch to gh-pages branch     #
-REM # Usage:                                                                  #
-REM #   - Execute the command 'make_gh_pages' from current branch             #
-REM #   - If current branch is 'master' you must provide the release number   #
-REM #   - 'gh-pages' dir structure must match the below                       #
-REM #                                                                         #
-REM # 		   root                                                           #
-REM #       	├── release1                                                  #
-REM # 			│	└─ html                                                   #
-REM # 			│	  └── ...                                                 #
-REM # 			│		                                                      #
-REM #       	├── release2                                                  #
-REM # 			│	└─ html                                                   #
-REM # 			│	  └── ...                                                 #
-REM #          ...                                                            #
-REM #                                                                         #                                     
-REM # Revision history                                                        #    
-REM # 		2023-07-02	First release                                         #  
-REM # 		                                                                  #  
-REM # Copyright (c) 2023 Advanced Micro Devices, Inc.                         # 
-REM #                                                                         # 
-REM ###########################################################################
+REM ##################################################################################################
+REM #                                                                                                #
+REM #    Script: make_gh_pages.bat                                                                   #
+REM #    Purpose: Update release docs from current branch to gh-pages branch                         #
+REM #    Usage:                                                                                      #
+REM #      - Execute the command 'make_gh_pages' from current branch                                 #
+REM #      - If current branch is 'master' you must provide the release number                       #
+REM #      - 'gh-pages' dir structure must match the below                                           #
+REM #      - Each branch including gh-pages must have a copy of this file in the same directory path #
+REM #                                                                                                #
+REM # 	       root                                                                                  #
+REM #           ├── release1                                                                         #
+REM #           │   └─ html                                                                          #
+REM #           │      └── ...                                                                       #
+REM #           │                                                                                    #
+REM #           ├── release2                                                                         #
+REM #           │   └─ html                                                                          #
+REM #           │      └── ...                                                                       #
+REM #          ...                                                                                   #
+REM #                                                                                                #
+REM #    Revision history                                                                            #
+REM #          2023-07-02  First release                                                             #
+REM # 	       2023-07-18  Whitespace cleanup                                                        #
+REM #                                                                                                #
+REM #    Copyright (c) 2023 Advanced Micro Devices, Inc.                                             #
+REM #                                                                                                # 
+REM ##################################################################################################
                                                                      
 for /f %%i in ('git symbolic-ref --short -q HEAD') do set CUR_BRANCH=%%i
 echo Entering gh-pages check
