@@ -61,16 +61,16 @@ function execute
  if [[ "$SKIP_BUILD_BASE_IMAGE" == "0" ]];then
      if [[ "$DOCKER_TYPE" == 'cpu' ]];then
          VAI_BASE="ubuntu:20.04"
-          BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"
+          BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-base}"
      fi
      if [[ "$DOCKER_TYPE" == 'gpu' ]];then
          if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
 
             VAI_BASE="nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04"
-            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
+            BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
         else 
-            VAI_BASE="nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04"
-            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
+            VAI_BASE="nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04"
+            BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
         fi
          #11.3.1-cudnn8-runtime-ubuntu20.04"
      fi
@@ -80,13 +80,13 @@ function execute
         VAI_BASE="rocm/pytorch:rocm5.5_ubuntu20.04_py3.8_pytorch_1.13.1"
         #"xcoartifactory.xilinx.com/uif-docker-master-local/rocmiv-internal-pt:5_ubuntu20.04_py3.8_pytorch_release-1.13_3aa2ef3"
             add_args=" --build-arg TARGET_FRAMEWORK=$TARGET_FRAMEWORK "
-            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
+            BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
          else
             VAI_BASE="rocm/tensorflow:rocm5.5-tf2.11-dev"
-            BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
+            BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
          fi
      fi
-      BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-base}"
+      BASE_IMAGE="${BASE_IMAGE:-xilinx/vitis-ai-${DOCKER_TYPE}-base}"
      echo "VAI_BASE: ${VAI_BASE}"
 
      echo "BUild Base image:${BASE_IMAGE} first"
