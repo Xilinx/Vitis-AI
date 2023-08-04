@@ -60,8 +60,9 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-	'recommonmark',
-	'sphinx_markdown_tables',
+    'm2r2',
+	# 'recommonmark',
+	# 'sphinx_markdown_tables',
     'breathe',
 	#'edit_on_github',
     # Auto-generate section labels.
@@ -108,7 +109,7 @@ source_suffix = {
 source_parsers = {
     '.md': CommonMarkParser,
 	# myst_parser testing
-	#'.md': 
+	#'.md':
 }
 
 # The master toctree document.
