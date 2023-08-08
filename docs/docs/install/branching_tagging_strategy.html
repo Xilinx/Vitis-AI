@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -72,6 +71,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -136,7 +140,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="branching-tagging-strategy">
-<h1>Branching / Tagging Strategy<a class="headerlink" href="#branching-tagging-strategy" title="Permalink to this heading">¶</a></h1>
+<h1>Branching / Tagging Strategy<a class="headerlink" href="#branching-tagging-strategy" title="Permalink to this headline">¶</a></h1>
 <p>Each updated release of Vitis™ AI is pushed directly to <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master">master</a> on the release day. In addition, at that time, a tag is created for the repository; for example, see the tag for <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v3.0">v3.0</a>.</p>
 <p>Following the release, the tagged version remains static, and additional inter-version updates are pushed to the master branch. Thus, the master branch is always the latest release and will have the latest fixes and documentation. The branch associated with a specific release (which will be “master” during the lifecycle of that release) will become a branch at the time of the next release.</p>
 <p>Similarly, if you use a previous version of Vitis AI, the branch associated with that previous revision will contain updates to the tagged release for that same version. For instance, in the case of release 2.0, the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/2.0">branch</a> contains updates that the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/v2.0">tag</a> does not.</p>

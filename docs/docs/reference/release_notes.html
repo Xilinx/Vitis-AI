@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -97,6 +96,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
@@ -160,13 +164,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="release-notes-3-5">
-<h1>Release Notes 3.5<a class="headerlink" href="#release-notes-3-5" title="Permalink to this heading">¶</a></h1>
+<h1>Release Notes 3.5<a class="headerlink" href="#release-notes-3-5" title="Permalink to this headline">¶</a></h1>
 <section id="version-compatibility">
-<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Permalink to this heading">¶</a></h2>
+<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Permalink to this headline">¶</a></h2>
 <p>Vitis™ AI v3.5 and the DPU IP released with the v3.5 branch of this repository are verified as compatible with Vitis, Vivado™, and PetaLinux version 2023.1. If you are using a previous release of Vitis AI, you should review the <a class="reference internal" href="version_compatibility.html#version-compatibility"><span class="std std-ref">version compatibility matrix</span></a> for that release.</p>
 </section>
 <section id="documentation-and-github-repository">
-<h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this heading">¶</a></h2>
+<h2>Documentation and Github Repository<a class="headerlink" href="#documentation-and-github-repository" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Merged UG1333 into UG1414</p></li>
 <li><p>Streamlined UG1414 to remove redundant content</p></li>
@@ -177,14 +181,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="docker-containers-and-gpu-support">
-<h2>Docker Containers and GPU Support<a class="headerlink" href="#docker-containers-and-gpu-support" title="Permalink to this heading">¶</a></h2>
+<h2>Docker Containers and GPU Support<a class="headerlink" href="#docker-containers-and-gpu-support" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Removed Anaconda dependency from TensorFlow 2 and PyTorch containers in order to address Anaconda commercial license requirements</p></li>
 <li><p>Updated Docker container to disable Ubuntu 18.04 support (which was available in Vitis AI but not officially supported).  This was done to address <a class="reference external" href="https://nvd.nist.gov/vuln/detail/CVE-2021-3493">CVE-2021-3493</a>.</p></li>
 </ul>
 </section>
 <section id="model-zoo">
-<h2>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this heading">¶</a></h2>
+<h2>Model Zoo<a class="headerlink" href="#model-zoo" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added more classic models without modification such as YOLO series and 2D Unet</p></li>
 <li><p>Provided model info card for each model and Jupyter Notebook tutorials for new models</p></li>
@@ -192,7 +196,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="onnx-cnn-quantizer">
-<h2>ONNX CNN Quantizer<a class="headerlink" href="#onnx-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<h2>ONNX CNN Quantizer<a class="headerlink" href="#onnx-cnn-quantizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release</p></li>
 <li><p>This is a new quantizer that supports the direct PTQ quantization of ONNX models for DPU. It is a plugin built for the ONNXRuntime native quantizer.</p></li>
@@ -207,7 +211,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="pytorch-cnn-quantizer">
-<h2>PyTorch CNN Quantizer<a class="headerlink" href="#pytorch-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<h2>PyTorch CNN Quantizer<a class="headerlink" href="#pytorch-cnn-quantizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for Pytorch 1.13 and 2.0</p></li>
 <li><p>Support for mixed precision quantization, float32/float16/bfloat16/intx</p></li>
@@ -222,7 +226,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="tensorflow-2-cnn-quantizer">
-<h2>TensorFlow 2 CNN Quantizer<a class="headerlink" href="#tensorflow-2-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<h2>TensorFlow 2 CNN Quantizer<a class="headerlink" href="#tensorflow-2-cnn-quantizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Updated to support for Tensorflow 2.12 and Python 3.8.</p></li>
 <li><p>Support for quantizing subclass models.</p></li>
@@ -241,7 +245,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 3.      Fixed a graph transformation bug when a TFOpLambda op has multiple inputs.</p>
 </section>
 <section id="tensorflow-1-cnn-quantizer">
-<h2>TensorFlow 1 CNN Quantizer<a class="headerlink" href="#tensorflow-1-cnn-quantizer" title="Permalink to this heading">¶</a></h2>
+<h2>TensorFlow 1 CNN Quantizer<a class="headerlink" href="#tensorflow-1-cnn-quantizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for fast fine-tuning that improves PTQ accuracy.</p></li>
 <li><p>Support for folding Reshape and ResizeNearestNeighbor operators.</p></li>
@@ -254,7 +258,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 1.      Fixed a bug where the AddV2 operation is misinterpreted as a BiasAdd.</p>
 </section>
 <section id="compiler">
-<h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this heading">¶</a></h2>
+<h2>Compiler<a class="headerlink" href="#compiler" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New operators supported: Broadcast add/mul, Bilinear downsample, Trilinear downsample, Group conv2d, Strided-slice</p></li>
 <li><p>Performance improved on XV2DPU</p></li>
@@ -263,7 +267,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="pytorch-optimizer">
-<h2>PyTorch Optimizer<a class="headerlink" href="#pytorch-optimizer" title="Permalink to this heading">¶</a></h2>
+<h2>PyTorch Optimizer<a class="headerlink" href="#pytorch-optimizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Removed requirement for license purchase</p></li>
 <li><p>Migrated to Github open-source</p></li>
@@ -273,7 +277,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="tensorflow-2-optimizer">
-<h2>TensorFlow 2 Optimizer<a class="headerlink" href="#tensorflow-2-optimizer" title="Permalink to this heading">¶</a></h2>
+<h2>TensorFlow 2 Optimizer<a class="headerlink" href="#tensorflow-2-optimizer" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Removed requirement for license purchase</p></li>
 <li><p>Migrated to Github open-source</p></li>
@@ -284,7 +288,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="runtime">
-<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this heading">¶</a></h2>
+<h2>Runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Supports Versal AI Edge VEK280 evaluation kit</p></li>
 <li><p>Buffer optimized for multi-batches to improve performance</p></li>
@@ -292,7 +296,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="vitis-onnx-runtime-execution-provider-voe">
-<h2>Vitis ONNX Runtime Execution Provider (VOE)<a class="headerlink" href="#vitis-onnx-runtime-execution-provider-voe" title="Permalink to this heading">¶</a></h2>
+<h2>Vitis ONNX Runtime Execution Provider (VOE)<a class="headerlink" href="#vitis-onnx-runtime-execution-provider-voe" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for ONNX Opset version 18, ONNX Runtime 1.16.0 and ONNX version 1.13</p></li>
 <li><p>Support for both C++ and Python APIs(Python version 3)</p></li>
@@ -302,25 +306,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="library">
-<h2>Library<a class="headerlink" href="#library" title="Permalink to this heading">¶</a></h2>
+<h2>Library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added three new model libraries and support for five additional models</p></li>
 </ul>
 </section>
 <section id="model-inspector">
-<h2>Model Inspector<a class="headerlink" href="#model-inspector" title="Permalink to this heading">¶</a></h2>
+<h2>Model Inspector<a class="headerlink" href="#model-inspector" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added support for DPUCV2DX8G</p></li>
 </ul>
 </section>
 <section id="profiler">
-<h2>Profiler<a class="headerlink" href="#profiler" title="Permalink to this heading">¶</a></h2>
+<h2>Profiler<a class="headerlink" href="#profiler" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added Profiler support for DPUCV2DX8G</p></li>
 </ul>
 </section>
 <section id="dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core">
-<h2>DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge / Core)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core" title="Permalink to this heading">¶</a></h2>
+<h2>DPU IP - Versal AIE-ML Targets DPUCV2DX8G (Versal AI Edge / Core)<a class="headerlink" href="#dpu-ip-versal-aie-ml-targets-dpucv2dx8g-versal-ai-edge-core" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>General access release for the Versal AI Edge device VE2802, Versal AI Core device VC2802 and Alveo V70 card</p></li>
 <li><p>Configurable from C20B1 to C20B14</p></li>
@@ -328,7 +332,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="dpu-ip-zynq-ultrascale-dpuczdx8g">
-<h2>DPU IP - Zynq Ultrascale+ DPUCZDX8G<a class="headerlink" href="#dpu-ip-zynq-ultrascale-dpuczdx8g" title="Permalink to this heading">¶</a></h2>
+<h2>DPU IP - Zynq Ultrascale+ DPUCZDX8G<a class="headerlink" href="#dpu-ip-zynq-ultrascale-dpuczdx8g" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>No DPU IP updates in  3.5 release</p></li>
 <li><p>No DPU reference design updates in 3.5 release</p></li>
@@ -336,7 +340,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="dpu-ip-versal-aie-targets-dpucvdx8g">
-<h2>DPU IP - Versal AIE Targets DPUCVDX8G<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8g" title="Permalink to this heading">¶</a></h2>
+<h2>DPU IP - Versal AIE Targets DPUCVDX8G<a class="headerlink" href="#dpu-ip-versal-aie-targets-dpucvdx8g" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>No DPU IP updates in 3.5 release</p></li>
 <li><p>No DPU reference design updates in 3.5 release</p></li>
@@ -344,7 +348,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="dpu-ip-cnn-alveo-data-center-dpucvdx8h">
-<h2>DPU IP - CNN - Alveo Data Center DPUCVDX8H<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h" title="Permalink to this heading">¶</a></h2>
+<h2>DPU IP - CNN - Alveo Data Center DPUCVDX8H<a class="headerlink" href="#dpu-ip-cnn-alveo-data-center-dpucvdx8h" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>No DPU IP updates in 3.5 release</p></li>
 <li><p>No DPU reference design  updates in 3.5 release</p></li>
@@ -352,7 +356,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="wego">
-<h2>WeGO<a class="headerlink" href="#wego" title="Permalink to this heading">¶</a></h2>
+<h2>WeGO<a class="headerlink" href="#wego" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for Alveo V70 DPU GA release.</p></li>
 <li><p>Support for PyTorch 1.13.1 and TensorFlow r2.12.</p></li>
@@ -362,7 +366,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="known-issues">
-<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>To be announced ASAP</p></li>
 </ul>

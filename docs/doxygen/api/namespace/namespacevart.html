@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="namespace-vart">
-<h1>Namespace vart<a class="headerlink" href="#namespace-vart" title="Permalink to this heading">¶</a></h1>
+<h1>Namespace vart<a class="headerlink" href="#namespace-vart" title="Permalink to this headline">¶</a></h1>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv44vart">
 <span id="_CPPv34vart"></span><span id="_CPPv24vart"></span><span id="vart"></span><span class="target" id="namespacevart"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vart</span></span></span><br /></dt>
@@ -172,13 +176,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span id="_CPPv3N4vart10BaseRunner13execute_asyncE9InputType10OutputType"></span><span id="_CPPv2N4vart10BaseRunner13execute_asyncE9InputType10OutputType"></span><span id="vart::BaseRunner::execute_async__InputType.OutputType"></span><span class="target" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint32_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute_async</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="../class/classvart_1_1_base_runner.html#_CPPv4I00EN4vart10BaseRunnerE" title="vart::BaseRunner::InputType"><span class="n"><span class="pre">InputType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">input</span></span>, <a class="reference internal" href="../class/classvart_1_1_base_runner.html#_CPPv4I00EN4vart10BaseRunnerE" title="vart::BaseRunner::OutputType"><span class="n"><span class="pre">OutputType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><br /></dt>
 <dd><p><a class="reference internal" href="../python/execute__async_8py.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – inputs with a customized type</p></li>
 <li><p><strong>output</strong> – outputs with a customized type</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -190,13 +194,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <dd><p>wait </p>
 <p>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jobid</strong> – job id, neg for any id, others for specific job id</p></li>
 <li><p><strong>timeout</strong> – timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -270,13 +274,13 @@ for (auto&amp; output : output_tensor_buffers) {
 <dd><p>Executes the runner. </p>
 <p>This is a blocking function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – A vector of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a> create by all input tensors of runner.</p></li>
 <li><p><strong>output</strong> – A vector of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a> create by all output tensors of runner.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -288,13 +292,13 @@ for (auto&amp; output : output_tensor_buffers) {
 <dd><p>Waits for the end of DPU processing. </p>
 <p>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jobid</strong> – job id, neg for any id, others for specific job id</p></li>
 <li><p><strong>timeout</strong> – timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -308,17 +312,17 @@ for (auto&amp; output : output_tensor_buffers) {
 Sample code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auto</span> <span class="nb">format</span> <span class="o">=</span> <span class="n">runner</span><span class="o">-&gt;</span><span class="n">get_tensor_format</span><span class="p">();</span>
 <span class="n">switch</span> <span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NCHW</span><span class="p">:</span>
+    <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NCHW</span><span class="p">:</span>
         <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
         <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NHWC</span><span class="p">:</span>
+    <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NHWC</span><span class="p">:</span>
         <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
         <span class="k">break</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>TensorFormat : NHWC / HCHW</p>
 </dd>
 </dl>
@@ -339,7 +343,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All input tensors. A vector of raw pointer to the input tensor.</p>
 </dd>
 </dl>
@@ -360,7 +364,7 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 </div>
  </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All output tensors. A vector of raw pointer to the output tensor.</p>
 </dd>
 </dl>
@@ -371,13 +375,13 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 <span id="_CPPv3N4vart6Runner13execute_asyncE9InputType10OutputType"></span><span id="_CPPv2N4vart6Runner13execute_asyncE9InputType10OutputType"></span><span id="vart::Runner::execute_async__InputType.OutputType"></span><span class="target" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint32_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute_async</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">InputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">input</span></span>, <span class="n"><span class="pre">OutputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><br /></dt>
 <dd><p><a class="reference internal" href="../python/execute__async_8py.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – inputs with a customized type</p></li>
 <li><p><strong>output</strong> – outputs with a customized type</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -397,13 +401,13 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph </p></li>
 <li><p><strong>mode</strong> – 1 mode supported: ‘run’ - DPU runner. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of DPU runner.</p>
 </dd>
 </dl>
@@ -414,14 +418,14 @@ Sample code:</p>
 <span id="_CPPv3N4vart6Runner24create_runner_with_attrsEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="_CPPv2N4vart6Runner24create_runner_with_attrsEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="vart::Runner::create_runner_with_attrs__xir::SubgraphCP.xir::AttrsP"></span><span class="target" id="classvart_1_1_runner_1ad6ff892533067e379b0f7b4835b5f6f6"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../class/classvart_1_1_runner.html#_CPPv4N4vart6RunnerE" title="vart::Runner"><span class="n"><span class="pre">Runner</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_runner_with_attrs</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Subgraph</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subgraph</span></span>, <a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Attrs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">attrs</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Factory function to create an instance of DPU runner by subgraph, and attrs. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph</p></li>
 <li><p><strong>attrs</strong> – XIR attrs object, this object is shared among all runners on the same graph.</p></li>
 <li><p><strong>attrs[&quot;mode&quot;], 1</strong> – mode supported: ‘run’ - DPU runner.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of DPU runner. </p>
 </dd>
 </dl>
@@ -449,7 +453,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All input TensorBuffers. A vector of raw pointer to the input <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>.</p>
 </dd>
 </dl>
@@ -469,7 +473,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All output TensorBuffers. A vector of raw pointer to the output <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>.</p>
 </dd>
 </dl>
@@ -481,13 +485,13 @@ Sample code:</p>
 <dd><p>Executes the runner. </p>
 <p>This is a blocking function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – A vector of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a> create by all input tensors of runner.</p></li>
 <li><p><strong>output</strong> – A vector of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a> create by all output tensors of runner.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -498,13 +502,13 @@ Sample code:</p>
 <span id="_CPPv3N4vart9RunnerExt13execute_asyncE9InputType10OutputType"></span><span id="_CPPv2N4vart9RunnerExt13execute_asyncE9InputType10OutputType"></span><span id="vart::RunnerExt::execute_async__InputType.OutputType"></span><span class="target" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint32_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute_async</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">InputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">input</span></span>, <span class="n"><span class="pre">OutputType</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><br /></dt>
 <dd><p><a class="reference internal" href="../python/execute__async_8py.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – inputs with a customized type</p></li>
 <li><p><strong>output</strong> – outputs with a customized type</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -516,13 +520,13 @@ Sample code:</p>
 <dd><p>Waits for the end of DPU processing. </p>
 <p>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jobid</strong> – job id, neg for any id, others for specific job id</p></li>
 <li><p><strong>timeout</strong> – timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -536,17 +540,17 @@ Sample code:</p>
 Sample code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auto</span> <span class="nb">format</span> <span class="o">=</span> <span class="n">runner</span><span class="o">-&gt;</span><span class="n">get_tensor_format</span><span class="p">();</span>
 <span class="n">switch</span> <span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NCHW</span><span class="p">:</span>
+    <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NCHW</span><span class="p">:</span>
         <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
         <span class="k">break</span><span class="p">;</span>
-    <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NHWC</span><span class="p">:</span>
+    <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">Runner</span><span class="p">::</span><span class="n">TensorFormat</span><span class="p">::</span><span class="n">NHWC</span><span class="p">:</span>
         <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
         <span class="k">break</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>TensorFormat : NHWC / HCHW</p>
 </dd>
 </dl>
@@ -567,7 +571,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All input tensors. A vector of raw pointer to the input tensor.</p>
 </dd>
 </dl>
@@ -588,7 +592,7 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 </div>
  </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All output tensors. A vector of raw pointer to the output tensor.</p>
 </dd>
 </dl>
@@ -602,13 +606,13 @@ Sample code: <div class="highlight-default notranslate"><div class="highlight"><
 <span id="_CPPv3N4vart9RunnerExt13create_runnerEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="_CPPv2N4vart9RunnerExt13create_runnerEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="vart::RunnerExt::create_runner__xir::SubgraphCP.xir::AttrsP"></span><span class="target" id="classvart_1_1_runner_ext_1a2d06613bafd66a3db2cbdbf8b30cada8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../class/classvart_1_1_runner_ext.html#_CPPv4N4vart9RunnerExtE" title="vart::RunnerExt"><span class="n"><span class="pre">RunnerExt</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_runner</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Subgraph</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subgraph</span></span>, <a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Attrs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">attrs</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Factory fucntion to create an instance of runner by subgraph and attrs. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph </p></li>
 <li><p><strong>attrs</strong> – XIR attrs object, this object is shared among all runners on the same graph. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of runner. </p>
 </dd>
 </dl>
@@ -625,13 +629,13 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph </p></li>
 <li><p><strong>mode</strong> – 1 mode supported: ‘run’ - DPU runner. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of DPU runner.</p>
 </dd>
 </dl>
@@ -642,14 +646,14 @@ Sample code:</p>
 <span id="_CPPv3N4vart9RunnerExt24create_runner_with_attrsEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="_CPPv2N4vart9RunnerExt24create_runner_with_attrsEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="vart::RunnerExt::create_runner_with_attrs__xir::SubgraphCP.xir::AttrsP"></span><span class="target" id="classvart_1_1_runner_1ad6ff892533067e379b0f7b4835b5f6f6"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../class/classvart_1_1_runner.html#_CPPv4N4vart6RunnerE" title="vart::Runner"><span class="n"><span class="pre">Runner</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_runner_with_attrs</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Subgraph</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subgraph</span></span>, <a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Attrs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">attrs</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Factory function to create an instance of DPU runner by subgraph, and attrs. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph</p></li>
 <li><p><strong>attrs</strong> – XIR attrs object, this object is shared among all runners on the same graph.</p></li>
 <li><p><strong>attrs[&quot;mode&quot;], 1</strong> – mode supported: ‘run’ - DPU runner.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of DPU runner. </p>
 </dd>
 </dl>
@@ -678,10 +682,10 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same as the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -695,10 +699,10 @@ Sample code:</p>
 Sample code: </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="o">*</span> <span class="n">tb</span><span class="p">;</span>
 <span class="n">switch</span> <span class="p">(</span><span class="n">tb</span><span class="o">-&gt;</span><span class="n">get_location</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
            <span class="n">default</span><span class="p">:</span>
@@ -708,7 +712,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the tensor buffer location, a location_t enum type value: HOST_VIRT/HOST_PHY/DEVICE_*.</p>
 </dd>
 </dl>
@@ -725,10 +729,10 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same to the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data physical address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -747,13 +751,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -772,13 +776,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -789,7 +793,7 @@ Sample code: </p>
 <span id="_CPPv3N4vart12TensorBuffer14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="_CPPv2N4vart12TensorBuffer14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="vart::TensorBuffer::copy_from_host__s.voidCP.s.s"></span><span class="target" id="classvart_1_1_tensor_buffer_1a781dbc662ce87afedf825aebf94eb2ba"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">copy_from_host</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">batch_idx</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>copy data from source buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – source buffer start address. </p></li>
@@ -797,7 +801,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void </p>
 </dd>
 </dl>
@@ -819,7 +823,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – destination buffer start address. </p></li>
@@ -827,7 +831,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -838,7 +842,7 @@ Sample code: </p>
 <span id="_CPPv3NK4vart12TensorBuffer10get_tensorEv"></span><span id="_CPPv2NK4vart12TensorBuffer10get_tensorEv"></span><span id="vart::TensorBuffer::get_tensorC"></span><span class="target" id="classvart_1_1_tensor_buffer_1a3c53b20e0e7b58a4c5d18baa10a3f0b6"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_tensor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><br /></dt>
 <dd><p>Get tensor of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A pointer to the tensor. </p>
 </dd>
 </dl>
@@ -871,13 +875,13 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tb_from</strong> – the source <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 <li><p><strong>tb_to</strong> – the destination <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -913,14 +917,14 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tensor</strong> – XIR tensor pointer </p></li>
 <li><p><strong>batch_addr</strong> – Array which contains device physical address for each batch </p></li>
 <li><p><strong>addr_arrsize</strong> – The array size of batch_addr </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Unique pointer of created tensor buffer.</p>
 </dd>
 </dl>
@@ -951,10 +955,10 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same as the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -968,10 +972,10 @@ Sample code:</p>
 Sample code: </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="o">*</span> <span class="n">tb</span><span class="p">;</span>
 <span class="n">switch</span> <span class="p">(</span><span class="n">tb</span><span class="o">-&gt;</span><span class="n">get_location</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
            <span class="n">default</span><span class="p">:</span>
@@ -981,7 +985,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the tensor buffer location, a location_t enum type value: HOST_VIRT/HOST_PHY/DEVICE_*.</p>
 </dd>
 </dl>
@@ -998,10 +1002,10 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same to the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data physical address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -1020,13 +1024,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -1045,13 +1049,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -1062,7 +1066,7 @@ Sample code: </p>
 <span id="_CPPv3N4vart15TensorBufferExt14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="_CPPv2N4vart15TensorBufferExt14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="vart::TensorBufferExt::copy_from_host__s.voidCP.s.s"></span><span class="target" id="classvart_1_1_tensor_buffer_1a781dbc662ce87afedf825aebf94eb2ba"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">copy_from_host</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">batch_idx</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>copy data from source buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – source buffer start address. </p></li>
@@ -1070,7 +1074,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void </p>
 </dd>
 </dl>
@@ -1092,7 +1096,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – destination buffer start address. </p></li>
@@ -1100,7 +1104,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -1111,7 +1115,7 @@ Sample code: </p>
 <span id="_CPPv3NK4vart15TensorBufferExt10get_tensorEv"></span><span id="_CPPv2NK4vart15TensorBufferExt10get_tensorEv"></span><span id="vart::TensorBufferExt::get_tensorC"></span><span class="target" id="classvart_1_1_tensor_buffer_1a3c53b20e0e7b58a4c5d18baa10a3f0b6"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_tensor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><br /></dt>
 <dd><p>Get tensor of <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A pointer to the tensor. </p>
 </dd>
 </dl>
@@ -1138,13 +1142,13 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tb_from</strong> – the source <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 <li><p><strong>tb_to</strong> – the destination <a class="reference internal" href="#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -1180,14 +1184,14 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tensor</strong> – XIR tensor pointer </p></li>
 <li><p><strong>batch_addr</strong> – Array which contains device physical address for each batch </p></li>
 <li><p><strong>addr_arrsize</strong> – The array size of batch_addr </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Unique pointer of created tensor buffer.</p>
 </dd>
 </dl>

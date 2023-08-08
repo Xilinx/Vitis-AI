@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,9 +138,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="docker-images">
-<h1>Docker Images<a class="headerlink" href="#docker-images" title="Permalink to this heading">¶</a></h1>
+<h1>Docker Images<a class="headerlink" href="#docker-images" title="Permalink to this headline">¶</a></h1>
 <p>Previously released Vitis™ AI CPU Docker images are <a class="reference external" href="https://hub.docker.com/r/xilinx/vitis-ai-cpu/tags?page=1&amp;ordering=last_updated">available from Docker Hub</a>. If you are using a previous version of Vitis AI, you need to use the corresponding Docker version. Here is an example of how you can retrieve an older release:</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 29%" />
+<col style="width: 44%" />
+<col style="width: 22%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Version</p></th>
 <th class="head"><p>Github Link</p></th>
@@ -154,10 +164,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </table>
 </section>
 <section id="docker-image-tags">
-<h1>Docker Image Tags<a class="headerlink" href="#docker-image-tags" title="Permalink to this heading">¶</a></h1>
+<h1>Docker Image Tags<a class="headerlink" href="#docker-image-tags" title="Permalink to this headline">¶</a></h1>
 <p>There is a corresponding relationship between Vitis AI and the required docker image. If you are not using the latest release of Vitis AI, you need to fetch the docker image version associated with the older release. We recommend that you directly use the pre-built image on Docker Hub.</p>
 <p>The version correspondence between Vitis AI and the docker image is shown in the following table:</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 74%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Vitis AI Version</p></th>
 <th class="head"><p>Docker Image Tag</p></th>
