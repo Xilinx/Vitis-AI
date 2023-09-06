@@ -40,7 +40,7 @@ if [[ ${DOCKER_TYPE} == 'cpu' ]]; then
              -c ${VAI_CONDA_CHANNEL} -c conda-forge \
         && pip install -r /scratch/pip_requirements.txt \
         && pip install transformers protobuf==3.20.3 pycocotools scikit-image tqdm easydict onnx==1.13.0 numpy==1.22 \
-        &&  pip install --force-reinstall wrapt==1.14 absl-py astunparse gast google-pasta grpcio jax keras  libclang opt-einsum tensorboard tensorflow-estimator==2.12  termcolor \
+        &&  pip install --force-reinstall wrapt==1.14 absl-py astunparse gast google-pasta grpcio jax keras==2.12  libclang opt-einsum tensorboard tensorflow-estimator==2.12  termcolor \
         && pip uninstall -y h5py \
         && pip uninstall -y h5py \
         && mamba install -y --override-channels --force-reinstall h5py=2.10.0 tensorflow-onnx zendnn-tensorflow2  -c conda-forge \
