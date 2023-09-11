@@ -33,6 +33,8 @@ confirm() {
 }
 
 confirm
+echo 'CAT docker login'
+docker login cat-docker.artifacts.cat.com
 
 DOCKER_REPO="${DOCKER_REPO:-xilinx/}"
 VERSION="${VERSION:-`cat dockerfiles/VERSION.txt`}"
