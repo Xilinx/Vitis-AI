@@ -83,7 +83,7 @@ else
     && sudo python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \
-    && conda config --remove channels defaults || true \
+    && conda config --env --remove channels defaults || true \
     && mamba env create -f /scratch/${DOCKER_TYPE}_conda/vitis-ai-tensorflow2.yml \
     && conda activate vitis-ai-tensorflow2 \
     && pip install --ignore-installed ${tensorflow_ver} \

@@ -51,6 +51,10 @@ function usage
     return ${rtn}
 }
 
+# CAT docker login
+docker login cat-docker.artifacts.cat.com
+
+
 # Execute
 function execute
 {
@@ -66,10 +70,10 @@ function execute
      if [[ "$DOCKER_TYPE" == 'gpu' ]];then
          if [[ $TARGET_FRAMEWORK =~ .*"pytorch"* ]];then
 
-            VAI_BASE="nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04"
+            VAI_BASE="cat-docker.artifacts.cat.com/nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04"
             BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-pytorch-base}"
         else 
-            VAI_BASE="nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04"
+            VAI_BASE="cat-docker.artifacts.cat.com/nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04"
             BASE_IMAGE="${BASE_IMAGE:-xiinx/vitis-ai-${DOCKER_TYPE}-tf2-base}"
         fi
          #11.3.1-cudnn8-runtime-ubuntu20.04"
