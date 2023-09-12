@@ -2,6 +2,7 @@ name: vitis-ai-tensorflow2
 
 channels:
   - conda-forge
+  - prometeia
 
 dependencies:
   - python=3.8
