@@ -89,14 +89,15 @@ fi
 
 docker_run_params=$(cat <<-END
     -v /dev/shm:/dev/shm \
-    -v /opt/xilinx/dsa:/opt/xilinx/dsa \
-    -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
+    -v /data2/tools/xilinx/dsa:/opt/xilinx/dsa \
+    -v /data2/tools/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
     -e VERSION=$VERSION \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \
+    -v /data:/data \
     -v $HERE:/workspace \
     -w /workspace \
-    --rm \
+    --name VAI-2.5 \
     --network=host \
     ${DETACHED} \
     ${RUN_MODE} \
