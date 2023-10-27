@@ -62,7 +62,7 @@ class DpuRunnerBaseImp : public vart::Runner {
   enum TensorType { INPUT, INTERNAL, OUTPUT };
 
  private:
-  void prepare_envirnment(const DpuKernel::SubgraphCode& sg_and_code,
+  void prepare_environment(const DpuKernel::SubgraphCode& sg_and_code,
                           const std::vector<uint64_t>& gen_reg,
                           size_t device_core_id);
   void before_run_dpu();
