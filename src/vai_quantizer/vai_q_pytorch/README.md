@@ -28,6 +28,9 @@ If you work in Vitis-AI 3.5 and later version of docker, there is a conda enviro
 In this conda environment, python version is 3.8, pytorch version is 1.13 and torchvision version is 0.14. You can directly start our "resnet18" example without installation steps.
 A new Conda environment with a specified PyTorch version (1.2~1.13, 2.0) can be created using the script [replace_pytorch.sh](https://github.com/Xilinx/Vitis-AI/blob/master/docker/common/replace_pytorch.sh). This script clones a Conda environment from vitis-ai-pytorch, uninstalls the original PyTorch, Torchvision and vai_q_pytorch
 packages, and then installs the specified version of PyTorch, Torchvision, and re-installs vai_q_pytorch from source code.
+
+In the vai_q_pyTorch ROCM docker, the PyTorch environment is installed in the base conda environment, which is automatically activated upon starting the docker container. Therefore, there is no need to activate an additional conda environment. Additionally, it is important to note that, currently, switching pyTorch versions is not supported in the ROCM docker environment.
+
 - Copy example/resnet18_quant.py to docker environment
 - Download pre-trained [Resnet18 model](https://download.pytorch.org/models/resnet18-5c106cde.pth)
   ```shell
@@ -59,7 +62,7 @@ packages, and then installs the specified version of PyTorch, Torchvision, and r
   
 ### Install from source code
 
-Installation with Anaconda is suggested. And if there is an old version of vai_q_pytorch in the conda enviorment, suggest you remove all its related files before install the new version. 
+Installation with Anaconda is suggested. And if there is an old version of vai_q_pytorch in the conda enviorment, suggest you remove all its related files before install the new version. When utilizing a server with an ROCM GPU, it is advisable to refrain from manual source code installation. Instead, the endorsed method is to work within the official vai_q_pytorch docker container.
 
 To install vai_q_pytorch, do as follows:
 
