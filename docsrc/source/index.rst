@@ -28,7 +28,7 @@ AMD Vitis™ AI is an integrated development environment that can be leveraged t
 The Vitis |trade| AI solution consists of three primary components:
 
 - The Deep-Learning Processor unit (DPU), a hardware engine for optimized the inferencing of ML models
-- Model development tools, to compile and optimize ML models for the DPU 
+- Model development tools, to compile and optimize ML models for the DPU
 - Model deployment libraries and APIs, to integrate and execute the ML models on the DPU engine from a SW application
 
 The Vitis AI solution is packaged and delivered as follows:
@@ -45,7 +45,7 @@ Vitis AI Key Components
 Deep-Learning Processor Unit
 ****************************
 
-The :ref:`Deep-learning Processor Unit (DPU) <workflow-dpu>` is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others. 
+The :ref:`Deep-learning Processor Unit (DPU) <workflow-dpu>` is a programmable engine optimized for deep neural networks. The DPU implements an efficient tensor-level instruction set designed to support and accelerate various popular convolutional neural networks, such as VGG, ResNet, GoogLeNet, YOLO, SSD, and MobileNet, among others.
 
 The DPU supports on AMD Zynq |trade| UltraScale+ |trade| MPSoCs, the Kria |trade| KV260, Versal |trade| and Alveo cards. It scales to meet the requirements of many diverse applications in terms of throughput, latency, scalability, and power.
 
@@ -68,7 +68,7 @@ The :ref:`Vitis AI Model Inspector <model-inspector>` is used to perform initial
 
 Vitis AI Optimizer
 ==================
-The :ref:`Vitis AI Optimizer <model-optimization>` exploits the notion of sparsity to reduce the overall computational complexity for inference by 5x to 50x with minimal accuracy degradation. Many deep neural network topologies employ significant levels of redundancy. This is particularly true when the network backbone is optimized for prediction accuracy with training datasets supporting many classes. In many cases, this redundancy can be reduced by “pruning” some of the operations out of the graph. 
+The :ref:`Vitis AI Optimizer <model-optimization>` exploits the notion of sparsity to reduce the overall computational complexity for inference by 5x to 50x with minimal accuracy degradation. Many deep neural network topologies employ significant levels of redundancy. This is particularly true when the network backbone is optimized for prediction accuracy with training datasets supporting many classes. In many cases, this redundancy can be reduced by “pruning” some of the operations out of the graph.
 
 Vitis AI Quantizer
 ==================
@@ -112,7 +112,7 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    :maxdepth: 3
    :caption: Setup and Install
    :hidden:
-   
+
    Release Notes <docs/reference/release_notes>
    System Requirements <docs/reference/system_requirements>
    Host Install Instructions <docs/install/install>
@@ -125,6 +125,13 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    Versal™ AI Edge VEK280 <docs/quickstart/vek280>
    Alveo™ V70 <docs/quickstart/v70>
 
+.. toctree::
+   :maxdepth: 3
+   :caption: Model Zoo
+   :hidden:
+
+   Getting started <docs/getting-started-model-zoo>
+   Models overview <docs/models-overview>
 
 .. toctree::
    :maxdepth: 3
@@ -163,7 +170,7 @@ The :ref:`Vitis AI Profiler <vitis-ai-profiler>` profiles and visualizes AI appl
    :hidden:
 
    Resources and Support <docs/reference/additional_resources>
-   
+
 .. toctree::
    :maxdepth: 3
    :caption: Related AMD Solutions

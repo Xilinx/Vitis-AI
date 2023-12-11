@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -72,6 +71,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -144,7 +148,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="class-vart-baserunner">
-<h1>Class vart::BaseRunner<a class="headerlink" href="#class-vart-baserunner" title="Permalink to this heading">¶</a></h1>
+<h1>Class vart::BaseRunner<a class="headerlink" href="#class-vart-baserunner" title="Permalink to this headline">¶</a></h1>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I00EN4vart10BaseRunnerE">
 <span id="_CPPv3I00EN4vart10BaseRunnerE"></span><span id="_CPPv2I00EN4vart10BaseRunnerE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InputType</span></span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OutputType</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I00EN4vart10BaseRunnerE" title="vart::BaseRunner::InputType"><span class="n"><span class="pre">InputType</span></span></a><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classvart_1_1_base_runner"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BaseRunner</span></span></span><a class="headerlink" href="#_CPPv4I00EN4vart10BaseRunnerE" title="Permalink to this definition">¶</a><br /></dt>
@@ -156,13 +160,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span id="_CPPv3N4vart10BaseRunner13execute_asyncE9InputType10OutputType"></span><span id="_CPPv2N4vart10BaseRunner13execute_asyncE9InputType10OutputType"></span><span id="vart::BaseRunner::execute_async__InputType.OutputType"></span><span class="target" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pair</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint32_t</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute_async</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN4vart10BaseRunnerE" title="vart::BaseRunner::InputType"><span class="n"><span class="pre">InputType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">input</span></span>, <a class="reference internal" href="#_CPPv4I00EN4vart10BaseRunnerE" title="vart::BaseRunner::OutputType"><span class="n"><span class="pre">OutputType</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">output</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N4vart10BaseRunner13execute_asyncE9InputType10OutputType" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="../python/execute__async_8py.html#namespaceexecute__async"><span class="std std-ref">execute_async</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – inputs with a customized type</p></li>
 <li><p><strong>output</strong> – outputs with a customized type</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>
@@ -174,13 +178,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <dd><p>wait </p>
 <p>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jobid</strong> – job id, neg for any id, others for specific job id</p></li>
 <li><p><strong>timeout</strong> – timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>status 0 for exit successfully, others for customized warnings or errors </p>
 </dd>
 </dl>

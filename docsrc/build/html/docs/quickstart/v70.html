@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,12 +30,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Overview" href="../workflow.html" />
+    <link rel="next" title="Vitis AI Model Zoo" href="../getting-started-model-zoo.html" />
     <link rel="prev" title="Quick Start Guide for Versal™ AI Edge VEK280" href="vek280.html" /> 
 </head>
 
@@ -96,6 +95,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -160,35 +164,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="quick-start-guide-for-alveo-v70">
-<h1>Quick Start Guide for Alveo V70<a class="headerlink" href="#quick-start-guide-for-alveo-v70" title="Permalink to this heading">¶</a></h1>
+<h1>Quick Start Guide for Alveo V70<a class="headerlink" href="#quick-start-guide-for-alveo-v70" title="Permalink to this headline">¶</a></h1>
 <p>The AMD <strong>DPUCV2DX8G</strong> for the Alveo™ V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you install the software and packages required to support V70.</p>
-<a class="reference internal image-reference" href="../../_images/V70.PNG"><img alt="../../_images/V70.PNG" src="../../_images/V70.PNG" style="width: 1300px;" /></a>
+<a class="reference internal image-reference" href="docs/reference/images/V70.PNG"><img alt="docs/reference/images/V70.PNG" src="docs/reference/images/V70.PNG" style="width: 1300px;" /></a>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <section id="system-requirements">
-<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading">¶</a></h3>
+<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Confirm that your development machine meets the minimum <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p></li>
 <li><p>Confirm that you have at least <strong>100GB</strong> of free space in the target partition.</p></li>
 </ul>
 </section>
 <section id="applicable-targets">
-<h3>Applicable Targets<a class="headerlink" href="#applicable-targets" title="Permalink to this heading">¶</a></h3>
+<h3>Applicable Targets<a class="headerlink" href="#applicable-targets" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>This quickstart is applicable to the <a class="reference external" href="https://www.xilinx.com/applications/data-center/v70.html">V70</a></p></li>
 </ul>
 </section>
 </section>
 <section id="quickstart">
-<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
 <section id="clone-the-vitis-ai-repository">
-<h3>Clone the Vitis AI Repository<a class="headerlink" href="#clone-the-vitis-ai-repository" title="Permalink to this heading">¶</a></h3>
+<h3>Clone the Vitis AI Repository<a class="headerlink" href="#clone-the-vitis-ai-repository" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ git clone https://github.com/Xilinx/Vitis-AI
 </pre></div>
 </div>
 </section>
 <section id="alveo-v70-setup">
-<h3>Alveo V70 Setup<a class="headerlink" href="#alveo-v70-setup" title="Permalink to this heading">¶</a></h3>
+<h3>Alveo V70 Setup<a class="headerlink" href="#alveo-v70-setup" title="Permalink to this headline">¶</a></h3>
 <p>A script is provided to drive the V70 card setup process.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -213,14 +217,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 </section>
 <section id="install-docker">
-<h3>Install Docker<a class="headerlink" href="#install-docker" title="Permalink to this heading">¶</a></h3>
+<h3>Install Docker<a class="headerlink" href="#install-docker" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Make sure that the Docker engine is installed according to the official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a>.</p></li>
 <li><p>The Docker daemon always runs as the root user. Non-root users must be <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">added</a> to the docker group. Do this now.</p></li>
 </ul>
 </section>
 <section id="verify-docker-installation">
-<h3>Verify Docker Installation<a class="headerlink" href="#verify-docker-installation" title="Permalink to this heading">¶</a></h3>
+<h3>Verify Docker Installation<a class="headerlink" href="#verify-docker-installation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a “Hello World” message and exits.</p></li>
 </ul>
@@ -235,7 +239,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 </section>
 <section id="pull-vitis-ai-docker">
-<h3>Pull Vitis AI Docker<a class="headerlink" href="#pull-vitis-ai-docker" title="Permalink to this heading">¶</a></h3>
+<h3>Pull Vitis AI Docker<a class="headerlink" href="#pull-vitis-ai-docker" title="Permalink to this headline">¶</a></h3>
 <p>In order to simplify this quickstart tutorial, we will utilize the Vitis-AI PyTorch CPU Docker to assess pre-built Vitis-AI examples, and subsequently perform quantization and compilation of our own model. The CPU docker image is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the <a class="reference internal" href="../install/install.html"><span class="doc">Full Install Instructions</span></a> but we would recommend that new users start with this simpler first step.
 Pull and start the latest Vitis AI Docker using the following commands:</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Host<span class="o">]</span> $ docker pull xilinx/vitis-ai-pytorch-cpu:latest
@@ -245,7 +249,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 </div>
 </section>
 <section id="docker-container-environment-variable-setup">
-<h3>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this heading">¶</a></h3>
+<h3>Docker Container Environment Variable Setup<a class="headerlink" href="#docker-container-environment-variable-setup" title="Permalink to this headline">¶</a></h3>
 <p>From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the <code class="docutils literal notranslate"><span class="pre">/opt/xilinx/overlaybins</span></code> directory prior to execution. Select the xclbin that matches your chosen DPU configuration.</p>
 <div class="highlight-Bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Docker<span class="o">]</span> $ <span class="nb">source</span> /workspace/board_setup/v70/setup.sh DPUCV2DX8G_v70
 </pre></div>
@@ -256,7 +260,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 </div>
 </section>
 <section id="vitis-ai-model-zoo">
-<h3>Vitis-AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Permalink to this heading">¶</a></h3>
+<h3>Vitis-AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Permalink to this headline">¶</a></h3>
 <p>You can now select a model from the <a class="reference external" href="../workflow-model-zoo.html">Vitis AI Model Zoo</a>.  Navigate to the  <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list">model-list subdirectory</a>  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.</p>
 <ul class="simple">
 <li><p>Take the ResNet50 model as an example.</p></li>
@@ -273,7 +277,7 @@ Pull and start the latest Vitis AI Docker using the following commands:</p>
 </div>
 </section>
 <section id="run-the-vitis-ai-examples">
-<h3>Run the Vitis AI Examples<a class="headerlink" href="#run-the-vitis-ai-examples" title="Permalink to this heading">¶</a></h3>
+<h3>Run the Vitis AI Examples<a class="headerlink" href="#run-the-vitis-ai-examples" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Download <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz">vitis_ai_runtime_r3.5.0_image_video.tar.gz</a> to your host.</p></li>
 </ol>
@@ -321,10 +325,10 @@ top<span class="o">[</span><span class="m">4</span><span class="o">]</span> <spa
 </section>
 </section>
 <section id="pytorch-tutorial">
-<h2>PyTorch Tutorial<a class="headerlink" href="#pytorch-tutorial" title="Permalink to this heading">¶</a></h2>
+<h2>PyTorch Tutorial<a class="headerlink" href="#pytorch-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>This tutorial assumes that Vitis AI has been installed and that the board has been configured as explained in the installation instructions above. For additional information on the Vitis AI Quantizer, Optimizer, or Compiler, please refer to the Vitis AI User Guide.</p>
 <section id="quantizing-the-model">
-<h3>Quantizing the Model<a class="headerlink" href="#quantizing-the-model" title="Permalink to this heading">¶</a></h3>
+<h3>Quantizing the Model<a class="headerlink" href="#quantizing-the-model" title="Permalink to this headline">¶</a></h3>
 <p>Quantization reduces the precision of network weights and activations to optimize memory usage and computational efficiency while maintaining acceptable levels of accuracy. Inference is computationally expensive and requires high memory bandwidths to satisfy the
 low-latency and high-throughput requirements of Edge applications. Quantization and channel pruning techniques are employed to address these issues while achieving high performance and high energy efficiency with little degradation in accuracy. The Vitis AI Quantizer takes a
 floating-point model as an input and performs pre-processing (folds batchnorms and removes nodes not required for inference), and finally quantizes the weights/biases and activations to the given bit width.</p>
@@ -471,7 +475,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 </div>
 </section>
 <section id="compile-the-model">
-<h3>Compile the Model<a class="headerlink" href="#compile-the-model" title="Permalink to this heading">¶</a></h3>
+<h3>Compile the Model<a class="headerlink" href="#compile-the-model" title="Permalink to this headline">¶</a></h3>
 <p>The Vitis AI Compiler compiles the graph operators as a set of micro-coded instructions that are executed by the DPU.  In this step, we will compile the ResNet18 model that we quantized in the previous step.</p>
 <ol class="arabic simple">
 <li><p>The compiler takes the quantized <code class="docutils literal notranslate"><span class="pre">INT8.xmodel</span></code> and generates the deployable <code class="docutils literal notranslate"><span class="pre">DPU.xmodel</span></code> by running the command below.  Note that you must modify the command to specify the appropriate <code class="docutils literal notranslate"><span class="pre">arch.json</span></code> file for your target.  For V70 targets, these are located in the folder <code class="docutils literal notranslate"><span class="pre">/opt/vitis_ai/compiler/arch/DPUCV2DX8G</span></code> inside the Docker container.</p></li>
@@ -512,7 +516,7 @@ floating-point model as an input and performs pre-processing (folds batchnorms a
 </ul>
 </section>
 <section id="model-deployment">
-<h3>Model Deployment<a class="headerlink" href="#model-deployment" title="Permalink to this heading">¶</a></h3>
+<h3>Model Deployment<a class="headerlink" href="#model-deployment" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Copy the <code class="docutils literal notranslate"><span class="pre">resnet18_pt</span></code> folder into the <code class="docutils literal notranslate"><span class="pre">/usr/share/vitis_ai_library/models/</span></code> directory.  This will locate your compiled model in the default Vitis AI Library example model directory, alongside the other Vitis AI example models.  Our purpose in doing this is to simplify the commands that follow, in which we will execute the Vitis AI Library samples with our model.</p></li>
 </ol>
@@ -573,7 +577,7 @@ contain test images and videos that can be leveraged to evaluate our quantized m
 				  
 				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="vek280.html" class="btn btn-neutral float-left" title="Quick Start Guide for Versal™ AI Edge VEK280" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../workflow.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../getting-started-model-zoo.html" class="btn btn-neutral float-right" title="Vitis AI Model Zoo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

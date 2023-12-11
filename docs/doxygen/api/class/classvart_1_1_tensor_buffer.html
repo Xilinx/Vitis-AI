@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -72,6 +71,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -144,7 +148,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="class-vart-tensorbuffer">
-<h1>Class vart::TensorBuffer<a class="headerlink" href="#class-vart-tensorbuffer" title="Permalink to this heading">¶</a></h1>
+<h1>Class vart::TensorBuffer<a class="headerlink" href="#class-vart-tensorbuffer" title="Permalink to this headline">¶</a></h1>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N4vart12TensorBufferE">
 <span id="_CPPv3N4vart12TensorBufferE"></span><span id="_CPPv2N4vart12TensorBufferE"></span><span id="vart::TensorBuffer"></span><span class="target" id="classvart_1_1_tensor_buffer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TensorBuffer</span></span></span><a class="headerlink" href="#_CPPv4N4vart12TensorBufferE" title="Permalink to this definition">¶</a><br /></dt>
@@ -163,10 +167,10 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same as the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -180,10 +184,10 @@ Sample code:</p>
 Sample code: </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="o">*</span> <span class="n">tb</span><span class="p">;</span>
 <span class="n">switch</span> <span class="p">(</span><span class="n">tb</span><span class="o">-&gt;</span><span class="n">get_location</span><span class="p">())</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_VIRT</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
+            <span class="n">case</span> <span class="n">vart</span><span class="p">::</span><span class="n">TensorBuffer</span><span class="p">::</span><span class="n">location_t</span><span class="p">::</span><span class="n">HOST_PHY</span><span class="p">:</span>
                   <span class="o">//</span> <span class="n">do</span> <span class="n">nothing</span>
                   <span class="k">break</span><span class="p">;</span>
            <span class="n">default</span><span class="p">:</span>
@@ -193,7 +197,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the tensor buffer location, a location_t enum type value: HOST_VIRT/HOST_PHY/DEVICE_*.</p>
 </dd>
 </dl>
@@ -210,10 +214,10 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>idx</strong> – The index of the data to be accessed, its dimension same to the tensor shape. </p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A pair of the data physical address of the index and the size of the data available for use in byte unit.</p>
 </dd>
 </dl>
@@ -232,13 +236,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -257,13 +261,13 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>offset</strong> – The start offset address. </p></li>
 <li><p><strong>size</strong> – The data size. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -274,7 +278,7 @@ Sample code: </p>
 <span id="_CPPv3N4vart12TensorBuffer14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="_CPPv2N4vart12TensorBuffer14copy_from_hostE6size_tPKv6size_t6size_t"></span><span id="vart::TensorBuffer::copy_from_host__s.voidCP.s.s"></span><span class="target" id="classvart_1_1_tensor_buffer_1a781dbc662ce87afedf825aebf94eb2ba"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">copy_from_host</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">batch_idx</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4vart12TensorBuffer14copy_from_hostE6size_tPKv6size_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>copy data from source buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – source buffer start address. </p></li>
@@ -282,7 +286,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void </p>
 </dd>
 </dl>
@@ -304,7 +308,7 @@ Sample code: </p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch_idx</strong> – the batch index. </p></li>
 <li><p><strong>buf</strong> – destination buffer start address. </p></li>
@@ -312,7 +316,7 @@ Sample code: </p>
 <li><p><strong>offset</strong> – the start offset to be copied. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -323,7 +327,7 @@ Sample code: </p>
 <span id="_CPPv3NK4vart12TensorBuffer10get_tensorEv"></span><span id="_CPPv2NK4vart12TensorBuffer10get_tensorEv"></span><span id="vart::TensorBuffer::get_tensorC"></span><span class="target" id="classvart_1_1_tensor_buffer_1a3c53b20e0e7b58a4c5d18baa10a3f0b6"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="../file/runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Tensor</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_tensor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4vart12TensorBuffer10get_tensorEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get tensor of <a class="reference internal" href="../namespace/namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A pointer to the tensor. </p>
 </dd>
 </dl>
@@ -356,13 +360,13 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tb_from</strong> – the source <a class="reference internal" href="../namespace/namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 <li><p><strong>tb_to</strong> – the destination <a class="reference internal" href="../namespace/namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>void</p>
 </dd>
 </dl>
@@ -398,14 +402,14 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tensor</strong> – XIR tensor pointer </p></li>
 <li><p><strong>batch_addr</strong> – Array which contains device physical address for each batch </p></li>
 <li><p><strong>addr_arrsize</strong> – The array size of batch_addr </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Unique pointer of created tensor buffer.</p>
 </dd>
 </dl>

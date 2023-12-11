@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,9 +138,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="february-2022-patch">
-<h1>February 2022 Patch<a class="headerlink" href="#february-2022-patch" title="Permalink to this heading">¶</a></h1>
+<h1>February 2022 Patch<a class="headerlink" href="#february-2022-patch" title="Permalink to this headline">¶</a></h1>
 <section id="new-features-highlights">
-<h2>New Features/Highlights<a class="headerlink" href="#new-features-highlights" title="Permalink to this heading">¶</a></h2>
+<h2>New Features/Highlights<a class="headerlink" href="#new-features-highlights" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed a compiler bug for pt_yolox_TT100K_640_640_73G_2.0 model</p></li>
 <li><p>Fixed a quantizer bug in QAT in tensorflow 1.15 models</p></li>
@@ -145,7 +149,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="new-packages">
-<h2>New Packages<a class="headerlink" href="#new-packages" title="Permalink to this heading">¶</a></h2>
+<h2>New Packages<a class="headerlink" href="#new-packages" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=unilog-2.0.1-hea4fdf2_32.tar.bz2">unilog-2.0.1-hea4fdf2_32.tar.bz2</a></p></li>
 <li><p><a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=target_factory-2.0.1-h680af44_32.tar.bz2">target_factory-2.0.1-h680af44_32.tar.bz2</a></p></li>
@@ -165,7 +169,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Download the packages from the link above. Apply the conda patch to the conda environment (Machine Learning
 framework) that you wish to update in this format</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">CONDA_ENVIRONMENT</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">URL</span> <span class="ow">or</span> <span class="n">PATH</span> <span class="n">to</span> <span class="n">conda</span> <span class="n">package</span><span class="o">&gt;</span>

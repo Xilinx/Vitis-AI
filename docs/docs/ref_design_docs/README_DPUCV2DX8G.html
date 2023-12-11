@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="vek280-dpucv2dx8g-reference-design">
-<h1>VEK280 DPUCV2DX8G Reference Design<a class="headerlink" href="#vek280-dpucv2dx8g-reference-design" title="Permalink to this heading">¶</a></h1>
+<h1>VEK280 DPUCV2DX8G Reference Design<a class="headerlink" href="#vek280-dpucv2dx8g-reference-design" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Until the release of Versal™ AI Edge production speed files (currently targeted with release of Vivado 2023.2.1), PDI generation for Versal AI Edge will require an early enablement license that can be requested via the Versal AI Edge Errata Secure Site.  Also, the reference design archive does include a pre-compiled AIE object <code class="docutils literal notranslate"><span class="pre">libadf.a</span></code> for this specific DPU configuration, however, if the user wishes to reconfigure and recompile the DPUCV2DX8G, access to an AIE-ML Compiler early enablement license is required and can be obtained from the AIE Compiler Early Access Lounge.  Finally, the user will also want to have access to documentation such as the VEK280 schematics, user guide and BSPs which are provided in the VEK280 Early Access Lounge.  Please contact your local AMD sales or FAE contact to request access.</p>
@@ -146,7 +150,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>The reference design associated with this document <a class="reference external" href="https://www.xilinx.com/bin/public/openDownload?filename=DPUCV2DX8G_VAI_v3.5.tar.gz">is found
 here</a>.</p>
 <section id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">¶</a></h2>
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="#1-revision-history">1 Revision History</a></p></li>
 <li><p><a class="reference external" href="#2-overview">2 Overview</a></p></li>
@@ -193,14 +197,14 @@ Kernels</a></p>
 </ul>
 </section>
 <section id="revision-history">
-<h2>1 Revision History<a class="headerlink" href="#revision-history" title="Permalink to this heading">¶</a></h2>
+<h2>1 Revision History<a class="headerlink" href="#revision-history" title="Permalink to this headline">¶</a></h2>
 <p>Vitis AI 3.5 change log: - Update platform to B01 board with ES silicon,
 and support Vitis 2023.1. - Support multi-batch setting</p>
 <p>VitisAI 3.0 change log: - Initial early access version</p>
 </section>
 <hr class="docutils" />
 <section id="overview">
-<h2>2 Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<h2>2 Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The Xilinx Versal Deep Learning Processing Unit (DPUCV2DX8G) is a
 computation engine optimized for convolutional neural networks. It
 includes a set of highly optimized instructions, and supports most
@@ -216,9 +220,9 @@ platform in Vitis environment.</p></li>
 </ul>
 </section>
 <section id="software-tools-and-system-requirements">
-<h2>3 Software Tools and System Requirements<a class="headerlink" href="#software-tools-and-system-requirements" title="Permalink to this heading">¶</a></h2>
+<h2>3 Software Tools and System Requirements<a class="headerlink" href="#software-tools-and-system-requirements" title="Permalink to this headline">¶</a></h2>
 <section id="hardware">
-<h3>3.1 Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a></h3>
+<h3>3.1 Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h3>
 <p>Required:</p>
 <ul class="simple">
 <li><p>Revision B01 VEK280 evaluation board</p></li>
@@ -231,7 +235,7 @@ platform in Vitis environment.</p></li>
 </div>
 </section>
 <section id="software">
-<h3>3.2 Software<a class="headerlink" href="#software" title="Permalink to this heading">¶</a></h3>
+<h3>3.2 Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h3>
 <p>Required:</p>
 <ul class="simple">
 <li><p>Vitis 2023.1</p></li>
@@ -245,9 +249,9 @@ platform in Vitis environment.</p></li>
 </section>
 </section>
 <section id="design-files">
-<h2>4 Design Files<a class="headerlink" href="#design-files" title="Permalink to this heading">¶</a></h2>
+<h2>4 Design Files<a class="headerlink" href="#design-files" title="Permalink to this headline">¶</a></h2>
 <section id="design-components">
-<h3>4.1 Design Components<a class="headerlink" href="#design-components" title="Permalink to this heading">¶</a></h3>
+<h3>4.1 Design Components<a class="headerlink" href="#design-components" title="Permalink to this headline">¶</a></h3>
 <p>The top-level directory structure shows the the major design components.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── app
 ├── README.md
@@ -273,9 +277,9 @@ platform in Vitis environment.</p></li>
 </section>
 <hr class="docutils" />
 <section id="tutorials">
-<h2>5 Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this heading">¶</a></h2>
+<h2>5 Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
 <section id="board-setup">
-<h3>5.1 Board Setup<a class="headerlink" href="#board-setup" title="Permalink to this heading">¶</a></h3>
+<h3>5.1 Board Setup<a class="headerlink" href="#board-setup" title="Permalink to this headline">¶</a></h3>
 <p>Board jumper and switch settings:</p>
 <p>Configure the Versal Boot Mode switch SW1 to boot from SD Card:</p>
 <ul class="simple">
@@ -283,7 +287,7 @@ platform in Vitis environment.</p></li>
 </ul>
 </section>
 <section id="build-and-run-the-reference-design">
-<h3>5.2 Build and Run The Reference Design<a class="headerlink" href="#build-and-run-the-reference-design" title="Permalink to this heading">¶</a></h3>
+<h3>5.2 Build and Run The Reference Design<a class="headerlink" href="#build-and-run-the-reference-design" title="Permalink to this headline">¶</a></h3>
 <p>The following tutorials assume that the <cite>$TRD_HOME</cite> environment variable
 is set as shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">export</span> <span class="n">TRD_HOME</span> <span class="o">=&lt;</span><span class="n">Vitis</span> <span class="n">AI</span> <span class="n">path</span><span class="o">&gt;/</span><span class="n">reference_design</span><span class="o">/</span><span class="n">DPUCV2DX8G</span><span class="o">-</span><span class="n">TRD</span>
@@ -306,7 +310,7 @@ kernel</p>
 </pre></div>
 </div>
 <section id="build-the-dpu">
-<h4>5.2.1 Build the DPU<a class="headerlink" href="#build-the-dpu" title="Permalink to this heading">¶</a></h4>
+<h4>5.2.1 Build the DPU<a class="headerlink" href="#build-the-dpu" title="Permalink to this headline">¶</a></h4>
 <p>The default architecture of DPUCV2DX8G is C20B1 (<cite>CU_N=1</cite>,
 <cite>BATCH_SingleCU=1</cite>, 16 AIE-ML cores for Convolution, 4 AIE-ML cores for
 Non-Convolution), PL clock frequency is 300 MHz. This version of the
@@ -338,7 +342,7 @@ change these parameters.</p>
 </div>
 </section>
 <section id="get-json-file">
-<h4>5.2.2 Get Json File<a class="headerlink" href="#get-json-file" title="Permalink to this heading">¶</a></h4>
+<h4>5.2.2 Get Json File<a class="headerlink" href="#get-json-file" title="Permalink to this headline">¶</a></h4>
 <p>The <cite>arch.json</cite> file is an important file required by Vitis AI. It works
 together with the Vitis AI compiler to support model compilation with
 various DPUCV2DX8G configurations. The <cite>arch.json</cite> file will be
@@ -350,7 +354,7 @@ design, it can be found in <cite>$TRD_HOME/vitis_prj/package_out/sd_card</cite>.
 </div>
 </section>
 <section id="run-resnet50-example">
-<h4>5.2.3 Run ResNet50 Example<a class="headerlink" href="#run-resnet50-example" title="Permalink to this heading">¶</a></h4>
+<h4>5.2.3 Run ResNet50 Example<a class="headerlink" href="#run-resnet50-example" title="Permalink to this headline">¶</a></h4>
 <p>The reference design project has generated the matching model file in
 <cite>$TRD_HOME/app</cite> path, pre-configured with default settings. If the
 configuration of the DPUCV2DX8G is modified, the model needs to be
@@ -385,7 +389,7 @@ compiled with the new fingerprint file, <cite>arch.json</cite>.</p>
 </section>
 </section>
 <section id="change-the-configuration">
-<h3>5.3 Change the Configuration<a class="headerlink" href="#change-the-configuration" title="Permalink to this heading">¶</a></h3>
+<h3>5.3 Change the Configuration<a class="headerlink" href="#change-the-configuration" title="Permalink to this headline">¶</a></h3>
 <p>The DPUCV2DX8G IP provides some user-configurable parameters, refer to
 the document <a class="reference external" href="https://docs.xilinx.com/r/en-US/pg425-dpu">PG425</a>.</p>
 <p>In this reference design, user-configurable parameters are in the file <cite>$TRD_HOME/vitis_prj/xv2dpu_config.mk</cite>.</p>
@@ -400,11 +404,15 @@ the document <a class="reference external" href="https://docs.xilinx.com/r/en-US
 </section>
 <hr class="docutils" />
 <section id="instructions-for-changing-the-platform">
-<h2>6 Instructions for Changing the Platform<a class="headerlink" href="#instructions-for-changing-the-platform" title="Permalink to this heading">¶</a></h2>
+<h2>6 Instructions for Changing the Platform<a class="headerlink" href="#instructions-for-changing-the-platform" title="Permalink to this headline">¶</a></h2>
 <section id="dpucv2dx8g-ports">
-<h3>6.1 DPUCV2DX8G Ports<a class="headerlink" href="#dpucv2dx8g-ports" title="Permalink to this heading">¶</a></h3>
+<h3>6.1 DPUCV2DX8G Ports<a class="headerlink" href="#dpucv2dx8g-ports" title="Permalink to this headline">¶</a></h3>
 <p>The DPUCV2DX8G ports are listed as below.</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 70%" />
+<col style="width: 30%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Ports</p></th>
 <th class="head"><p>Descriptions</p></th>
@@ -486,7 +494,7 @@ the <cite>$TRD_HOME/vitis_prj/scripts/xv2dpu_aie_noc.cfg</cite> (generated by <c
 </ul>
 </section>
 <section id="changing-the-platform">
-<h3>6.2 Changing the Platform<a class="headerlink" href="#changing-the-platform" title="Permalink to this heading">¶</a></h3>
+<h3>6.2 Changing the Platform<a class="headerlink" href="#changing-the-platform" title="Permalink to this headline">¶</a></h3>
 <p>Changing platform needs to modify 1 files: <cite>vitis_prj/Makefile</cite>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -513,13 +521,13 @@ the <cite>$TRD_HOME/vitis_prj/scripts/xv2dpu_aie_noc.cfg</cite> (generated by <c
 </section>
 <hr class="docutils" />
 <section id="instructions-for-adding-other-kernels">
-<h2>7 Instructions for Adding Other Kernels<a class="headerlink" href="#instructions-for-adding-other-kernels" title="Permalink to this heading">¶</a></h2>
+<h2>7 Instructions for Adding Other Kernels<a class="headerlink" href="#instructions-for-adding-other-kernels" title="Permalink to this headline">¶</a></h2>
 <p>Vitis kernels developed for Versal devices, could be RTL kernel (only
 use PL resouces), AIE kernel (only uses AI Engine tiles), or kernel
 including both PL and AIE. The basic instructions for adding other
 kernels in this reference design are shown below.</p>
 <section id="rtl-kernel">
-<h3>7.1 RTL Kernel<a class="headerlink" href="#rtl-kernel" title="Permalink to this heading">¶</a></h3>
+<h3>7.1 RTL Kernel<a class="headerlink" href="#rtl-kernel" title="Permalink to this headline">¶</a></h3>
 <p>Package the RTL kernel as XO file. Then modify 2 files:
 <cite>vitis_prj/Makefile</cite>, and <cite>vitis_prj/scripts/xv2dpu_aie_noc.py</cite>,</p>
 <ol class="arabic simple">
@@ -556,7 +564,7 @@ clock soure of RTL kernel.</p></li>
 </section>
 </section>
 <section id="known-issues">
-<h2>8 Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h2>
+<h2>8 Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>This reference design has updated to support rev-B ES vek280 board,
 if you want to use it on rev-A board, Ethernet will not work, however

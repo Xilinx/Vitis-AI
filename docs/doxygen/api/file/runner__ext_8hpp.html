@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="runner-ext">
-<h1>runner_ext<a class="headerlink" href="#runner-ext" title="Permalink to this heading">¶</a></h1>
+<h1>runner_ext<a class="headerlink" href="#runner-ext" title="Permalink to this headline">¶</a></h1>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="cpp function">
@@ -223,7 +227,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All input TensorBuffers. A vector of raw pointer to the input <a class="reference internal" href="../namespace/namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>.</p>
 </dd>
 </dl>
@@ -243,7 +247,7 @@ Sample code:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>All output TensorBuffers. A vector of raw pointer to the output <a class="reference internal" href="../namespace/namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">TensorBuffer</span></a>.</p>
 </dd>
 </dl>
@@ -257,13 +261,13 @@ Sample code:</p>
 <span id="_CPPv3N4vart9RunnerExt13create_runnerEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="_CPPv2N4vart9RunnerExt13create_runnerEPKN3xir8SubgraphEPN3xir5AttrsE"></span><span id="vart::RunnerExt::create_runner__xir::SubgraphCP.xir::AttrsP"></span><span class="target" id="classvart_1_1_runner_ext_1a2d06613bafd66a3db2cbdbf8b30cada8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../class/classvart_1_1_runner_ext.html#_CPPv4N4vart9RunnerExtE" title="vart::RunnerExt"><span class="n"><span class="pre">RunnerExt</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_runner</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Subgraph</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subgraph</span></span>, <a class="reference internal" href="runner_8hpp.html#_CPPv43xir" title="xir"><span class="n"><span class="pre">xir</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Attrs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">attrs</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Factory fucntion to create an instance of runner by subgraph and attrs. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>subgraph</strong> – XIR Subgraph </p></li>
 <li><p><strong>attrs</strong> – XIR attrs object, this object is shared among all runners on the same graph. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An instance of runner. </p>
 </dd>
 </dl>

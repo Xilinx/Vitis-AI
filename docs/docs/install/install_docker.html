@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,7 +138,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="installing-docker">
-<h1>Installing Docker<a class="headerlink" href="#installing-docker" title="Permalink to this heading">¶</a></h1>
+<h1>Installing Docker<a class="headerlink" href="#installing-docker" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they support accelerated quantization. Before installing Docker for CUDA-capable GPUs, ensure that you understand the NVIDIA driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
@@ -144,7 +148,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>For ROCm distributions, developers should reference <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md">ROCm docker installation</a> for further details of docker installation.</p>
 </div>
 <section id="installing-nvidia-container-toolkit">
-<h2>Installing NVIDIA Container Toolkit<a class="headerlink" href="#installing-nvidia-container-toolkit" title="Permalink to this heading">¶</a></h2>
+<h2>Installing NVIDIA Container Toolkit<a class="headerlink" href="#installing-nvidia-container-toolkit" title="Permalink to this headline">¶</a></h2>
 <p>If you are building the Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit, which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a> for additional information.</p>
 <p>For Ubuntu distributions, NVIDIA driver and Container Toolkit installation can generally be accomplished as displayed in the following example (use sudo for non-root users):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">purge</span> <span class="n">nvidia</span><span class="o">*</span> <span class="n">libnvidia</span><span class="o">*</span>
@@ -160,7 +164,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>The output should appear similar to this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Thu</span> <span class="n">Dec</span>  <span class="mi">8</span> <span class="mi">21</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2022</span>
 <span class="o">/+-----------------------------------------------------------------------------+</span>
-<span class="o">/|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">470.161.03</span>   <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">470.161.03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">11.4</span>     <span class="o">|</span>
+<span class="o">/|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">470.161</span><span class="o">.</span><span class="mi">03</span>   <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">470.161</span><span class="o">.</span><span class="mi">03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">11.4</span>     <span class="o">|</span>
 <span class="o">/|-------------------------------+----------------------+----------------------+</span>
 <span class="o">/|</span> <span class="n">GPU</span>  <span class="n">Name</span>        <span class="n">Persistence</span><span class="o">-</span><span class="n">M</span><span class="o">|</span> <span class="n">Bus</span><span class="o">-</span><span class="n">Id</span>        <span class="n">Disp</span><span class="o">.</span><span class="n">A</span> <span class="o">|</span> <span class="n">Volatile</span> <span class="n">Uncorr</span><span class="o">.</span> <span class="n">ECC</span> <span class="o">|</span>
 <span class="o">/|</span> <span class="n">Fan</span>  <span class="n">Temp</span>  <span class="n">Perf</span>  <span class="n">Pwr</span><span class="p">:</span><span class="n">Usage</span><span class="o">/</span><span class="n">Cap</span><span class="o">|</span>         <span class="n">Memory</span><span class="o">-</span><span class="n">Usage</span> <span class="o">|</span> <span class="n">GPU</span><span class="o">-</span><span class="n">Util</span>  <span class="n">Compute</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
@@ -182,7 +186,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>Refer <a class="reference external" href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA driver installation</a> for further details of driver installation.</p>
 </section>
 <section id="docker-install">
-<h2>Docker Install<a class="headerlink" href="#docker-install" title="Permalink to this heading">¶</a></h2>
+<h2>Docker Install<a class="headerlink" href="#docker-install" title="Permalink to this headline">¶</a></h2>
 <p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
 </section>
 </section>

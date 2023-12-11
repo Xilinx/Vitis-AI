@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
@@ -30,7 +30,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -70,6 +69,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/vek280.html">Versal™ AI Edge VEK280</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/quickstart/v70.html">Alveo™ V70</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/getting-started-model-zoo.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/models-overview.html">Models overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
 <ul>
@@ -134,20 +138,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
            <div itemprop="articleBody">
              
   <section id="namespace-execute-async">
-<h1>Namespace execute_async<a class="headerlink" href="#namespace-execute-async" title="Permalink to this heading">¶</a></h1>
+<h1>Namespace execute_async<a class="headerlink" href="#namespace-execute-async" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="execute_async">
 <span class="target" id="namespaceexecute__async"></span><em class="property"><span class="pre">module</span> </em><span class="sig-name descname"><span class="pre">execute_async</span></span><a class="headerlink" href="#execute_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the runner. </p>
 <p>This is a blocking function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>inputs</strong> – : List[<a class="reference internal" href="namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">vart.TensorBuffer</span></a>], A list of <a class="reference internal" href="namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">vart.TensorBuffer</span></a> containing the input data for inference.</p></li>
 <li><p><strong>outputs</strong> – : List[<a class="reference internal" href="namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">vart.TensorBuffer</span></a>], A list of <a class="reference internal" href="namespacevart.html#classvart_1_1_tensor_buffer"><span class="std std-ref">vart.TensorBuffer</span></a> which will be filled with output data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>tuple[jobid, status] status 0 for exit successfully, others for customized warnings or errors. </p>
 </dd>
 </dl>
