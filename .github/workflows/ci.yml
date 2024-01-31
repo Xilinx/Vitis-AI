@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: 'Checkout'
+      uses: actions/checkout@v3
+
+    - name: 'Build docker images'
+      run: |
+        cd ./docker/
+        ./docker_build.sh -t cpu -f tf2
