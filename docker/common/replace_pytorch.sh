@@ -113,7 +113,8 @@ for torch_to_install  in ${torch_version[@]}; do
    elif [ $torch_to_install == "1.12.1" ];then
      install_version="torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116"
    elif [ $torch_to_install == "2.0.0" ];then
-     install_version="torch==2.0.0+cu117 torchvision==0.15.1+cu117 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117"
+     install_version="torch==2.0.0 torchvision==0.15.1 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu118" 
+	 #"torch==2.0.0+cu117 torchvision==0.15.1+cu117 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117"
    else
      echo -e "\e[91m>>>> please provide the detailed torch version install list in the script, refer to the other torch versions <<<<\e[m"
      exit 2
