@@ -271,7 +271,7 @@ function main
           REPLY=''
        }
 
-    confirm
+    #confirm
 
     execute
     rtn=$?
