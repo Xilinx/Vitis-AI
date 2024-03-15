@@ -17,4 +17,4 @@ jobs:
     - name: 'Build docker images'
       run: |
         cd ./docker/
-        ./docker_build.sh -t cpu -f tf2
+        ./docker_build.sh -t gpu -f tf2
