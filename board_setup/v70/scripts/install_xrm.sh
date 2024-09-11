@@ -64,12 +64,12 @@ elif [[ ( $distroname == *"CentOS"* || $distroname == *"Red Hat"* ) && $distrona
   XRM_INSTALLER=/tmp/xrm.rpm
   INSTALLER="yum"
 elif [[ $distroname == *"Red Hat Enterprise Linux"* && $distroname == *"8.3"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
-  XRT_INSTALLER=/tmp/xrt.rpm
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 elif [[ $distroname == *"Red Hat Enterprise Linux"* && $distroname == *"8.4"* ]]; then
-  XRT_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
-  XRT_INSTALLER=/tmp/xrt.rpm
+  XRM_URL="https://www.xilinx.com/bin/public/openDownload?filename=xrm_202220.1.5.212_8.1.1911-x86_64.rpm"
+  XRM_INSTALLER=/tmp/xrt.rpm
   INSTALLER="yum"
 else
   echo "Error: XRM does not support this OS"
