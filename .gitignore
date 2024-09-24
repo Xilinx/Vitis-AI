@@ -1,0 +1,15 @@
+# MacOS temporary files
+.DS_Store
+
+# Temporary file generated after docker_run
+.confirm
+
+# IntelliJ IDEA files
+.idea
+
+# Artifact folders in the Model Zoo
+model_zoo/models/*/*/artifacts
+
+
+/docs/
+/docsrc/build/
