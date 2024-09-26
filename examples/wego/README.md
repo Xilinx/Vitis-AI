@@ -40,6 +40,42 @@ Please refer to the following links to run the wego demos targeting different fr
 - [TensorFlow 2.x](./tensorflow-2.x)
 - [TensorFlow 1.x](./tensorflow-1.x)
 
+## QuickStart guide
+
+The step-by-step instructions are made for easy start with the WeGO tool for model optimization.
+Follow the guide to quickly launch the tool, for guide instructions, PyTorch InceptionV3 model was picked as an example 
+to do [the compiling an offline quantized model](https://github.com/Xilinx/Vitis-AI/tree/master/examples/wego/pytorch/01_compiling_offline_quantized_models) and run it.
+1. Prerequisite and installation. <br>
+Make sure that you have the latest version of Vitis-AI and the [WeGO Example Recipes](https://github.com/Xilinx/Vitis-AI/tree/master/examples/wego#prepare-wego-example-recipes) are downloaded. <br>
+Follow [the preparation step](https://github.com/Xilinx/Vitis-AI/tree/master/examples/wego#preparation) to get this done.
+2. Setup Conda Environment for WeGO-Torch. <br>
+Suppose you have entered the Vitis-AI CPU docker container, then using following command to activate the conda env for WeGO-Torch. <br>
+    ```bash
+    $ conda activate vitis-ai-wego-torch
+    ```
+3. Change directory to the corresponding classification folder in the WeGO folder. <br>
+    ```bash
+    $ cd ./pytorch/01_compiling_offline_quantized_models/classification/
+    ```
+4. Install the python dependencies. <br>
+    ```
+    $ pip install -r requirements.txt
+    ```
+5. Run the WeGO tool. <br>
+Since we utilize the InceptionV3 pre-saved model weights from the WeGORecipes. <br>
+For the example, two different running modes can be selected to enable accuracy and performance test purpose with different running options provided. <br>
+   - **normal**: example will accept one single image as input and then perform the normal inference process using single thread. The output result of this mode will be either top-5 accuracy or an image, which is decided by the model type. <br>
+       ```bash
+       $ bash run.sh inception_v3 normal
+       ```
+   - **perf**: example will accept one single image as input but a large image pool will be created instead (i.e. copying the input image many times). The performance profiling process will accept this large image pool as input and then run using multi-threads. The output result of this mode will be the performance profiling result(i.e. the FPS numbers). <br> 
+       ```bash
+       $ bash run.sh inception_v3 perf
+       ```
+>  **_NOTE:_**  You may also enable the OnBoard tool option in the `run.sh`, it will collect data during the inference process, allowing to visualize using TensorBoard. 
+
+6. Collect the WeGO artifacts in the `./_wego_torch` directory. <br>
+Generated `.xmodel` artifact and meta files are saved for further deploy in the DPU device.
 
 # Reference
 
