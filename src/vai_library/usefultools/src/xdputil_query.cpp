@@ -85,8 +85,8 @@ class base_device {
 
 class DPUCZDX8G_VIVADO_FLOW_DEVICE : public base_device {
  public:
-  DPUCZDX8G_VIVADO_FLOW_DEVICE() : fd(open("/dev/dpu", O_RDWR)) {
-    CHECK_GE(fd, 0) << "cannot open /dev/dpu";
+  DPUCZDX8G_VIVADO_FLOW_DEVICE() : fd(open("/dev/multidpu", O_RDWR)) {
+    CHECK_GE(fd, 0) << "cannot open /dev/multidpu";
   }
   ~DPUCZDX8G_VIVADO_FLOW_DEVICE() { close(fd); }
   int get_fd() { return fd; }
@@ -254,7 +254,7 @@ py::dict xdputil_query() {
   // 1.device_info
   std::shared_ptr<xir::XrtDeviceHandle> h;
   std::vector<device_info_struct> infos;
-  if (!access("/dev/dpu", F_OK)) {
+  if (!access("/dev/multidpu", F_OK)) {
     // vivado flow
     get_vivado_infos(infos);
   } else {
@@ -287,7 +287,7 @@ py::dict xdputil_status() {
   // 1.device_info
   std::shared_ptr<xir::XrtDeviceHandle> h;
   std::vector<device_info_struct> infos;
-  if (!access("/dev/dpu", F_OK)) {
+  if (!access("/dev/multidpu", F_OK)) {
     // vivado flow
     get_vivado_infos(infos);
   } else {
