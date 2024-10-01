@@ -28,7 +28,7 @@
 #include "./buffer_object_fd.hpp"
 #include "./dpu.h"
 #include "vitis/ai/xxd.hpp"
-#define DEV "/dev/dpu"
+#define DEV "/dev/multidpu"
 DEF_ENV_PARAM(DEBUG_BUFFER_OBJECT, "0")
 
 namespace {
