@@ -23,7 +23,7 @@
 #include "vitis/ai/env_config.hpp"
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
 DEF_ENV_PARAM_2(DPU_KERNEL_NAME, "unknown", std::string);
-DEF_ENV_PARAM_2(DPU_INSTANCE_NAME, "dpu0", std::string);
+DEF_ENV_PARAM_2(DPU_INSTANCE_NAME, "multidpu", std::string);
 
 namespace xir {
 static std::map<std::string, std::function<std::shared_ptr<DpuController>()>>& get_factory_methods()
