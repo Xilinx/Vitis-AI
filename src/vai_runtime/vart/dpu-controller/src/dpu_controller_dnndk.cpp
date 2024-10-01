@@ -66,8 +66,8 @@ static uint64_t get_dpu_fingerprint() {
 #ifdef __QNX__
     return 0u;
 #else
-    auto fd = open("/dev/dpu", O_RDWR | O_SYNC);
-    CHECK_GE(fd, 0) << "cannot open /dev/dpu";
+    auto fd = open("/dev/multidpu", O_RDWR | O_SYNC);
+    CHECK_GE(fd, 0) << "cannot open /dev/multidpu";
     uint64_t ret = 0;
     auto retval = ioctl(fd, DPUIOC_G_TGTID, (void*)(&ret));
     close(fd);
@@ -83,9 +83,9 @@ static uint64_t get_dpu_fingerprint() {
 
 DpuControllerDnndk::DpuControllerDnndk()
     : xir::DpuController{},
-      fd_{open("/dev/dpu", O_RDWR)},
+      fd_{open("/dev/multidpu", O_RDWR)},
       fingerprint_{get_dpu_fingerprint()} {
-  CHECK_GT(fd_, 0) << "cannot open /dev/dpu";
+  CHECK_GT(fd_, 0) << "cannot open /dev/multidpu";
 
   auto cu_device_id = 0;
   auto cu_core_id = 0;
@@ -219,19 +219,19 @@ size_t DpuControllerDnndk::get_num_of_dpus() const {
   // it is important to get number of core id, otherwiese, DPU
   // workspace is shared among DPUs.
 
-  // on x86 cloud environment, it might not open /dev/dpu, so
+  // on x86 cloud environment, it might not open /dev/multidpu, so
   // effectively, all HwSmFc is disabled.
   auto get_num_of_dpus = []() -> size_t {
     auto fd = open(
 #ifdef __QNX__
         "/dev/xdpu/0",
 #else
-        "/dev/dpu",
+        "/dev/multidpu",
 #endif
         O_RDWR);
     if (fd < 0) {
       LOG_IF(WARNING, ENV_PARAM(DEBUG_DPU_CONTROLLER))
-          << "cannot open /dev/dpu for smfc";
+          << "cannot open /dev/multidpu for smfc";
       return 0u;
     }
     uint32_t flags = 0;
@@ -268,7 +268,7 @@ uint64_t DpuControllerDnndk::get_fingerprint(size_t device_core_id) const {
 
 static struct Registar {
   Registar() {
-    if (!access("/dev/dpu", F_OK)) {
+    if (!access("/dev/multidpu", F_OK)) {
       xir::DpuController::registar("00_dnndk", []() {
         return std::shared_ptr<xir::DpuController>(
             vitis::ai::WeakSingleton<DpuControllerDnndk>::create());
@@ -278,7 +278,7 @@ static struct Registar {
     } else {
       LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER))
           << "cancel register the dnndk dpu controller, because "
-             "/dev/dpu is not opened";
+             "/dev/multidpu is not opened";
     }
   }
 } g_registar;
