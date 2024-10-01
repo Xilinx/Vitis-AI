@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,9 +23,10 @@ import tracer.tracerBase
 import copy
 import os
 
-
+idcode_ddrmc_num_dict = {'0x4c9b093':3, '0x4c93093':2, '0x4c98093':3, '0x4ca9093':4, '0x4ca8093':4, '0x4cd2093':3, '0x4cd0093':3,
+         '0x4c9a093':3, '0x4cc1093':1, '0x4cc0093':1, '0x4cc9093':1, '0x4cc8093':1, '0x4cd2093':3, '0x4cd3093':3}
 class APMRecord(Structure):
-    _fields_ = [('time', c_double), ('data', c_uint * 10)]
+    _fields_ = [('time', c_double), ('data', c_ulonglong * 10)]
 
     def output(self):
         return "APM %.7f %d %d %d %d %d %d %d %d %d %d\n" % (self.time, *self.data)
@@ -43,6 +44,8 @@ class APM:
         self.enabled = enable
         if mem_type == "noc":
             self.base_addr = self.get_noc_base_addr(self.type, devid)
+            if self.enabled == False:
+                return
             self.noc_base_addr = (c_int * len(self.base_addr))(*self.base_addr)
             self.apmLib.create_noc_instance(
                     self.type.encode(), self.noc_base_addr, int(len(self.base_addr)))
@@ -91,10 +94,11 @@ class APM:
     def get_noc_base_addr(self, mem_type, devid):
         if mem_type != "noc":
             return
-        if devid == "0x28":
-            ddrmc_number = 4
-        elif devid == "0x13":
-            ddrmc_number = 3
+        ddrmc_number = idcode_ddrmc_num_dict.get(devid, 0)
+        if ddrmc_number == 0:
+            logging.info("Can not get ddrmc/noc number!")
+            self.enabled = False
+            return
         pre_base_addr = []
         for (dirpath, dirnames, filenames) in os.walk("/proc/device-tree/axi"):
             for file in dirnames:
@@ -111,7 +115,8 @@ class APM:
                     addr_off = ((numl[20] << 24) + (numl[21] <<
                                 16) + (numl[22] << 8) + (numl[23] << 0))
                     pre_base_addr.append(int(addr_off))
-                    pre_base_addr.sort()
+
+        pre_base_addr.sort()
         return pre_base_addr[0:ddrmc_number]
 
     def stop(self):
@@ -132,6 +137,8 @@ class APM:
         self.record_data_len = self.apmLib.get_record_data_len()
 
     def transTimebase(self):
+        if self.enabled == False:
+            return
         for i in range(0, len(self.data)):
             for j in range(0, self.record_data_len):
                 self.data[i].data[j] = int(
@@ -164,14 +171,20 @@ class xapmTracer(tracer.tracerBase.Tracer):
         self.apm = None
         self.apm_type = None
         self.devid = None
+        self.apm_json_enable = None
+        self.sample_base_addr = []
 
     def prepare(self, option: dict, debug: bool):
         "Handle Input Options"
         xapmOption = option.get('tracer', {}).get('xapm', {})
-        self.interval = xapmOption.get("APM_interval", 0.01)
+        self.interval = xapmOption.get("APM_interval", 0.002)
         self.apm = APM(self.apm_type, self.devid)
-
+        if self.apm_type == "noc":
+            self.sample_base_addr = self.apm.base_addr
+            option.update({"ddrmc_base_addr": self.sample_base_addr})
         "Handle Output Options"
+        self.apm_json_enable = option.get('tracer', {}).get('noc_perf', {}).get('ddrmc_json_enable', {})
+        option['ddrmc_json_enable'] = self.apm_json_enable
         return option
 
     def start(self):
@@ -192,7 +205,7 @@ class xapmTracer(tracer.tracerBase.Tracer):
 
         if platform.get('model').startswith('xlnx,zocl-versal'):
             self.apm_type = "noc"
-            self.devid = platform.get('devid')
+            self.devid = '0x' + platform.get('idcode')[-7:]
             return True
         elif platform.get('model').startswith('xlnx,zocl'):
             self.apm_type = "apm"
@@ -201,6 +214,8 @@ class xapmTracer(tracer.tracerBase.Tracer):
             return False
 
     def getData(self):
+        if self.apm.enabled == False:
+            return
         return [d.output() for d in self.apm.data]
 
 

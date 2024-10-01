@@ -1,0 +1,4 @@
+[style]
+based_on_style = yapf
+indent_width = 2
+blank_lines_around_top_level_definition = 1

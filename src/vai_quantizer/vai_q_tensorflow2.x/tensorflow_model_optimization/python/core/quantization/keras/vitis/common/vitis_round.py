@@ -37,6 +37,9 @@ class RoundMode(enum.Enum):
   # ROUND_HALF_AWAY_FROM_ZERO, used in std round/py2 round.
   HALF_AWAY_FROM_ZERO = 2
 
+  # ROUND_TO_FLOOR, used in bert DPU simulate softmax
+  FLOOR  = 3
+
 
 def round_half_to_even(x):
   """ROUND_HALF_TO_EVEN, used in py3 round, tf.round or numpy.round.
@@ -65,11 +68,21 @@ def round_half_away_from_zero(x):
              floor(x),  x - floor(x) == 0.5 && x < 0
       eg: f(2.3) = 2, f(1.5) = 2, f(-1.5) = -2, f(2.5) = 3, f(-2.5) = -3, f(-2.6) = -3
   """
+  #rounded = tf.where(tf.math.equal(x-tf.math.floor(x), 0.5), tf.math.sign(x)*tf.math.ceil(x*tf.math.sign(x)), tf.math.round(x))
   floored = tf.math.floor(x)
   ceiled = tf.math.ceil(x)
   rounded = tf.math.round(x)
   rounded_half = tf.where(x > 0, ceiled, floored)
   rounded = tf.where(tf.math.equal(x - floored, 0.5), rounded_half, rounded)
+  return rounded
+
+
+def round_floor(x):
+  """ROUND_FLOOR, used in dpu round and tf.fake_quant
+      f(x) = floor(x) 
+      eg: f(2.3) = 2, f(1.5) = 1, f(-1.5) = -1, f(2.5) = 2, f(-2.5) = -2, f(-2.6) = -2
+  """
+  rounded = tf.math.floor(x)
   return rounded
 
 
@@ -81,5 +94,7 @@ def round(x, round_mode):
     return round_half_up(x)
   elif round_mode == RoundMode.HALF_AWAY_FROM_ZERO:
     return round_half_away_from_zero(x)
+  elif round_mode == RoundMode.FLOOR:
+    return round_floor(x)
   else:
     logger.error('Invalid round_mode: {}'.format(round_mode))

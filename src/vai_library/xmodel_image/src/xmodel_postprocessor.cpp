@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ map_to_single_batch(
       std::pair<std::string,
                 std::vector<std::pair<const xir::Op*,
                                       std::unique_ptr<vart::TensorBuffer>>>>>();
-  for (auto input : graph_output_tensor_buffers.inputs) {
+  for (auto& input : graph_output_tensor_buffers.inputs) {
     ret.emplace_back(std::make_pair(
         input.name,
         vitis::ai::vec_map(
@@ -154,6 +154,10 @@ XmodelPostprocessorSingleBatch::process(
             ;
       }
     }
+  }
+  // clear coverity complain about below lines
+  if (batch == -1) { 
+    batch = 1;
   }
   auto ret = std::vector<vitis::ai::proto::DpuModelResult>((size_t)batch);
   for (auto i = 0; i < batch; ++i) {

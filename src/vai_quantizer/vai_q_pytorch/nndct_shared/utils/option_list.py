@@ -41,8 +41,8 @@ class NndctOption(object):
   
   nndct_quant_mode = Option(name="quant_mode", dtype=int, default=0, 
                             help="quant mode, 1:calibration, 2:quantization")
-  
-  nndct_dump_float_format = Option(name="dump_float_format", dtype=int, default=0, 
+
+  nndct_dump_float_format = Option(name="dump_float_format", dtype=int, default=0,
                             help="deploy check data format, 0: bin, 1: txt")
   
   nndct_record_slow_mode = Option(name="record_slow_mode", dtype=bool, default=False, action="store_true", 
@@ -97,7 +97,7 @@ class NndctOption(object):
 
   nndct_mse_start_bin = Option(name="mse_start_bin", dtype=int, default=1536, help="mse calibration method start bin")
   
-  nndct_mse_stride = Option(name="mse_stride", dtype=int, default=4, help="mse calibration method stride")
+  nndct_mse_stride = Option(name="mse_stride", dtype=int, default=16, help="mse calibration method stride")
   
   nndct_entropy_start_bin = Option(name="entropy_start_bin", dtype=int, default=1536, help="entropy calibration method start bin")
   
@@ -133,6 +133,8 @@ class NndctOption(object):
 
   nndct_change_add_input_fix = Option(name="change_add_input_fix", dtype=bool, default=False, action="store_true", help="change add input nodes fix point to be the identical")
   
+  nndct_insert_concat_input_fix = Option(name="insert_concat_input_fix", dtype=bool, default=False, action="store_true", help="insert concat input nodes fix point to be the same as concat output node")
+  
   nndct_export_jit = Option(name="export_jit", dtype=bool, default=False, action="store_true", env="NNDCT_EXPORT_JIT", help="export quant script by inserting fixneuron")
 
   nndct_deploy_check = Option(name="deploy_check", dtype=bool, default=False, action="store_true", help="dump deploy data in forward process")
@@ -141,7 +143,7 @@ class NndctOption(object):
   
   nndct_op_tanh_sigmoid_mode = Option(name="tanh_sigmoid_mode", dtype=str, default='quant_input_output', help="Tanh/sigmoid quantization mode: quant_input_output, table_look_up, simulation, aie2_lut_16bw")
   
-  nndct_op_softmax_mode = Option(name="softmax_mode", dtype=str, default='quant_input_output', help="Softmax quantization mode: quant_input_output, hardware_pl, liyi, aie2_lut_16bw, bert_8bw")
+  nndct_op_softmax_mode = Option(name="softmax_mode", dtype=str, default='quant_input_output', help="Softmax quantization mode: quant_input_output, hardware_pl, liyi, aie2_lut_16bw, bert_8bw, ipu_8bw")
   
   nndct_op_logsoftmax_mode = Option(name="logsoftmax_mode", dtype=str, default='quant_input_output', help="Logsoftmax quantization mode: quant_input_output, aie2_lut_16bw")
 
@@ -165,7 +167,7 @@ class NndctOption(object):
 
   nndct_op_groupnorm_mode = Option(name="groupnorm_mode", dtype=str, default='quant_input_output', help="Groupnorm quantization mode: quant_input_output, ipu_8bw")
   
-  nndct_check_onnx = Option(name="check_onnx", dtype=bool, default=False, action="store_true", help="check exported onnx")
+  nndct_native_onnx = Option(name="native_onnx", dtype=bool, default=False, action="store_true", help="export native quant-dequant onnx models")
   
   nndct_inspect_test = Option(name="inspect_test", dtype=bool, default=False, action="store_true", env="NNDCT_INSPECT_TEST", help="embed target related test in torch quantizer")
 
@@ -173,4 +175,18 @@ class NndctOption(object):
   
   nndct_traversal_graph_mode = Option(name="nndct_traversal_graph_mode", dtype=int, default=0, env="NNDCT_GRAPH_SEARCH",help="0: auto, 1:recursion, 2: iteration")
   
+  nndct_op_sqrt_mode = Option(name="sqrt_mode", dtype=str, default='quant_input_output', help="sqrt quantization mode: quant_input_output, ipu_8bw")
 
+  nndct_onnx_opset_version = Option(name="onnx_opset_version", dtype=int, default=-1, help="opset_version of dumped onnx graph")
+  
+  nndct_only_int_quant = Option(name="only_int_quant", dtype=bool, default=True, help="only int datatype quantization included")
+
+  nndct_gemm88 = Option(name="gemm88", dtype=bool, default=False, action="store_true", help="only quant gemm88 and matmul88")
+  
+  nndct_pooling_split_mode = Option(name="nndct_pooling_split_mode", dtype=bool, default=False, help="default big pooling will split to small pooling")
+
+  nndct_fx_mode = Option(name="fx_mode", dtype=bool, default=False, action="store_true", env="NNDCT_FX_MODE", help="turn on fx mode")
+
+  nndct_dump_quant_config = Option(name="dump_quant_config", dtype=bool, default=False, action="store_true", env="NNDCT_DUMP_QUANT_CONFIG", help="dump quant config used")
+
+  nndct_close_rich_input_output = Option(name="nndct_close_rich_input_output", dtype=bool, default=False, action="store_true", env="NNDCT_CLOSE_RICH_INPUT_OUTPUT", help="turn off rich I/O for compatibility with legacy code")

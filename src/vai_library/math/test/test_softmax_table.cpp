@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ void getdata() {
     }
     std::cout << "max :" << max << " "
               << "min : " << min << " " << std::endl;
-    delete buffer;
+    delete []buffer;
   }
 }
 

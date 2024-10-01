@@ -401,6 +401,17 @@ def create_pattern_graph(name: str, ops: "List[xir.op_template]"):
 
   return pattern_graph
 
+def _merge_constfix(pattern_graph):
+  constfix = {"const-fix"}
+  fix2float = {"fix2float"}
+  remove_node_lst = []
+  for node in pattern_graph.nodes:
+    if pattern_graph.get_node_types(node) == constfix and len(pattern_graph.children(node)) > 0 and all([pattern_graph.get_node_types(cn) == fix2float for cn in pattern_graph.children(node)]):
+      remove_node_lst.append(node)
+  
+  for node in remove_node_lst:
+    pattern_graph.remove_one_node(node)
+
 def _merge_float2fix_fix2float_pair(pattern_graph):
   float2fix = {"float2fix"}
   fix2float = {"fix2float"}
@@ -539,6 +550,7 @@ def convert_xir_type_to_nndct_type(pattern_graph):
 
 
 def transform_pattern_graph(pattern_graph):
+  _merge_constfix(pattern_graph)
   _merge_float2fix_fix2float_pair(pattern_graph)
   _convert_fix_like_op_to_fix(pattern_graph)
   _merge_mul_coeff(pattern_graph)

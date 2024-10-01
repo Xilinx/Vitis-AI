@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -102,8 +102,9 @@ def parseCmdLine():
         "--txt_summary", dest='txt', action='store_true', help="Display txt summary")
     cmd_parser.add_argument(
         "--json_summary", dest='json', action='store_true', help="Display json summary")
-    cmd_parser.add_argument(
-        "--fine_grained", dest='fg', action='store_true', help="Fine grained mode")
+    # fine_grained feature was removed by xcompiler since vai-3.0
+    #cmd_parser.add_argument(
+    #    "--fine_grained", dest='fg', action='store_true', help="Fine grained mode")
 
     args = cmd_parser.parse_args()
 
@@ -161,13 +162,14 @@ def main(args, cmd_parser):
     else:
         logging.basicConfig(level=logging.INFO)
 
+    """
     if args.fg:
         logging.warning("The fine grained profiling model is enabled. Models will be run subgraph-by-subgraph.\n"
                         "1. It will introduce significant scheduling and memory access overhead, especially for small models.\n"
                         "2. Some xcompiler's optimizations will be turned-off.\n")
         options['runmode'] = 'debug'
         options['cmdline_args']['fg'] = True
-
+    """
     logging.debug("Command line args: ")
     logging.debug(args)
 

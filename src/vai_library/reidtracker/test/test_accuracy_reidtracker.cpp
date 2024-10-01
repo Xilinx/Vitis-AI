@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,6 @@ typedef pair<int, Mat> imagePair;
 class paircomp {
  public:
   bool operator()(const imagePair& n1, const imagePair& n2) const {
-    if (n1.first == n2.first) return n1.first > n2.first;
     return n1.first > n2.first;
   }
 };

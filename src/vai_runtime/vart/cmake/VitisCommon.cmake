@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -28,11 +28,28 @@ if(NOT MSVC)
 
   set(CMAKE_MACOSX_RPATH 1)
 else(NOT MSVC)
-  string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus")
+  string(APPEND CMAKE_CXX_FLAGS " /Zc:__cplusplus /Zi /Qspectre /ZH:SHA_256 /guard:cf /sdl")
   string(APPEND CMAKE_CXX_FLAGS " /wd4251")
+  # warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
+  string(APPEND CMAKE_CXX_FLAGS " /wd4244")
+  # warning C4267: 'initializing': conversion from 'size_t' to 'int32_t', possible loss of data
+  string(APPEND CMAKE_CXX_FLAGS " /wd4267")
+  # warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+  string(APPEND CMAKE_CXX_FLAGS " /wd4334")
+  # warning C4305: 'argument': truncation from 'double' to 'float'
+  string(APPEND CMAKE_CXX_FLAGS " /wd4305")
+
   if(BUILD_SHARED_LIBS)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
   endif(BUILD_SHARED_LIBS)
+  # cl: error handler <unwind> feature enabled.
+  string(APPEND CMAKE_CXX_FLAGS " /EHs")
+
+  add_link_options(
+    /DEBUG
+    /guard:cf
+    /CETCOMPAT
+  )
 endif(NOT MSVC)
 
 if(CMAKE_BUILD_TYPE MATCHES "Release")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <glog/logging.h>
 
 #include <eigen3/Eigen/Dense>
@@ -20,7 +21,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/demo.hpp>
+#include <vitis/ai/demo_b1.hpp>
 #include <vitis/ai/multitask.hpp>
 #include <vitis/ai/posedetect.hpp>
 #include <vitis/ai/ssd.hpp>
@@ -28,10 +29,14 @@
 namespace vitis {
 namespace ai {
 
+typedef std::vector<vitis::ai::PoseDetectResult> SSDPoseDetectResult;
 struct SSDPoseDetect {
   static std::unique_ptr<SSDPoseDetect> create();
   SSDPoseDetect();
-  std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat& input_image);
+  // std::vector<vitis::ai::PoseDetectResult> run(const cv::Mat& input_image);
+  SSDPoseDetectResult run(const cv::Mat& input_image);
+  std::vector<SSDPoseDetectResult> run(
+      const std::vector<cv::Mat>& input_images);
   int getInputWidth();
   int getInputHeight();
 
@@ -50,9 +55,10 @@ SSDPoseDetect::SSDPoseDetect()
     : ssd_{vitis::ai::SSD::create("ssd_pedestrian_pruned_0_97", true)},
       pose_detect_{vitis::ai::PoseDetect::create("sp_net")} {}
 
-std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
-    const cv::Mat& input_image) {
-  std::vector<vitis::ai::PoseDetectResult> mt_results;
+// std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
+SSDPoseDetectResult SSDPoseDetect::run(const cv::Mat& input_image) {
+  // std::vector<vitis::ai::PoseDetectResult> mt_results;
+  SSDPoseDetectResult mt_results;
   cv::Mat image;
   auto size = cv::Size(ssd_->getInputWidth(), ssd_->getInputHeight());
   if (size != input_image.size()) {
@@ -64,13 +70,12 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
   auto ssd_results = ssd_->run(image);
 
   for (auto& box : ssd_results.bboxes) {
-    if (1)
-      DLOG(INFO) << "box.x " << box.x << " "            //
-                 << "box.y " << box.y << " "            //
-                 << "box.width " << box.width << " "    //
-                 << "box.height " << box.height << " "  //
-                 << "box.score " << box.score << " "    //
-          ;
+      //DLOG(INFO) << "box.x " << box.x << " "            //
+      //           << "box.y " << box.y << " "            //
+      //           << "box.width " << box.width << " "    //
+      //           << "box.height " << box.height << " "  //
+      //           << "box.score " << box.score << " "    //
+      //    ;
     // int label = box.label;
     int xmin = box.x * input_image.cols;
     int ymin = box.y * input_image.rows;
@@ -100,6 +105,16 @@ std::vector<vitis::ai::PoseDetectResult> SSDPoseDetect::run(
   }
   return mt_results;
 }
+
+std::vector<SSDPoseDetectResult> SSDPoseDetect::run(
+    const std::vector<cv::Mat>& input_images) {
+  std::vector<SSDPoseDetectResult> batch_mt_results(input_images.size());
+  for (auto i = 0u; i < input_images.size(); ++i) {
+    batch_mt_results[i] = run(input_images[i]);
+  }
+  return batch_mt_results;
+}
+
 }  // namespace ai
 }  // namespace vitis
 
@@ -166,6 +181,19 @@ static cv::Mat process_result_multitask_with_original(
   m1.copyTo(canvas(Rect(0, image.rows, image.cols, image.rows)));
   image.copyTo(canvas(Rect(0, 0, image.cols, image.rows)));
   return canvas;
+}
+
+[[maybe_unused]] static std::vector<cv::Mat> process_result_multitask_with_original_batch(
+    std::vector<cv::Mat>& images,
+    const std::vector<vitis::ai::MultiTaskResult>& results, bool is_jpeg) {
+  size_t size = std::min(images.size(), results.size());
+  std::vector<cv::Mat> image_results(size);
+
+  for (auto i = 0u; i < size; ++i) {
+    image_results[i] =
+        process_result_multitask_with_original(images[i], results[i], is_jpeg);
+  }
+  return image_results;
 }
 
 static inline void DrawLine(Mat& img, Point2f point1, Point2f point2,
@@ -240,7 +268,7 @@ cv::Mat process_result_pose_detect(cv::Mat& image,
 }
 
 static cv::Mat process_result_pose_detect_with_ssd(
-    cv::Mat& image, const std::vector<vitis::ai::PoseDetectResult>& results,
+    cv::Mat& image, const vitis::ai::SSDPoseDetectResult& results,
     bool is_jpeg) {
   (void)process_result_pose_detect_with_ssd;
   cv::Mat canvas(cv::Size(image.cols, image.rows * 2), CV_8UC3);
@@ -252,19 +280,34 @@ static cv::Mat process_result_pose_detect_with_ssd(
   return canvas;
 }
 
+[[maybe_unused ]] static std::vector<cv::Mat> process_result_pose_detect_with_ssd_batch(
+    std::vector<cv::Mat>& images,
+    const std::vector<vitis::ai::SSDPoseDetectResult>& batch_results,
+    bool is_jpeg) {
+  size_t size = std::min(images.size(), batch_results.size());
+  std::vector<cv::Mat> image_results(size);
+  for (auto i = 0u; i < size; ++i) {
+    image_results[i] = process_result_pose_detect_with_ssd(
+        images[i], batch_results[i], is_jpeg);
+  }
+  return image_results;
+}
+
 int main(int argc, char* argv[]) {
   gui_layout() = {{0, 0, 960, 540 * 2}, {960, 0, 960, 540 * 2}};
-  gui_background() = cv::imread("/etc/alternatives/background.jpg");
   return vitis::ai::main_for_video_demo_multiple_channel(
       argc, argv,
       {[] {
          return vitis::ai::create_dpu_filter(
              [] { return vitis::ai::MultiTask8UC3::create("multi_task"); },
              process_result_multitask_with_original);
+             //process_result_multitask_with_original_batch);
+         //    }});
        },
        [] {
          return vitis::ai::create_dpu_filter(
              [] { return vitis::ai::SSDPoseDetect::create(); },
              process_result_pose_detect_with_ssd);
+             //process_result_pose_detect_with_ssd_batch);
        }});
 }

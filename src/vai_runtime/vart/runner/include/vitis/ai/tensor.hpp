@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,22 +38,21 @@ class Tensor {
   };
 
  public:
-  Tensor(const std::string& name, const std::vector<std::int32_t>& dims,
-         DataType data_type);
+  Tensor(std::string name, std::vector<std::int32_t> dims, DataType data_type);
   Tensor() = delete;
 
  public:
   const std::string& get_name() const;
 
-  const std::int32_t get_dim_num() const;
+  std::int32_t get_dim_num() const;
 
-  const std::int32_t get_element_num() const;
+  std::int32_t get_element_num() const;
 
-  const std::int32_t get_dim_size(std::int32_t idx) const;
+  std::int32_t get_dim_size(std::int32_t idx) const;
 
   const std::vector<std::int32_t>& get_dims() const;
 
-  const DataType get_data_type() const;
+  DataType get_data_type() const;
 
   std::string to_string() const;
 

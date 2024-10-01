@@ -1,3 +1,18 @@
+# Copyright 2019 Xilinx Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
 cmake_minimum_required(VERSION 3.0)
 
 project(fix_neuron_op)
@@ -5,7 +20,13 @@ project(fix_neuron_op)
 # get tensorflow compile info, see https://www.tensorflow.org/how_tos/adding_an_op/
 execute_process(COMMAND python3 -c "import tensorflow; print(tensorflow.sysconfig.get_include())" OUTPUT_VARIABLE Tensorflow_INCLUDE_DIRS)
 execute_process(COMMAND python3 -c "import tensorflow as tf; print(' '.join(tf.sysconfig.get_link_flags()), end='')" OUTPUT_VARIABLE Tensorflow_LINK_FLAGS)
-execute_process(COMMAND python3 -c "import tensorflow as tf; print(' '.join(tf.sysconfig.get_compile_flags()).replace('ABI=0', 'ABI=0'), end='')" OUTPUT_VARIABLE Tensorflow_COMPILE_FLAGS)
+if (ABI1)
+  message("build with ABI=1")
+  execute_process(COMMAND python3 -c "import tensorflow as tf; print(' '.join(tf.sysconfig.get_compile_flags()).replace('ABI=0', 'ABI=1'), end='')" OUTPUT_VARIABLE Tensorflow_COMPILE_FLAGS)
+else()
+  message("build with ABI=0")
+  execute_process(COMMAND python3 -c "import tensorflow as tf; print(' '.join(tf.sysconfig.get_compile_flags()).replace('ABI=0', 'ABI=0'), end='')" OUTPUT_VARIABLE Tensorflow_COMPILE_FLAGS)
+endif()
 execute_process(COMMAND python3 -c "import tensorflow as tf; print(tf.sysconfig.get_lib())" OUTPUT_VARIABLE TF_LIBRARY_PATH)
 
 
@@ -19,7 +40,8 @@ message("tensorflow link flag is  ${Tensorflow_LINK_FLAGS}")
 message("tensorflow compile flag is  ${Tensorflow_COMPILE_FLAGS}")
 
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed -Wl,-rpath='$ORIGIN/':'$ORIGIN/../../tensorflow_core/' ${Tensorflow_LINK_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS}")
@@ -33,7 +55,7 @@ if (GPU)
   MESSAGE(STATUS "cuda found ${CUDA_FOUND}")
   option(WITH_GPU "compile vai_q_tensorflo with cuda:" ${CUDA_FOUND})
 
-  set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11 ${Tensorflow_COMPILE_FLAGS} -D GOOGLE_CUDA=1 -Xcompiler -fPIC -DNDEBUG --expt-relaxed-constexpr" )
+  set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++14 ${Tensorflow_COMPILE_FLAGS} -D GOOGLE_CUDA=1 -Xcompiler -fPIC -DNDEBUG --expt-relaxed-constexpr" )
   
   # need to be at least 30 or __shfl_down in reduce wont compile
   #set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_30,code=sm_30")
@@ -76,7 +98,7 @@ message("CMAKE_CXX_FLAGS is  ${CMAKE_CXX_FLAGS}")
 
 set(op_name "fix_neuron")
 
-if(WITH_GPU)
+if(GPU AND WITH_GPU)
   MESSAGE(STATUS "Building shared library with GPU support")
 
   ## let CUDA_ADD_LIBRARY treat *.cu.cc as *.cu file, then will invoke nvcc to compile

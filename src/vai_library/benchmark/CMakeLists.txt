@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,8 @@ vai_add_library(
        include/vitis/ai/demo.hpp
        include/vitis/ai/demo2.hpp
        include/vitis/ai/demo3.hpp
+       include/vitis/ai/demo_b1.hpp
+       include/vitis/ai/demo_bx.hpp
        include/vitis/ai/dpdrm.hpp
        include/vitis/ai/image_list.hpp
        include/vitis/ai/stat_samples.hpp

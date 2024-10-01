@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <glog/logging.h>
-
+#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -28,6 +28,10 @@ int main(int argc, char* argv[]) {
   Mat img = imread(argv[2], cv::IMREAD_GRAYSCALE);
   {
     auto superpoint = vitis::ai::SuperPoint::create(model_name);
+    if (!superpoint) { // supress coverity complain
+       std::cerr <<"create error\n";
+       abort();
+    }
 
     vector<Mat> imgs;
     for(size_t i = 0; i < superpoint->get_input_batch(); ++i)

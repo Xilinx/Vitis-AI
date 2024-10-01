@@ -26,9 +26,10 @@ import copy
 import numpy as np
 from nndct_shared.utils import NndctOption, NndctScreenLogger
 from pytorch_nndct.nn.utils.decorator import pre_and_post_process_f16_tensor
-
+from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
 # from torch.utils.cpp_extension import load
 __all__ = ["NndctFixNeuron",
+           "NndctRound", \
            "NndctDiffsFixPos",\
            "NndctDiffsFixPosChannel",\
            "NndctSigmoidTableLookup",\
@@ -50,12 +51,13 @@ __all__ = ["NndctFixNeuron",
            "NndctInverseAIE2",\
            "NndctLogSoftmaxFastLn",\
            "NndctLogSoftmaxSub",\
+           "NndctAIESqrt",\
+           "NndctAIEISqrt",\
            "NndctISqrt",\
            "NndctLayernormInvSqrt"]     
 
 def support_onnx_export():
-  torch_version = torch.__version__.split('.')
-  if int(torch_version[0]) == 1 and int(torch_version[1]) >= 7:
+  if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.7.0"):
     return True
   else:
     return False
@@ -88,6 +90,12 @@ class FixNeuronWithBackward(torch.nn.Module):
   def forward(self, input, scale_inv, zero_point, quant_max, method=2):
     output = FixNeuronFunc.apply(input, scale_inv, zero_point, quant_max, method)
     return output
+
+@pre_and_post_process_f16_tensor
+def NndctRound(Tinput, Toutput, method=2):
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  torch.ops.vai.Round(Tinput, Toutput, method, device_id)
+  return Toutput
 
 @pre_and_post_process_f16_tensor
 def NndctFixNeuron(Tinput, Toutput, maxamp, method=2):
@@ -255,48 +263,54 @@ def NndctSoftmaxSimulationPart2(sum, Toutput):
 @pre_and_post_process_f16_tensor
 def fake_quantize_per_tensor(input, scale_inv, zero_point, quant_min, quant_max, method, inplace):
   if method == -1:
-    return torch.fake_quantize_per_tensor_affine(input, 1.0 / scale_inv, zero_point, quant_min, quant_max)
+    scale_inv = scale_inv.item() if isinstance(scale_inv, torch.Tensor) else scale_inv
+    if not inplace:
+      return torch.fake_quantize_per_tensor_affine(input, 1.0 / scale_inv, zero_point, quant_min, quant_max)
+    else:
+      out = torch.fake_quantize_per_tensor_affine(input, 1.0 / scale_inv, zero_point, quant_min, quant_max)
+      input.data.copy_(out.data)
+      return input
   else:
     input = clone_view_tensor(input)
     device_id = 1 if input.device == torch.device("cpu") else 0
+   
     if support_onnx_export():
       output = torch.ops.vai.fix_neuron(input, quant_min, quant_max, 
                                         scale_inv, zero_point, method, 
                                         device_id, inplace)
       return output
     else:
-      nndct_kernels.FixNeuronV2(input, input, quant_min, 
+      output = input.clone() if inplace == 0 else input
+      nndct_kernels.FixNeuronV2(input, output, quant_min, 
                                 quant_max, scale_inv, zero_point, 
                                 method, device_id)
-      return input
-
+      return output
+        
 @pre_and_post_process_f16_tensor
 def fake_quantize_per_channel(input, scale_inv, zero_point, axis, quant_min, quant_max, method, inplace):
   if method == -1:
-    if (int(torch.__version__.split('.')[1]) > 9) and (int(torch.__version__.split('.')[0]) > 0):
+    if compare_torch_version(CmpFlag.GREATER, "0.9.0"):
       zero_point = zero_point.to(torch.int32)
     else:
       zero_point = zero_point.to(torch.long)
     return torch.fake_quantize_per_channel_affine(input, 1.0 / scale_inv, zero_point, axis, quant_min, quant_max)
   else:
-    # TODO(@kewang): The split is a tensor view operation. Is it neccessary to clone tensor before calib and test? 
     device_id = 1 if input.device == torch.device("cpu") else 0
-    input_split = torch.split(input, 1, dim=axis)
-    input_cat = []
     if support_onnx_export():
-      for i in range(len(input_split)):
-        input_cat.append(torch.ops.vai.fix_neuron(input_split[i], quant_min, quant_max, 
-                                                  scale_inv[i], zero_point[i], method, 
-                                                  device_id, inplace))
-      output = torch.cat(input_cat, axis)
+      scale = torch.where(scale_inv<sys.float_info.min, torch.tensor(sys.float_info.max, dtype=scale_inv.dtype, device=scale_inv.device), 1.0/scale_inv).to(torch.float)
+      # api: (tensor(float), int32, int32, tensor(float), tensor(int8), int32, int32, int32, bool)
+      output = torch.ops.vai.fix_neuron_per_channel(input, quant_min, quant_max, scale, zero_point.to(torch.int8), axis, method, device_id, inplace) 
       return output
     else:
+      input_split = torch.split(input, 1, dim=axis)
+      output_cat = []
       for i in range(len(input_split)):
-        nndct_kernels.FixNeuronV2(input_split[i], input_split[i], quant_min, 
-                                  quant_max, scale_inv, zero_point, 
+        output_split = input_split[i].clone() if inplace == 0 else input_split[i]
+        nndct_kernels.FixNeuronV2(input_split[i], output_split, quant_min, 
+                                  quant_max, scale_inv[i], zero_point[i], 
                                   method, device_id)
-        input_cat.append(input_split[i])
-      output = torch.cat(input_cat, axis)
+        output_cat.append(output_split)
+      output = torch.cat(output_cat, axis)
       return output
   
 @pre_and_post_process_f16_tensor
@@ -454,6 +468,18 @@ def NndctLogSoftmaxSub(Tinput, Toutput, Tsum):
     print("LogSoftmax subtraction does not support CPU")
   else:
     torch.ops.vai.LogSoftmaxSub(Tinput, Toutput, Tsum, device_id)
+
+@pre_and_post_process_f16_tensor
+def NndctAIESqrt(Tinput, Toutput):
+  Tinput = clone_view_tensor(Tinput)
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  torch.ops.vai.AIESqrt(Tinput, Toutput, device_id)
+
+@pre_and_post_process_f16_tensor
+def NndctAIEISqrt(Tinput, Toutput):
+  Tinput = clone_view_tensor(Tinput)
+  device_id = 1 if Tinput.device == torch.device("cpu") else 0
+  torch.ops.vai.AIEISqrt(Tinput, Toutput, device_id)
 
 @pre_and_post_process_f16_tensor
 def NndctISqrt(Tinput, Toutput):

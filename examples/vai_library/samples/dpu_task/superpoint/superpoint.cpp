@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class SuperPointImp : public SuperPoint {
   virtual int getInputHeight() const override;
 
  private:
-  void set_input(vitis::ai::library::InputTensor tensor, float mean, float scale, vector<Mat>& img);
+  void set_input(vitis::ai::library::InputTensor& tensor, float mean, float scale, vector<Mat>& img);
   void superpoint_run(const vector<cv::Mat>& input_images);
   bool verifyOutput(size_t count);
 
@@ -414,7 +414,7 @@ bool SuperPointImp::verifyOutput(size_t count) {
   return true;
 }
 
-void SuperPointImp::set_input(vitis::ai::library::InputTensor tensor, float mean, float scale, vector<Mat>& img) {
+void SuperPointImp::set_input(vitis::ai::library::InputTensor& tensor, float mean, float scale, vector<Mat>& img) {
   float scale0 = vitis::ai::library::tensor_scale(tensor);
   size_t isize = tensor.size / tensor.batch;
   __TIC__(RESIZE)

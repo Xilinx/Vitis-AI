@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ int main(int argc, char *argv[]) {
   auto model_name = std::string(argv[1]);
   auto image_file = std::string(argv[2]);
   auto dpu_task = vitis::ai::ConfigurableDpuTask::create(model_name, true);
+  if (!dpu_task) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   auto image = cv::imread(image_file);
   if (image.empty()) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ void TensorBufferLinkerHostPhy::finalize() {
   //--------------------------
   // build replacement_
   replacement_ = master_;
-  for (auto s : slaves_) {
+  for (auto& s : slaves_) {
     if (kind(s.first) < kind(replacement_)) {
       replacement_ = s.first;
     }
@@ -113,7 +113,7 @@ void TensorBufferLinkerHostPhy::finalize() {
   }
   int index = 0;
   linker_decisions_ = vitis::ai::vec_map(slaves_, decide);
-  for (auto s : slaves_) {
+  for (auto& s : slaves_) {
     switch (linker_decisions_[index]) {
       case REPLACE:
         replace(s.first);
@@ -131,7 +131,7 @@ void TensorBufferLinkerHostPhy::finalize() {
 void TensorBufferLinkerHostPhy::after_invoke_runner(
     const xir::Subgraph* subgraph) {
   int index = 0;
-  for (auto s : slaves_) {
+  for (auto& s : slaves_) {
     if (linker_decisions_[index] == KEEP) {
       LOG_IF(INFO, ENV_PARAM(DEBUG_GRAPH_RUNNER))
           << " copy tensor buffer \n\tfrom" << replacement_->get()->to_string()

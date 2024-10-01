@@ -37,7 +37,7 @@ if [[ "$DOCKER_TYPE" == 'rocm' ]];then
 fi
 
 if [[ "$DOCKER_TYPE" == 'gpu'  && "$TARGET_FRAMEWORK" == 'tf2' ]];then
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/vitis_ai/conda/envs/vitis-ai-tensorflow2/lib
+    export LD_LIBRARY_PATH=/opt/vitis_ai/conda/envs/vitis-ai-tensorflow2/lib:$LD_LIBRARY_PATH
 fi
 
 if [ -f /tmp/.Xauthority ]; then

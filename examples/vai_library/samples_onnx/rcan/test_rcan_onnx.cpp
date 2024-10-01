@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
   __TOC__(ONNX_RUN)
 
   for (auto i = 0u; i < results.size(); ++i) {
-    std::cout << "batch " << i << ":" << std::endl;
+    std::cout << "batch " << i << std::endl;
     cv::imwrite(std::string("batch_") + std::to_string(i) + ".jpg",
                 results[i].feat);
   }

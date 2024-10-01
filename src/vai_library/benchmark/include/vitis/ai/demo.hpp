@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 #include <string>
+#include <vector>
+#include <stack>
 #include <thread>
 #include <type_traits>
 #include <vitis/ai/bounded_queue.hpp>
@@ -307,7 +309,7 @@ struct ClassificaitonDecodeThread : public MyThread {
   }
 
   void load_image(const std::vector<cv::String>& namelist) {
-    for (auto name : namelist) {
+    for (auto& name : namelist) {
       auto image = cv::imread(name);
       cv::resize(image, image, cv::Size(224, 224));
       image_lib_.push_back(image);
@@ -364,17 +366,17 @@ struct ClassificaitonDecodeThread : public MyThread {
   std::vector<cv::Mat> image_lib_;
   std::vector<std::tuple<cv::Mat, int, cv::Rect_<int>>> mosaik_part_;
 
-  int channel_id_;
+  int channel_id_=0;
   std::string channel_name_;
-  unsigned long frame_id_;
-  queue_t* queue_;
-  int per_page_;
-  int page_num_;
+  unsigned long frame_id_=0;
+  queue_t* queue_=NULL;
+  int per_page_=0;
+  int page_num_=0;
   cv::Rect_<int> page_layout_;
-  int mosaik_width_;
-  int mosaik_height_;
-  int horizontal_num_;
-  int vertical_num_;
+  int mosaik_width_=0;
+  int mosaik_height_=0;
+  int horizontal_num_=0;
+  int vertical_num_=0;
 };
 
 static std::unique_ptr<cv::VideoWriter> maybe_create_gst_video_writer(
@@ -530,9 +532,9 @@ struct GuiThread : public MyThread {
   queue_t* getQueue() { return queue_.get(); }
 
   std::unique_ptr<queue_t> queue_;
-  int inactive_counter_;
+  int inactive_counter_=0;
   struct FrameCache {
-    bool dirty;
+    bool dirty=false;
     FrameInfo frame_info;
   };
   std::map<int, FrameCache> frames_;
@@ -729,9 +731,9 @@ struct GridGuiThread : public MyThread {
   queue_t* getQueue() { return queue_.get(); }
 
   std::unique_ptr<queue_t> queue_;
-  int inactive_counter_;
+  int inactive_counter_=0;
   struct FrameCache {
-    bool dirty;
+    bool dirty=false;
     std::vector<FrameInfo> all_frame_info;
   };
   std::map<int, FrameCache> frames_;
@@ -801,8 +803,8 @@ struct DpuThread : public MyThread {
 
   virtual std::string name() override { return std::string("DPU-") + suffix_; }
   std::unique_ptr<Filter> filter_;
-  queue_t* queue_in_;
-  queue_t* queue_out_;
+  queue_t* queue_in_=NULL;
+  queue_t* queue_out_=NULL;
   std::string suffix_;
 };
 
@@ -871,13 +873,13 @@ struct SortingThread : public MyThread {
   }
 
   virtual std::string name() override { return std::string{"SORT-"} + suffix_; }
-  queue_t* queue_in_;
-  queue_t* queue_out_;
-  unsigned long frame_id_;
+  queue_t* queue_in_=NULL;
+  queue_t* queue_out_=NULL;
+  unsigned long frame_id_=0;
   std::deque<std::chrono::time_point<std::chrono::steady_clock>> points_;
   std::string suffix_;
-  float fps_;
-  float max_fps_;
+  float fps_=0.0;
+  float max_fps_=0.0;
 };
 inline void usage_video(const char* progname) {
   std::cout << "usage: " << progname << "      -t <num_of_threads>\n"
@@ -1071,6 +1073,55 @@ struct Classification_Channel {
   std::unique_ptr<SortingThread> sorting_thread;
 };
 
+
+static void get_valid_file_path(std::string filename, std::string filedir, std::string& result){
+  char cwd[1024];
+  if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+    std::string current_dir(cwd);
+    LOG_IF(INFO, false) << "Current working directory: " << current_dir << std::endl;
+    //get absolute path
+    std::string file_tmp;
+    if(filedir[0] == '~'){
+      file_tmp =  "/home/root" + filedir.substr(1);
+    }
+    else if (filedir[0] != '/'){
+      file_tmp = current_dir + "/" + filedir;
+    }
+    else{
+      file_tmp = filedir;
+    }
+    //remove ./ ../ in the absolute path
+    std::stack<std::string> stk;
+    std::string segment;
+    std::stringstream ss(file_tmp);
+
+    while (std::getline(ss, segment, '/')) {
+        if (segment == ".." && !stk.empty()) {
+            stk.pop();
+        } else if (segment != "." && segment != ".." && !segment.empty()) {
+            stk.push(segment);
+        }
+    }
+
+    std::vector<std::string> dirs;
+    while (!stk.empty()) {
+        dirs.push_back(stk.top());
+        stk.pop();
+    }
+
+    for (auto it = dirs.rbegin(); it != dirs.rend(); ++it) {
+        result += "/";
+        result += *it;
+    }
+
+    result = result + "/" + filename;
+  } else {
+      std::cerr << "Failed to get current working directory." << std::endl;
+  }
+  
+
+}
+
 int main_for_classification_demo(
     int argc, char* argv[],
     const std::vector<std::pair<std::function<std::unique_ptr<Filter>()>,
@@ -1178,10 +1229,42 @@ int main_for_jpeg_demo(int argc, char* argv[],
       batch = batch_set;
     }
     std::vector<std::string> batch_files(batch);
+    std::vector<std::string> batch_filenames(batch);
     std::vector<cv::Mat> images(batch);
     for (auto index = 0u; index < batch; ++index) {
-      const auto& file = image_files[index % image_files.size()];
-      batch_files[index] = file;
+      auto& file_init = image_files[index % image_files.size()];
+      std::size_t pos = file_init.find_last_of('/');
+      std::size_t dot_pos = file_init.find_last_of('.');
+
+      // get basename of image
+      //get file name of image
+      if (pos == std::string::npos){
+        const std::string basename = file_init.substr(0, dot_pos);
+        const std::string filename = file_init;
+        batch_files[index] = basename;
+        batch_filenames[index] = filename;
+      }else{
+        const std::string basename = file_init.substr(pos + 1, dot_pos - pos - 1);
+        const std::string filename = file_init.substr(pos+1);
+        batch_files[index] = basename;
+        batch_filenames[index] = filename;
+      }
+      
+
+      //get valid path of image;
+      std::string valid_path = "";
+      //get working dir
+      std::string filedir = "";
+      if(pos != std::string::npos)
+        filedir = file_init.substr(0,pos);
+      LOG_IF(INFO, false) << "filedir: " << filedir <<std::endl
+            << "filename: " << batch_filenames[index] << std::endl
+            << "basename: " << batch_files[index] << std::endl;
+      get_valid_file_path(batch_filenames[index], filedir , valid_path);
+      const auto& file = valid_path;
+      LOG_IF(INFO, false) << "valid image file path: " << file << std::endl;
+
+
       images[index] = cv::imread(file);
       CHECK(!images[index].empty()) << "cannot read image from " << file;
     }
@@ -1190,10 +1273,10 @@ int main_for_jpeg_demo(int argc, char* argv[],
 
     assert(results.size() == batch);
     for (auto i = 0u; i < results.size(); i++) {
-      LOG(INFO) << "batch: " << i << "     image: " << batch_files[i];
+      LOG(INFO) << "batch: " << i << "     image: " << batch_filenames[i] ;
       auto image = process_result(images[i], results[i], true);
       auto out_file = std::to_string(i) + "_" +
-                      batch_files[i].substr(0, batch_files[i].size() - 4) +
+                      batch_files[i] +
                       "_result.jpg";
       cv::imwrite(out_file, image);
       LOG_IF(INFO, ENV_PARAM(DEBUG_DEMO))

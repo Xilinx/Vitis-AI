@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@
 #include <iostream>
 #include <map>
 #include <vector>
-
-int GLOBAL_ENABLE_NEW_IOU = 0;
 
 static float overlap(float x1, float w1, float x2, float w2) {
   float left = max(x1 - w1 / 2.0, x2 - w2 / 2.0);
@@ -78,7 +76,7 @@ void print(vector<T> date) {
 
 void applyNMS(const vector<vector<float>>& boxes, const vector<float>& scores,
               const float nms, const float conf, vector<size_t>& res,
-              bool stable) {
+              bool stable, const int iou_type) {
   const size_t count = boxes.size();
   vector<pair<float, size_t>> order;
   for (size_t i = 0; i < count; ++i) {
@@ -115,7 +113,7 @@ void applyNMS(const vector<vector<float>>& boxes, const vector<float>& scores,
       size_t j = ordered[_j];
       if (!exist_box[j]) continue;
       float ovr = 0.0;
-      if (GLOBAL_ENABLE_NEW_IOU == 0) {
+      if (iou_type == 0) {
         ovr = cal_iou(boxes[j], boxes[i]);
       } else {
         ovr = cal_new_iou(boxes[j], boxes[i]);
@@ -124,3 +122,4 @@ void applyNMS(const vector<vector<float>>& boxes, const vector<float>& scores,
     }
   }
 }
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,7 +197,6 @@ void GestureDetect::Run(cv::Mat& img) {
 
   inSize = fc_inshapes[0].size;
   outSize = fc_outshapes[0].size;
-  int outSize2 = fc_outshapes[1].size;
   int8_t* datain0 = new int8_t[inSize * batchSize];
   int8_t* dataresult = new int8_t[outSize * batchSize];
   CPUCalAvgPool(results1, datain0, outshapes[0].width, outshapes[0].height,

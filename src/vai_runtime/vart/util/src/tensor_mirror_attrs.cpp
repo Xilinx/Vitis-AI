@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,8 @@ const std::int32_t TensorMirrorAttrs::get_dim_size(std::int32_t idx) const {
   return get_shape()[idx];
 }
 
-const std::int32_t TensorMirrorAttrs::get_element_num() const {
-  int32_t r = 1;
+const std::int64_t TensorMirrorAttrs::get_element_num() const {
+  int64_t r = 1;
   for (auto x : get_shape()) {
     r = r * x;
   }
@@ -83,7 +83,7 @@ const xir::DataType& TensorMirrorAttrs::get_data_type() const {
 const std::int32_t TensorMirrorAttrs::get_bit_width() const {
   return data_type_.bit_width;
 }
-const std::int32_t TensorMirrorAttrs::get_data_size() const {
+const std::uint64_t TensorMirrorAttrs::get_data_size() const {
   return get_element_num() * get_bit_width() / 8;
 }
 

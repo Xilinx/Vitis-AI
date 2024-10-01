@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -212,8 +212,8 @@ class PointPillars {
    * @brief Function of get result of the PointPillars neural network in batch
    * mode.
    *
-   * @param points: vector of point data refered by float*
-   * @len: vector of length of the points data ( float data length, not byte
+   * @param vpoints: vector of point data refered by float*
+   * @vlen: vector of length of the points data ( float data length, not byte
    * data length )
    *
    * @return vector of PointPillarsResult.

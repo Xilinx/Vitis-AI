@@ -42,6 +42,8 @@ class VitisQuantizeConfig(QuantizeConfig):
   """QuantizeConfig for non recurrent Keras layers."""
 
   def __init__(self,
+               quantizable_inputs=[],
+               input_quantizers=[],
                quantizable_weights=[],
                weight_quantizers=[],
                quantizable_biases=[],
@@ -57,10 +59,19 @@ class VitisQuantizeConfig(QuantizeConfig):
                      'should be the same, but {} and {} are given.'.format(
                          name, name, len(quantizables), len(quantizers)))
 
+    _check_equal_len(quantizable_inputs, input_quantizers, 'input')
     _check_equal_len(quantizable_weights, weight_quantizers, 'weight')
     _check_equal_len(quantizable_activations, activation_quantizers,
                      'activation')
     _check_equal_len(quantizable_outputs, output_quantizers, 'output')
+
+    self.quantizable_inputs = quantizable_inputs
+    self.input_quantizers = input_quantizers
+    self._input_quantizers = []
+    for quantizer in input_quantizers:
+      self._input_quantizers.append(
+          _make_quantizer(quantizer['quantizer_type'],
+                          quantizer['quantizer_params']))
 
     self.quantizable_weights = quantizable_weights
     self.weight_quantizers = weight_quantizers
@@ -94,6 +105,12 @@ class VitisQuantizeConfig(QuantizeConfig):
           _make_quantizer(quantizer['quantizer_type'],
                           quantizer['quantizer_params']))
 
+  def get_quantizable_inputs(self):
+    return self.quantizable_inputs
+
+  def get_input_quantizers(self):
+    return self._input_quantizers
+
   def get_quantizable_weights(self):
     return self.quantizable_weights
 
@@ -101,7 +118,7 @@ class VitisQuantizeConfig(QuantizeConfig):
     return self._weight_quantizers
 
   def get_quantizable_biases(self):
-    return self._quantizable_biases
+    return self.quantizable_biases
 
   def get_bias_quantizers(self):
     return self._bias_quantizers
@@ -117,6 +134,10 @@ class VitisQuantizeConfig(QuantizeConfig):
 
   def get_output_quantizers(self):
     return self._output_quantizers
+
+  def get_input_and_quantizers(self, layer):
+    return [(input_id, quantizer) for input_id, quantizer in zip(
+        self.quantizable_inputs, self._input_quantizers)]
 
   def get_weights_and_quantizers(self, layer):
     return [(getattr(layer, weight), quantizer) for weight, quantizer in zip(
@@ -180,6 +201,8 @@ class VitisQuantizeConfig(QuantizeConfig):
 
   def get_config(self):
     return {
+        'quantizable_inputs': self.quantizable_inputs,
+        'input_quantizers': self.input_quantizers,
         'quantizable_weights': self.quantizable_weights,
         'weight_quantizers': self.weight_quantizers,
         'quantizable_biases': self.quantizable_biases,
@@ -194,7 +217,9 @@ class VitisQuantizeConfig(QuantizeConfig):
     if not isinstance(other, VitisQuantizeConfig):
       return False
 
-    return (self.quantizable_weights == other.quantizable_weights and
+    return (self.quantizable_inputs == other.quantizable_inputs and
+            self.input_quantizers == other.input_quantizers and
+            self.quantizable_weights == other.quantizable_weights and
             self.weight_quantizers == other.weight_quantizers and
             self.quantizable_biases == other.quantizable_biases and
             self.bias_quantizers == other.bias_quantizers and

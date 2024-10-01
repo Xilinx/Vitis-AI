@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,8 +185,13 @@ std::unique_ptr<General> SupportedModels_create(
                                          << " mode name = " << name     //
                                          << endl;
   if (T0::type == type) {
-    return std::make_unique<GeneralAdapter<typename T0::cls>>(
+    auto net =  std::make_unique<GeneralAdapter<typename T0::cls>>(
         T0::cls::create(name, true));
+    if (!net) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+    }
+    return net;
   }
   return SupportedModels_create(SupportedModels<Tn...>(), type, name);
 }

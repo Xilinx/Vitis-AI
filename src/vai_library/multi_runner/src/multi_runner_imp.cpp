@@ -218,7 +218,7 @@ static void maybe_sync_for_read(vart::TensorBuffer* b) {
 
 std::pair<uint32_t, int> MultiRunnerImp::execute_async(
     const std::vector<vart::TensorBuffer*>& input,
-    const std::vector<vart::TensorBuffer*>& output) {
+    const std::vector<vart::TensorBuffer*>& output_in) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER))
       << "MultiRunnerImp::execute_async";
   for (auto sub_idx = 0u; sub_idx < subgraphs_.size(); sub_idx++) {
@@ -313,7 +313,7 @@ void MultiRunnerImp::link_tensor_buffers() {
       }
       not_input_output_tensors_.emplace(output.my_tensor->get_name());
       output.linker = MUTensorBufferLinker::create(master);
-      for (auto t : slaves) {
+      for (auto& t : slaves) {
         output.linker->add_slave(t);
       }
       LOG_IF(INFO, ENV_PARAM(DEBUG_MULTI_RUNNER))

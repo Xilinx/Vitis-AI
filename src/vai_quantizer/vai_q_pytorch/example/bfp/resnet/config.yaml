@@ -1,0 +1,8 @@
+bfp:
+  bitwidth: 13
+  block_size: 16
+  prime:
+    mode: 'shared'
+    sub_block_size: 2
+    sub_block_shift_bits: 1
+  rounding_mode: 'round_to_nearest'

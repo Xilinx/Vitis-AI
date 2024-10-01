@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -563,9 +563,9 @@ function(vai_overview_add_onnx name model)
     ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_${name}_onnx.cpp)
 
   if(ARG_REQUIRE)
-    target_link_libraries(test_${name}_onnx PRIVATE ${ARG_REQUIRE} ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+    target_link_libraries(test_${name}_onnx PRIVATE ${ARG_REQUIRE} ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
   else(ARG_REQUIRE)
-    target_link_libraries(test_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+    target_link_libraries(test_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
   endif(ARG_REQUIRE)
   install(TARGETS test_${name}_onnx DESTINATION ${SAMPLE_ONNX_INSTALL_PATH}/${model})
 
@@ -587,9 +587,9 @@ function(vai_overview_add_onnx name model)
     add_executable( test_accuracy_${name}_onnx
       ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_accuracy_${name}_onnx.cpp)
     if(ARG_REQUIRE)
-      target_link_libraries(test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+      target_link_libraries(test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}  XRT::XRT vart-xrt-device-handle  glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
     else(ARG_REQUIRE)
-      target_link_libraries( test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}   XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark)
+      target_link_libraries( test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}   XRT::XRT vart-xrt-device-handle glog::glog ${OpenCV_LIBS} ${PROJECT_NAME}::benchmark vart-util)
     endif(ARG_REQUIRE)
     install(TARGETS test_accuracy_${name}_onnx DESTINATION ${SAMPLE_ONNX_INSTALL_PATH}/${model})
   endif(VAI_OVERVIEW_ONNX_WITH_ACC) 

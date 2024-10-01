@@ -84,7 +84,7 @@ else
     echo "Cross-platform building..."
     echo "Found target sysroot ${OECORE_TARGET_SYSROOT}"
     target_info=${OECORE_TARGET_OS}.${OECORE_SDK_VERSION}.${OECORE_TARGET_ARCH}.${build_type}
-    install_prefix=${OECORE_TARGET_SYSROOT}/install/${build_type}
+    install_prefix_default=${OECORE_TARGET_SYSROOT}/install/${build_type}
     args+=(-DCMAKE_TOOLCHAIN_FILE=${OECORE_NATIVE_SYSROOT}/usr/share/cmake/OEToolchainConfig.cmake)
     args+=(-DCMAKE_PREFIX_PATH=/install/${build_type})
 fi

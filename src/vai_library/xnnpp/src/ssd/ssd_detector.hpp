@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,10 +76,6 @@ class SSDdetector {
   //    const T (*bboxes)[4], const float* conf_data, int label,
   //    const std::vector<std::pair<float, int> >& score_index_vec,
   //    std::vector<int>* indices);
-
-  void get_one_class_max_score_index(
-      const float* conf_data, int label,
-      std::vector<std::pair<float, int>>* score_index_vec);
 
   void get_multi_class_max_score_index(
       const float* conf_data, int start_label, int num_classes,

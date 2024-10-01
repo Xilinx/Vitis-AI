@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ run in edge:
     demo_yolov3.jpg
 
 result:
-RESULT: 6       1       133.408 139.665 255.254 0.999673
-RESULT: 6       113.796 142.11  190.103 182.402 0.990521
-RESULT: 6       402.753 129.565 512     251.411 0.970362
-RESULT: 6       351.843 144.018 415.105 168.457 0.873677
+RESULT: 6       8.90686 132.615 125.361 254.461 0.999112
+RESULT: 6       112.95  137.506 189.258 183.163 0.939668
+RESULT: 6       402.753 128.378 512     250.224 0.666963
+RESULT: 6       291.458 137.144 332.074 155.318 0.320529
 
 run in cloud:
 ./demo_yolov3 /usr/share/vitis_ai_library/models/yolov3_voc/yolov3_voc.xmodel \

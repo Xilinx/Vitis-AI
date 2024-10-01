@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ int main(int argc, char* argv[]) {
     abort();
   }
   auto det = vitis::ai::Movenet::create(argv[1]);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   vector<vector<int>> limbSeq = {{0, 1},   {0, 2},   {0, 3},   {0, 4},
                                  {0, 5},   {0, 6},   {5, 7},   {7, 9},
                                  {6, 8},   {8, 10},  {5, 11},  {6, 12},

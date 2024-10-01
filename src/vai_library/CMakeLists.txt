@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -24,7 +24,7 @@ if(DEFINED ENV{BUILD_VER})
 else()
   project(
     vitis_ai_library
-    VERSION 3.0.0
+    VERSION 3.5.0
     LANGUAGES C CXX)
 endif()
 
@@ -37,6 +37,7 @@ option(ENABLE_CLASSIFICATION "enable classification" OFF)
 option(ENABLE_VEHICLECLASSIFICATION "enable vehicleclassification" OFF)
 option(ENABLE_TFSSD "enable tfssd" OFF)
 option(ENABLE_SSD "enable ssd" OFF)
+option(ENABLE_RETINANET "enable retinanet" OFF)
 option(ENABLE_FACEDETECT "enable face detection" OFF)
 option(ENABLE_FACERECOG "enable face recog" OFF)
 option(ENABLE_FACEDETECTRECOG "enable face detect recog" OFF)
@@ -48,6 +49,9 @@ option(ENABLE_YOLOV3 "enable Yolov3" OFF)
 option(ENABLE_OFAYOLO "enable OFA Yolo" OFF)
 option(ENABLE_YOLOVX "enable YolovX" OFF)
 option(ENABLE_YOLOV6 "enable Yolov6" OFF)
+option(ENABLE_YOLOV6 "enable Yolov7" OFF)
+option(ENABLE_YOLOV8 "enable Yolov8" OFF)
+option(ENABLE_FCOS "enable Fcos" OFF)
 option(ENABLE_PMRID "enable pmrid" OFF)
 option(ENABLE_ARFLOW "enable ARFlow" OFF)
 option(ENABLE_SOLO "enable Solo" OFF)
@@ -109,6 +113,8 @@ option(ENABLE_BOSCH_SSDOBJDET "enable bosch_ssdobjdet" OFF)
 option(ENABLE_MONODEPTH2 "enable monodepth2" OFF)
 option(ENABLE_CFLOWNET "enable cflownet" OFF)
 option(ENABLE_CENTERNET "enable centernet" OFF)
+option(ENABLE_BRTSEG "enable brtseg" OFF)
+option(ENABLE_UNET2D "enable unet2d" OFF)
 
 # variables
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -186,7 +192,6 @@ enable_testing()
 
 # add subirectories
 add_subdirectory(usefultools)
-add_subdirectory(benchmark)
 
 set(PACKAGE_COMPONENTS
     cxir
@@ -201,7 +206,8 @@ set(PACKAGE_COMPONENTS
     xnnpp
     multi_runner
     xmodel_jit
-    xmodel_image)
+    xmodel_image
+    benchmark)
 
 if(ENABLE_CLASSIFICATION OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS classification)
@@ -247,6 +253,17 @@ if(ENABLE_YOLOV6 OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS yolov6)
 endif()
 
+if(ENABLE_YOLOV7 OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS yolov7)
+endif()
+
+if(ENABLE_YOLOV8 OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS yolov8)
+endif()
+
+if(ENABLE_FCOS OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS fcos)
+endif()
 
 if(ENABLE_PMRID OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS pmrid)
@@ -286,6 +303,10 @@ endif()
 
 if(ENABLE_SSD OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS ssd)
+endif()
+
+if(ENABLE_RETINANET OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS retinanet)
 endif()
 
 if(ENABLE_SEGMENTATION OR (NOT DISABLE_ALL))
@@ -456,8 +477,14 @@ endif()
 if(ENABLE_CFLOWNET OR (NOT DISABLE_ALL))
   list(APPEND PACKAGE_COMPONENTS cflownet)
 endif()
-if(ENABLE_CENTERNET )
+if(ENABLE_CENTERNET)
   list(APPEND PACKAGE_COMPONENTS centernet)
+endif()
+if(ENABLE_BRTSEG AND (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS brtseg)
+endif()
+if(ENABLE_UNET2D OR (NOT DISABLE_ALL))
+  list(APPEND PACKAGE_COMPONENTS unet2d)
 endif()
 
 # NOTE: general1 refer to many other libs, so it must be the last components in
@@ -501,7 +528,7 @@ set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_CONTACT "Hui Zhang<huizhang@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 set(CPACK_DEB_COMPONENT_INSTALL False)
 set(CPACK_DEBIAN_PACKAGE_SECTION "devel")

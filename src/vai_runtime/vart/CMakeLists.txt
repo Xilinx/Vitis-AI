@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(
   vart
-  VERSION 3.0.0
+  VERSION 3.5.0
   LANGUAGES C CXX)
 
 link_directories("$ENV{CONDA_PREFIX}/lib")
@@ -24,10 +24,10 @@ include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(ENABLE_CPU_RUNNER "enable cpu runner or not" OFF)
 option(ENABLE_SIM_RUNNER "enable sim runner or not" OFF)
-option(ENABLE_DPU_RUNNER "enable dpu runner or not" OFF)
+option(ENABLE_DPU_RUNNER "enable dpu runner or not" ON)
 option(ENABLE_XRNN_RUNNER "enable xrnn runner or not" OFF)
 option(ENABLE_RNN_RUNNER "enable rnn runner or not" OFF)
-option(BUILD_PYTHON "build python library" OFF)
+option(BUILD_PYTHON "build python library" ON)
 option(BUILD_TEST "build test" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
@@ -73,10 +73,8 @@ else(${XRT_FOUND})
 endif(${XRT_FOUND})
 find_package(hiredis QUIET)
 
-set(PACKAGE_COMPONENTS util runner trace trace-logging dummy-runner)
+set(PACKAGE_COMPONENTS util runner trace dummy-runner)
 if(NOT MSVC)
-  # thread pool does not work on MSVC because the bug
-  # https://developercommunity.visualstudio.com/t/unable-to-move-stdpackaged-task-into-any-stl-conta/10867
   list(APPEND PACKAGE_COMPONENTS async-runner)
 endif(NOT MSVC)
 list(APPEND PACKAGE_COMPONENTS mem-manager)
@@ -136,7 +134,7 @@ set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_CONTACT "Hui Zhang<huizhang@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
 set(CPACK_DEB_COMPONENT_INSTALL ON)

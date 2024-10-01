@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,53 @@
 using namespace std;
 using namespace cv;
 
-// The parameters of yolov3_voc, each value could be set as actual needs.
+// The parameters of yolov3_voc_tf, each value could be set as actual needs.
 // Such format could be refer to the prototxts in /etc/dpu_model_param.d.conf/.
 const string yolov3_config = {
+    "   name: \"yolov3_voc_416x416_tf\"\n"
+    "   kernel {\n"
+    "      name: \"yolov3_voc_416x416_tf\"\n"
+    "      mean: 0.0\n"
+    "      mean: 0.0\n"
+    "      mean: 0.0\n"
+    "      scale: 0.00390625\n"
+    "      scale: 0.00390625\n"
+    "      scale: 0.00390625\n"
+    "   }\n"
+    "   model_type : YOLOv3\n"
+    "   yolo_v3_param {\n"
+    "     num_classes: 20\n"
+    "     anchorCnt: 3\n"
+    "     layer_name: \"59\"\n"
+    "     layer_name: \"67\"\n"
+    "     layer_name: \"75\"\n"
+    "     conf_threshold: 0.3\n"
+    "     nms_threshold: 0.45\n"
+    "     biases: 10\n"
+    "     biases: 13\n"
+    "     biases: 16\n"
+    "     biases: 30\n"
+    "     biases: 33\n"
+    "     biases: 23\n"
+    "     biases: 30\n"
+    "     biases: 61\n"
+    "     biases: 62\n"
+    "     biases: 45\n"
+    "     biases: 59\n"
+    "     biases: 119\n"
+    "     biases: 116\n"
+    "     biases: 90\n"
+    "     biases: 156\n"
+    "     biases: 198\n"
+    "     biases: 373\n"
+    "     biases: 326\n"
+    "     test_mAP: false\n"
+    "   }\n"
+    "   is_tf : true\n"
+};
+
+// old model obsoleted.
+#if 0
     "   name: \"yolov3_voc_416\" \n"
     "   model_type : YOLOv3 \n"
     "   yolo_v3_param { \n"
@@ -61,6 +105,7 @@ const string yolov3_config = {
     "     biases: 326 \n"
     "     test_mAP: false \n"
     "   } \n"};
+#endif
 
 int main(int argc, char* argv[]) {
   // A kernel name, it should be samed as the dnnc result. e.g.
@@ -86,6 +131,10 @@ int main(int argc, char* argv[]) {
   }
   // Create a dpu task object.
   auto task = vitis::ai::DpuTask::create(kernel_name);
+  if (!task) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   auto batch = task->get_input_batch(0, 0);
   // Set the mean values and scale values.
   task->setMeanScaleBGR({0.0f, 0.0f, 0.0f},

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 """
-Copyright 2019 Xilinx Inc.
+Copyright 2022-2023 Advanced Micro Devices Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ def dump_outputs(outputs: List["ndarray"], tensors: List["Tensor"]):
 
 def run(subgraph: "Subgraph", args):
     # create runner
-    runner = vart.Runner.create_runner(subgraph, "run")
+    runner = vart.Runner.create_runner(subgraph, args.runner_mode)
 
     # get input&output tensors
     inputTensors = runner.get_input_tensors()
@@ -100,8 +100,9 @@ def main(args):
 def help(subparsers):
     parser = subparsers.add_parser(
         "run",
-        help="<xmodel> [-i <subgraph_index>] <input_tensor_0_bin_0> " +
-        "[input_tensor_1_bin_0 input_tensor_0_bin_1 input_tensor_1_bin_1 ... ]",
+        help=
+        "<xmodel> [-i <subgraph_index>] [-r <run or ref or sim>] <input_tensor_0_bin_0> "
+        + "[input_tensor_1_bin_0 input_tensor_0_bin_1 input_tensor_1_bin_1 ... ]",
     )
     parser.add_argument("xmodel", help="xmodel file path ")
     parser.add_argument("-i",
@@ -109,5 +110,10 @@ def help(subparsers):
                         type=int,
                         default=1,
                         help="<subgraph_index>")
+    parser.add_argument("-r",
+                        "--runner_mode",
+                        type=str,
+                        default="run",
+                        help="<run or ref or sim>")
     parser.add_argument("input_bin", nargs="+", help="input_bin")
     parser.set_defaults(func=main)

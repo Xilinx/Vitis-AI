@@ -1,0 +1,516 @@
+# Copyright 2019 Xilinx Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "AMD_AIE2_5x4_Overlay"
+ipu_overlay_type: "5x4_Overlay"
+type: "IPU_PHX"
+isa_version: 0x00
+feature_code: 0x0205001c5e05
+
+overlay_info {
+  aienum_row_num: 4
+  aienum_col_num:  4
+  memtile_num: 4
+  shimtile_num: 4
+}
+
+memtile {
+  name: "M0"
+  type: "Virtual"
+  row: 1
+  col: 1
+  bank_num: 16
+  bank_size_per_bank: 524288
+  bd_nums: 48
+  lock_nums: 64
+}
+
+aietile {
+  name: "A0"
+  row: 2
+  col: 1
+  memory_size: 65536
+  stack_size: 2048
+  bd_nums: 16
+  lock_nums: 16
+  program_memory_size : 16320 
+}
+
+aietile {
+  name: "A1"
+  row: 3
+  col: 1
+  memory_size: 65536
+  stack_size: 2048
+  bd_nums: 16
+  lock_nums: 16
+  program_memory_size : 16320 
+}
+
+aietile {
+  name: "A2"
+  row: 4
+  col: 1
+  memory_size: 65536
+  stack_size: 2048
+  bd_nums: 16
+  lock_nums: 16
+  program_memory_size : 16320 
+}
+
+aietile {
+  name: "A3"
+  row: 5
+  col: 1
+  memory_size: 65536
+  stack_size: 2048
+  bd_nums: 16
+  lock_nums: 16
+  program_memory_size : 16320 
+}
+
+shimtile {
+  name: "S1"
+  row: 0
+  col: 1
+  bd_nums: 16
+  lock_nums: 16
+}
+
+conv_engine {
+  input_channel_parallel: 8
+  output_channel_parallel: 16
+  output_h_parallel: 1
+  output_w_parallel: 8
+  pixel_parallel: 16
+  cascade_num: 0
+  chain_num: 4
+  input_bank: "M0"
+  output_bank: "M0"
+  weight_bank: "M0"
+  bias_bank: "M0"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+    nonlinear_type: leaky_relu
+    nonlinear_type: prelu
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+  }
+  conv_limit {
+    kernel_size: "1-8"
+    stride: "1-2"
+  }
+}
+
+eltwise_engine {
+  channel_parallel: 16
+  output_h_parallel: 1
+  output_w_parallel: 1
+  pixel_parallel: 2
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  nonlinear {
+    nonlinear_type: relu
+  }
+  elew_type: add
+  elew_type: mult
+  elew_type: sub
+}
+
+pool_engine {
+  channel_parallel: 32
+  output_h_parallel: 1
+  output_w_parallel: 1
+  pixel_parallel: 1
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  pool_type: max
+  pool_type: avg
+  nonlinear {}
+  avg_limit {
+    kernel_size: "1-32"
+    stride: "1-16"
+  }
+  max_limit {
+    kernel_size: "1-32"
+    stride: "1-32"
+  }
+}
+
+dwconv_engine {
+  channel_parallel: 8
+  output_h_parallel: 4
+  output_w_parallel: 8
+  pixel_parallel: 16
+  input_bank: "M0"
+  input_bank: "M0"
+  output_bank: "M0"
+  weight_bank: "M0"
+  bias_bank: "M0"
+  nonlinear {
+    nonlinear_type: relu
+    nonlinear_type: relu_six
+    nonlinear_type: hsigmoid
+    nonlinear_type: hswish
+  }
+  dwconv_limit {
+    kernel_size: "1-9"
+    stride: "1-2"
+  }
+}
+
+# CONV
+kernels {
+  conv_kernel {
+    nonlinear {
+      nonlinear_type: relu
+      nonlinear_type: relu_six
+    }
+  }
+  pm_size : 7216
+  ops : "conv2d-fix"
+}
+
+# LEAKY_PRELU
+kernels {
+  conv_kernel {
+    nonlinear {
+      nonlinear_type: prelu
+      nonlinear_type: leaky_relu
+    }
+  }
+  pm_size : 7488
+  ops : "conv2d-fix"
+}
+
+# CONV_HSIG_HSWISH
+kernels {
+  conv_kernel {
+    nonlinear {
+      nonlinear_type: hswish
+      nonlinear_type: hsigmoid
+    }
+  }
+  pm_size : 7488
+  ops : "conv2d-fix"
+}
+
+# HSIGMOID
+kernels {
+  nonlinear_kernel {
+    nonlinear_type: hsigmoid
+  }
+  pm_size : 1008
+  ops : "hard-sigmoid-fix"
+}
+
+# RESHAPE
+kernels {
+  pm_size : 2512
+  ops : "reshape-fix"
+}
+
+# TRANSPOSE
+kernels {
+  pm_size : 2512
+  ops : "transposefix"
+}
+
+# ELEW_ADD
+kernels {
+  eltwise_kernel {
+    elew_type : add
+  }
+  pm_size : 3856
+  ops : "eltwise-fix"
+}
+
+# ELEW_MUL
+kernels {
+  eltwise_kernel {
+    elew_type : mult
+  }
+  pm_size : 3800
+  ops : "eltwise-fix"
+}
+
+# POOL
+kernels {
+  pool_kernel {
+  }
+  pm_size : 2720
+  ops : "pool-fix"
+}
+
+# CONV_ELEW_FUSION
+kernels {
+  conv_kernel {
+    nonlinear {
+      nonlinear_type: relu
+      nonlinear_type: relu_six
+    }
+  }
+  eltwise_kernel {
+    elew_type : add
+    elew_type : mult
+  }
+  pm_size : 8112
+  ops : "conv2d-fix"
+  ops : "eltwise-fix"
+}
+
+# CONV_DWC_FUSION
+kernels {
+  conv_kernel {
+  }
+  dwconv_kernel {
+    nonlinear {
+      nonlinear_type: relu
+      nonlinear_type: relu_six
+    }
+  }
+  pm_size : 11712
+  ops : "conv2d-fix"
+  ops : "depthwise-conv2d-fix"
+}
+
+# DWC
+kernels {
+  dwconv_kernel {
+    nonlinear {
+      nonlinear_type: relu
+      nonlinear_type: relu_six
+    }
+  }
+  pm_size : 7328
+  ops : "depthwise-conv2d-fix"
+}
+
+# DWC_HSIG_HSWISH
+kernels {
+  dwconv_kernel {
+    nonlinear {
+      nonlinear_type: hswish
+      nonlinear_type: hsigmoid
+    }
+  }
+  pm_size : 7328
+  ops : "depthwise-conv2d-fix"
+}
+
+# TRANSEPOSED DWC
+kernels {
+  dwconv_kernel {
+    nonlinear {
+      nonlinear_type: relu
+      nonlinear_type: relu_six
+    }
+  }
+  pm_size : 7328
+  ops : "transposed-depthwise-conv2d-fix"
+}
+
+# TRANSPOSED DWC_HSIG_HSWISH
+kernels {
+  dwconv_kernel {
+    nonlinear {
+      nonlinear_type: hswish
+      nonlinear_type: hsigmoid
+    }
+  }
+  pm_size : 7328
+  ops : "transposed-depthwise-conv2d-fix"
+}
+
+# We only support one pdi contain one kernel now.
+PDI {
+  name : "DPU_PDI_0"
+  ID : "0"
+  kernels  {
+    conv_kernel {
+        nonlinear {
+          nonlinear_type: relu
+          nonlinear_type: relu_six
+        }
+    }
+    pm_size : 10000
+    ops : "conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_1"
+  ID : "1"
+  kernels {
+    conv_kernel {
+    }
+    dwconv_kernel {
+      nonlinear {
+        nonlinear_type: relu
+        nonlinear_type: relu_six
+      }
+    }
+    pm_size : 10000
+    ops : "conv2d-fix"
+    ops : "depthwise-conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_2"
+  ID : "2"
+  kernels {
+    conv_kernel {
+      nonlinear {
+        nonlinear_type: relu
+        nonlinear_type: relu_six
+      }
+    }
+    eltwise_kernel {
+      elew_type : add
+      elew_type : mult
+    }
+    pm_size : 8112
+    ops : "conv2d-fix"
+    ops : "eltwise-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_3"
+  ID : "3"
+  kernels {
+    conv_kernel {
+      nonlinear {
+        nonlinear_type: hswish
+        nonlinear_type: hsigmoid
+      }
+    }
+    pm_size : 7488
+    ops : "conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_4"
+  ID : "4"
+  kernels {
+    dwconv_kernel {
+      nonlinear {
+        nonlinear_type: relu
+        nonlinear_type: relu_six
+      }
+    }
+    pm_size : 7328
+    ops : "depthwise-conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_5"
+  ID : "5"
+  kernels {
+    dwconv_kernel {
+      nonlinear {
+        nonlinear_type: hswish
+        nonlinear_type: hsigmoid
+      }
+    }
+    pm_size : 7328
+    ops : "depthwise-conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_6"
+  ID : "6"
+  kernels {
+    eltwise_kernel {
+      elew_type : add
+    }
+    pm_size : 3856
+    ops : "eltwise-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_7"
+  ID : "7"
+  kernels {
+    eltwise_kernel {
+      elew_type : mult
+    }
+    pm_size : 3800
+    ops : "eltwise-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_8"
+  ID : "8"
+  kernels {
+    nonlinear_kernel {
+      nonlinear_type: hsigmoid
+    }
+    pm_size : 1008
+    ops : "hard-sigmoid-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_9"
+  ID : "9"
+  kernels {
+    conv_kernel {
+      nonlinear {
+        nonlinear_type: prelu
+        nonlinear_type: leaky_relu
+      }
+    }
+    pm_size : 7488
+    ops : "conv2d-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_10"
+  ID : "10"
+  kernels {
+    pool_kernel {
+    }
+    pm_size : 2720
+    ops : "pool-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_11"
+  ID : "11"
+  kernels {
+    pm_size : 2512
+    ops : "reshape-fix"
+  }
+}
+
+PDI {
+  name : "DPU_PDI_12"
+  ID : "12"
+  kernels {
+    pm_size : 2512
+    ops : "transposefix"
+  }
+}

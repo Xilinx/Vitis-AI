@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,29 @@
  */
 
 #include <fstream>
+#include <ostream>
 #include <sstream>
 #include <string>
-#include <ostream>
-
 #include <vitis/ai/traceclass.hpp>
 #include <xir/graph/graph.hpp>
 #if _WIN32
-#include <windows.h>
+#  include <windows.h>
 #endif
-// MSVC NOTE: must not using namespace std; it trigger an error, 'byte': ambiguous
-// symbol, because c++17 introduce std::byte and MSVC use byte internally
+// MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
+// ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
+// internally
 //
 // using namespace std;
-using std::map;
-using std::string;
-using std::vector;
-using std::pair;
-using std::stringstream;
-using std::ofstream;
-using std::ostringstream;
 using std::ios;
 using std::make_pair;
+using std::map;
+using std::ofstream;
+using std::ostringstream;
+using std::pair;
+using std::string;
+using std::stringstream;
+using std::vector;
 using trace_entry_t = map<string, string>;
-
 
 #define _j(x) (j_format(make_pair(#x, x)))
 
@@ -107,9 +106,9 @@ subgraph_info::subgraph_info(const xir::Subgraph* subg)
   depth = subg->get_depth();
   op_num = subg->get_op_num();
   for (auto op : subg->get_ops()) {
-      string op_desc;
-      op_desc = op->get_name() + "@" + op->get_type() + "|";
-      op_list += op_desc;
+    string op_desc;
+    op_desc = op->get_name() + "@" + op->get_type() + "|";
+    op_list += op_desc;
   }
 
   if (subg->has_attr("device"))
@@ -161,14 +160,12 @@ void subgraph_info::to_json(ofstream& o) {
 namespace vitis::ai::trace {
 string add_subgraph_raw(const xir::Subgraph* subg) {
   static uint32_t subgraph_id = 0;
-  auto dir =
-      getenv("VAI_TRACE_DIR") ? getenv("VAI_TRACE_DIR") : string("/tmp/");
-
-  auto pid = 
+  auto dir = vitis::ai::my_getenv_s("VAI_TRACE_DIR", "/temp");
+  auto pid =
 #if _WIN32
-	  GetCurrentProcessId();
-#else 
-	  getpid();
+      GetCurrentProcessId();
+#else
+      getpid();
 #endif
   string path = dir + "vaitrace_subgraph_info_" + to_string(pid) + "_" +
                 to_string(subgraph_id++);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ struct DataType {
   DataType(const std::string& type);
   DataType(const Type& type, const std::int32_t& bit_width);
 
-  const bool valid() const;
+  bool valid() const;
   const std::string to_string() const;
 
   friend bool operator==(const DataType& lhs, const DataType& rhs);

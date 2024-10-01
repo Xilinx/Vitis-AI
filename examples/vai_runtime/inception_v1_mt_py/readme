@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,44 +16,21 @@
 Before running the program, please download the corresponding model and install it.
 The model required by this sample is: inception_v1_tf
 You can find the detailed informantion of this model under 
-   Vitis-AI/model_zoo/model-list/tf_inceptionv1_imagenet_224_224_3G_3.0/model.yaml
+   Vitis-AI/model_zoo/model-list/tf_inceptionv1_imagenet_224_224_3G_3.5/model.yaml
 
-For ZCU102/ZCU104/KV260, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
-For VCK190, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck190-r3.0.0.tar.gz
+For VEK280, the model download link is: https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vek280-r3.5.0.tar.gz
 
 Please choose the corresponding model and download it.
 
-Take ZCU102/ZCU104 as an example, execute the following commands to download and install the model.
-	wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz -O inception_v1_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+Take VEK280 as an example, execute the following commands to download and install the model.
+	wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vek280-r3.5.0.tar.gz -O inception_v1_tf-vek280-r3.5.0.tar.gz
 	mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf inception_v1_tf-zcu102_zcu104_kv260-r3.0.0.tar.gz
+	tar -xzvf inception_v1_tf-vek280-r3.5.0.tar.gz
 	cp inception_v1_tf /usr/share/vitis_ai_library/models -r
 
-VDX8H_4pe_miscdwc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz -O inception_v1_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+For V70 DPUCV2DX8G DPU IP, execute the following commands.
+        wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz -O inception_v1_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz
         sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf inception_v1_tf-vck5000-DPUCVDX8H-4pe-r3.0.0.tar.gz
+        tar -xzvf inception_v1_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz
         sudo cp inception_v1_tf /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_6pe_dwc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz -O inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieDWC-r3.0.0.tar.gz
-        sudo cp inception_v1_tf /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_6pe_misc DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz -O inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf inception_v1_tf-vck5000-DPUCVDX8H-6pe-aieMISC-r3.0.0.tar.gz
-        sudo cp inception_v1_tf /usr/share/vitis_ai_library/models -r
-
-For DPUCVDX8H_8pe_normal DPU IP, execute the following commands.
-        wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-        sudo mkdir -p /usr/share/vitis_ai_library/models
-        tar -xzvf inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-        sudo cp inception_v1_tf /usr/share/vitis_ai_library/models -r
-	wget https://www.xilinx.com/bin/public/openDownload?filename=inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz -O inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-	sudo mkdir -p /usr/share/vitis_ai_library/models
-	tar -xzvf inception_v1_tf-vck5000-DPUCVDX8H-8pe-r3.0.0.tar.gz
-	sudo cp inception_v1_tf /usr/share/vitis_ai_library/models -r 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ std::vector<ReidResult> ReidImp::run(const std::vector<cv::Mat>& input_images) {
   int sWidth = getInputWidth();
   int sHeight = getInputHeight();
   auto size = cv::Size(sWidth, sHeight);
-  for (auto input_image : input_images) {
+  for (auto& input_image : input_images) {
     Mat image;
     if (size != input_image.size()) {
       cv::resize(input_image, image, size);

@@ -1,0 +1,72 @@
+{
+  "convert_relu6_to_relu": false,
+  "include_cle": false,
+  "keep_first_last_layer_accuracy": false,
+  "keep_add_layer_accuracy": false,
+  "include_bias_corr": true,
+  "target_device": "DPU",
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "datatype": "float32"
+  },
+  "layer_quantize_config": [
+    {
+      "layer_type": "Linear",
+      "layer_name": null,
+      "quantizable_data_type": [
+        "input",
+        "weights",
+        "bias",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "datatype": "int",
+        "bit_width": 8,
+        "method": "diffs",
+        "round_mode": "std_round",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "scale_type": "poweroftwo",
+        "calib_statistic_method": "modal"
+      },
+      "tensor_quantize_config": {
+        "bias": {
+          "datatype": "float32"
+        },
+        "activation": {
+          "datatype": "float32"
+        }
+      }
+    },
+    {
+      "layer_type": "matmul", 
+      "layer_name": null,
+      "quantizable_data_type": [
+        "input",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "datatype": "int",
+        "bit_width": 8,
+        "method": "diffs",
+        "round_mode": "std_round",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "scale_type": "poweroftwo",
+        "calib_statistic_method": "modal"
+      },
+      "tensor_quantize_config": {
+        "activation": {
+          "datatype": "float32"
+        }
+      }
+    }
+  ]
+}

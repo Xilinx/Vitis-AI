@@ -21,6 +21,7 @@ HIP_AVAILABLE = False
 #MACROS = []
 package_name = "pytorch_nndct"
 version = open("version.txt", "r").read().strip()
+brief_version = version
 build_update_message = """
   To install:
     $ python setup.py install
@@ -122,9 +123,8 @@ def build_config_setup():
 
   install_requires = []
   if not DEVELOP:
-    install_requires += ["sklearn",
-                         "scipy==1.3.1",
-                         "numpy==1.17.2",
+    install_requires += ["scipy<=1.9.3",
+                         "numpy<=1.24.2",
                          "tqdm",
                          "ninja"]
   extensions = []
@@ -182,7 +182,7 @@ def build_config_setup():
       include_dir.append(os.path.join(cwd, "../include/cuda"))
 
       # CUDAExtension class has checks for HIP backend
-      
+
       from torch.utils.cpp_extension import CUDAExtension
       Extension = CUDAExtension
     else:
@@ -203,14 +203,16 @@ def build_config_setup():
 
 def get_version():
   global version
-  sha = "Unknown"
+  sha = "unknown"
   try:
     sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=cwd).decode("ascii").strip()
   except Exception:
-    pass
-  if sha != "Unknown":
+    print('Failed to get git commit ID.')
+  if sha != "unknown":
     version += "+" + sha[:7]
-    version += "+" + f"torch{torch.__version__}"
+  else:
+    version += "+" + "unknown"
+  version += "+" + f"torch{torch.__version__}"
   return sha
 
 
@@ -238,7 +240,7 @@ if __name__ == '__main__':
 
   setup(
       name=package_name,
-      version=version,
+      version=brief_version,
       description="A library Xilinx Tool nndct in pytorch",
       url="fill in later",
       author="NNDCT Team",

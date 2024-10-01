@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
   auto graph = xir::Graph::deserialize(xmodel_file_name);
   auto children = graph->get_root_subgraph()->children_topological_sort();
   auto ok = true;
-  for (auto s : children) {
+  for (auto& s : children) {
     if (s->get_attr<std::string>("device") == "CPU") {
       for (auto op : s->get_ops()) {
         ok = check_op(op) && ok;

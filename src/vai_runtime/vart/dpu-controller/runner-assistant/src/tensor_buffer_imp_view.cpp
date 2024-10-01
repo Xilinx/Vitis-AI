@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ std::pair<uint64_t, size_t> TensorBufferExtImpView::data_x(
   dims[0] = 1;
   auto calc1 = vitis::ai::DimCalc(dims);
   auto offset_in_single_batch = (int)calc1.offset(idx);
-  auto size_in_single_batch = (size_t)((uint32_t)get_tensor()->get_data_size()) / batch;
+  auto size_in_single_batch = get_tensor()->get_data_size() / batch;
   UNI_LOG_CHECK((int)offset_in_single_batch <= (int)size_in_single_batch, VART_TENSOR_INFO_ERROR);
   auto size_left_in_single_batch =
       size_in_single_batch - offset_in_single_batch;

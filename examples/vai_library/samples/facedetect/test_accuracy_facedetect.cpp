@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,6 +78,10 @@ int main(int argc, char *argv[]) {
   GLOBAL_ENABLE_C_SOFTMAX = 2;
   bool preprocess = !(getenv("PRE") != nullptr);
   auto v = vitis::ai::FaceDetect::create(model_name, preprocess);
+  if (!v) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   std::cerr << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__
             << "]"  //
                     //<< "width " << width << " " //
@@ -91,7 +95,7 @@ int main(int argc, char *argv[]) {
   vector<string> names;
   LoadImageNames(argv[2], names);
   ofstream out(argv[3]);
-  for (auto name : names) {
+  for (auto & name : names) {
     // cout << __FILE__ << ":" << __LINE__ << ":" << __func__ << ":"
     //      << "image " << argv[i] << " ";  //
     // cv::Mat image = cv::imread(argv[i]);

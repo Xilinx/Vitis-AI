@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ int main(int argc, char *argv[]) {
   }
 
   auto det = vitis::ai::RefineDet::create(argv[1]);
+  if (!det) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
 
   // input process
   vector<cv::Mat> arg_input_images;
@@ -78,17 +82,17 @@ int main(int argc, char *argv[]) {
 
       LOG(INFO) << "batch index: " << batch_idx << "\t" << xmin << "\t" << ymin
                 << "\t" << xmax << "\t" << ymax << "\t" << score << "\n";
-      auto label = 2;
-      if (label == 1) {
-        cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                      cv::Scalar(0, 255, 0), 1, 1, 0);
-      } else if (label == 2) {
+      // auto label = 2;
+      // if (label == 1) {
+      //   cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
+      //                 cv::Scalar(0, 255, 0), 1, 1, 0);
+      // } else if (label == 2) {
         cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
                       cv::Scalar(255, 0, 0), 1, 1, 0);
-      } else if (label == 3) {
-        cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
-                      cv::Scalar(0, 0, 255), 1, 1, 0);
-      }
+      // } else if (label == 3) {
+      //   cv::rectangle(img, cv::Point(xmin, ymin), cv::Point(xmax, ymax),
+      //                 cv::Scalar(0, 0, 255), 1, 1, 0);
+      // }
     }
     string tmp = batch_images_names[batch_idx].substr(
         0, batch_images_names[batch_idx].rfind("."));

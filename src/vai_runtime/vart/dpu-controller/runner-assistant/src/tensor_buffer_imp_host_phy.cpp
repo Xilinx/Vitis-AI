@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ TensorBufferExtImpHostPhy::TensorBufferExtImpHostPhy(
           std::unique_ptr<xir::Tensor>(const_cast<xir::Tensor*>(get_tensor()))},
       buffer_objects_(
           create_bo((size_t)tensor->get_shape()[0],
-                    (int64_t)((uint32_t)tensor->get_data_size()) / tensor->get_shape()[0],  //
+                    tensor->get_data_size() / tensor->get_shape()[0],  //
                     device_id, cu_name)) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR))
       << "TensorBufferExtImpHostPhy "
@@ -90,7 +90,7 @@ std::pair<uint64_t, size_t> TensorBufferExtImpHostPhy::data_x(
   UNI_LOG_CHECK((size_t)batch_idx < buffer_objects_.size(), VART_TENSOR_INFO_ERROR)
     << " this=" << this->to_string();
   // auto size = buffer_objects_[batch_idx]->size() - offset;
-  auto size = (size_t)((uint32_t)get_tensor()->get_data_size()) - offset;
+  auto size = get_tensor()->get_data_size() - offset;
   LOG_IF(INFO, ENV_PARAM(DEBUG_TENSOR_BUFFER_ALLOCATOR)) << "size: " << size;
   uint64_t ret = 0u;
   if (phy) {

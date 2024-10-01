@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,20 +43,20 @@ class TensorImp : public Tensor {
 
   // TODO: legacy API
   const std::vector<std::int32_t> get_dims() const override;
-  const std::int32_t get_dim_num() const override;
-  const std::int32_t get_dim_size(std::int32_t idx) const override;
+  std::int32_t get_dim_num() const override;
+  std::int32_t get_dim_size(std::int32_t idx) const override;
 
   // get the number of elements(data) in this tensor
-  const std::int32_t get_element_num() const override;
+  std::int64_t get_element_num() const override;
 
   // get the data type
   const DataType& get_data_type() const override;
 
   // TODO: legacy API
-  const std::int32_t get_bit_width() const override;
+  std::int32_t get_bit_width() const override;
 
   // get the size of data in tensor, data_size = element_num * sizeof(datatype)
-  const std::int32_t get_data_size() const override;
+  std::uint64_t get_data_size() const override;
 
   // get attributes of this tensor
   std::unique_ptr<Attrs> get_attrs() const override;
@@ -64,7 +64,7 @@ class TensorImp : public Tensor {
   // set attributes of this tensor
   Tensor* set_attrs(std::unique_ptr<Attrs> attrs) override;
 
-  const bool has_attr(const std::string& key) const override;
+  bool has_attr(const std::string& key) const override;
 
   const xir::any get_attr(const std::string& key) const override;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -315,7 +315,7 @@ void TFSSDdetector::ApplyOneClassNMS(
   vector<float> scores;
   map<size_t, int> resultmap;
   int i = 0;
-  for (auto sc : score_index_vec) {
+  for (auto& sc : score_index_vec) {
     const int idx = sc.second;
     if (decoded_bboxes_.find(idx) == decoded_bboxes_.end()) {
       DecodeBBox(bboxes, idx, true);

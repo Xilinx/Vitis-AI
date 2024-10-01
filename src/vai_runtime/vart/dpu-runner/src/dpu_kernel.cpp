@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 
 #include <glog/logging.h>
 
+#include <UniLog/UniLog.hpp>
 #include <algorithm>
 #include <fstream>
-#include <vitis/ai/trace.hpp>
 #include <vitis/ai/env_config.hpp>
+#include <vitis/ai/trace.hpp>
 #include <vitis/ai/weak.hpp>
 #include <vitis/ai/xxd.hpp>
-#include <UniLog/UniLog.hpp>
 
 DEF_ENV_PARAM(DEBUG_DPU_RUNNER, "0");
 DEF_ENV_PARAM(XLNX_ENABLE_DEBUG_MODE, "0");
@@ -102,7 +102,8 @@ void DpuKernel::my_load_parameter() {
             "reg_id_to_parameter_value");
   }
 
-  UNI_LOG_CHECK(subgraph_->has_attr("reg_id_to_context_type"), VART_XMODEL_ERROR);
+  UNI_LOG_CHECK(subgraph_->has_attr("reg_id_to_context_type"),
+                VART_XMODEL_ERROR);
   auto reg_id_to_context_type =
       subgraph_->get_attr<std::map<std::string, std::string>>(
           "reg_id_to_context_type");
@@ -115,7 +116,8 @@ void DpuKernel::my_load_parameter() {
       continue;
     }
     auto it_value = reg_id_to_parameter_value.find(reg_id);
-    UNI_LOG_CHECK(it_value != reg_id_to_parameter_value.end(), VART_XMODEL_ERROR)
+    UNI_LOG_CHECK(it_value != reg_id_to_parameter_value.end(),
+                  VART_XMODEL_ERROR)
         << "cannot find CONST REG values:"
         << " subgraph name= " << subgraph_->get_name()
         << " reg_id = " << reg_id;
@@ -150,28 +152,62 @@ void DpuKernel::my_load_release_code() {
   super_layer_subgraph_.emplace_back(subgraph_);
 }
 
+static bool is_tilling_subgraph(const xir::Subgraph* subgraph) {
+  if (subgraph->has_attr("children_topological_sort") &&
+      subgraph->has_attr("tiling")) {
+    return true;
+  }
+  return false;
+}
+
 void DpuKernel::my_load_debug_code() {
-  UNI_LOG_CHECK(subgraph_->has_attr("children_topological_sort"), VART_XMODEL_ERROR)
+  UNI_LOG_CHECK(subgraph_->has_attr("children_topological_sort"),
+                VART_XMODEL_ERROR)
       << "subgraph_->get_name() " << subgraph_->get_name() << " "  //
       << "attrs: " << subgraph_->get_attrs()->debug_info();
   UNI_LOG_CHECK(!subgraph_->is_leaf(), VART_XMODEL_ERROR)
       << "subgraph_->get_name() " << subgraph_->get_name() << " "  //
       << "attrs: " << subgraph_->get_attrs()->debug_info();
+
   auto children = subgraph_->get_children();
-  LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
-      << "loading debug code for " << subgraph_->get_graph()->get_name() << " "
-      << children.size() << " subgraphs in total ";
   std::vector<std::string> child_order =
       subgraph_->get_attr<std::vector<std::string>>(
           "children_topological_sort");
+
+  // no tiling : "graph -> dpu subgraph -> super_layer subgraph"
+  // tiling : "graph-> dpu subgraph -> tile subgraph -> super_layer subgraph"
+  // tile subgraph `mc_code` has no `end` instruction
+  // tile subgraph name maybe equals super_layer subgraph name,
+  // so can't use subgraph->get_subgraph(name) to find subgraph
+  auto all_super_layer_subgraph = std::set<const xir::Subgraph*>();
+  for (auto& child : children) {
+    if (is_tilling_subgraph(child)) {
+      auto super_layer_children = child->get_children();
+      all_super_layer_subgraph.insert(super_layer_children.begin(),
+                                      super_layer_children.end());
+    } else {
+      all_super_layer_subgraph.insert(child);
+    }
+  }
+
+  LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
+      << "loading debug code for " << subgraph_->get_graph()->get_name() << " "
+      << children.size() << " subgraphs in total "  //
+      << all_super_layer_subgraph.size()
+      << " all super layer subgraphs in total "  //
+      << child_order.size()
+      << " children_topological_sort attr subgraph in total ";
+
   for (const auto& child_name : child_order) {
     LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
         << "load debug code from subgraph[" << child_name << "] " << child_name;
+
     auto child_subg = std::find_if(
-        children.begin(), children.end(),
+        all_super_layer_subgraph.begin(), all_super_layer_subgraph.end(),
         [&child_name](auto subg) { return subg->get_name() == child_name; });
-    UNI_LOG_CHECK(child_subg != children.end(), VART_XMODEL_ERROR)
-      << "cannot find subg " << child_name;
+    UNI_LOG_CHECK(child_subg != all_super_layer_subgraph.end(),
+                  VART_XMODEL_ERROR)
+        << "cannot find subg " << child_name;
     auto has_mc_code = (*child_subg)->has_attr("mc_code");
     if (has_mc_code) {
       auto& mc_code = (*child_subg)->get_attr<std::vector<char>>("mc_code");
@@ -210,7 +246,7 @@ static std::vector<DpuReg> create_workspaces(const xir::Subgraph& subgraph) {
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER))
       << "total workspace size = " << total;
   UNI_LOG_CHECK(total > 0u, VART_SIZE_MISMATCH)
-    << "workspace size must not empty";
+      << "workspace size must not empty";
   return ret;
 }
 
@@ -221,7 +257,7 @@ const xir::Subgraph* DpuKernel::get_subgraph1(size_t idx) const {
     return subgraph_;
   }
   UNI_LOG_CHECK(idx < super_layer_subgraph_.size(), VART_OUT_OF_RANGE)
-    << "LOGICAL ERROR";
+      << "LOGICAL ERROR";
   return super_layer_subgraph_[idx];
 }
 

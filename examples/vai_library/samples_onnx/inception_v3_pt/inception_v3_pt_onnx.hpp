@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ using namespace std;
 
 static cv::Mat croppedImage(const cv::Mat& image, int height, int width);
 static cv::Mat preprocess_image(const cv::Mat& image, cv::Size size);
-static void set_input_image(const cv::Mat& image, float* data);
 static std::vector<float> softmax(float* data, int64_t size);
 static std::vector<std::pair<int, float>> topk(const std::vector<float>& score,
                                                int K);
@@ -71,23 +70,6 @@ static cv::Mat preprocess_image(const cv::Mat& image, cv::Size size) {
   //  }
   //}
   return result;
-}
-
-//(image_data - mean) * scale, BRG2RGB and hwc2chw
-static void set_input_image(const cv::Mat& image, float* data) {
-  float mean[3] = {103.53f, 116.28f, 123.675f};
-  float scales[3] = {0.017429f, 0.017507f, 0.01712475f};
-  for (int c = 0; c < 3; c++) {
-    for (int h = 0; h < image.rows; h++) {
-      for (int w = 0; w < image.cols; w++) {
-        auto c_t = abs(c - 2);  // BRG to RGB
-        auto image_data =
-            (image.at<cv::Vec3b>(h, w)[c_t] - mean[c_t]) * scales[c_t];
-        data[c * image.rows * image.cols + h * image.cols + w] =
-            (float)image_data;
-      }
-    }
-  }
 }
 
 static std::vector<float> softmax(float* data, int64_t size) {
@@ -199,8 +181,11 @@ class InceptionV3PtOnnx : public OnnxTask {
 
     for (auto index = 0; index < valid_batch; ++index) {
       auto resize_image = preprocess_image(images[index], size);
-      set_input_image(resize_image,
-                      input_tensor_values.data() + batch_size * index);
+      set_input_image_rgb(resize_image,
+                      input_tensor_values.data() + batch_size * index,
+                      std::vector<float>{103.53f, 116.28f, 123.675f},
+                      std::vector<float>{0.017429f, 0.017507f, 0.01712475f}
+                    );
     }
   }
 

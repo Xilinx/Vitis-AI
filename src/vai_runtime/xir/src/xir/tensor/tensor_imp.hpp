@@ -47,7 +47,7 @@ class TensorImp : public Tensor {
   const std::int32_t get_dim_size(std::int32_t idx) const override;
 
   // get the number of elements(data) in this tensor
-  const std::int32_t get_element_num() const override;
+  const std::int64_t get_element_num() const override;
 
   // get the data type
   const DataType& get_data_type() const override;
@@ -56,7 +56,7 @@ class TensorImp : public Tensor {
   const std::int32_t get_bit_width() const override;
 
   // get the size of data in tensor, data_size = element_num * sizeof(datatype)
-  const std::int32_t get_data_size() const override;
+  const std::uint64_t get_data_size() const override;
 
   // get attributes of this tensor
   std::unique_ptr<Attrs> get_attrs() const override;

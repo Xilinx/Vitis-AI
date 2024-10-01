@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,8 @@ static inline bool cmp_type_id(const std::type_info& i1,
 
   else {
     ret.tag = XIR_ATTR_TYPE_TAG_NONE;
+    // suppress coverity complain
+    ret.u.map_value = nullptr;
   }
   return ret;
 }

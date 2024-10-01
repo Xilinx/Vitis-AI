@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ class TFSSDdetector {
 
   template <typename T>
   void Detect(const T* loc_data, const float* conf_data, TFSSDResult* result);
+  // remove sigmoid_c
+  void Detect(const int8_t* loc_data, const int8_t* conf_data, TFSSDResult* result);
 
   unsigned int num_classes() const { return num_classes_; }
   unsigned int num_priors() const { return priors_.size(); }
@@ -53,22 +55,17 @@ class TFSSDdetector {
  protected:
   template <typename T>
   void ApplyOneClassNMS(
-      const T (*bboxes)[4], const float* conf_data, int label,
+      const T (*bboxes)[4], int label,
       const std::vector<std::pair<float, int> >& score_index_vec,
       std::vector<int>* indices);
-
-  void GetOneClassMaxScoreIndex(
-      const float* conf_data, int label,
-      std::vector<std::pair<float, int> >* score_index_vec);
 
   void GetMultiClassMaxScoreIndex(
       const float* conf_data, int start_label, int num_classes,
       std::vector<std::vector<std::pair<float, int> > >* score_index_vec);
 
-  void GetMultiClassMaxScoreIndexMT(
-      const float* conf_data, int start_label, int num_classes,
-      std::vector<std::vector<std::pair<float, int> > >* score_index_vec,
-      int threads = 4);
+  void GetMultiClassMaxScoreIndex(
+      const int8_t* conf_data, int start_label, int num_classes,
+      std::vector<std::vector<std::pair<float, int> > >* score_index_vec);
 
   template <typename T>
   void DecodeBBox(const T (*bboxes)[4], int idx, bool normalized);
@@ -101,3 +98,4 @@ class TFSSDdetector {
 }  // namespace dptfssd
 }  // namespace ai
 }  // namespace vitis
+

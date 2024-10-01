@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ Anchors get_anchors_bv(const Anchors& anchors) {
   auto anchors_bv = rbbox2d_to_near_bbox(anchors, idxes);
   if (ENV_PARAM(DEBUG_XNNPP_ANCHOR)) {
     std::ofstream out("./anchors_bv.txt");
-    for (auto a : anchors_bv) {
+    for (auto& a : anchors_bv) {
       for (auto i = 0u; i < a.size(); ++i) {
         out << a[i] << " ";
       }
@@ -300,7 +300,7 @@ Anchors generate_anchors_stride(const AnchorInfo& params) {
   }
   if (ENV_PARAM(DEBUG_XNNPP_ANCHOR)) {
     std::ofstream out("./anchors.txt");
-    for (auto a : anchors) {
+    for (auto& a : anchors) {
       for (auto i = 0u; i < a.size(); ++i) {
         out << a[i] << " ";
       }

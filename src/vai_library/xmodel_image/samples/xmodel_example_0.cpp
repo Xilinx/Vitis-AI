@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,6 +95,10 @@ static std::vector<vitis::ai::Mat> from_opencv(std::vector<cv::Mat>& images) {
 int main(int argc, char* argv[]) {
   parse_opt(argc, argv);
   auto xmodel = vitis::ai::XmodelImage::create(g_xmodel_file);
+  if (!xmodel) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   auto images = read_images(g_image_files, xmodel->get_batch());
   auto image_buffers = from_opencv(images);
   auto results = xmodel->run(image_buffers);

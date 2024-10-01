@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ $(OUTPUT_DIR)/ssr.o:  ssr.cpp ssr.hpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<
 
 demo_ssr: $(OUTPUT_DIR)/demo_ssr.o $(OUTPUT_DIR)/ssr.o
-	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)
+	$(CXX) -std=c++17 $(CXX_FLAGS) -I.  -o $@ $+ $(LD_FLAGS)  -lvart-util
 
 $(OUTPUT_DIR)/test_performance_ssr.o: test_performance_ssr.cpp
 	$(CXX)  $(CXX_FLAGS) -c -o $@  -I. $<

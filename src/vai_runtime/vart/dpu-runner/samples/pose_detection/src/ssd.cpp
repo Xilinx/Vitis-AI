@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -642,7 +642,7 @@ void SSD::Run(Mat& img, MultiDetObjects* results) {
     CPUCalcSoftmax(&conf[i * num_classes_], num_classes_, conf_output_scale,
                    &softmax_data_[i * num_classes_]);
   _T(detector_->Detect(loc, softmax_data_, results));
-  delete imageInputs;
+  delete []imageInputs;
   return;
 }
 

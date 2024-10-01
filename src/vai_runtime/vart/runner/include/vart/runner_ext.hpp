@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,31 @@ class RunnerExt : public vart::Runner {
   /**
    *@brief Gets all input TensorBuffers of RunnerExt.
    *@return All input TensorBuffers. A vector of raw pointer to the input TensorBuffer.
+   
+   Sample code:
+
+   @code
+    auto runner = vart::RunnerExt::create_runner(subgraph, attrs);
+    auto input_tensor_buffers = runner->get_inputs();
+        for (auto input : input_tensor_buffers) {
+            auto shape = input->get_tensor()->get_shape();
+    }
+   @endcode
    */
   virtual std::vector<vart::TensorBuffer*> get_inputs() = 0;
   /**
    *@brief Gets all output TensorBuffers of RunnerExt.
    *@return All output TensorBuffers. A vector of raw pointer to the output TensorBuffer.
+   
+   Sample code:
+
+   @code
+    auto runner = vart::RunnerExt::create_runner(subgraph, attrs);
+    auto output_tensor_buffers = runner->get_outputs();
+        for (auto output : output_tensor_buffers) {
+            auto shape = output->get_tensor()->get_shape();
+    }
+   @endcode
    */
   virtual std::vector<vart::TensorBuffer*> get_outputs() = 0;
 };

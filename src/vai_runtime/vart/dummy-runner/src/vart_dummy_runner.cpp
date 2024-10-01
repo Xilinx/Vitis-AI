@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,18 @@ DummyRunner::DummyRunner(const xir::Subgraph* subgraph, xir::Attrs* attrs)
     dims[0] = ENV_PARAM(DUMMY_RUNNER_BATCH_SIZE);
     auto x = xir::Tensor::create(b->get_name(), dims, b->get_data_type());
     x->set_attrs(b->get_attrs());
+    for (auto op : b->get_producer()->get_fanout_ops()) {
+      if (subgraph->has_op(op)) {
+        if (op->get_type() == "upload") {
+          if (op->get_output_tensor()->has_attr("stride")) {
+            x->set_attr("stride",
+                        op->get_output_tensor()->get_attr<std::vector<int32_t>>(
+                            "stride"));
+            break;
+          }
+        }
+      }
+    }
     inputs_.emplace_back(std::move(x));
   }
   auto output_set = subgraph->get_sorted_output_tensors();

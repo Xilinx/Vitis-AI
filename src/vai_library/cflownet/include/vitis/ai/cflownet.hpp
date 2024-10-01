@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ class Cflownet {
   /**
    * @brief Function of get result of the Cflownet network.
    *
-   * @param img Input data of input image (cv::Mat).
+   * @param p const float pointer points to input data buffer.
    *
    * @return CflownetResult.
    *
@@ -98,7 +98,7 @@ class Cflownet {
    * @brief Function to get running results of the Cflownet network in
    * batch mode.
    *
-   * @param imgs Input data of input images (vector<cv::Mat>).
+   * @param ps const vector of float pointer points to input data buffer.
    * The size of input images need equal to or less than
    * batch size obtained by get_input_batch.
    *

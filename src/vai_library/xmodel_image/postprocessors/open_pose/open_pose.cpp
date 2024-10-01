@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,8 +197,8 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
     std::vector<int>& special_k) {
   std::vector<std::vector<int>> subset(0, std::vector<int>(16, -1));
   Peaks candidate;
-  for (auto peaks : all_peaks) {
-    for (auto peak : peaks) {
+  for (auto& peaks : all_peaks) {
+    for (auto& peak : peaks) {
       candidate.emplace_back(peak);
     }
   }

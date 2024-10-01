@@ -1,4 +1,4 @@
-
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 PROJECT_NAME=libpowermon
 TARGET=$(PROJECT_NAME).so

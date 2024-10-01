@@ -23,6 +23,9 @@ from torch.nn import ModuleList
 from .schema import SchemaHelper, convert_type_str
 from .torch_const import TorchGraphSymbol
 from nndct_shared.utils import DeprecatedAPIError, NndctScreenLogger, NndctDebugLogger, NndctOption, GLOBAL_MAP, NNDCT_KEYS
+from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+
+
 _NODE_NAME_SEPERATOR = TorchGraphSymbol.NODE_NAME_SEPERATOR
 _GRAPH_SCOPE_SYM = TorchGraphSymbol.GRAPH_SCOPE_SYM
 _TENSOR = "TensorType"
@@ -129,19 +132,23 @@ def _optimize_graph_17(graph):
   torch._C._jit_pass_lint(graph)
   return graph
 
-
-def get_torch_version():
-  pattern = re.compile(r'[0-9]+.[0-9]+.[0-9]+')
-  version = re.findall(pattern, torch.__version__)
-  version = ''.join(version[0].split('.'))
-  return int(version)
-
+def remove_outter_model_debug_name(graph):
+  from pytorch_nndct.parse.rich_in_out_helper import FlattenInOutModelForTrace
+  node_list = [node for node in graph.nodes()]
+  for node in graph.nodes():
+    for in_tensor in node.inputs():
+      if FlattenInOutModelForTrace.check_need_recovery_name(unique_name(in_tensor)):
+        set_unique_name(in_tensor, FlattenInOutModelForTrace.recovery_tensor_name(unique_name(in_tensor)))
+    for out_tensor in node.outputs():
+      if FlattenInOutModelForTrace.check_need_recovery_name(unique_name(out_tensor)):
+        set_unique_name(out_tensor, FlattenInOutModelForTrace.recovery_tensor_name(unique_name(out_tensor)))
 
 def post_process_script_graph(graph):
   split_shared_const_tensor(graph)
   split_shared_bias(graph)
   split_scalar_const(graph)
   convert_scalar_to_const(graph)
+  remove_outter_model_debug_name(graph)
   # remove_dce_node(graph)
   torch._C._jit_pass_dce(graph)
   torch._C._jit_pass_lint(graph)
@@ -239,11 +246,11 @@ def _collect_tuple_index(graph, remove_nodes=None):
   return remove_nodes
   
 def optimize_graph(graph, is_jit_graph=False, module=None):
-  if get_torch_version() > 159 and get_torch_version() < 190:
+  if compare_torch_version(CmpFlag.GREATER, "1.5.9") and compare_torch_version(CmpFlag.LESS, "1.9.0"):
     _optimize_graph_17(graph)
     return graph
   
-  if get_torch_version() >= 190:
+  if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.9.0"):
     _optimize_graph_19(graph, is_jit_graph, module)
     return graph
   
@@ -274,7 +281,7 @@ def optimize_graph(graph, is_jit_graph=False, module=None):
 
   torch._C._jit_pass_dce(graph)
   torch._C._jit_pass_lint(graph)
-  if get_torch_version() < 150:
+  if compare_torch_version(CmpFlag.LESS, "1.5.0"):
     torch._C._jit_pass_fixup_onnx_loops(graph)
   torch._C._jit_pass_lint(graph)
   graph = torch._C._jit_pass_canonicalize(graph)
@@ -608,19 +615,19 @@ def should_construct_dynamic_list(list_construct_node):
 
 
 def find_builtin(fn):
-  if get_torch_version() < 150:
+  if compare_torch_version(CmpFlag.LESS, "1.5.0"):
     return torch.jit._find_builtin(fn)
   else:
     return torch.jit._builtins._find_builtin(fn)
 
 def modules_containing_builtins():
-  if get_torch_version() < 150:
+  if compare_torch_version(CmpFlag.LESS, "1.5.0"):
     return torch.jit._modules_containing_builtins
   else:
     return torch.jit._builtins._modules_containing_builtins
 
 def builtin_ops():
-  if get_torch_version() <= 120:
+  if compare_torch_version(CmpFlag.LESS_EQUAL, "1.2.0"):
     import math
     import torch.backends.cudnn as cudnn
     import warnings
@@ -696,7 +703,7 @@ def builtin_ops():
         (warnings.warn, "aten::warn"),
     ]
     return builtin_ops
-  if  get_torch_version() < 150 and get_torch_version() > 120:
+  if  compare_torch_version(CmpFlag.LESS, "1.5.0") and compare_torch_version(CmpFlag.GREATER, "1.2.0"):
     return torch.jit._builtin_ops
   else:
     return torch.jit._builtins._builtin_ops
@@ -812,18 +819,22 @@ def create_fix_node(g, input, quant_min, quant_max, scale_inv, zero_point, metho
   fix_node.insertAfter(inplace.node())
   return fix_node
                                      
-def insert_after_node(g, fw_node, new_node, fw_value_name, idx=0):
-  # new_node.insertAfter(fw_node)
+def insert_after_node(g, fw_node, new_node, idx=0):
+  old_output = get_node_output_at(fw_node, idx)
+  new_output = get_node_output_at(new_node, 0)
+  old_output.replaceAllUsesAfterNodeWith(new_node, new_output)
+  
+def insert_after_input(g, fw_node, new_node, fw_value_name):
   old_output = None
   for i, out_name in enumerate(get_node_outputs_name(fw_node)):
     if out_name == fw_value_name:
       old_output = get_node_output_at(fw_node, i)
-  new_output = get_node_output_at(new_node, idx)
+  new_output = get_node_output_at(new_node, 0)
   old_output.replaceAllUsesAfterNodeWith(new_node, new_output)
 
-def insert_before_node(g, fw_node, new_node, idx):
+def insert_before_node(g, fw_node, new_node, idx=0):
   # new_node.insertBefore(fw_node)
-  output = get_node_output_at(fw_node, 0)
+  #output = get_node_output_at(fw_node, idx)
   new_output = get_node_output_at(new_node, 0)
   fw_node.replaceInput(idx, new_output)
 
@@ -1005,6 +1016,12 @@ const_type_converter = {
 
 
 def convert_scalar_to_const(g):
+  def get_const_dtype(const_node):
+    if const_node.output().isCompleteTensor():
+      const_value = const_node.output().toIValue()
+      return const_value.dtype
+    else:
+      return const_type_converter.get(get_node_output_type(const_node), torch.float32)
   def _convert_scalar_to_const(blocks):
     for block in blocks:
       for node in block.nodes():
@@ -1013,7 +1030,7 @@ def convert_scalar_to_const(g):
           if node_type(get_in_node_at(node, 1)) == "prim::Constant" and get_node_output_type(node) == "TensorType":
             const = get_attr_value(get_in_node_at(node, 1), "value")
 
-            clone_const_tensor = g.insertConstant(torch.tensor(const, dtype=const_type_converter.get(get_node_output_type(get_in_node_at(node, 1)), torch.float32)))
+            clone_const_tensor = g.insertConstant(torch.tensor(const, dtype=get_const_dtype(get_in_node_at(node, 1))))
             clone_const_tensor.node().moveBefore(node)
             node.replaceInput(1, clone_const_tensor)
     
@@ -1073,7 +1090,9 @@ def get_operation_caller_by_schema_name(schema_name):
   raise("unknow caller type")
 
 def get_node_scope_name(fw_node):
+  from pytorch_nndct.parse.rich_in_out_helper import FlattenInOutModelForTrace
   scope_name = fw_node.scopeName()
+  scope_name = FlattenInOutModelForTrace.recovery_node_scope_name(scope_name)
   if scope_name.startswith("__"):
     return scope_name.split("/")[-1]
   else:

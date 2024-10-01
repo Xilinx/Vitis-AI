@@ -1,0 +1,247 @@
+{
+  "optimize_pipeline_config":
+  {
+    "remove_dropout": false,
+    "separate_conv_act": false,
+    "fold_conv_bn": false,
+    "convert_bn_to_dwconv": false,
+    "convert_relu6_to_relu": false,
+    "convert_tf_op_to_keras": false,
+    "include_cle": false,
+    "cle_to_relu6": false,
+    "cle_steps": 10,
+    "cle_balance_method": "max",
+    "cle_weight_threshold": 0.1,
+    "train_with_bn": false
+  },
+
+  "quantize_pipeline_config":
+  {
+    "convert_datatype":"",
+    "no_quant_in_conv_bn_act": false,
+    "no_quant_in_conv_act": false,
+    "no_quant_in_add_act": false,
+    "freeze_bn_delay": -1
+  },
+
+  "refine_pipeline_config":
+  {
+    "include_fast_ft": false,
+    "fast_ft_epochs": 10,
+    "include_bias_corr": false
+  },
+
+  "finalize_pipeline_config":
+  {
+    "output_format": "",
+    "onnx_opset_version": 13,
+    "output_dir": "./quantize_results/"
+  },
+
+  "quantize_registry_config":
+  {
+
+    "user_quantize_config":
+    {
+      "data_format": null,
+      "input_bit": null,
+      "input_method": null,
+      "input_method_percentile": null,
+      "input_symmetry": null,
+      "input_per_channel": null,
+      "input_round_mode": null,
+      "weight_bit": null,
+      "weight_method": null,
+      "weight_symmetry": null,
+      "weight_per_channel": null,
+      "weight_round_mode": null,
+      "bias_bit": null,
+      "bias_method": null,
+      "bias_symmetry": null,
+      "bias_per_channel": null,
+      "bias_round_mode": null,
+      "activation_bit": null,
+      "activation_method": null,
+      "activation_method_percentile": null,
+      "activation_symmetry": null,
+      "activation_per_channel": null,
+      "activation_round_mode": null,
+      "use_framework_quant": null,
+      "input_layers": [],
+      "output_layers": [],
+      "ignore_layers": []
+    },
+    "custom_layer_type": [],
+    "input_quantize_config":
+    {
+      "input_layers": [],
+      "input_quantizer":
+      {
+        "quantizer_type": "BFPQuantizer",
+        "quantizer_params": {"data_format": "fp32", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+      }
+    },
+    "layer_quantize_config":
+    [
+      {
+        "layer_type": "tensorflow.keras.layers.MultiHeadAttention",
+        "quantizable_inputs": [0,1,2],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_weights": ["_query_dense.kernel", "_key_dense.kernel", "_value_dense.kernel", "_output_dense.kernel"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          },
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_activations": ["_softmax"],
+        "activation_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.Conv2D",
+        "quantizable_inputs": [0],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_weights": ["kernel"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.DepthwiseConv2D",
+	"quantizable_inputs": [0],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_weights": ["depthwise_kernel"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -2, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.Conv2DTranspose",
+	"quantizable_inputs": [0],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_weights": ["kernel"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.Dense",
+	"quantizable_inputs": [0],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ],
+        "quantizable_weights": ["kernel"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bfp", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.Activation",
+	"quantizable_inputs": [0],
+        "input_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.GlobalAveragePooling2D",
+	"quantizable_inputs": [0],
+	"input_quantizers": [
+	 {
+	    "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+	 }
+        ]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.Add",
+	"quantizable_inputs": [0],
+	"input_quantizers": [
+	  {
+	    "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+	  }
+	]
+      },
+      {
+        "layer_type": "tensorflow.keras.layers.LayerNormalization",
+	"quantizable_inputs": [0],
+	"input_quantizers": [
+	  {
+	    "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+	  }
+	],
+        "quantizable_weights": ["gamma"],
+        "weight_quantizers": [
+          {
+            "quantizer_type": "BFPQuantizer",
+            "quantizer_params": {"data_format": "bf16", "tile_size": 8, "bit_width": 15, "method":0, "round_mode": 0, "symmetry": true, "per_channel": true, "channel_axis": -1, "use_framework_quant": true, "narrow_range": false}
+          }
+        ]
+      }
+    ]
+  }
+}

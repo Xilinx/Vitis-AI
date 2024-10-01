@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ TFRefineDetPost::TFRefineDetPost(
   const auto& param = config.tfrefinedet_param();
   auto layername = std::vector<std::string>(param.layer_name().begin(),
                                             param.layer_name().end());
-  for (auto name : layername) {
+  for (auto& name : layername) {
     for (size_t j = 0u; j < output_tensors.size(); j++) {
       if (output_tensors[j].name.find(name) != std::string::npos) {
         output_tensors_.emplace_back(output_tensors[j]);

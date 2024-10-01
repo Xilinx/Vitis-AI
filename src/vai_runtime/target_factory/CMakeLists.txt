@@ -14,19 +14,22 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.5)
-project(target-factory VERSION 3.0.0 LANGUAGES C CXX)
+project(target-factory VERSION 3.5.0 LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 
 option(BUILD_TEST "build test" OFF)
 option(ENABLE_IPU "build IPU backend" OFF)
+option(Protobuf_USE_STATIC_LIBS "protobuf static lib" OFF)
+option(LIBGLOG_RESTRICT "find libglog restrict in install prefix" OFF)
 
-find_package(glog)
-if(BUILD_SHARED_LIBS)
-    set(Protobuf_USE_STATIC_LIBS OFF)
-else(BUILD_SHARED_LIBS)
-    set(Protobuf_USE_STATIC_LIBS ON)
-endif(BUILD_SHARED_LIBS)
+if (LIBGLOG_RESTRICT)
+  message(STATUS "Find glog in restrict mode")
+  find_package(glog PATHS ${CMAKE_INSTALL_PREFIX} NO_DEFAULT_PATH)
+else ()
+  message(STATUS "Find glog in public mode")
+  find_package(glog QUIET)
+endif (LIBGLOG_RESTRICT)
 find_package(Protobuf REQUIRED)
 if(NOT TARGET unilog::unilog)
   find_package(unilog REQUIRED)
@@ -66,7 +69,7 @@ set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_CONTACT "Jian Weng<jianweng@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
 set(CPACK_DEB_COMPONENT_INSTALL OFF)

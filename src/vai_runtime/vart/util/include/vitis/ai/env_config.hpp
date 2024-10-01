@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#include <cstdlib>
+#include <stdlib.h>
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -24,24 +25,17 @@ namespace vitis {
 namespace ai {
 template <typename T>
 struct env_config_helper {
-  static inline T from_string(const char* s);
+  static inline T from_string(const std::string& s);
 };
-
+std::string my_getenv_s(const char* name,
+                        const std::string& default_value = "");
 template <typename T, typename env_name>
 struct env_config {
   static T init() {
     const char* name = env_name::get_name();
     const char* defvalue = env_name::get_default_value();
-#if _WIN32
-#pragma warning(push)
-#pragma warning(disable : 4996)
-#endif
-    const char* p = getenv(name);
-#if _WIN32
-#pragma warning(pop)
-#endif
-    const char* pstr = p != nullptr ? p : defvalue;
-    const T tmp_value = env_config_helper<T>::from_string(pstr);
+    auto p = my_getenv_s(name, defvalue);
+    const T tmp_value = env_config_helper<T>::from_string(p);
     return tmp_value;
   }
   static T value;
@@ -50,25 +44,26 @@ template <typename T, typename env_name>
 T env_config<T, env_name>::value = env_config<T, env_name>::init();
 
 template <typename T>
-inline T env_config_helper<T>::from_string(const char* s) {
+inline T env_config_helper<T>::from_string(const std::string& s) {
   T ret = T();
-  parse_value(std::string(s), ret);
+  parse_value(s, ret);
   return ret;
 }
 
 template <>
-inline std::string env_config_helper<std::string>::from_string(const char* s) {
-  return std::string(s);
+inline std::string env_config_helper<std::string>::from_string(
+    const std::string& s) {
+  return s;
 }
 
 template <typename T>
 struct env_config_helper<std::vector<T>> {
-  static inline std::vector<T> from_string(const char* s);
+  static inline std::vector<T> from_string(const std::string& s);
 };
 
 template <typename T>
 inline std::vector<T> env_config_helper<std::vector<T>>::from_string(
-    const char* s) {
+    const std::string& s) {
   const char delim = ',';
   auto list = std::vector<T>();
   auto ss = std::istringstream(std::string(s));

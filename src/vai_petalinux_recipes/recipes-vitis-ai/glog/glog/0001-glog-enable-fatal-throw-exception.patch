@@ -1,0 +1,48 @@
+From c1d399891520111801dbf994485eccf7f462cf2f Mon Sep 17 00:00:00 2001
+From: Tianfang Meng <tianfang@amd.com>
+Date: Fri, 7 Apr 2023 11:58:41 +0800
+Subject: [PATCH] glog enable fatal throw exception
+
+---
+ src/glog/logging.h.in | 2 +-
+ src/logging.cc        | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/glog/logging.h.in b/src/glog/logging.h.in
+index 421f1e0..4c2d30d 100644
+--- a/src/glog/logging.h.in
++++ b/src/glog/logging.h.in
+@@ -1510,7 +1510,7 @@ class GOOGLE_GLOG_DLL_DECL LogMessageFatal : public LogMessage {
+  public:
+   LogMessageFatal(const char* file, int line);
+   LogMessageFatal(const char* file, int line, const CheckOpString& result);
+-  @ac_cv___attribute___noreturn@ ~LogMessageFatal();
++  @ac_cv___attribute___noreturn@ ~LogMessageFatal() noexcept(false);
+ };
+ 
+ // A non-macro interface to the log facility; (useful
+diff --git a/src/logging.cc b/src/logging.cc
+index 71de91d..cb7d184 100644
+--- a/src/logging.cc
++++ b/src/logging.cc
+@@ -397,7 +397,7 @@ const char*const LogSeverityNames[NUM_SEVERITIES] = {
+ };
+ 
+ // Has the user called SetExitOnDFatal(true)?
+-static bool exit_on_dfatal = true;
++static bool exit_on_dfatal = false;
+ 
+ const char* GetLogSeverityName(LogSeverity severity) {
+   return LogSeverityNames[severity];
+@@ -2492,7 +2492,7 @@ LogMessageFatal::LogMessageFatal(const char* file, int line,
+                                  const CheckOpString& result) :
+     LogMessage(file, line, result) {}
+ 
+-LogMessageFatal::~LogMessageFatal() {
++LogMessageFatal::~LogMessageFatal() noexcept(false){
+     Flush();
+     LogMessage::Fail();
+ }
+-- 
+2.17.1
+

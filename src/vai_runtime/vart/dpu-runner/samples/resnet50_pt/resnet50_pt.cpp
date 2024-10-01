@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
   auto width = input_tensor->get_shape().at(2);
 
   // loop for running input images
-  for (auto i = 0; i < input_images.size(); i += batch) {
+  for (auto i = 0; i < (int)input_images.size(); i += batch) {
     auto run_batch = std::min(((int)input_images.size() - i), batch);
     auto images = std::vector<cv::Mat>(run_batch);
 

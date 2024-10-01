@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 """
-Copyright 2019 Xilinx Inc.
+Copyright 2022-2023 Advanced Micro Devices Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -136,6 +136,11 @@ def create_dpu_result(s: "Subgraph"):
     ]
 
     result_s["reg info"] = table
+
+    if s.has_attr("mc_code"):
+        ins_reg = s.get_attr("mc_code")
+        result_s["instruction reg"] = len(ins_reg)
+
     return result_s
 
 

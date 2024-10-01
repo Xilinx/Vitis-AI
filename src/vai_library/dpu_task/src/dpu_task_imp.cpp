@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ DEF_ENV_PARAM(DEBUG_DPBASE, "0");
 
 int GLOBAL_ENABLE_C_SOFTMAX = 0;
 
-//# Disable for DPUV1, as DPUV1 dont have xmodel
+// # Disable for DPUV1, as DPUV1 dont have xmodel
 #ifndef ENABLE_DPUCADX8G_RUNNER
 static std::string get_full_filename(const std::string& filename) {
   if (filename[0] == '/') {
@@ -87,7 +87,7 @@ static int get_batch_size_of_runner(vart::Runner* r) {
   return r->get_input_tensors()[0]->get_shape().at(0);
 }
 
-//# Enable software softmax for DPU's which uses rt-engine
+// # Enable software softmax for DPU's which uses rt-engine
 static void enable_sw_softmax(const xir::Subgraph* subgraph) {
   auto libs = subgraph->get_attr<std::map<std::string, std::string>>("runner");
   auto iter_lib = libs.find("run");
@@ -167,7 +167,7 @@ DpuTaskImp::DpuTaskImp(const std::string& model_name, xir::Attrs* attrs)
       do_mean_scale_{false} {}
 
 #else
-//# Enable for DPUV1 Runner and it need meta json file
+// # Enable for DPUV1 Runner and it need meta json file
 static vector<string> fine_module_search_path() {
   auto ret = vector<string>{};
   ret.push_back(".");
@@ -176,7 +176,7 @@ static vector<string> fine_module_search_path() {
   return ret;
 }
 
-//# Utility functions for DPUV1
+// # Utility functions for DPUV1
 static size_t filesize(const string& filename) {
   size_t ret = 0;
   struct stat statbuf;
@@ -211,7 +211,7 @@ static string find_module_dir_name(const string& name) {
   return string{""};
 }
 
-//# call create_runner with directory name for DPUV1
+// # call create_runner with directory name for DPUV1
 DpuTaskImp::DpuTaskImp(const std::string& model_name)
     : model_name_{model_name},
       dirname_{find_module_dir_name(model_name)},
@@ -242,33 +242,43 @@ void DpuTaskImp::run(size_t idx) {
       << "running dpu task " << model_name_ << "[" << idx << "]";
   auto vin = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
   auto vout = dynamic_cast<vart::RunnerExt*>(runners_[idx].get());
-  if (vin && vout ) {
-     auto inputs = vin->get_inputs();
-     auto outputs = vout->get_outputs();
-     std::pair<uint32_t, int> v;
-     for (auto input : inputs) {
-       input->sync_for_write(0, input->get_tensor()->get_data_size() /
-                                    input->get_tensor()->get_shape()[0]);
-     }
-     if (ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME)) {
-       auto start = std::chrono::steady_clock::now();
-       v = runners_[idx]->execute_async(inputs, outputs);
-       auto end = std::chrono::steady_clock::now();
-       auto time =
-           std::chrono::duration_cast<std::chrono::microseconds>(end - start)
-               .count();
-       TimeMeasure::getThreadLocalForDpu().add(int(time));
-     } else {
-       v = runners_[idx]->execute_async(inputs, outputs);
-     }
-     runners_[idx]->wait((int)v.first, -1);
-     for (auto output : outputs) {
-       output->sync_for_read(0, output->get_tensor()->get_data_size() /
-                                    output->get_tensor()->get_shape()[0]);
-     }
+  if (vin && vout) {
+    auto inputs = vin->get_inputs();
+    auto outputs = vout->get_outputs();
+    std::pair<uint32_t, int> v;
+    for (auto input : inputs) {
+      input->sync_for_write(0, input->get_tensor()->get_data_size() /
+                                   input->get_tensor()->get_shape()[0]);
+    }
+    if (ENV_PARAM(DEEPHI_DPU_CONSUMING_TIME)) {
+      auto start = std::chrono::steady_clock::now();
+      v = runners_[idx]->execute_async(inputs, outputs);
+      auto end = std::chrono::steady_clock::now();
+      auto time =
+          std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+              .count();
+      TimeMeasure::getThreadLocalForDpu().add(int(time));
+    } else {
+      v = runners_[idx]->execute_async(inputs, outputs);
+    }
+    runners_[idx]->wait((int)v.first, -1);
+    for (auto output : outputs) {
+      output->sync_for_read(0, output->get_tensor()->get_data_size() /
+                                   output->get_tensor()->get_shape()[0]);
+    }
   }
   LOG_IF(INFO, ENV_PARAM(DEBUG_DPBASE))
       << "dpu task " << model_name_ << "[" << idx << "]";
+}
+
+static std::unique_ptr<xir::Tensor> create_single_batch_tensor(
+    const xir::Tensor* t) {
+  auto shape = t->get_shape();
+  CHECK_GT(shape.size(), 0);
+  shape[0] = 1;
+  auto ret = xir::Tensor::create(t->get_name(), shape, t->get_data_type());
+  ret->set_attrs(t->get_attrs());
+  return ret;
 }
 
 void DpuTaskImp::run_with_xrt_bo(const std::vector<vart::xrt_bo_t>& input_bos) {
@@ -285,11 +295,16 @@ void DpuTaskImp::run_with_xrt_bo(const std::vector<vart::xrt_bo_t>& input_bos) {
   CHECK(!the_input_shape.empty());
   auto the_input_batch = the_input_shape[0];
   CHECK_LE(input_bos.size(), (size_t)the_input_batch);
+  // create single batch tensor from input tensor of runner
+  auto new_input_tensor = create_single_batch_tensor(the_input_tensor);
+  // for each input_bo, create tensor buffer for the new tensor
   auto the_xrt_bo_tensor_buffers = vitis::ai::vec_map(
-      input_bos, [the_input_tensor](const vart::xrt_bo_t& xrt_bo) {
-        return vart::assistant::XrtBoTensorBuffer::create(xrt_bo,
-                                                          the_input_tensor);
+      input_bos, [&new_input_tensor](const vart::xrt_bo_t& xrt_bo) {
+        return vart::assistant::XrtBoTensorBuffer::create(
+            xrt_bo, new_input_tensor.get());
       });
+  // combine all the single batch tensor buffers to a batch tensor buffer which
+  // will have multiple batches
   auto the_input_tensor_buffer = vart::assistant::BatchTensorBuffer::create(
       vitis::ai::vector_unique_ptr_get(the_xrt_bo_tensor_buffers));
   auto inputs = std::vector<vart::TensorBuffer*>{the_input_tensor_buffer.get()};
@@ -331,7 +346,7 @@ void DpuTaskImp::setImageRGB(const cv::Mat& img, size_t ind) {
   setImageRGB(img.data, img.step, ind);
 }
 
-//# Templatized the input data type
+// # Templatized the input data typu
 template <typename T>
 static void copy_line_by_line(T* data, int rows, int cols, int channels,
                               int stride, const uint8_t* input) {
@@ -367,7 +382,7 @@ void DpuTaskImp::setInputDataArray(const std::vector<int8_t> input,
   for (size_t c = 0; c < channels; c++) {
     real_scale[c] = scale_[c] * input_fixed_scale;
   }
-//# For DPUV1 the datatype is float
+// # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
   auto data = (float*)layer_data.get_data(0);
 #else
@@ -399,7 +414,7 @@ void DpuTaskImp::setInputDataArray(const std::vector<std::vector<int8_t>> input,
     real_scale[c] = scale_[c] * input_fixed_scale;
   }
   for (auto i = 0; i < (signed)input.size(); i++) {
-//# For DPUV1 the datatype is float
+// # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
     auto data = (float*)layer_data.get_data(i);
 #else
@@ -424,7 +439,7 @@ void DpuTaskImp::setImageBGR(const uint8_t* input, int stride) {
   auto cols = layer_data.width;
   auto channels = layer_data.channel;
 
-//# For DPUV1 the datatype is float
+// # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
   auto data = (float*)layer_data.get_data(0);
 #else
@@ -466,7 +481,7 @@ void DpuTaskImp::setImageRGB(const uint8_t* input, int stride, size_t ind) {
   auto cols = layer_data.width;
   auto channels = layer_data.channel;
 
-  //# For DPUV1 the datatype is float
+  // # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
   auto data = (float*)layer_data.get_data(0);
 #else
@@ -510,7 +525,7 @@ void DpuTaskImp::setImageBGR(const std::vector<cv::Mat>& imgs) {
   // auto data = (int8_t*)layer_data.data;
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
-//# For DPUV1 the datatype is float
+// # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
     auto data = (float*)layer_data.get_data(i);
 #else
@@ -551,7 +566,7 @@ void DpuTaskImp::setImageRGB(const std::vector<cv::Mat>& imgs, size_t ind) {
       << "cols " << cols;
 
   for (auto i = 0; i < (signed)imgs.size(); i++) {
-//# For DPUV1 the datatype is float
+// # For DPUV1 the datatype is float
 #ifdef ENABLE_DPUCADX8G_RUNNER
     auto data = (float*)layer_data.get_data(i);
 #else
@@ -571,7 +586,7 @@ std::vector<float> DpuTaskImp::getMean() { return mean_; }
 
 std::vector<float> DpuTaskImp::getScale() { return scale_; }
 
-//# Add tensor format argument (NHWC / NCHW)
+// # Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     vart::TensorBuffer* tb, vart::Runner::TensorFormat fmt) {
   float scale = 1.0f;
@@ -582,7 +597,7 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
   ret.batch = batch;
   ret.size = tensor->get_element_num() *
              std::ceil(tensor->get_data_type().bit_width / 8.f);
-  //# Store the params as per format
+  // # Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     ret.height = dim_num <= 1 ? 1 : tensor->get_shape().at(1);
     ret.width = dim_num <= 2 ? 1 : tensor->get_shape().at(2);
@@ -600,7 +615,7 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
     }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
-    //# DPUV1 has datatype float
+    // # DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
     ret.fixpos = 0;
@@ -640,7 +655,7 @@ static vitis::ai::library::InputTensor convert_tensor_buffer_to_input_tensor(
   return ret;
 }
 
-//# Add tensor format argument (NHWC / NCHW)
+// # Add tensor format argument (NHWC / NCHW)
 static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     vart::TensorBuffer* tb, vart::Runner::TensorFormat fmt) {
   float scale = 1.0f;
@@ -652,7 +667,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
 
   ret.size = tensor->get_element_num() *
              std::ceil(tensor->get_data_type().bit_width / 8.f);
-  //# Store the params as per format
+  // # Store the params as per format
   if (fmt == vart::Runner::TensorFormat::NHWC) {
     if (dim_num == 2) {
       ret.height = 1;
@@ -676,7 +691,7 @@ static vitis::ai::library::OutputTensor convert_tensor_buffer_to_output_tensor(
     }
   } else {
 #ifdef ENABLE_DPUCADX8G_RUNNER
-    //# DPUV1 has datatype float
+    // # DPUV1 has datatype float
     ret.size = tensor->get_element_num() *
                std::ceil(tensor->get_data_type().bit_width / 32.f);
     ret.fixpos = 0;
@@ -720,9 +735,9 @@ get_all_input_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners) {
   input_tensors.reserve(runners.size());
   for (auto& runner : runners) {
     auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
-    if (dpu_runner_ext ) {
+    if (dpu_runner_ext) {
       auto inputs = dpu_runner_ext->get_inputs();
-      //# Get the current format
+      // # Get the current format
       auto fmt = runner->get_tensor_format();
       auto ret = std::vector<vitis::ai::library::InputTensor>{};
       ret.reserve(inputs.size());
@@ -770,8 +785,10 @@ get_all_output_tensors(std::vector<std::unique_ptr<vart::Runner>>& runners) {
   output_tensors.reserve(runners.size());
   for (auto& runner : runners) {
     auto dpu_runner_ext = dynamic_cast<vart::RunnerExt*>(runner.get());
+    if (dpu_runner_ext == NULL)
+      continue;  // coverity complain need check dynamic_cast
     auto outputs = dpu_runner_ext->get_outputs();
-    //# Get the current format
+    // # Get the current format
     auto fmt = runner->get_tensor_format();
     auto ret = std::vector<vitis::ai::library::OutputTensor>{};
     ret.reserve(outputs.size());
@@ -811,12 +828,7 @@ std::vector<vitis::ai::library::OutputTensor> DpuTaskImp::getOutputTensor(
 
 size_t DpuTaskImp::get_input_batch(size_t kernel_idx, size_t node_idx) const {
   auto v = dynamic_cast<vart::RunnerExt*>(runners_[kernel_idx].get());
-  return v ? v
-      ->get_inputs()[node_idx]
-      ->get_tensor()
-      ->get_shape()
-      .at(0)
-    :  0 ;
+  return v ? v->get_inputs()[node_idx]->get_tensor()->get_shape().at(0) : 0;
 }
 
 size_t DpuTaskImp::get_num_of_kernels() const {  //

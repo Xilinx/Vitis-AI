@@ -309,32 +309,75 @@ xir::Op* add_const_op(xir::Graph* graph, const std::string& name,
       << " attr.data should be in numpy format.";
   auto info = py::cast<py::array>(data).request();
   std::string type;
-  if (info.format == "b")
+  int data_bytes = 1;
+  if (info.format == "b") {
     type = "int8";
-  else if (info.format == "B")
+    data_bytes = 1;
+  } else if (info.format == "B") {
     type = "uint8";
-  else if (info.format == "h")
+    data_bytes = 1;
+  } else if (info.format == "h") {
     type = "int16";
-  else if (info.format == "H")
+    data_bytes = 2;
+  } else if (info.format == "H") {
     type = "uint16";
-  else if (info.format == "i")
+    data_bytes = 2;
+  } else if (info.format == "i") {
     type = "int32";
-  else if (info.format == "I")
+    data_bytes = 4;
+  } else if (info.format == "I") {
     type = "uint32";
-  else if (info.format == "l")
+    data_bytes = 4;
+  } else if (info.format == "l") {
     type = "int64";
-  else if (info.format == "L")
+    data_bytes = 8;
+  } else if (info.format == "L") {
     type = "uint64";
-  else if (info.format == "f")
+    data_bytes = 8;
+  } else if (info.format == "f") {
     type = "float32";
-  else if (info.format == "d")
+    data_bytes = 4;
+  } else if (info.format == "d") {
     type = "float64";
+    data_bytes = 8;
+  }
+  auto xir_data = get_vec_char(py::cast<py::array>(data));
   std::vector<std::int32_t> shape;
   for (auto s : info.shape) shape.push_back(static_cast<std::int32_t>(s));
+  std::vector<std::int32_t> strides;
+  for (auto s : info.strides) strides.push_back(static_cast<std::int32_t>(s));
+  auto make_contiguous =
+      [](const std::vector<int32_t>& shape, const uint32_t& num_elements,
+         const std::vector<int32_t>& strides, const uint32_t& data_bytes,
+         const std::vector<char>& data) -> std::vector<char> {
+    std::vector<char> data_contiguous(num_elements * data_bytes);
+    std::vector<int> dim_sizes(shape.size());
+    dim_sizes.back() = data_bytes;
+    for (int32_t i = int(shape.size()) - 2; i >= 0; i--) {
+      dim_sizes[i] = dim_sizes[i + 1] * shape[i + 1];
+    }
+    if (dim_sizes == strides) {
+      data_contiguous = data;
+      return data_contiguous;
+    }
+    for (uint32_t i = 0; i < num_elements; i++) {
+      int src_idx = 0;
+      int dst_idx = 0;
+      for (uint32_t j = 0; j < shape.size(); j++) {
+        int dim_idx = (i / (dim_sizes[j] / data_bytes)) % shape[j];
+        src_idx += dim_idx * strides[j];
+        dst_idx += dim_idx * dim_sizes[j];
+      }
+      memcpy(data_contiguous.data() + dst_idx, data.data() + src_idx,
+             data_bytes);
+    }
+    return data_contiguous;
+  };
+  xir_data = make_contiguous(shape, info.size, strides, data_bytes, xir_data);
   auto attrs = xir::Attrs::create();
   attrs->set_attr("shape", shape);
   attrs->set_attr("data_type", type);
-  attrs->set_attr("data", get_vec_char(py::cast<py::array>(data)));
+  attrs->set_attr("data", xir_data);
   return graph->add_op(name, "const", std::move(attrs), {});
 }
 

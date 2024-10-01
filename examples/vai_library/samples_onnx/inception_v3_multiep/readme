@@ -1,0 +1,60 @@
+/*
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <http://www.apache.org/licenses/LICENSE-2.0>
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Important:
+
+requirement before run:
+before running this sample, you should build your own onnx runtime with ACL support,
+please refer to https://onnxruntime.ai/docs/execution-providers/community-maintained/ACL-ExecutionProvider.html
+then place the required files in your environment, 
+for heade files, please copy the acl header file to the directory of : /usr/include/onnxruntime/core/providers/acl
+
+
+add environment parameter DEBUG_USE_NEW_SCHEDULE=0 before executable files.
+
+  ./test_inception_v3_multiep_onnx, ./test_performance_inception_v3_multiep_onnx, ./test_accuracy_inception_v3_multiep_onnx first param followed must be with model name.
+  Valid model name:
+    inception_v3_onnx_pt
+
+1, compile
+
+    execute the following command:
+
+        sh build.sh
+
+2, copy the compiled executable file and test image to the development board.
+
+   run the executable file.
+
+    sample : ./test_inception_v3_multiep_onnx /usr/share/vitis_ai_library/models/inception_v3_onnx_pt/inception_v3_onnx_pt.onnx sample_classification.jpg
+    output : 
+batch 0:
+score[109]  =  0.964227     text: brain coral,
+score[973]  =  0.000775946  text: coral reef,
+score[392]  =  0.000285454  text: rock beauty, Holocanthus tricolor,
+score[149]  =  0.000251913  text: dugong, Dugong dugon,
+score[89]   =  0.000222312  text: sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita,
+
+
+Performance:
+    sample : ./test_performance_inception_v3_multiep_onnx /usr/share/vitis_ai_library/models/inception_v3_onnx_pt/inception_v3_onnx_pt.onnx -s 60 -t 6 test_performance_classification.list
+
+
+Accuracy:
+    test accuracy of inception_v3_multiep_onnx:
+    ./test_accuracy_inception_v3_multiep_onnx <model_path> <image_list_filename> <output_filename> -t <thread>
+    sample:
+    ./test_accuracy_inception_v3_multiep_onnx /usr/share/vitis_ai_library/models/inception_v3_multiep_onnx/inception_v3_multiep_onnx.onnx image_list result.txt -t 2

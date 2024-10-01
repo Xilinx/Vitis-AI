@@ -1,0 +1,734 @@
+#
+# simple models for basic functional test
+#
+regression-graphdef:
+  model: models/regression/graphdef/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1]
+  outputs:
+    - pred:0
+
+regression-checkpoint:
+  model: models/regression/checkpoint/model.meta
+  model_type: checkpoint
+  input_get: get_ramp
+  inputs:
+    "X:0": [1]
+  outputs:
+    - pred:0
+
+regression-saved-model:
+  model: models/regression/saved_model
+  model_type: saved_model
+  tag: serve
+  input_get: get_ramp
+  inputs:
+    "X:0": [1]
+  outputs:
+    - pred:0
+
+saved_model_with_redundant_inputs:
+  disabled: true # grappler will remove the unconnected inputs - no chance to test this
+  model: models/saved_model_with_redundant_inputs
+  model_type: saved_model
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 10]
+    "Placeholder:0": [1, 10]
+  outputs:
+    - Add:0
+
+graphdef_with_redundant_inputs:
+  disabled: true # grappler will remove the unconnected inputs - no chance to test this
+  model: models/regression/graphdef/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 10]
+    "Placeholder:0": [1, 10]
+  outputs:
+    - Add:0
+
+checkpoint_with_redundant_inputs:
+  disabled: true # grappler will remove the unconnected inputs - no chance to test this
+  model: models/regression/checkpoint/model.meta
+  model_type: checkpoint
+  input_get: get_ramp
+  inputs:
+    "X:0": [1]
+    "Placeholder:0": [1, 10]
+  outputs:
+    - pred:0
+
+benchtf-fc:
+  model: models/fc-layers/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+  outputs:
+    - output:0
+
+benchtf-conv:
+  model: models/conv-layers/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+  outputs:
+    - output:0
+
+benchtf-convbn:
+  disabled: true # some if from training isn't removed
+  model: models/convbn-layers/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+  outputs:
+    - output:0
+
+benchtf-ae0:
+  model: models/ae0/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+  outputs:
+    - output:0
+
+benchtf-lstm:
+  disabled: true
+  model: models/lstm/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+  outputs:
+    - output:0
+
+benchtf-gru:
+  disabled: true
+  model: models/gru/frozen.pb
+  input_get: get_ramp
+  inputs:
+    "X:0": [1, 784]
+    "keep_prob:0": [1]
+  outputs:
+    - output:0
+
+##
+## standard image nets
+##
+
+esrgan-tf2:
+  # url: https://tfhub.dev/captain-pool/esrgan-tf2/1/esrgan-tf2_1.tar.gz
+  url: https://github.com/captain-pool/GSOC/releases/download/1.0.0/esrgan.tar.gz
+  model: "."
+  model_type: saved_model
+  input_get: get_beach
+  opset_constraints:
+    "onnx":
+      "min": 10
+  inputs:
+    "input_0:0": [1, 50, 50, 3]
+  outputs:
+    - Identity:0
+  rtol: 0.02
+  atol: 0.0005
+  tf_min_version: 2.1
+
+inception_v3_slim:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_v3_2016_08_28_frozen.pb.tar.gz
+  model: inception_v3_2016_08_28_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 299, 299, 3]
+  outputs:
+    - InceptionV3/Predictions/Softmax:0
+  rtol: 0.02
+  atol: 0.00001
+
+inception_v4:
+  disabled: true # works, keeping down to limit ci time
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_v4_2016_09_09_frozen.pb.tar.gz
+  model: inception_v4_2016_09_09_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 299, 299, 3]
+  outputs:
+    - InceptionV4/Logits/Predictions:0
+  rtol: 0.02
+  atol: 0.00001
+
+googlenet_v1_nonslim:
+  disabled: true
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip
+  model: tensorflow_inception_graph.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - softmax2:0
+
+googlenet_resnet_v2:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_resnet_v2_2016_08_30_frozen.pb.tar.gz
+  model: inception_resnet_v2_2016_08_30_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 299, 299, 3]
+  outputs:
+    - InceptionResnetV2/Logits/Predictions:0
+  rtol: 0.05
+
+googlenet_v1_slim:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_v1_2016_08_28_frozen.pb.tar.gz
+  model: inception_v1_2016_08_28_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - InceptionV1/Logits/Predictions/Softmax:0
+  rtol: 0.05
+
+googlenet_v2_slim:
+  # FIXME: fails because of 0.29% missmatch
+  disabled: true
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_v2_2016_08_28_frozen.pb.tar.gz
+  model: inception_v2_2016_08_28_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - InceptionV2/Predictions/Softmax:0
+  rtol: 0.05
+  atol: 0.00005
+
+googlenet_v4_slim:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/inception_v4_2016_09_09_frozen.pb.tar.gz
+  model: inception_v4_2016_09_09_frozen.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 299, 299, 3]
+  outputs:
+    - InceptionV4/Logits/Predictions:0
+  rtol: 0.1
+
+squeezenet:
+  disabled: true
+  url: https://storage.googleapis.com/download.tensorflow.org/models/tflite/model_zoo/upload_20180427/squeezenet_2018_04_27.tgz
+  model: squeezenet.pb
+  input_get: get_beach
+  inputs:
+    "Placeholder:0": [1, 224, 224, 3]
+  outputs:
+    - softmax_tensor:0
+    - ArgMax:0
+
+mobilenet_v3_large_float:
+  tf_min_version: 1.14  # explicit_paddings for Conv2D
+  url: https://storage.googleapis.com/mobilenet_v3/checkpoints/v3-large_224_1.0_float.tgz
+  model: v3-large_224_1.0_float/v3-large_224_1.0_float.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - MobilenetV3/Predictions/Softmax:0
+
+mobilenet_v2_1.4_224:
+  url: https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.4_224.tgz
+  model: mobilenet_v2_1.4_224_frozen.pb
+  input_get: get_beach
+  force_input_shape: true
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - MobilenetV2/Predictions/Reshape_1:0
+
+mobilenet_v1_100_224:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_1.0_224_frozen.tgz
+  model: mobilenet_v1_1.0_224/frozen_graph.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - MobilenetV1/Predictions/Softmax:0
+
+mobilenet_v1_75_192:
+  url: https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_0.75_192_frozen.tgz
+  model: mobilenet_v1_0.75_192/frozen_graph.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 192, 192, 3]
+  outputs:
+    - MobilenetV1/Predictions/Softmax:0
+
+nasnet-a_mobile_224:
+  # has only checkpoint format
+  disabled: true
+  url: https://storage.googleapis.com/download.tensorflow.org/models/nasnet-a_mobile_04_10_2017.tar.gz
+  model: fixme
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 416, 416, 3]
+  outputs:
+    - output:0
+
+vgg-16:
+  # has only checkpoint format
+  disabled: true
+  url: http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz
+  model: fixme
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 416, 416, 3]
+  outputs:
+    - output:0
+
+resnet50_v2_nchw: # NOTE: Tensorflow 1.9.0 fails
+  skip_tensorflow: true # tensorflow fails: Default MaxPoolingOp only supports NHWC on device type CPU
+  url: http://download.tensorflow.org/models/official/20181001_resnet/savedmodels/resnet_v2_fp32_savedmodel_NCHW.tar.gz
+  model: resnet_v2_fp32_savedmodel_NCHW/1538687196
+  model_type: saved_model
+  tag: serve
+  input_get: get_beach
+  inputs:
+    "input_tensor:0": [64, 224, 224, 3]
+  outputs:
+    - ArgMax:0
+    - softmax_tensor:0
+
+resnet50_v2_nhwc:
+  url: http://download.tensorflow.org/models/official/20181001_resnet/savedmodels/resnet_v2_fp32_savedmodel_NHWC.tar.gz
+  model: resnet_v2_fp32_savedmodel_NHWC/1538687283
+  model_type: saved_model
+  tag: serve
+  input_get: get_beach
+  inputs:
+    "input_tensor:0": [64, 224, 224, 3]
+  outputs:
+    - ArgMax:0
+    - softmax_tensor:0
+
+resnet50_fp16_v2:
+  disabled: true # FIXME: need to handle float16 constants
+  model_type: saved_model
+  url: http://download.tensorflow.org/models/official/20181001_resnet/savedmodels/resnet_v2_fp16_savedmodel_NHWC.tar.gz
+  model: resnet_v2_fp16_savedmodel_NHWC/1538686978
+  input_get: get_beach
+  inputs:
+    "input_tensor:0": [64, 224, 224, 3]
+  outputs:
+    - ArgMax:0
+    - softmax_tensor:0
+
+resnet50_v1:
+  disabled: true # works, disabled because its nearly the same as resnet50_v2_nchw
+  skip_tensorflow: true # tensorflow fails: Default MaxPoolingOp only supports NHWC on device type CPU
+  model_type: saved_model
+  url: http://download.tensorflow.org/models/official/20180601_resnet_v1_imagenet_savedmodel.tar.gz
+  model: 20180601_resnet_v1_imagenet_savedmodel/1527888778
+  input_get: get_beach
+  inputs:
+    "input_tensor:0": [128, 224, 224, 3]
+  outputs:
+    - ArgMax:0
+    - softmax_tensor:0
+
+ssd_mobilenet_v3_large_coco:
+  tf_min_version: 2.2
+  url: http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v3_large_coco_2019_08_14.tar.gz
+  model: ssd_mobilenet_v3_large_coco_2019_08_14/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 10
+      "max": 17
+  input_get: get_beach
+  inputs:
+    "normalized_input_image_tensor:0": [1, 320, 320, 3]
+  outputs:
+    - raw_outputs/box_encodings:0
+    - raw_outputs/class_predictions:0
+
+ssd_mobilenet_v1_coco:
+  url: http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz
+  model: ssd_mobilenet_v1_coco_2017_11_17/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 10
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_scores:0
+    - num_detections:0
+    - detection_classes:0
+
+ssd_mobilenet_v2_coco:
+  # works with opset-10
+  disabled: true   # works, keeping down to limit ci time
+  url: http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
+  model: ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 10
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_scores:0
+    - num_detections:0
+    - detection_classes:0
+
+ssdlite_mobilenet_v2_coco:
+  # works with opset-10
+  disabled: true   # works, keeping down to limit ci time
+  url: http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz
+  model: ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 10
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_scores:0
+    - num_detections:0
+    - detection_classes:0
+
+ssd_inception_v2_coco:
+  disabled: true   # works, keeping down to limit ci time
+  url: http://download.tensorflow.org/models/object_detection/ssd_inception_v2_coco_2017_11_17.tar.gz
+  model: ssd_inception_v2_coco_2017_11_17/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 10
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_scores:0
+    - num_detections:0
+    - detection_classes:0
+
+faster_rcnn_resnet101:
+  disabled: true  # works, keeping down to limit ci time
+  url:  http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz
+  model: faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 11
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_classes:0
+    - detection_scores:0
+    - num_detections:0
+
+faster_rcnn_inception_v2_coco:
+  url: http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_v2_coco_2018_01_28.tar.gz
+  model: faster_rcnn_inception_v2_coco_2018_01_28/frozen_inference_graph.pb
+  opset_constraints:
+    "onnx":
+      "min": 11
+      "max": 17
+  input_get: get_beach
+  inputs:
+    "image_tensor:0": [1, 224, 224, 3]
+  outputs:
+    - detection_boxes:0
+    - detection_classes:0
+    - detection_scores:0
+    - num_detections:0
+
+keras_resnet50:
+  tf_min_version: 2.2
+  disabled: false
+  url: module://tensorflow.keras.applications.resnet50/ResNet50
+  model: ResNet50
+  model_type: keras
+  input_get: get_ramp
+  inputs:
+    "input_1:0": [1, 224, 224, 3]
+  outputs:
+    - Identity:0
+
+keras_mobilenet_v2:
+  tf_min_version: 2.2
+  disabled: false
+  url: module://tensorflow.keras.applications.mobilenet_v2/MobileNetV2
+  model: MobileNetV2
+  model_type: keras
+  input_get: get_ramp
+  inputs:
+    "input_1:0": [1, 224, 224, 3]
+  outputs:
+    - Identity:0
+
+ssd_mobilenet_v2_300_float_tflite:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/ssd_mobilenet_v2_300_float.tflite
+  model: "ssd_mobilenet_v2_300_float.tflite"
+  model_type: tflite
+  input_get: get_car
+  opset_constraints:
+    "onnx":
+      "min": 11
+  inputs:
+    "normalized_input_image_tensor": [1, 300, 300, 3]
+  outputs:
+    - TFLite_Detection_PostProcess
+    - TFLite_Detection_PostProcess:1
+    - TFLite_Detection_PostProcess:2
+    - TFLite_Detection_PostProcess:3
+
+deeplabv3_mnv2_ade20k_float_tflite:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/deeplabv3_mnv2_ade20k_float.tflite
+  model: "deeplabv3_mnv2_ade20k_float.tflite"
+  model_type: tflite
+  input_get: get_ade20k
+  ptol: 0.001
+  inputs:
+    "MobilenetV2/MobilenetV2/input": [1, 512, 512, 3]
+  outputs:
+    - ArgMax
+
+deeplabv3_mnv2_ade20k_uint8_tflite_dequantize:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/deeplabv3_mnv2_ade20k_uint8.tflite
+  model: "deeplabv3_mnv2_ade20k_uint8.tflite"
+  model_type: tflite
+  input_get: get_ade20k_uint8
+  ptol: 0.1  # unreliable because of quantization
+  dequantize: true
+  inputs:
+    "MobilenetV2/MobilenetV2/input": [1, 512, 512, 3]
+  outputs:
+    - ArgMax
+
+deeplabv3_mnv2_ade20k_uint8_tflite:
+  tf_min_version: 2.1
+  disabled: true   # Requires ORT nightly for dequantize of int32
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/deeplabv3_mnv2_ade20k_uint8.tflite
+  model: "deeplabv3_mnv2_ade20k_uint8.tflite"
+  model_type: tflite
+  input_get: get_ade20k_uint8
+  opset_constraints:
+    "onnx":
+      "min": 10
+  ptol: 0.1
+  dequantize: false
+  inputs:
+    "MobilenetV2/MobilenetV2/input": [1, 512, 512, 3]
+  outputs:
+    - ArgMax
+
+deeplabv3_mnv2_ade20k_int8_tflite_dequantize:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/deeplabv3_mnv2_ade20k_int8.tflite
+  model: "deeplabv3_mnv2_ade20k_int8.tflite"
+  model_type: tflite
+  input_get: get_ade20k_uint8   # the input is uint8 despite the model name
+  ptol: 0.1
+  dequantize: true
+  inputs:
+    "MobilenetV2/MobilenetV2/input": [1, 512, 512, 3]
+  outputs:
+    - ArgMax
+
+deeplabv3_mnv2_ade20k_int8_tflite:
+  tf_min_version: 2.1
+  disabled: true   # Requires ORT nightly for dequantize of int32
+  url: https://github.com/mlcommons/mobile_models/raw/9c7b31ce63ff0331bd659ac2609c4e68b6b4ec0f/v0_7/tflite/deeplabv3_mnv2_ade20k_int8.tflite
+  model: "deeplabv3_mnv2_ade20k_int8.tflite"
+  model_type: tflite
+  input_get: get_ade20k_uint8   # the input is uint8 despite the model name
+  opset_constraints:
+    "onnx":
+      "min": 13
+  ptol: 0.1
+  dequantize: false
+  inputs:
+    "MobilenetV2/MobilenetV2/input": [1, 512, 512, 3]
+  outputs:
+    - ArgMax
+
+mobilebert_tflite:
+  tf_min_version: 2.1
+  disabled: true   # Converts but produces incorrect results. Working on fixing it.
+  url: https://tfhub.dev/tensorflow/lite-model/mobilebert/1/metadata/1?lite-format=tflite
+  model: "lite-model_mobilebert_1_metadata_1.tflite"
+  model_type: tflite
+  input_get: get_ones_int32
+  dequantize: true
+  inputs:
+    "input_ids": [1, 384]
+    "input_mask":
+      shape: [1, 384]
+      input_get: get_ones_int32
+    "segment_ids":
+      shape: [1, 384]
+      input_get: get_zeros_then_ones
+  outputs:
+    - end_logits
+    - start_logits
+
+    
+palm_detection_tflite:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://github.com/google/mediapipe/raw/v0.8.8/mediapipe/modules/palm_detection/palm_detection.tflite
+  model: "palm_detection.tflite"
+  model_type: tflite
+  input_get: get_beach
+  opset_constraints:
+    "onnx":
+      "min": 11    # Resize node
+  dequantize: true
+  inputs:
+    "input": [1, 128, 128, 3]
+  outputs:
+    - regressors
+    - classificators
+  rtol: 0.02
+  atol: 0.0005
+
+melgan_tflite:   # TFLite model with FlexOps and rank-3 transposes
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/tulasiram58827/lite-model/melgan/dr/1?lite-format=tflite
+  model: "melgan.tflite"
+  model_type: tflite
+  input_get: get_zeros
+  opset_constraints:
+    "onnx":
+      "min": 11
+  dequantize: true
+  inputs:
+    "mels": [1, 100, 80]
+  outputs:
+    - Identity
+  rtol: 0.02
+  atol: 0.0005
+
+handdetector_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/tensorflow/tfjs-model/handdetector/1/default/1?tfjs-format=compressed
+  model: "model.json"
+  model_type: tfjs
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 256, 256, 3]
+  outputs:
+    - Identity:0
+  atol: 0.0005
+
+posenet_mobilenet_float_100_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/tensorflow/tfjs-model/posenet/mobilenet/float/100/1/default/1?tfjs-format=compressed
+  model: "model-stride8.json"
+  model_type: tfjs
+  input_get: get_beach
+  force_input_shape: True  # ORT doesn't implement autopadding for convs with dilations
+  inputs:
+    "sub_2:0": [1, 256, 256, 3]
+  outputs:
+    - MobilenetV1/offset_2/BiasAdd:0
+    - MobilenetV1/heatmap_2/BiasAdd:0
+    - MobilenetV1/displacement_fwd_2/BiasAdd:0
+    - MobilenetV1/displacement_bwd_2/BiasAdd:0
+  rtol: 0.02
+  atol: 0.0005
+
+posenet_mobilenet_quantized_2_075_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/tensorflow/tfjs-model/posenet/mobilenet/quantized/2/075/1/default/1?tfjs-format=compressed
+  model: "model-stride16.json"
+  model_type: tfjs
+  input_get: get_beach
+  force_input_shape: True  # ORT doesn't implement autopadding for convs with dilations
+  inputs:
+    "sub_2:0": [1, 256, 256, 3]
+  outputs:
+    - MobilenetV1/offset_2/BiasAdd:0
+    - MobilenetV1/heatmap_2/BiasAdd:0
+    - MobilenetV1/displacement_fwd_2/BiasAdd:0
+    - MobilenetV1/displacement_bwd_2/BiasAdd:0
+  rtol: 0.1
+  ptol: 0.2
+  atol: 0.005
+
+blazeposedetector_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/mediapipe/tfjs-model/blazeposedetector/1/default/1?tfjs-format=compressed
+  model: "model.json"
+  opset_constraints:
+    "onnx":
+      "min": 10
+  model_type: tfjs
+  input_get: get_beach
+  #force_input_shape: True  # ORT doesn't implement autopadding for convs with dilations
+  inputs:
+    "input:0": [1, 224, 224, 3]
+  outputs:
+    - Identity:0
+  rtol: 0.05
+  atol: 0.0005
+
+facemesh_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/mediapipe/tfjs-model/facemesh/1/default/1?tfjs-format=compressed
+  model: "model.json"
+  model_type: tfjs
+  input_get: get_beach
+  inputs:
+    "input_1:0": [1, 192, 192, 3]
+  outputs:
+    - Identity:0
+    - Identity_1:0
+    - Identity_2:0
+  rtol: 0.05
+  atol: 0.0005
+
+ssd_mobilenet_v1_tfjs:
+  tf_min_version: 2.1
+  disabled: false
+  url: https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v1/1/default/1?tfjs-format=compressed
+  model: "model.json"
+  opset_constraints:
+    "onnx":
+      "min": 9
+  model_type: tfjs
+  input_get: get_beach_uint8
+  inputs:
+    "image_tensor:0": [1, 200, 200, 3]
+  outputs:
+    - Postprocessor/Slice:0
+    - Postprocessor/ExpandDims_1:0
+  rtol: 0.05
+  atol: 0.0005
+
+#
+# models that will not work
+#
+style-transfer:
+  # quantitized model
+  disabled: true
+  url: https://storage.googleapis.com/download.tensorflow.org/models/stylize_v1.zip
+  model: stylize_quantized.pb
+  input_get: get_beach
+  inputs:
+    "input:0": [1, 416, 416, 3]
+  outputs:
+    - output:0

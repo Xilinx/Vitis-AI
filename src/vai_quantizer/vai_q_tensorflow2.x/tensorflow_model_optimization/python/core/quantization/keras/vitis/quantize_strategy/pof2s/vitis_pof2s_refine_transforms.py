@@ -767,3 +767,51 @@ class ConvertPof2SToFSQuantizeStrategy(transforms.Transform):
 
   def custom_objects(self):
     return {}
+
+
+class ConvertPof2SToPof2SQuantizeStrategyWithFixNeuron(ConvertPof2SToFSQuantizeStrategy):
+  """Convert quantize strategy of quantized layers from pof2s to pof2s with fixneuron."""
+
+  def __init__(self, use_fixneuron_quant=1):
+    self.use_fixneuron_quant = use_fixneuron_quant
+    super(ConvertPof2SToPof2SQuantizeStrategyWithFixNeuron, self).__init__()
+
+  def replacement(self, match_layer):
+    layer_type = match_layer.layer['class_name']
+
+    if layer_type == 'Vitis>VitisQuantize':
+      quantizer = match_layer.layer['config']['quantizer']
+      if quantizer['class_name'] == 'Vitis>Pof2SQuantizer' or \
+         quantizer['class_name'] == 'Vitis>LastValueQuantPosQuantizer':
+        use_fixneuron_quant = 1 if self.use_fixneuron_quant else 0
+        quantizer['config'].update(
+                 {'use_fixneuron_quant' : use_fixneuron_quant})
+
+    elif layer_type == 'Vitis>QuantizeWrapper':
+      quantize_config = match_layer.layer['config']['quantize_config']
+      if not quantize_config['class_name'] == 'Vitis>NoQuantizeConfig':
+        config = quantize_config['config']
+
+        for k, v in config.items():
+          # generate fixneuron quantize mode, 1 for activation, 2 for weights
+          use_fixneuron_quant = 0
+          if k == 'activation_quantizers' or k == 'output_quantizers':
+            if self.use_fixneuron_quant : use_fixneuron_quant = 1
+          elif k == 'weight_quantizers' or k == 'bias_quantizers':
+            if self.use_fixneuron_quant : use_fixneuron_quant = 2
+          else:
+            continue
+
+          # skip blank quantizer
+          if v == []:
+            continue
+
+          quantizers = config[k]
+          for quantizer in quantizers:
+            if quantizer['quantizer_type'] != 'Pof2SQuantizer' and \
+               quantizer['quantizer_type'] != 'LastValueQuantPosQuantizer' :
+              continue
+            quantizer['quantizer_params'].update(
+                     {'use_fixneuron_quant' : use_fixneuron_quant})
+
+    return match_layer

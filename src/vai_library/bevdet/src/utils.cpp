@@ -40,7 +40,8 @@ using namespace std;
 DEF_ENV_PARAM_2(VAI_LIBRARY_MODELS_DIR, ".", std::string)
 
 struct Point {
-  float x, y;
+  float x=0.0;
+  float y=0.0;
   Point() {}
   Point(double _x, double _y) { x = _x, y = _y; }
 
@@ -458,12 +459,12 @@ void copy_input_from_bin(const std::vector<char>& bin,
   }
 }
 
-inline int decode(vitis::ai::library::OutputTensor heatmaptb,
-                  vitis::ai::library::OutputTensor regtb,
-                  vitis::ai::library::OutputTensor heitb,
-                  vitis::ai::library::OutputTensor rottb,
-                  vitis::ai::library::OutputTensor dimtb,
-                  vitis::ai::library::OutputTensor veltb, float score_threshold,
+inline int decode(vitis::ai::library::OutputTensor& heatmaptb,
+                  vitis::ai::library::OutputTensor& regtb,
+                  vitis::ai::library::OutputTensor& heitb,
+                  vitis::ai::library::OutputTensor& rottb,
+                  vitis::ai::library::OutputTensor& dimtb,
+                  vitis::ai::library::OutputTensor& veltb, float score_threshold,
                   uint32_t& first_label, vitis::ai::CenterPointResult* res) {
   auto heatmap_scale = vitis::ai::library::tensor_scale(heatmaptb);
   auto conf_desigmoid = -logf(1.0f / score_threshold - 1.0f) / heatmap_scale;
@@ -574,10 +575,12 @@ std::vector<vitis::ai::CenterPointResult> post_process(
         break;
       }
     }
-    for (size_t i = 0u; i < heads.size(); ++i) {
-      if (name.find(heads[i]) != std::string::npos) {
-        out_tensors[j][i] = o;
-        break;
+    if (j!=6) {
+      for (size_t i = 0u; i < heads.size(); ++i) {
+        if (name.find(heads[i]) != std::string::npos) {
+          out_tensors[j][i] = o;
+          break;
+        }
       }
     }
   }

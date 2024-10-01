@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="execute__async_8py" kind="file" language="Python">
+    <compoundname>execute_async.py</compoundname>
+    <innernamespace refid="namespaceexecute__async">execute_async</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceexecute__async_1a86fe3b77f5cae3905e2b8d466e3e84de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def execute_async</definition>
+        <argsstring>(inputs, outputs)</argsstring>
+        <name>execute_async</name>
+        <qualifiedname>execute_async.execute_async</qualifiedname>
+        <param>
+          <type>inputs</type>
+          <defname>inputs</defname>
+        </param>
+        <param>
+          <type>outputs</type>
+          <defname>outputs</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/execute_async.py" line="12" column="1" bodyfile="pydoc/execute_async.py" bodystart="12" bodyend="14"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="namespaceexecute__async" refkind="compound"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;!</highlight></codeline>
+<codeline lineno="3"><highlight class="stringliteral"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@brief</highlight><highlight class="normal"><sp/>Executes<sp/>the<sp/>runner.<sp/>This<sp/></highlight><highlight class="keywordflow">is</highlight><highlight class="normal"><sp/>a<sp/>blocking<sp/>function.</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@param</highlight><highlight class="normal"><sp/>inputs<sp/>:<sp/><sp/>List[<ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref>],<sp/>A<sp/>list<sp/>of<sp/><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref><sp/>containing<sp/>the<sp/>input<sp/>data<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>inference.</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@param</highlight><highlight class="normal"><sp/>outputs<sp/>:<sp/><sp/>List[<ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref>],<sp/>A<sp/>list<sp/>of<sp/><ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref><sp/>which<sp/>will<sp/>be<sp/>filled<sp/></highlight><highlight class="keyword">with</highlight><highlight class="normal"><sp/>output<sp/>data.</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="preprocessor">@return</highlight><highlight class="normal"><sp/>tuple[jobid,<sp/>status]<sp/><sp/>status<sp/>0<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>exit<sp/>successfully,<sp/>others<sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>customized<sp/>warnings<sp/></highlight><highlight class="keywordflow">or</highlight><highlight class="normal"><sp/>errors.</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="stringliteral">&quot;&quot;&quot;<sp/><sp/></highlight></codeline>
+<codeline lineno="12"><highlight class="stringliteral"></highlight><highlight class="keyword">def<sp/></highlight><highlight class="normal"><ref refid="namespaceexecute__async" kindref="compound">execute_async</ref>(<sp/>inputs,<sp/>outputs):</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">pass</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="pydoc/execute_async.py"/>
+  </compounddef>
+</doxygen>

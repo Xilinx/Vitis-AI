@@ -1,6 +1,6 @@
 
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class ThreadPool {
   using result_t =
       std::result_of_t<std::decay_t<Function>(std::decay_t<Args>...)>;
 #else
-#error "not supported, c++14 or c++17 is needed."
+#  error "not supported, c++14 or c++17 is needed."
 #endif
 
   template <class Function, class... Args>
@@ -59,18 +59,6 @@ class ThreadPool {
   std::vector<std::thread> pool_;
   vitis::ai::ErlMsgBox<std::packaged_task<void()>> queue_;
   int running_;
-
- private:
-  /// thanks akk
-  /// https://stackoverflow.com/questions/20843271/passing-a-non-copyable-closure-object-to-stdfunction-parameter
-  template <class F>
-  auto make_copyable_function(F&& f) {
-    using dF = std::decay_t<F>;
-    auto spf = std::make_shared<dF>(std::forward<F>(f));
-    return [spf](auto&&... args) -> decltype(auto) {
-      return (*spf)(decltype(args)(args)...);
-    };
-  }
 };
 }  // namespace ai
 }  // namespace vitis

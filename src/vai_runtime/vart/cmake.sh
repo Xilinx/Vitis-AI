@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ else
     echo "Cross-platform building..."
     echo "Found target sysroot ${OECORE_TARGET_SYSROOT}"
     target_info=${OECORE_TARGET_OS}.${OECORE_SDK_VERSION}.${OECORE_TARGET_ARCH}.${build_type}
-    install_prefix=${OECORE_TARGET_SYSROOT}/install/${build_type}
+    install_prefix_default=${OECORE_TARGET_SYSROOT}/install/${build_type}
     args+=(-DCMAKE_TOOLCHAIN_FILE=${OECORE_NATIVE_SYSROOT}/usr/share/cmake/OEToolchainConfig.cmake)
     args+=(-DCMAKE_PREFIX_PATH=/install/${build_type})
 fi

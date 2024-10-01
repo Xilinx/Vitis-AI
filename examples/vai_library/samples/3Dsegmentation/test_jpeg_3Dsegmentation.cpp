@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,13 @@ void readfile(string& filename, vector<float>& data) {
   cout << filename << " " << data.size() << endl;
 }
 
+template<typename T>
+void writefilebin(string& filename, vector<T>& data) {
+  ofstream output_file(filename, ios::binary);
+  output_file.write(reinterpret_cast<char *>(data.data()), sizeof(T) * data.size());
+}
+
+
 template <typename T>
 void writefile(string& filename, vector<T>& data) {
   ofstream output_file(filename);
@@ -55,6 +62,10 @@ int main(int argc, char* argv[]) {
   }
   // bool preprocess = !(getenv("PRE") != nullptr);
   auto det = vitis::ai::Segmentation3D::create(argv[1], false);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   int width = det->getInputWidth();
   int height = det->getInputHeight();
   std::cout << "width " << width << " "    //
@@ -105,11 +116,12 @@ int main(int argc, char* argv[]) {
 
     auto results = det->run(batch_arrays);
     assert(results.size() == batch);
+    string model_name;
+    model_name=argv[1];
     for (auto i = 0u; i < results.size(); i++) {
       LOG(INFO) << "batch: " << i;
-      string result_name =
-          std::to_string(i) + "_" + "3Dsegmentation_result.txt";
-      writefile(result_name, results[i].array);
+      string result_name = model_name + "_batch_" + std::to_string(i)  +".bin";
+      writefilebin(result_name, results[i].array);
       std::cout << std::endl;
     }
   } else {
@@ -124,8 +136,8 @@ int main(int argc, char* argv[]) {
     readfile(remission, arrays[3]);
 
     vitis::ai::Segmentation3DResult res = det->run(arrays);
-    string result_name = "result.txt";
-    writefile(result_name, res.array);
+    string result_name = "result.bin";
+    writefilebin(result_name, res.array);
   }
   return 0;
 }

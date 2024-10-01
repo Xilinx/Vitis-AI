@@ -248,8 +248,10 @@ class DevGraphOptimizer(object):
       self._eval_node_value(node)
       folding_nodes.add(node.name)
     
-
-    return value_node.out_tensors[0].data            
+    if isinstance(value_node.out_tensors[0].data, np.ndarray):
+      return value_node.out_tensors[0].data.item()
+    else:      
+      return value_node.out_tensors[0].data            
 
 
 
@@ -313,7 +315,7 @@ class DevGraphOptimizer(object):
       for nodeset in node_list:
         trans_node = nodeset[0]
         matmul_node = nodeset[1]
-        if matmul_node.is_trans_b and trans_node not in removed_nodes:
+        if matmul_node.is_trans_b and (trans_node not in removed_nodes) and trans_node.is_trans_b:
           removed_nodes.add(trans_node)
 
     for trans_node in removed_nodes:
@@ -597,8 +599,14 @@ class DevGraphOptimizer(object):
       order = []
       reserved_trans = None
       for trans in transpose_group:
+        prev_trans = reserved_trans
         if trans not in nodes_need_to_remove:
           reserved_trans = trans
+        
+        if prev_trans is not None and reserved_trans is not prev_trans and prev_trans not in nodes_need_to_remove:
+          nodes_need_to_remove.append(prev_trans)
+
+
           
         if not order:
           order = trans.node_attr(trans.op.AttrName.ORDER)
@@ -890,6 +898,27 @@ class DevGraphOptimizer(object):
   def dev_graph(self):
     return self._dev_graph
 
+  def normalize_pad_nd(self):
+    for node in self._dev_graph.nodes:
+      if node.op.type == NNDCT_OP.PAD_ND:
+        input_dim = node.in_tensors[0].ndim
+        paddings = list(node.node_attr(node.op.AttrName.PAD_WITH))
+        paddings += [0] * (2 * input_dim - len(paddings))
+        paddings = paddings[::-1]
+        for i in range(input_dim):
+          paddings[2 * i], paddings[2 * i + 1] = paddings[2 * i + 1] , paddings[2 * i]
+        
+        if node.transpose_out_order:
+          new_paddings = [None] * len(paddings)
+          for i, axis in enumerate(node.transpose_out_order):
+            new_paddings[2 * i], new_paddings[2 * i + 1] = paddings[2 * axis], paddings[2 * axis + 1]      
+        else:
+          new_paddings = paddings
+        
+        new_value = [float(node.node_attr(node.op.AttrName.CONSTANT_VALUES))] * len(paddings)
+        node.set_node_attr(node.op.AttrName.PAD_WITH, new_paddings)
+        node.set_node_attr(node.op.AttrName.CONSTANT_VALUES, new_value)
+
 
   def fuse_pad(self):
     fuse_pad_handler = PadFuseHandler()
@@ -897,6 +926,9 @@ class DevGraphOptimizer(object):
     nodesets = graph_searcher.find_nodes_from_type(
         [PatternType(pattern=[NNDCT_OP.PAD],
                      action=fuse_pad_handler), 
+
+        PatternType(pattern=[NNDCT_OP.PAD_ND],
+                      action=fuse_pad_handler),
         ])
     removed_pad = set()
     for id, node_list in nodesets.items():
@@ -928,6 +960,8 @@ class DevGraphOptimizer(object):
         output_shape = node.out_tensors[0].shape
         new_reshape_op = base_op.Reshape(NNDCT_OP.RESHAPE)
         new_reshape_op.set_attr(new_reshape_op.AttrName.SHAPE, output_shape)
+        for param_type, param_tensor in node.op.params.items():
+          new_reshape_op.set_param(param_type, param_tensor)
         node.op = new_reshape_op
   
   def convert_shape_tensor_to_const(self):
@@ -987,8 +1021,16 @@ class DevGraphOptimizer(object):
 
   def broadcast_const_for_binary_op(self):
     for node in self._dev_graph.nodes:
+      if not node.in_quant_part:
+        continue
       if node.op.type in [NNDCT_OP.ADD, NNDCT_OP.SUB, NNDCT_OP.RSUB, NNDCT_OP.MULTIPLY, NNDCT_OP.DIV]:
         input, other = node.node_attr(node.op.AttrName.INPUT), node.node_attr(node.op.AttrName.OTHER)
+        
+        if not hasattr(input.data, 'shape'):
+          input.data = np.array(input.data)
+        if not hasattr(other.data, 'shape'):
+          other.data = np.array(other.data)
+
         if input.data.shape == other.data.shape:
           continue
        

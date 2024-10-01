@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ GraphTask::GraphTask(const xir::Subgraph* subgraph, xir::Attrs* attrs)
                               {"CPU", "libvitis_ai_library-cpu_task.so.3"}});
   internal_ = vitis::ai::vec_map(
       subgraph->children_topological_sort(),
-      [](const xir::Subgraph* subgraph) { return GraphInternal(subgraph); });
+      [](const xir::Subgraph* subgraph_in) { return GraphInternal(subgraph_in); });
   build_runners();
   build_tensors();
   if (!attrs_->has_attr("__batch__")) {
@@ -84,8 +84,8 @@ static bool in_subgraph(const xir::Subgraph* subgraph, const xir::Op* op) {
 static std::vector<const xir::Op*> get_input_ops(const xir::Op* op) {
   auto ret = std::vector<const xir::Op*>();
   auto inputs = op->get_input_ops();
-  for (auto x : inputs) {
-    for (auto y : x.second) {
+  for (auto& x : inputs) {
+    for (auto& y : x.second) {
       ret.emplace_back(y);
     }
   }
@@ -95,7 +95,7 @@ static std::vector<const xir::Op*> get_input_ops(const xir::Op* op) {
 std::set<const xir::Op*> get_head_ops(const xir::Subgraph* subgraph) {
   auto ops = subgraph->get_ops();
   auto ret = std::set<const xir::Op*>();
-  for (auto op : ops) {
+  for (auto& op : ops) {
     auto inputs = get_input_ops(op);
     auto is_head = std::all_of(
         inputs.begin(), inputs.end(),
@@ -202,7 +202,7 @@ void GraphTask::build_tensors_for_dpu() {
 }
 
 void GraphTask::update_batch_size(const std::vector<xir::Tensor*>& tensors) {
-  for (auto b : tensors) {
+  for (auto& b : tensors) {
     if (dpu_batch_size_ == 0u) {
       dpu_batch_size_ = (size_t)b->get_shape()[0];
     } else {
@@ -346,7 +346,7 @@ void GraphTask::link_tensor_buffers(GraphInternal& up,
       continue;
     }
     output.linker = TensorBufferLinker::create(master);
-    for (auto t : slaves) {
+    for (auto& t : slaves) {
       output.linker->add_slave(t.first, t.second);
     }
   }
@@ -471,7 +471,7 @@ std::vector<const xir::Tensor*> GraphTask::build_input_tensors() {
 
 std::vector<const xir::Tensor*> GraphTask::build_output_tensors() {
   auto ret = std::vector<const xir::Tensor*>();
-  for (auto tensor : subgraph_->get_sorted_output_tensors()) {
+  for (auto& tensor : subgraph_->get_sorted_output_tensors()) {
     if (is_wired_orphan_subgraph(subgraph_->get_graph()->get_leaf_subgraph(
             tensor->get_producer()))) {
       continue;
@@ -658,13 +658,13 @@ void GraphTask::maybe_dump_tensor_buffers(
   }
   auto sname = vitis::ai::to_valid_file_name(subgraph_->get_name());
   auto dir = "dump/" + sname;
-  for (auto i : inputs) {
+  for (auto& i : inputs) {
     auto s2_name = vitis::ai::to_valid_file_name(
         internal_[subgraph_index].subgraph->get_name());
     auto dirname = dir + "/" + s2_name + "/" + "i";
     vart::dump_tensor_buffer(dirname, i, batch_index);
   }
-  for (auto i : outputs) {
+  for (auto& i : outputs) {
     auto s2_name = vitis::ai::to_valid_file_name(
         internal_[subgraph_index].subgraph->get_name());
     auto dirname = dir + "/" + s2_name + "/" + "o";

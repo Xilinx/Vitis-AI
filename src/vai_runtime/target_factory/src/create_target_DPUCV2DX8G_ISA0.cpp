@@ -36,7 +36,8 @@ const Target create_target_DPUCV2DX8G_ISA0(const std::uint64_t fingerprint) {
   constexpr std::array<uint64_t, 5> OCP_MAP{16, 32, 32, 32, 32};
 
   auto CV_ARCH = fingerprint & 0xf;
-  auto ALU_CORE_N = (fingerprint & 0xf00) >> 8;
+  auto ALU_CORE_N = (fingerprint & 0xf0) >> 4;
+  auto AIE_CORE_N = (1 << CV_ARCH)+ALU_CORE_N;
   auto PP = PP_MAP[CV_ARCH];
   auto ICP = ICP_MAP[CV_ARCH];
   auto OCP = OCP_MAP[CV_ARCH];
@@ -47,19 +48,18 @@ const Target create_target_DPUCV2DX8G_ISA0(const std::uint64_t fingerprint) {
   auto IMG_RD_DEPTH = 65528;
   auto WGT_RD = 15;
 
-  auto BATCH = (fingerprint & 0xf0) >> 4;
+  auto BATCH = (fingerprint & 0xff00) >> 8;
   auto LD_AUGM = (fingerprint & 0x4000000) >> 26;
   // auto LD_MEAN = (fingerprint & 0x8000000) >> 27;
   auto SV_AM = (fingerprint & 0x40000000) >> 30;
   auto ISA = (fingerprint & 0x00ff000000000000) >> 48;
 
-  std::string NAME = "DPUCV2DX8G_ISAx_CxMxBx_x";
+  std::string NAME = "DPUCV2DX8G_ISAx_CxBx_x";
   char finger_hex[17];
   sprintf(finger_hex, "%016" PRIX64, fingerprint);
-  NAME.replace(23, 1, finger_hex);
-  NAME.replace(21, 1, std::to_string(BATCH));
-  NAME.replace(19, 1, std::to_string(ALU_CORE_N));
-  NAME.replace(17, 1, std::to_string(1 << CV_ARCH));
+  NAME.replace(21, 1, finger_hex);
+  NAME.replace(19, 1, std::to_string(BATCH));
+  NAME.replace(17, 1, std::to_string(AIE_CORE_N));
   NAME.replace(14, 1, std::to_string(ISA));
   target.set_name(NAME);
 
@@ -147,7 +147,7 @@ const Target create_target_DPUCV2DX8G_ISA0(const std::uint64_t fingerprint) {
   alu_engine->add_alu_type(Target::Alu::comp_temp);
   alu_engine->add_alu_type(Target::Alu::elew_add);
   alu_engine->add_alu_type(Target::Alu::elew_mult);
-  alu_engine->add_alu_type(Target::Alu::softmax);
+  //alu_engine->add_alu_type(Target::Alu::softmax);
   auto alu_limit = alu_engine->mutable_alu_limit();
   alu_limit->set_kernel_size("1-256");
   alu_limit->set_stride("1-256");

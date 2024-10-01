@@ -67,6 +67,15 @@ class _Converter:
     return cls._nndct2xir_type[numpy_dtype]
   
   @classmethod
+  def to_xir_dtype_by_string(cls, dtype):
+      return {
+        "float32" : "FLOAT32",
+        "float64": "FLOAT64",
+        "int32" : "INT32",
+        "int64" : "INT64"
+      }.get(dtype, dtype)
+
+  @classmethod
   def to_xir_attr_value(cls, node_op_type, nndct_attr_name: str, nndct_attr_value: Any):
     if node_op_type not in cls._nndct2xir_value or nndct_attr_name not in cls._nndct2xir_value[node_op_type]:
       return nndct_attr_value
@@ -255,7 +264,18 @@ def reshape(xgraph: XGraph, node: Node,
   sub_op_pack, pack_list = _pack(xgraph, node, "shape", shape, quant_config)
   input_ops: Dict[str, List["xir.Op"]] = {}
   input_ops["shape"] = [sub_op_pack]
-  input_ops["input"] = [xgraph.get_op_by_name(node.in_nodes[0])]
+
+  input_list = []
+  for input in node.in_tensors:
+    if node.has_bound_params() and input.is_param_tensor():
+      continue
+    elif input.is_param_tensor():
+      input_op = xgraph.get_op_by_name(input.name)
+    else:
+      input_op = xgraph.get_op_by_name(input.node.name)
+    input_list.append(input_op)
+    
+  input_ops["input"] = xgraph.create_input_fix_ops(input_list, node.name, quant_config)
   xgraph.create_fixed_normal_op(
       node.name, "reshape", quant_config, input_ops=input_ops)
 
@@ -562,6 +582,7 @@ def hsigmoid(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoRetu
       node.name, "mul", quant_config, input_ops=input_ops)
 
 def hswish(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn:
+
   scale = 6.0 * 2731.0 / 16384.0
     
   attrs = _get_xir_attr_from_node(node)
@@ -578,7 +599,7 @@ def hswish(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoReturn
   
   input_ops["input"] = [hsigmoid_op, const_op]
   mul_op = xgraph.create_normal_op(node.name + '_mul', "mul", input_ops=input_ops)
-  if quant_config and node.name in quant_config['output']:
+  if quant_config and node.name in quant_config['output'] and quant_config["output"][node.name][0] is not None:
     mul_fp = [8, None]
     mul_fp[0], _ = quant_config['output'][node.name][0]
     mul_fp[1] = mul_fp[0] - 1
@@ -608,8 +629,10 @@ def custom_xop(xgraph: XGraph, node: Node, quant_config: NndctQuantInfo) -> NoRe
   attrs = {} if attrs is None else attrs
  
   attrs["shape"] = shape
-  numpy_type = _Converter.to_numpy_dtype(node.out_tensors[0].dtype)
-  attrs["data_type"] = _Converter.to_xir_dtype(numpy_type)
+  #numpy_type = _Converter.to_numpy_dtype(node.out_tensors[0].dtype)
+  #attrs["data_type"] = _Converter.to_xir_dtype(numpy_type)
+  
+  attrs["data_type"] = _Converter.to_xir_dtype_by_string(node.out_tensors[0].dtype)
   
   input_ops: Dict[str, List["xir.Op"]] = {}
   input_list = []
@@ -650,6 +673,7 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.LEAKY_RELU: ("leaky-relu", to_xir("leaky-relu")),
     NNDCT_OP.GELU: ("gelu", to_xir("gelu")),
     NNDCT_OP.PRELU: ("prelu", to_xir("prelu")),
+    # NNDCT_OP.SQRT: ("sqrt", to_xir("sqrt")),
     NNDCT_OP.TANH: ("tanh", to_xir("tanh")),
     NNDCT_OP.SIGMOID: ("sigmoid", to_xir("sigmoid")),
     NNDCT_OP.DENSE: ("matmul", dense),
@@ -665,6 +689,7 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.RSUB: ("sub", to_binary_op("sub")),
     NNDCT_OP.SUB: ("sub", to_binary_op("sub")),
     NNDCT_OP.PAD: ("pad", to_xir("pad")),
+    NNDCT_OP.PAD_ND: ("pad", to_xir("pad")),
     NNDCT_OP.RESIZE: ("resize", resize),
     NNDCT_OP.SOFTMAX: ("softmax", to_xir("softmax")),
     NNDCT_OP.PERMUTE: ("transpose", to_xir("transpose")),
@@ -692,9 +717,9 @@ NNDCTIR2XIR_CONVERTOR = {
     NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D: ("transposed-depthwise-conv3d", to_xir("transposed-depthwise-conv3d")),
     NNDCT_OP.RESIZE_3D: ("resize", resize),
     NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D: ("transposed-depthwise-conv2d", to_xir("transposed-depthwise-conv2d")),
-    NNDCT_OP.ARGMAX_DIM: ("argmax", to_xir('argmax'))
+    NNDCT_OP.ARGMAX_DIM: ("argmax", to_xir('argmax')),
     # NNDCT_OP.MISH: ("mish", to_xir("mish")),
     # NNDCT_OP.CLAMP: ("clamp", to_xir("clamp")),
     # NNDCT_OP.INSTANCE_NORM: ("instancenorm", to_xir("instancenorm")),
-    # NNDCT_OP.GROUP_NORM: ("groupnorm". to_xir("groupnorm"))
+    # NNDCT_OP.GROUP_NORM: ("groupnorm", to_xir("groupnorm"))
 }

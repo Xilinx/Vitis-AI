@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,11 +128,18 @@ int main(int argc, char *argv[]) {
 
   int t_n=2;
   if (argc==2 ) t_n = atoi(argv[2]);
+  t_n = std::min(100, std::max(0, t_n));
 
   std::vector<std::thread> vth;
   std::vector< std::unique_ptr<Segmentation3D>> vseg;
   for(int i=0; i<t_n; i++) {
-    vseg.emplace_back(vitis::ai::Segmentation3D::create(argv[1]));
+    auto seg = vitis::ai::Segmentation3D::create(argv[1]);
+    if (!seg) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+    }  
+
+    vseg.emplace_back(std::move(seg));
     vth.emplace_back( std::thread( &accuracy_thread, vseg[i].get(), i , t_n));
   }
   for(int i=0; i<t_n; i++) {

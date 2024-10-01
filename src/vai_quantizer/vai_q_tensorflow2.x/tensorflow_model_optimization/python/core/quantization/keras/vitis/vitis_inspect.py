@@ -30,7 +30,7 @@ except:
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy import vitis_quantize_strategy_factory
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.quantize_strategy.pof2s import vitis_pof2s_quantize_strategy
-from tensorflow_model_optimization.python.core.quantization.keras.vitis.vitis_quantize import create_optimize_model
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.vitis_quantize_func import create_optimize_model
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_quantize as vitis_quantize_layer
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.vai_utf import vai_utf_parser
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
@@ -166,7 +166,8 @@ class VitisInspector(object):
             target_type = 'fingerprint'
         else:
           logger.error(
-              "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}".format(Usage))
+              "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}"
+              .format(Usage))
 
       if target_type == 'json':
         self._target = common_utils.load_json(target)['target']
@@ -176,8 +177,8 @@ class VitisInspector(object):
         self._target = target
       else:
         logger.error(
-            "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}".format(Usage))
-
+            "'target_type' supports 'json', 'fingerprint' or 'name'. \n{}"
+            .format(Usage))
 
       if target_type in ['json', 'name']:
         if not target_factory.is_registered_target(self._target):
@@ -192,7 +193,6 @@ class VitisInspector(object):
           logger.error(
               '[Quantizer_TF2_Invalid_Target][Invalid Target] {} not in target_factory.'
               .format(self._target))
-
 
   def _parse_configs(self, configs, kwargs):
     """Parse configs from arguments and update the quantize strategy."""

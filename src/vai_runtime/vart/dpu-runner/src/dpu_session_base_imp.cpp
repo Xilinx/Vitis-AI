@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,11 +271,11 @@ std::vector<my_tensor_t> DpuSessionBaseImp::init_tensors(
         auto dims = xir_tensor->get_shape();
         // dirty HACK, batch size is decided by VART, not the model yet.
         // ugly code here: please be careful.
-        auto size = (size_t)((uint32_t)xir_tensor->get_data_size()) / dims[0];
+        auto size = (size_t)xir_tensor->get_data_size() / dims[0];
         dims[0] = this->get_num_of_engines();
         LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_RUNNER) >= 2)
             << "tensor " << tensor_name << " ddr_addr " << tensor_ddr.ddr_addr
-            << " size " <<  (size_t)((uint32_t)xir_tensor->get_data_size()) << " , " << size
+            << " size " << xir_tensor->get_data_size() << " , " << size
             << "; dims=" << xir_tensor->get_shape() << " , " << dims;
         auto attrs = xir_tensor->get_attrs();
         auto vitis_tensor = xir::Tensor::create(xir_tensor->get_name(), dims,

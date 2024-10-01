@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,9 +104,9 @@ class CpuFlatTensorBuffer : public vart::TensorBuffer {
     }
     auto dims = tensor_->get_shape();
     auto offset = 0;
-    for (auto k = 0; k < tensor_->get_shape().size(); k++) {
+    for (auto k = 0; k < (int)tensor_->get_shape().size(); k++) {
       auto stride = 1;
-      for (auto m = k + 1; m < tensor_->get_shape().size(); m++) {
+      for (auto m = k + 1; m < (int)tensor_->get_shape().size(); m++) {
         stride *= dims[m];
       }
       offset += idx[k] * stride;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class c_api {
     auto self = static_cast<xir::TensorImp*>(tensor);
     return conv_to_xir_string(self->name_);
   }
-  static const xir_attrs_t tensor_get_attrs(xir_tensor_t tensor) {
+  static xir_attrs_t tensor_get_attrs(xir_tensor_t tensor) {
     auto self = static_cast<xir::TensorImp*>(tensor);
     return static_cast<xir_attrs_t>(self->attrs_.get());
   }
@@ -66,11 +66,11 @@ extern "C" enum xir_tensor_data_type_t xir_tensor_get_data_type(
   return static_cast<xir_tensor_data_type_t>(
       static_cast<xir::Tensor*>(tensor)->get_data_type().type);
 }
-extern "C" int32_t xir_tensor_get_element_num(xir_tensor_t tensor) {
+extern "C" int64_t xir_tensor_get_element_num(xir_tensor_t tensor) {
   return static_cast<xir::Tensor*>(tensor)->get_element_num();
 }
 
-extern "C" int32_t xir_tensor_get_data_size(xir_tensor_t tensor) {
+extern "C" uint64_t xir_tensor_get_data_size(xir_tensor_t tensor) {
   return static_cast<xir::Tensor*>(tensor)->get_data_size();
 }
 extern "C" xir_attrs_t xir_tensor_get_attrs(xir_tensor_t tensor) {

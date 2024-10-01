@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: RefineDet detection on EDD2020.
+input size: 320*320
+float ops: 41.42G
+task: detection
+framework: tensorflow
+prune: '0.5'
+version: 3.5
+files:
+- name: tf_RefineDet-Medical_0.5_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_RefineDet-Medical_0.5_3.5.zip
+  checksum: 2b79afef725f361bcc3c932896ffa7f4
+- name: RefineDet-Medical_EDD_pruned_0_5_tf
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_5_tf-vek280-r3.5.0.tar.gz
+  checksum: 896bcc60a0e255e11289d2dcee8f4fe7
+- name: RefineDet-Medical_EDD_pruned_0_5_tf
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=RefineDet-Medical_EDD_pruned_0_5_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: 8feb1508569ab9c9bcf7c49051014d60
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

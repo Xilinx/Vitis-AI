@@ -17,6 +17,12 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     exit 2
 fi
 
+if [ -z "$1" ]; then
+   echo "Usage: $0 <Vitis_AI_DOCKER_NAME>"
+   exit 2
+fi
+
+
 HERE=$(pwd -P) # Absolute path of current directory
 user=`whoami`
 uid=`id -u`
@@ -29,7 +35,7 @@ VERSION=latest
 
 CPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-cpu:${VERSION}
 GPU_IMAGE_TAG=${DOCKER_REPO}${BRAND}-gpu:${VERSION}
-IMAGE_NAME="${1:-$CPU_IMAGE_TAG}"
+IMAGE_NAME="$1"
 DEFAULT_COMMAND="bash"
 
 if [[ $# -gt 0 ]]; then
@@ -71,7 +77,6 @@ docker_run_params=$(cat <<-END
     -v /opt/xilinx/dsa:/opt/xilinx/dsa \
     -v /opt/xilinx/overlaybins:/opt/xilinx/overlaybins \
     -e USER=$user -e UID=$uid -e GID=$gid \
-    -e VERSION=$VERSION \
     -v $DOCKER_RUN_DIR:/vitis_ai_home \
     -v $HERE:/workspace \
     -w /workspace \

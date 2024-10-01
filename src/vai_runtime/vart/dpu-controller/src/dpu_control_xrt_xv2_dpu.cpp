@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,6 +117,12 @@ static std::string dump_gen_reg(const std::vector<uint64_t>& gen_reg) {
   }
   return str.str();
 }
+static bool check_reg_addr(uint64_t addr) {
+  if (addr == 0xFFFFFFFFFFFFFFFF) return true;
+  if ((addr & 0xFFFFF00000000000) == 0) return true;
+
+  return false;
+}
 
 void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
                                  const std::vector<uint64_t>& gen_reg) {
@@ -132,6 +138,7 @@ void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
       ;
   auto size_of_gen_regs = get_size_of_gen_regs(core_idx);
   auto batch_size = get_batch_size(core_idx);
+  CHECK_EQ(gen_reg.size(), batch_size * size_of_gen_regs);
   auto& batch_bo = bo_[core_idx];
   auto func = [code, &gen_reg, size_of_gen_regs, batch_size,
                &batch_bo](ert_start_kernel_cmd* ecmd) -> void {
@@ -152,12 +159,26 @@ void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
       ecmd->data[XDPU_CONTROL_ADDR_INSTR_L / 4 + 1] = (code >> 32) & 0xFFFFFFFF;
       size_t max_offset = 0u;
       for (auto batch_id = 0u; batch_id < batch_size; batch_id++) {
+        for (auto reg_id = 0u; reg_id < size_of_gen_regs; ++reg_id) {
+          auto idx = batch_id * size_of_gen_regs + reg_id;
+          CHECK(check_reg_addr(gen_reg[idx]))                           //
+              << "invalid gen_reg 0x" << std::hex << gen_reg[idx]       //
+              << std::dec << " at batch_id=" << batch_id                //
+              << " and reg_id=" << reg_id                               //
+              << ", only the low 44bits of physical address are valid"  //
+              << ", high 20bits should be 0";
+        }
         batch_bo[batch_id]->copy_from_host(
             gen_reg.data() + batch_id * size_of_gen_regs,
             size_of_gen_regs * sizeof(uint64_t), 0);
         auto offset = size_t(ENV_PARAM(XLNX_DIRTY_HACK_XV2DPU_GEN_BASE) +
                              batch_id * sizeof(uint64_t));
         auto batch_addr = batch_bo[batch_id]->phy(0);
+        CHECK(check_reg_addr(batch_addr))                             //
+            << "invalid batch_addr 0x" << std::hex << batch_addr      //
+            << std::dec << " at batch_id=" << batch_id                //
+            << ", only the low 44bits of physical address are valid"  //
+            << ", high 20bits should be 0";
         ecmd->data[offset / 4u] = batch_addr & 0xFFFFFFFF;
         ecmd->data[offset / 4u + 1] = (batch_addr >> 32) & 0xFFFFFFFF;
         max_offset = std::max(max_offset, offset / 4u + 1);
@@ -193,20 +214,34 @@ void DpuControllerXrtXv2Dpu::run(size_t core_idx, const uint64_t code,
       ecmd->data[p++] = XDPU_CONTROL_ADDR_INSTR_L + 4;
       ecmd->data[p++] = (code >> 32) & 0xFFFFFFFF;
       for (auto batch_id = 0u; batch_id < batch_size; batch_id++) {
+        for (auto reg_id = 0u; reg_id < size_of_gen_regs; ++reg_id) {
+          auto idx = batch_id * size_of_gen_regs + reg_id;
+          CHECK(check_reg_addr(gen_reg[idx]))                           //
+              << "invalid gen_reg 0x" << std::hex << gen_reg[idx]       //
+              << std::dec << " at batch_id=" << batch_id                //
+              << " and reg_id=" << reg_id                               //
+              << ", only the low 44bits of physical address are valid"  //
+              << ", high 20bits should be 0";
+        }
         batch_bo[batch_id]->copy_from_host(
             gen_reg.data() + batch_id * size_of_gen_regs,
             size_of_gen_regs * sizeof(uint64_t), 0);
         auto offset = ENV_PARAM(XLNX_DIRTY_HACK_XV2DPU_GEN_BASE) +
                       batch_id * sizeof(uint64_t);
         auto batch_addr = batch_bo[batch_id]->phy(0);
+        CHECK(check_reg_addr(batch_addr))                             //
+            << "invalid batch_addr 0x" << std::hex << batch_addr      //
+            << std::dec << " at batch_id=" << batch_id                //
+            << ", only the low 44bits of physical address are valid"  //
+            << ", high 20bits should be 0";
         ecmd->data[p++] = offset;
         ecmd->data[p++] = batch_addr & 0xFFFFFFFF;
         ecmd->data[p++] = offset + 4;
         ecmd->data[p++] = (batch_addr >> 32) & 0xFFFFFFFF;
         LOG_IF(INFO, ENV_PARAM(DEBUG_DPU_CONTROLLER) > 1)
             << "batch_id: " << batch_id << ", " << std::hex
-            << "write batch_addr: 0x" << batch_addr
-            << " into reg offset: 0x" << offset << std::dec;
+            << "write batch_addr: 0x" << batch_addr << " into reg offset: 0x"
+            << offset << std::dec;
       }
       ecmd->count = p + 1;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ XrtBoTensorBuffer::XrtBoTensorBuffer(vart::xrt_bo_t bo,
   phy_addr_ = get_physical_address(bo.xrt_handle, bo.xrt_bo_handle);
   // TODO: assumue one bo one tensor, and the tensor should be on the
   // TODO: this is the bug for image bundling.
-  size_ = (size_t)((uint32_t)tensor->get_data_size()) / tensor->get_shape()[0];
+  size_ = tensor->get_data_size() / tensor->get_shape()[0];
 }
 
 std::pair<std::uint64_t, std::size_t> XrtBoTensorBuffer::data(

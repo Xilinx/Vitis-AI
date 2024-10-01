@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ namespace xir {
 static std::string cpp_id_name(const std::string& name) {
   const std::string pat = "/():[]{}\\?%*|\"'><;=-";
   std::ostringstream str;
-  for (auto c : name) {
+  for (auto& c : name) {
     if (pat.find(c) != std::string::npos) {
       str << "_";
     } else {
@@ -64,7 +64,7 @@ static std::string cpp_comment(const std::string& comment, size_t indent = 2u) {
   std::ostringstream str;
   std::string spaces(indent, ' ');
   str << spaces << "// ";
-  for (auto c : comment) {
+  for (auto& c : comment) {
     if (pat.find(c) != std::string::npos) {
       str << "\n" << spaces << "// ";
     } else {
@@ -121,7 +121,7 @@ int generate(const char* op_type) {
   // clang-format off
   std::cout <<  //
       "/*\n"
-      " * Copyright 2019 Xilinx Inc.\n"
+      " * Copyright 2022-2023 Advanced Micro Devices Inc.\n"
       " *\n"
       " * Licensed under the Apache License, Version 2.0 (the \"License\");\n"
       " * you may not use this file except in compliance with the License.\n"
@@ -165,7 +165,7 @@ static void usage(const char* program) {
        << " where <op_type> could be one of following: ";
   auto types = f->get_registered_ops();
   std::sort(types.begin(), types.end());
-  for (auto type : types) {
+  for (auto& type : types) {
     std::cout << "\n\t" << type;
   }
   std::cout << std::endl;

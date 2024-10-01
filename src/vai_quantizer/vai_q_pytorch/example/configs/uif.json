@@ -1,0 +1,5 @@
+{
+  "target_device": "DPU",
+  "change_concat_input_fix": true,
+  "change_pool_input_fix": true
+}

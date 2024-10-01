@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,3 +40,9 @@ REGISTER_ERROR_CODE(VART_XRT_DEVICE_BUSY, "Device busy!", "");
 REGISTER_ERROR_CODE(VART_XRT_READ_ERROR, "Read error!", "");
 REGISTER_ERROR_CODE(VART_XRT_READ_CU_ERROR, "Read cu fatal!", "");
 REGISTER_ERROR_CODE(VART_XRT_FUNC_FAULT, "XRT function fault!", "");
+
+REGISTER_ERROR_CODE(VART_XCLGETBO_INFO_ERROR, "Cannot xclGetBOProperties!", "");
+REGISTER_ERROR_CODE(VART_XCL_ALLOC_FAIL, "Allocation failure!", "");
+REGISTER_ERROR_CODE(VART_XCL_SYNC_FAIL, "Synchronize failure!", "");
+REGISTER_ERROR_CODE(VART_XCL_WRITE_ERROR, "Fail to write bo!", "");
+REGISTER_ERROR_CODE(VART_XCL_READ_ERROR, "Fail to read bo!", "");

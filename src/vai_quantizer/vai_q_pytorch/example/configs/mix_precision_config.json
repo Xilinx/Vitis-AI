@@ -1,0 +1,80 @@
+{
+  "convert_relu6_to_relu": false,
+  "convert_silu_to_hswish": false,
+  "include_cle": true,
+  "keep_first_last_layer_accuracy": false,
+  "keep_add_layer_accuracy": false,
+  "include_bias_corr": true,
+  "target_device": "CPU",
+  "onnx_opset_version": 14,
+  "quantizable_data_type": [
+    "input",
+    "weights",
+    "bias",
+    "activation"
+  ],
+  "overall_quantize_config": {
+    "datatype": "bfloat16"
+  },
+  "tensor_quantize_config": {
+    "bias": {
+      "datatype": "float16"
+    }
+  },
+  "layer_quantize_config": [
+    {
+      "layer_type": "Conv2d",
+      "layer_name": null,
+      "quantizable_data_type": [
+        "input",
+        "weights",
+        "bias",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "datatype": "int",
+        "bit_width": 8,
+        "method": "maxmin",
+        "round_mode": "std_round",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "narrow_range": false,
+        "scale_type": "float",
+        "calib_statistic_method": "max"
+      },
+      "tensor_quantize_config": {
+        "activation": {
+          "round_mode": "half_up"
+        }
+      }
+    },
+    {
+      "layer_type": null,
+      "layer_name": "ResNet::ResNet/Conv2d[conv1]/ret.3",
+      "quantizable_data_type": [
+        "input",
+        "weights",
+        "bias",
+        "activation"
+      ],
+      "overall_quantize_config": {
+        "datatype": "int",
+        "bit_width": 16,
+        "method": "maxmin",
+        "round_mode": "half_even",
+        "symmetry": true,
+        "per_channel": false,
+        "signed": true,
+        "narrow_range": false,
+        "scale_type": "float",
+        "calib_statistic_method": "max"
+      },
+      "tensor_quantize_config": {
+        "weights": {
+          "per_channel": true
+        }
+      }
+    }
+  ]
+}

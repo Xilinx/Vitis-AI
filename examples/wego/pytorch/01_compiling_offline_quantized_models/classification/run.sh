@@ -37,6 +37,8 @@ python run.py  \
         --root_model_path ${recipe_path}/models                      \
         --mode=${mode}                                               \
         --img_url ${img_url}                                         \
-        --threads 8                                                 
+        --threads 8                                                  \
+        #--onboard                                                    \ 
+        #Turn on OnBoard to collect visualization information
 
 unset XLNX_BUFFER_POOL

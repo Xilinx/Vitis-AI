@@ -13,7 +13,7 @@
 # limitations under the License.
 
 name: "V70_2x3_Overlay"
-type: "IPUCVDX8G"
+type: "IPU_PHX"
 isa_version: 0x00
 feature_code: 0x20c242
 

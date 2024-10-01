@@ -85,6 +85,35 @@ class ModelTransformer(object):
     """Check if the layer is a TFOpLambda layer."""
     return layer['class_name'] in ['TFOpLambda', 'SlicingOpLambda']
 
+  #find the TFOpLambda second inbound_node
+  #the TFOpLambda version > 2.4
+  #the inbound_node second inbound is 'b' or 'y'
+  @staticmethod
+  def _get_tf_op_lambda_other_consume(inbound_node):
+    if len(inbound_node) > 3 and isinstance(inbound_node[3], dict):
+      #the key should be 'b' or 'y'
+      for key, other_inbound in inbound_node[3].items():
+        if isinstance(other_inbound,
+                      list) and len(other_inbound) == 3 and isinstance(
+                          other_inbound[0], str):
+          return other_inbound[0]
+        else:
+          return None
+    else:
+      return None
+
+  #the TFOpLambda second inbound replace with quant_
+  #the TFOpLambda version > 2.4
+  #the inbound_node second inbound is 'b' or 'y'
+  @staticmethod
+  def _set_tf_op_lambda_other_inbound(inbound_node, replace_inbound_node):
+    if len(inbound_node) > 3 and isinstance(inbound_node[3], dict):
+      for key, other_inbound in inbound_node[3].items():
+        if isinstance(other_inbound,
+                      list) and len(other_inbound) == 3 and isinstance(
+                          other_inbound[0], str):
+          other_inbound[0] = replace_inbound_node
+
   def _get_consuming_layers(self, check_layer):
     """Returns all the layers which are out nodes from the layer."""
     consuming_layers = []
@@ -94,6 +123,14 @@ class ModelTransformer(object):
         if _is_tf_version_above(2, 4) and self._is_tf_op_lambda_layer(layer):
           if inbound_node[0] == self._get_layer_name(check_layer):
             consuming_layers.append(layer)
+          # for some case inbounds are
+          # 'inbound_nodes': [['activation_2', 0, 0, {'y': ['leaky_re_lu_11', 0, 0], 'name': None}]]
+          # need to parse inbound layer from dict
+          for ele in inbound_node:
+            if isinstance(ele, dict):
+              for key in ele:
+                if isinstance(ele[key], list) and ele[key][0] == self._get_layer_name(check_layer):
+                  consuming_layers.append(layer)
         else:
           for connection_info in inbound_node:
             if connection_info[0] == self._get_layer_name(check_layer):
@@ -129,10 +166,19 @@ class ModelTransformer(object):
 
   def _get_layers(self, layer_names):
     """Returns layers with given names, keeps the order."""
-    return [
-        layer for layer in self._config['layers']
-        if self._get_layer_name(layer) in layer_names
-    ]
+    layers = []
+    for name in layer_names:
+      found = False
+      for layer in self._config['layers']:
+        if self._get_layer_name(layer) == name:
+          found = True
+          layers.append(layer)
+      if not found:
+        logger.debug(
+            'Fail to find layer {} in the model, please check. This can be ignored in case of'
+            ' _CONSTANT_VALUE as an input in the TFOpLambda layer.'.format(
+                name))
+    return layers
 
   def _get_layer_weights(self, layer):
     layer_name = self._get_layer_name(layer)
@@ -333,7 +379,8 @@ class ModelTransformer(object):
   def _remove_layers(self, layers_to_remove, layers_to_remove_names):
     # Remove layers.
     for layer_to_remove in layers_to_remove:
-      self._config['layers'].remove(layer_to_remove)
+      if layer_to_remove in self._config['layers']:
+        self._config['layers'].remove(layer_to_remove)
     # Remove entry from weight and metadata maps,
     # now that layer has been removed.
     for layer_name in layers_to_remove_names:
@@ -364,6 +411,16 @@ class ModelTransformer(object):
         if _is_tf_version_above(2, 4) and self._is_tf_op_lambda_layer(consumer):
           if inbound_node[0] == self._get_layer_name(match_layer_node.layer):
             inbound_node[0] = self._get_layer_name(replacement_layer_node.layer)
+          else:
+            # for some case inbounds are
+            # 'inbound_nodes': [['activation_2', 0, 0, {'y': ['leaky_re_lu_11', 0, 0], 'name': None}]]
+            # need to parse inbound layer from dict
+            for ele in inbound_node:
+              if isinstance(ele, dict):
+                for key in ele:
+                  if isinstance(ele[key], list) and \
+                        ele[key][0] == self._get_layer_name(match_layer_node.layer):
+                    ele[key][0] = self._get_layer_name(replacement_layer_node.layer)
         else:
           for connection_info in inbound_node:
             if connection_info[0] == self._get_layer_name(
@@ -575,7 +632,7 @@ class ModelTransformer(object):
   def _weight_name(name, layer=None):
     """Extracts the weight name by removing layer from TF variable name.
 
-    For example, returns 'kernel:0' for 'dense_2/kernel:0'.
+    For example, returns 'kernel:0' for 'dense_2/kernel:0'. Returns 'query/kernel:0' for 'multi_head_attention/query/kernel:0'
 
     Args:
       name: TensorFlow variable name.
@@ -587,7 +644,7 @@ class ModelTransformer(object):
     if ModelTransformer._is_custom_layer(layer):
       return name
     else:
-      return name.split('/')[-1]
+      return '/'.join(name.split('/')[1:]) 
 
   def _get_keras_layer_weights(self, keras_layer):
     """Returns a map of weight name, weight matrix. Keeps keras ordering."""
@@ -622,6 +679,7 @@ class ModelTransformer(object):
       weight_name = self._weight_name(weight_tensor.name, layer)
       if weight_name in weights_map:
         weight_value_tuples.append((weight_tensor, weights_map[weight_name]))
+
     if weight_value_tuples == []:
       logger.warning("Got empty weight_value_tuples during set layer weights," \
               "layer name: {}".format(layer.name))
@@ -678,7 +736,10 @@ class ModelTransformer(object):
     self._transform_matched_layers_map = {}
     self._layer_weights_map = {}
     for layer in self.model.layers:
-      self._layer_weights_map[layer.name] = self._get_keras_layer_weights(layer)
+      if self._is_sequential_or_functional_model(layer):
+        self._layer_weights_map[layer.name] = collections.OrderedDict()
+      else:
+        self._layer_weights_map[layer.name] = self._get_keras_layer_weights(layer)
 
     # Maintains a current mutable copy of the metadata through transformation.
     self._layer_metadata_map = copy.deepcopy(self.layer_metadata)
@@ -734,7 +795,6 @@ class ModelTransformer(object):
     else:
       transformed_model = keras.Sequential.from_config(self._config,
                                                        custom_objects)
-
     for layer in transformed_model.layers:
       weights_map = self._layer_weights_map.get(layer.name)
       if weights_map:

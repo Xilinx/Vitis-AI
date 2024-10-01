@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <mutex>
 #include <vitis/ai/env_config.hpp>
 #ifndef _WIN32
-#include <vitis/ai/trace.hpp>
+#  include <vitis/ai/trace.hpp>
 #endif
 #include "./dpu_edge.hpp"
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0");
@@ -93,6 +93,12 @@ static size_t get_offset(size_t batch, size_t reg_id) {
   auto offset = base + batch * 0x40u + reg_id * 0x8u;
   return offset;
 }
+static bool check_reg_addr(uint64_t addr) {
+  if (addr == 0xFFFFFFFFFFFFFFFF) return true;
+  if ((addr & 0xFFFFF00000000000) == 0) return true;
+
+  return false;
+}
 
 void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
                                 const std::vector<uint64_t>& gen_reg) {
@@ -132,6 +138,11 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
         for (auto reg_id = 0u; reg_id < size_of_gen_regs; ++reg_id) {
           auto offset = get_offset(batch_id, reg_id);
           auto reg_value = gen_reg[batch_id * size_of_gen_regs + reg_id];
+          CHECK(check_reg_addr(reg_value))                                  //
+              << "invalid gen_reg 0x" << std::hex << reg_value << std::dec  //
+              << " at batch_id=" << batch_id << " and reg_id=" << reg_id    //
+              << ", only the low 44bits of physical address are valid"      //
+              << ", high 20bits should be 0";
           if (reg_value != ((uint64_t)-1)) {
             ecmd->data[offset / 4u] = reg_value & 0xFFFFFFFF;
             ecmd->data[offset / 4u + 1] = (reg_value >> 32) & 0xFFFFFFFF;
@@ -168,6 +179,11 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
         for (auto reg_id = 0u; reg_id < size_of_gen_regs; ++reg_id) {
           auto offset = get_offset(batch_id, reg_id);
           auto reg_value = gen_reg[batch_id * size_of_gen_regs + reg_id];
+          CHECK(check_reg_addr(reg_value))                                  //
+              << "invalid gen_reg 0x" << std::hex << reg_value << std::dec  //
+              << " at batch_id=" << batch_id << " and reg_id=" << reg_id    //
+              << ", only the low 44bits of physical address are valid"      //
+              << ", high 20bits should be 0";
           if (reg_value != ((uint64_t)-1)) {
             ecmd->data[p++] = offset;
             ecmd->data[p++] = reg_value & 0xFFFFFFFF;
@@ -183,7 +199,7 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
 #ifndef _WIN32
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_start,
                               core_idx, 0);
-  //vitis::ai::trace::lock(core_idx);
+  // vitis::ai::trace::lock(core_idx);
 #endif
   xrt_cu_->run(
       core_idx, func,
@@ -202,7 +218,7 @@ void DpuControllerXrtXvDpu::run(size_t core_idx, const uint64_t code,
       });
   auto hwconuter = get_device_hwconuter(core_idx);
 #ifndef _WIN32
-  //vitis::ai::trace::unlock(core_idx);
+  // vitis::ai::trace::unlock(core_idx);
   vitis::ai::trace::add_trace("dpu-controller", vitis::ai::trace::func_end,
                               core_idx, hwconuter);
 #endif
@@ -220,7 +236,8 @@ uint64_t DpuControllerXrtXvDpu::get_fingerprint(size_t device_core_id) const {
   return xrt_cu_->get_fingerprint(device_core_id);
 }
 
-uint64_t  DpuControllerXrtXvDpu::get_device_hwconuter(size_t device_core_id) const {
+uint64_t DpuControllerXrtXvDpu::get_device_hwconuter(
+    size_t device_core_id) const {
   uint32_t cycle_l_addr = 0x1A0;
   uint32_t cycle_h_addr = 0x1A4;
 

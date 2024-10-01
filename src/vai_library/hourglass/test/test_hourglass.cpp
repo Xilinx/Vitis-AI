@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
     abort();
   }
   auto det = vitis::ai::Hourglass::create(argv[1]);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 6},  {3, 6},  {3, 4}, {4, 5},
                                  {6, 7},   {7, 8},  {8, 9}, {7, 12},
                                  {12, 11}, {11, 10}, {7, 13}, {13, 14}, {14, 15}};

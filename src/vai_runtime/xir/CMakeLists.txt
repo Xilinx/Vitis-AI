@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(
   xir
-  VERSION 3.0.0
+  VERSION 3.5.0
   LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
@@ -28,6 +28,8 @@ option(BUILD_DOC "build documentation" OFF)
 option(BUILD_PYTHON "build python interface" OFF)
 option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
+option(IS_DISTRIBUTION "this build is for distributed mode" OFF)
+option(Protobuf_USE_STATIC_LIBS "protobuf static lib" OFF)
 
 # find_package(glog REQUIRED)
 if(NOT TARGET unilog::unilog)
@@ -35,11 +37,6 @@ if(NOT TARGET unilog::unilog)
 endif()
 
 find_package(Boost REQUIRED)
-if(BUILD_SHARED_LIBS)
-    set(Protobuf_USE_STATIC_LIBS OFF)
-else(BUILD_SHARED_LIBS)
-    set(Protobuf_USE_STATIC_LIBS ON)
-endif(BUILD_SHARED_LIBS)
 find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -80,7 +77,7 @@ set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_CONTACT "Jian Weng<jianweng@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
 set(CPACK_DEB_COMPONENT_INSTALL OFF)

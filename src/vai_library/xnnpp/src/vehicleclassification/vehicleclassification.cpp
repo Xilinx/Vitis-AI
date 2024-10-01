@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,20 @@ VehicleClassificationResult vehicleclassification_post_process(
   return ret;
 }
 
+VehicleClassificationResult vehicleclassification_top1(
+    const std::vector<vitis::ai::library::InputTensor>& input_tensors,
+    const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
+    const vitis::ai::proto::DpuModelParam& config, size_t batch_idx) {
+  auto ret = VehicleClassificationResult{(int)input_tensors[0].width,
+      (int)input_tensors[0].height};
+  ret.scores.reserve(1);
+  auto input_data = (int8_t*)output_tensors[0].get_data(batch_idx);
+  int max_val = std::distance(input_data, std::max_element(input_data, input_data+output_tensors[0].channel));
+  ret.scores.emplace_back(VehicleClassificationResult::Score{
+      max_val, 0.99});
+  return ret;
+}
+
 std::vector<VehicleClassificationResult> vehicleclassification_post_process(
     const std::vector<vitis::ai::library::InputTensor>& input_tensors,
     const std::vector<vitis::ai::library::OutputTensor>& output_tensors,
@@ -120,8 +134,13 @@ std::vector<VehicleClassificationResult> vehicleclassification_post_process(
   auto batch_size = input_tensors[0].batch;
   auto ret = std::vector<VehicleClassificationResult>{};
   ret.reserve(batch_size);
+  auto top_k = config.vehicleclassification_param().top_k();
   for (auto i = 0u; i < batch_size; i++) {
-    ret.emplace_back(vehicleclassification_post_process(
+    if (top_k == 1) 
+      ret.emplace_back(vehicleclassification_top1(
+        input_tensors, output_tensors, config, i));
+    else
+      ret.emplace_back(vehicleclassification_post_process(
         input_tensors, output_tensors, config, i));
   }
   return ret;

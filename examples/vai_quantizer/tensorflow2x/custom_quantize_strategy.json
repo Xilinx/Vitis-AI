@@ -1,0 +1,15 @@
+{
+  "quantize_registry_config": {
+    "layer_quantize_config": [{
+      "layer_type": "__main__.PRelu",
+      "quantizable_weights": ["alpha"],
+      "weight_quantizers": [
+        {"quantizer_type": "LastValueQuantPosQuantizer", "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 0}}
+      ],
+      "quantizable_outputs": ["0"],
+      "output_quantizers": [
+        {"quantizer_type": "LastValueQuantPosQuantizer", "quantizer_params": {"bit_width": 8, "method": 1, "round_mode": 1}}
+      ]
+    }]
+  }
+}

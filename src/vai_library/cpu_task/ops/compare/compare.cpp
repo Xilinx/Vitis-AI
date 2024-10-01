@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ std::string to_hex(float v) {
   char* p = (char*)&v;
   ostringstream str;
   for (auto i = 0u; i < sizeof(float); ++i) {
-    unsigned int v = p[i];
-    str << std::hex << " " << v;
+    unsigned int v1 = p[i];
+    str << std::hex << " " << v1;
   }
   return str.str();
 }

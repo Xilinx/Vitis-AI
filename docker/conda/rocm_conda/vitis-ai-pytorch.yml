@@ -2,16 +2,12 @@ name: base
 
 channels:
   - conda-forge
-  - anaconda
 
 dependencies:
-  - python=3.7
+  - python=3.8
   - vaic
-  - dpuv3-pycompiler
-  - xnnc
   - xcompiler
   - vart
-  - vai_utf
   - pyyaml
   - jupyter
   - ipywidgets

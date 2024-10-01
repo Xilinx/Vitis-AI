@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ int PythonCpuOp::calculate(const std::vector<vart::OpImpArg>& inputs,
   // it is important to get gil again.
   py::gil_scoped_acquire acquire;
   py::dict kwargs;
-  for (auto input : inputs) {
+  for (auto& input : inputs) {
     kwargs[input.arg_name.c_str()] =
         py::cast(input.args, py::return_value_policy::reference);
   }

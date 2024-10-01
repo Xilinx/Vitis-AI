@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include <vitis/ai/library/tensor.hpp>
 
 void set_input(const cv::Mat& raw, const float iso,
-               vitis::ai::library::InputTensor tensor, int batch_idx);
+               vitis::ai::library::InputTensor& tensor, int batch_idx);
 
 std::vector<float> invKSigma_unpad_rggb2bayer(
     void* output_data, void* input_data, const float output_scale,

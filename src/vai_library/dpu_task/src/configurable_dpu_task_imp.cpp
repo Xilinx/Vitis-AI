@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -332,10 +332,10 @@ void ConfigurableDpuTaskImp::setInputImageRGB(
 void ConfigurableDpuTaskImp::run(int task_index) {
   if (ENV_PARAM(DEBUG_DPBASE)) {
     LOG(INFO) << "running task " << task_index;
-    for (auto input : tasks_->getInputTensor(task_index)) {
+    for (auto & input : tasks_->getInputTensor(task_index)) {
       LOG(INFO) << "input " << input;
     }
-    for (auto output : tasks_->getOutputTensor(task_index)) {
+    for (auto & output : tasks_->getOutputTensor(task_index)) {
       LOG(INFO) << "output " << output;
     }
   }

@@ -1,6 +1,6 @@
-This file list all the <a href="https://github.com/pytorch/pytorch/tree/v1.12.0">pytorch 1.12</a> operators supported by <a href="https://github.com/Xilinx/Vitis-AI/tree/3.0/src/Vitis-AI-Quantizer/vai_q_pytorch">vai_q_pytorch</a>. We should try to use pytorch 1.12. If a lower version of pytorch must be used, only a subset of the following operator list will be supported.<br>
+This file list all the operators supported by <a href="https://github.com/Xilinx/Vitis-AI/tree/v3.0/src/vai_quantizer/vai_q_pytorch">vai_q_pytorch</a>. We should try to use pytorch 1.12 and above. If a lower version of pytorch must be used, only a subset of the following operator list will be supported.<br>
 **Note:**<br> 
-1. Only some operators can support quantization and deployment.
+1. The quantizer only support models built with the following operators. But it does not mean that all operators can be quantized and deployed on DPU. If you pay more attention to deployment, you can refer to https://docs.xilinx.com/r/en-US/ug1414-vitis-ai/Operators-Supported-by-PyTorch.
 2. Aten and prim operators are usually not used to build models explicitly, but will exist in the jit graph.
  
 **Support Operator List**

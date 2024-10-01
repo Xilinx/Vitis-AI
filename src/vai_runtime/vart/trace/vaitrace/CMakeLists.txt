@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -15,7 +15,7 @@
 #
 
 cmake_minimum_required(VERSION 3.5)
-project(vaitrace VERSION 3.0.20222)
+project(vaitrace VERSION 3.5.20231)
 set(VAITRACE_DEST_PATH bin/xlnx/${PROJECT_NAME})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
@@ -34,31 +34,46 @@ configure_file(vaitrace_version.in
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/vaitrace_version.py
         DESTINATION ${VAITRACE_DEST_PATH})
 
-
-#Build noc Library
+# Build noc Library
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
-	set(NOC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/mem_perf)
-  include_directories(${NOC_DIR}/include)
-  include_directories(${NOC_DIR}/noc/include)
+  set(NOC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/mem_perf)
+  include_directories(${NOC_DIR}/mem_mon_base/include)
+  include_directories(${NOC_DIR}/noc/ddrmc/include)
   include_directories(${NOC_DIR}/xapm/include)
 
-  add_library(memperf SHARED ${NOC_DIR}/noc/noc.cpp ${NOC_DIR}/xapm/apm.cpp  ${NOC_DIR}/mem_perf_interface.cpp)
+  add_library(memperf SHARED ${NOC_DIR}/noc/ddrmc/noc_ddrmc.cpp ${NOC_DIR}/xapm/apm.cpp 
+	  ${NOC_DIR}/mem_interface/mem_perf_interface.cpp)
 
   set_target_properties(memperf PROPERTIES VERSION "${PROJECT_VERSION}"
-                                        SOVERSION "${PROJECT_VERSION_MAJOR}")
+                                           SOVERSION "${PROJECT_VERSION_MAJOR}")
 
   install(TARGETS memperf DESTINATION lib)
 endif()
 
-#Build powermon Library
+# Build nmu Library
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+  set(NOC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/mem_perf)
+  include_directories(${NOC_DIR}/mem_mon_base/include)
+  include_directories(${NOC_DIR}/noc/nmu/include)
+
+  add_library(nmuperf SHARED ${NOC_DIR}/noc/nmu/noc_nmu.cpp ${NOC_DIR}/mem_interface/nmu_perf_interface.cpp)
+
+  set_target_properties(nmuperf PROPERTIES VERSION "${PROJECT_VERSION}"
+                                           SOVERSION "${PROJECT_VERSION_MAJOR}")
+
+  install(TARGETS nmuperf DESTINATION lib)
+endif()
+
+# Build powermon Library
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
   set(POWERMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vaitraceTools/powermon)
   include_directories(${POWERMON_DIR}/include)
 
   add_library(powermon SHARED ${POWERMON_DIR}/power_mon.cpp)
 
-  set_target_properties(powermon PROPERTIES VERSION "${PROJECT_VERSION}"
-                                        SOVERSION "${PROJECT_VERSION_MAJOR}")
+  set_target_properties(
+    powermon PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION
+                                                     "${PROJECT_VERSION_MAJOR}")
 
   install(TARGETS powermon DESTINATION lib)
 endif()
@@ -70,16 +85,15 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
   include_directories(${DPU_MC_SRC})
   include_directories(${DPU_MC_SRC}/inc)
   aux_source_directory(${DPU_MC_SRC} DPU_MC_SRC_FILES)
-  foreach(SRC IN ITEMS  ${DPU_MC_SRC_FILES})
+  foreach(SRC IN ITEMS ${DPU_MC_SRC_FILES})
     get_filename_component(_N ${SRC} NAME_WE)
     add_library(${_N} SHARED ${SRC})
-    #set_target_properties(${_N} PROPERTIES VERSION "${PROJECT_VERSION}"
-    #                       SOVERSION "${PROJECT_VERSION_MAJOR}")
+    # set_target_properties(${_N} PROPERTIES VERSION "${PROJECT_VERSION}"
+    # SOVERSION "${PROJECT_VERSION_MAJOR}")
     install(
       FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${_N}.so
       DESTINATION ${DPU_MC_DEST}
-      RENAME ${_N}.so
-    )
+      RENAME ${_N}.so)
   endforeach()
 endif()
 
@@ -131,7 +145,7 @@ endif()
 set(CPACK_PACKAGE_NAME "vaitrace")
 set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_SET_DESTDIR OFF)
-set(CPACK_PACKAGE_CONTACT "LiYunzhi<liyunzhi@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_RPM_FILE_NAME RPM-DEFAULT)
 set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -174,6 +174,14 @@ void SfmControllerDnndk::run(const int8_t* input, float scale, unsigned int cls,
       workspace_->sync_for_write(0, this_input_size);
       reg.width = cls;
       reg.height = this_batch;
+      CHECK_EQ(input_phy & 0xFFFFFF0000000000, 0)
+          << "invalid input_phy 0x" << std::hex << input_phy        //
+          << ", only the low 40bits of physical address are valid"  //
+          << ", high 24bits should be 0" << std::dec;
+      CHECK_EQ(output_phy & 0xFFFFFF0000000000, 0)
+          << "invalid output_phy 0x" << std::hex << output_phy      //
+          << ", only the low 40bits of physical address are valid"  //
+          << ", high 24bits should be 0" << std::dec;
       reg.input = input_phy;
       reg.output = output_phy;
       reg.scale = fix_pos;

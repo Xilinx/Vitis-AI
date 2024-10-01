@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -245,7 +245,7 @@ PYBIND11_MODULE(MODULE_NAME, m) {
         std::tie(data, size) = tb.data(idx);
         auto dtype = tensor->get_data_type();
         auto format = to_py_buf_format(dtype);
-        CHECK_EQ(size,  (size_t)((uint32_t)tensor->get_data_size()) )
+        CHECK_EQ(size, tensor->get_data_size())
             << "only support continuous tensor buffer yet";
         return py::buffer_info((void*)data,         /* Pointer to buffer */
                                dtype.bit_width / 8, /* Size of one scalar */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,11 @@ int main(int argc, char *argv[]) {
   ofstream out(argv[2]);
 
   auto yolo = vitis::ai::YOLOv3::create("yolov3_voc_acc", true);
-  for (auto name : names) {
+  if (!yolo) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
+  for (auto& name : names) {
     cv::Mat img = cv::imread(name);
     auto results = yolo->run(img);
     auto namesp = split(name, "/");

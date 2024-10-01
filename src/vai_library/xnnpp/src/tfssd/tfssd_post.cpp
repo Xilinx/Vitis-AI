@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -271,14 +271,6 @@ TFSSDPost::TFSSDPost(
   __TOC__(CREATESSD)
 }
 
-static void sigmoid_c(const int8_t* input, float scale, unsigned int cls,
-                      unsigned int group, float* output) {
-  for (unsigned int i = 0; i < group * cls; ++i) {
-    //    output[i] =  1.0/(1.0+exp(-1.0*input[i]*scale ));
-    output[i] = input[i];
-  }
-}
-
 std::vector<vitis::ai::TFSSDResult> TFSSDPost::ssd_post_process() {
 
   auto ret = std::vector<vitis::ai::TFSSDResult>{};
@@ -302,13 +294,12 @@ vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(unsigned int idx) {
   if (score_converter_ == SOFTMAX) {
     vitis::ai::softmax((int8_t*)conf, scale_conf_, num_classes_, priors_.size(),
                        softmax_data_.data());
-  } else if (score_converter_ == SIGMOID) {
-    sigmoid_c((int8_t*)conf, scale_conf_, num_classes_, priors_.size(),
-              softmax_data_.data());
+  // } else if (score_converter_ == SIGMOID) {
+  //   sigmoid_c((int8_t*)conf, scale_conf_, num_classes_, priors_.size(),
+  //             softmax_data_.data());
   }
 
   __TOC__(SSD_softmax)
-  __TIC__(SSD_after)
 
   int8_t* box_c = (int8_t*)(output_tensors_[LOC_IDX].get_data(idx));
   (void)box_c;
@@ -317,12 +308,15 @@ vitis::ai::TFSSDResult TFSSDPost::ssd_post_process(unsigned int idx) {
 
   TFSSDResult results{(int)input_tensors_[0].width,
                       (int)input_tensors_[0].height, bboxes};
-  detector_->Detect((int8_t*)box_c, softmax_data_.data(), &results);
-
-  __TOC__(SSD_after)
-  __TOC__(SSD_total)
+  // detector_->Detect((int8_t*)box_c, softmax_data_.data(), &results);
+  if (score_converter_ == SOFTMAX) {
+    detector_->Detect((int8_t*)box_c, softmax_data_.data(), &results);
+  } else if (score_converter_ == SIGMOID) {
+    detector_->Detect((int8_t*)box_c, conf, &results);
+  }
   return results;
 }
 
 }  // namespace ai
 }  // namespace vitis
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ std::vector<RefineDetResult> RefineDetImp::run(
     const std::vector<cv::Mat>& input_images) {
   vector<cv::Mat> images;
   auto size = cv::Size(getInputWidth(), getInputHeight());
-  for (auto input_image : input_images) {
+  for (auto& input_image : input_images) {
     cv::Mat img;
     if (size != input_image.size()) {
       cv::resize(input_image, img, size);

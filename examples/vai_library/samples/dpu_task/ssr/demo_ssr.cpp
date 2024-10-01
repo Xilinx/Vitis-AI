@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-
+#include <iostream>
 using namespace std;
 using namespace cv;
 
@@ -28,6 +28,10 @@ int main(int argc, char* argv[]) {
   Mat img = cv::imread(argv[2]);
   {
     auto ssr = vitis::ai::SSR::create(model_name);
+    if (!ssr) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+    }
     vector<Mat> imgs;
     for(size_t i = 0; i < ssr->get_input_batch(); ++i)
       imgs.push_back(img);
@@ -35,7 +39,7 @@ int main(int argc, char* argv[]) {
       ssr->run(imgs);
       auto result = ssr->get_result();
       int c = 0;
-      for (auto r : result) {
+      for (auto& r : result) {
         // imshow(std::string("result ") + std::to_string(c), result[c]);
         imwrite(std::string("result_ssr_") + std::to_string(c) + ".jpg", r);
         c++;

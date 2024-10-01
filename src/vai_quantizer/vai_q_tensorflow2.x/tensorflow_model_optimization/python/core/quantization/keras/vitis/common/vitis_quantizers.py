@@ -71,9 +71,6 @@ class FSQuantizer(Quantizer):
     self.unsigned = unsigned
     self.narrow_range = narrow_range
     self.method_percentile = method_percentile
-    #self.histogram = calibrator_numpy.HistogramCalibrator(bit_width, None, False)
-    #self.calib_hist = tf.Variable(0)
-    #self.calib_bin_edges = tf.Variable(0.0)
 
   def build(self, tensor_shape, name, layer):
     shape = None
@@ -101,6 +98,12 @@ class FSQuantizer(Quantizer):
         initializer=keras.initializers.Constant(0.0),
         trainable=False)
 
+    scale = layer.add_weight(
+        shape=shape,
+        name=name + '_scale',
+        initializer=keras.initializers.Constant(0.0),
+        trainable=False)
+
     #histogram
     calib_hist = tf.Variable([0],
                              name=name + '_calib_hist',
@@ -119,6 +122,7 @@ class FSQuantizer(Quantizer):
     self.weights = {
         'min_var': min_var,
         'max_var': max_var,
+        'scale': scale,
         'calib_hist': calib_hist,
         'calib_bin_edges': calib_bin_edges,
     }
@@ -359,6 +363,7 @@ class Pof2SQuantizer(Quantizer):
                symmetry=True,
                per_channel=False,
                channel_axis=-1,
+               use_fixneuron_quant=0,
                unsigned=False,
                narrow_range=False):
     """Construct a Posf2SQuantizer.
@@ -373,6 +378,8 @@ class Pof2SQuantizer(Quantizer):
       per_channel: Whether to apply per_channel quantization. The last dimension is regarded as channel.
       channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
         regarded as channel axis and other dimension will be reduces by default.
+      use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+              1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
       unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -383,6 +390,7 @@ class Pof2SQuantizer(Quantizer):
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.channel_axis = channel_axis
+    self.use_fixneuron_quant = use_fixneuron_quant
     self.unsigned = unsigned
     self.narrow_range = narrow_range
 
@@ -464,6 +472,7 @@ class Pof2SQuantizer(Quantizer):
         symmetry=self.symmetry,
         per_channel=self.per_channel,
         channel_axis=self.channel_axis,
+        use_fixneuron_quant=self.use_fixneuron_quant,
         unsigned=self.unsigned,
         narrow_range=self.narrow_range)
 
@@ -475,16 +484,25 @@ class Pof2SQuantizer(Quantizer):
         'symmetry': self.symmetry,
         'per_channel': self.per_channel,
         'channel_axis': self.channel_axis,
+        'use_fixneuron_quant': self.use_fixneuron_quant,
         'unsigned': self.unsigned,
         'narrow_range': self.narrow_range,
     }
 
   def convert_to_fs_quantizer(self, use_framework_quant=True):
     config = self.get_config()
+
     config['use_framework_quant'] = use_framework_quant
     # Set round_mode to 1 as tf.fake only support HALF_UP rounding
     if use_framework_quant and config['round_mode'] != 1:
       config['round_mode'] = 1
+    if config['bit_width'] != 8:
+      config['use_framework_quant'] = False
+
+    # FS quantizer does not contain this attribute
+    if 'use_fixneuron_quant' in config.keys():
+      del config['use_fixneuron_quant']
+
     return FSQuantizer.from_config(config)
 
   def __eq__(self, other):
@@ -497,6 +515,7 @@ class Pof2SQuantizer(Quantizer):
             self.symmetry == other.symmetry and
             self.per_channel == other.per_channel and
             self.channel_axis == other.channel_axis and
+            self.use_fixneuron_quant == other.use_fixneuron_quant and
             self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
@@ -515,6 +534,7 @@ class TQTQuantizer(Quantizer):
                symmetry=True,
                per_channel=False,
                channel_axis=-1,
+               use_fixneuron_quant=0,
                unsigned=False,
                narrow_range=False):
     """Construct a TQTQuantizer.
@@ -529,6 +549,8 @@ class TQTQuantizer(Quantizer):
       per_channel: Whether to apply per_channel quantization. The last dimension is regarded as channel.
       channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
         regarded as channel axis and other dimension will be reduces by default.
+      use_fixneuron_quant: Int, 0 for not to use fixneuron (the general quantize kernel will be used),
+              1 for using fixneuron to quantize activation, 2 for using fixneuron to quantize weights.
       unsigned: Bool, whether to use unsigned integer for quantization.
       narrow_range: Bool, whether to use the narrow quantization range
         [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
@@ -539,6 +561,7 @@ class TQTQuantizer(Quantizer):
     self.symmetry = symmetry
     self.per_channel = per_channel
     self.channel_axis = channel_axis
+    self.use_fixneuron_quant = use_fixneuron_quant
     self.unsigned = unsigned
     self.narrow_range = narrow_range
 
@@ -620,6 +643,7 @@ class TQTQuantizer(Quantizer):
         symmetry=self.symmetry,
         per_channel=self.per_channel,
         channel_axis=self.channel_axis,
+        use_fixneuron_quant=self.use_fixneuron_quant,
         unsigned=self.unsigned,
         narrow_range=self.narrow_range)
 
@@ -631,12 +655,16 @@ class TQTQuantizer(Quantizer):
         'symmetry': self.symmetry,
         'per_channel': self.per_channel,
         'channel_axis': self.channel_axis,
+        'use_fixneuron_quant': self.use_fixneuron_quant,
         'unsigned': self.unsigned,
         'narrow_range': self.narrow_range,
     }
 
-  def convert_to_pof2s_quantizer(self):
+  def convert_to_pof2s_quantizer(self, use_fixneuron_quant=0):
     config = self.get_config()
+
+    config['use_fixneuron_quant'] = use_fixneuron_quant
+
     return Pof2SQuantizer.from_config(config)
 
   def __eq__(self, other):
@@ -649,12 +677,132 @@ class TQTQuantizer(Quantizer):
             self.symmetry == other.symmetry and
             self.per_channel == other.per_channel and
             self.channel_axis == other.channel_axis and
+            self.use_fixneuron_quant == other.use_fixneuron_quant and
             self.unsigned == other.unsigned and
             self.narrow_range == other.narrow_range)
 
   def __ne__(self, other):
     return not self.__eq__(other)
 
+
+@register_keras_serializable(package='Vitis', name='BFPQuantizer')
+class BFPQuantizer(Quantizer):
+  """Quantizer with new data format."""
+
+  def __init__(self,
+               data_format='fp32',
+               tile_size=8,
+               bit_width=16,
+               method=0,
+               round_mode=1,
+               symmetry=True,
+               per_channel=False,
+               channel_axis=-1,
+               use_framework_quant=True,
+               narrow_range=False,
+               method_percentile=99.99):
+    """Construct a BFPQuantizer.
+
+    This is an experimental API not subject to backward compatibility.
+
+    Args:
+      data_format: "bfp"/"bf16"/"fp32"
+      bit_width: Number of bits to use for bfp, must be bigger than 8.
+      axis: The axis where the channels is located in the `shape`.
+      tile_size: The number of tensors in a block.
+      round_mode: The rounding function used for quantization
+      symmetry: Whether to apply symmetry quantization
+      per_channel: Whether to apply per_channel quantization. The last dimension is regarded as channel.
+      channel_axis: The axis of the channel, used with per_channel enabled. The last dimension is 
+        regarded as channel axis and other dimension will be reduces by default.
+      use_framework_quant: Bool, whether to use the tensorflow fake_quantize operations. If not, the custom quantize kernel will be used.
+      narrow_range: Bool, whether to use the narrow quantization range
+        [1; 2^num_bits - 1] or wide range [0; 2^num_bits - 1].
+    """
+    self.bit_width = bit_width
+    self.method = method
+    self.round_mode = round_mode
+    self.symmetry = symmetry
+    self.per_channel = per_channel
+    self.channel_axis = channel_axis
+    self.use_framework_quant = use_framework_quant
+    self.narrow_range = narrow_range
+    self.method_percentile = method_percentile
+    self.data_format = data_format
+    self.tile_size = tile_size
+    self.tensor_shape = None
+
+  def build(self, tensor_shape, name, layer):
+    self.weights = {}
+    self.tensor_shape = tensor_shape
+    return self.weights
+
+  def get_quantize_info(self):
+    """Get current values of the weights"""
+    quantize_info = {}
+    for name, var in self.weights.items():
+      quantize_info[name] = keras.backend.get_value(var)
+    return quantize_info
+
+  def set_quantize_info(self, new_quantize_info):
+    """Set values of the weights"""
+    for name, var in self.weights.items():
+      if name in new_quantize_info:
+        keras.backend.set_value(var, new_quantize_info[name])
+
+  def __call__(self, inputs, is_training, mode, weights, **kwargs):
+    """Quantize tensor.
+
+    Args:
+      inputs: Input tensor to be quantized.
+      training: Whether the graph is currently training.
+      weights: Dictionary of weights the quantizer can use to quantize the
+        tensor. This contains the weights created in the `build` function.
+      **kwargs: Additional variables which may be passed to the quantizer.
+
+    Returns:
+      Quantized tensor.
+    """
+    quantize_res = vitis_quantize_ops.BFPQuantize(
+        inputs,
+        tensor_shape=self.tensor_shape,
+        data_format=self.data_format,
+        bit_width=self.bit_width,
+        round_mode=self.round_mode,
+        axis=self.channel_axis,
+        tile_size=self.tile_size,
+        is_training=is_training)
+    return quantize_res
+
+  def get_config(self):
+    return {
+        'bit_width': self.bit_width,
+        'method': self.method,
+        'round_mode': self.round_mode,
+        'symmetry': self.symmetry,
+        'per_channel': self.per_channel,
+        'channel_axis': self.channel_axis,
+        'data_format': self.data_format,
+        'tile_size': self.tile_size
+    }
+
+  def __eq__(self, other):
+    if not isinstance(other, FSQuantizer):
+      return False
+
+    return (self.bit_width == other.bit_width and
+            self.method == other.method and
+            self.data_format == other.data_format and
+            self.tile_size == tile_size and
+            self.round_mode == other.round_mode and
+            self.symmetry == other.symmetry and
+            self.per_channel == other.per_channel and
+            self.channel_axis == other.channel_axis and
+            self.use_framework_quant == other.use_framework_quant and
+            self.narrow_range == other.narrow_range)
+
+  def __ne__(self, other):
+    return not self.__eq__(other)
 
 # Make aliases for backward compatibility
 @register_keras_serializable(package='Vitis', name='LastValueMinMaxQuantizer')
@@ -683,4 +831,5 @@ def _types_dict():
       'MAFSQuantizer': MAFSQuantizer,
       'Pof2SQuantizer': Pof2SQuantizer,
       'TQTQuantizer': TQTQuantizer,
+      'BFPQuantizer': BFPQuantizer,
   }

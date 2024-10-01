@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: YOLOv4 on COCO.
+input size: 512*512
+float ops: 91.2G
+task: object detection
+framework: tensorflow
+prune: 'no'
+version: 3.5
+files:
+- name: tf_yolov4-512_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_yolov4-512_3.5.zip
+  checksum: 240d93ed6f157ca061c5381c0a7df507
+- name: yolov4_leaky_512_tf
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-vek280-r3.5.0.tar.gz
+  checksum: 9fa7321d69d47c0f363db5aaccc0f556
+- name: yolov4_leaky_512_tf
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=yolov4_leaky_512_tf-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: a2c3db5e0064942bf0c52033e5438f47
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

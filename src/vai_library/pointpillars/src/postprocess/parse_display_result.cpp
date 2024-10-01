@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -639,7 +639,7 @@ V2F project_3d_pts( V2F& corners, const V2F& p2rect)
      }
      proj_pts[i][0]/=proj_pts[i][2];
      proj_pts[i][1]/=proj_pts[i][2];
-     proj_pts[i][2] =proj_pts[i][2];
+     // proj_pts[i][2] =proj_pts[i][2];
    }
    return proj_pts;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -276,7 +276,7 @@ void runYOLO(vart::Runner* runner) {
 
   auto input_scale = get_input_scale(runner->get_input_tensors()[0]);
   auto output_scale = vector<float>();
-  for (int i; i < 4; i++) {
+  for (int i=0; i < 4; i++) {
     output_scale.push_back(get_output_scale(
         runner->get_output_tensors()[shapes.output_mapping[i]]));
   }

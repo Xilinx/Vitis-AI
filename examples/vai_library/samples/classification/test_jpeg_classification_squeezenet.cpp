@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,10 @@ int main(int argc, char* argv[]) {
   auto image_file_name = argv[2];
   // Create a dpu task object.
   auto task = vitis::ai::DpuTask::create(find_model(kernel_name));
+  if (!task) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   // Preprocessing, please check
   // /etc/dpu_model_param_.conf.d/inception_v1.prototxt or your caffe
   // model, e.g. deploy.prototxt

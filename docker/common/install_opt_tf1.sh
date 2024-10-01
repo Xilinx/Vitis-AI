@@ -10,7 +10,6 @@ if [[ ${VAI_CONDA_CHANNEL} =~ .*"tar.gz" ]]; then \
 fi
 . $VAI_ROOT/conda/etc/profile.d/conda.sh \
     && mkdir -p $VAI_ROOT/conda/pkgs \
-    && mamba install -c conda-forge conda-build \
     && python3 -m pip install --upgrade pip wheel setuptools \
     && conda config --env --remove-key channels \
     && conda config --env --append channels ${VAI_CONDA_CHANNEL} \

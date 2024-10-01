@@ -54,7 +54,7 @@ static uint64_t type2int(const std::string& type) {
     ret = 6U;
   else if (type == "DPUCADF8H")
     ret = 7U;
-  else if (type == "IPUCVDX8G")
+  else if (type == "IPU_PHX")
     ret = 8U;
   else if (type == "DPUCV2DX8G")
     ret = 9U;
@@ -80,7 +80,7 @@ static std::string int2type(uint64_t type) {
   else if (type == 7U)
     ret = "DPUCADF8H";
   else if (type == 8U)
-    ret = "IPUCVDX8G";
+    ret = "IPU_PHX";
   else if (type == 9U)
     ret = "DPUCV2DX8G";
   else
@@ -107,6 +107,7 @@ const Target create_target_DPUCZDX8G_ISA1(const std::uint64_t fingerprint);
 const Target create_target_DPUCVDX8G_ISA2(const std::uint64_t fingerprint);
 const Target create_target_DPUCVDX8G_ISA3(const std::uint64_t fingerprint);
 const Target create_target_DPUCV2DX8G_ISA0(const std::uint64_t fingerprint);
+const Target create_target_DPUCV2DX8G_ISA1(const std::uint64_t fingerprint);
 
 class TargetFactoryImp : public TargetFactory {
  public:
@@ -135,6 +136,8 @@ class TargetFactoryImp : public TargetFactory {
         return create_target_DPUCVDX8G_ISA3(fingerprint);
       } else if (type == "DPUCV2DX8G" && isa_version == 0) {
         return create_target_DPUCV2DX8G_ISA0(fingerprint);
+      } else if (type == "DPUCV2DX8G" && isa_version == 1) {
+        return create_target_DPUCV2DX8G_ISA1(fingerprint);
       } else {
         UNI_LOG_FATAL(TARGET_FACTORY_UNREGISTERED_TARGET)
             << "Cannot find or create target with fingerprint=0x" << std::hex

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ int main(int argc, char *argv[]) {
   }
 
   auto net = vitis::ai::BCC::create("bcc_pt");
+  if (!net) { // supress coverity complain
+     std::cerr <<"create error\n";
+     abort();
+  }
 
   std::vector<cv::Mat> arg_input_images;
   std::vector<cv::Size> arg_input_images_size;

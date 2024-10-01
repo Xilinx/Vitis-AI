@@ -1,0 +1,254 @@
+﻿Task,Market Specialization,Application,Framework,Vitis-AI Model Name Zoo Name,License Restriction(s),Copyleft Model Zoo,Model Architecture,Model Research Publication,Dataset,Dataset URL,Input Dims(HWC),FP32 Floating-Point Accuracy,Quantized Accuracy,Ops (G),Percentage Pruned,MLPerf?,"VEK280
+E2E throughput (fps) 
+Single Thread
+1* C20B14CU1 @ 300MHz
+AIE-ML fclk=1.18GHz","VEK280
+E2E throughput (fps) 
+Multi Thread
+1* C20B14CU1 @300MHz
+AIE-ML fclk=1.18GHz","V70
+E2E throughput (fps) 
+Multi Thread
+1* C20B14CU1 @250MHz Gen4x8
+AIE-ML fclk=1.00GHz"
+Semantic Segmentation,Medical Imaging,Medical Segmentation,PyTorch,pt_3D-UNET_3.5,,No,3D-UNET,https://arxiv.org/abs/1606.06650,KiTS19,https://kits19.grand-challenge.org/data/,128*128*128,0.8824,0.8774,1065.44,,,/,/,/
+NLP,,Question and Answering,PyTorch,pt_bert-base_3.5,,No,BERT,https://arxiv.org/abs/1810.04805,SQuAD,https://rajpurkar.github.io/SQuAD-explorer/,384,0.8848,0.837,70.66,,,/,/,/
+NLP,,Question and Answering,PyTorch,pt_bert-large_3.5,,No,BERT,https://arxiv.org/abs/1810.04805,SQuAD,https://rajpurkar.github.io/SQuAD-explorer/,384,0.9059,0.866,246.42,,,/,/,/
+NLP,,Question and Answering,PyTorch,pt_bert-tiny_3.5,,No,BERT,https://arxiv.org/abs/1810.04805,SQuAD,https://rajpurkar.github.io/SQuAD-explorer/,384,0.5231,0.5125,0.45,,,/,/,/
+Object Detection,Smart Cities,Face Mask Detection,PyTorch,pt_face-mask-detection_3.5,,No,Yolo-fastest,https://doi.org/10.2352/EI.2023.35.11.HPCI-229,Face-mask-detection,https://github.com/waittim/mask-detector/tree/master/modeling/data,512*512*3,0.886,0.881,0.59,,,512.65 ,1024.67 ,2173.85 
+Depth Estimation,Industrial Vision / Robotics,Binocular depth estimation,PyTorch,pt_fadnet_0.65_3.5,,No,FADNet,https://arxiv.org/abs/2003.10758,Sceneflow,https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html,576*960*3,EPE: 0.823,EPE: 1.158,154,65.00%,,/,/,/
+Depth Estimation,Industrial Vision / Robotics,Stereo Depth Estimation,PyTorch,pt_fadnet_3.5,,No,FADNet,https://arxiv.org/abs/2003.10758,Sceneflow,https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html,576*960*3,EPE: 0.926,EPE: 1.169,441,,,/,/,/
+Depth Estimation,Industrial Vision / Robotics,Stereo Depth Estimation,PyTorch,pt_fadnetv2_0.51_3.5,,No,FADNet,https://arxiv.org/abs/2003.10758,Sceneflow,https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html,576*960*3,EPE: 0.878,EPE: 1.185,201,51.00%,,7.91 ,16.68 ,/
+Depth Estimation,Industrial Vision / Robotics,Stereo Depth Estimation,PyTorch,pt_fadnetv2_3.5,,No,FADNet,https://arxiv.org/abs/2003.10758,Sceneflow,https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html,576*960*3,EPE: 0.877,EPE: 1.183,412,,,8.47 ,19.15 ,/
+Semantic Segmentation,Automotive,ADAS 2D Segmentation,PyTorch,pt_HRNet_3.5,,No,HRNet,https://arxiv.org/abs/1908.07919,Cityscapes,https://www.cityscapes-dataset.com/,1024*2048*3,0.8104,0.8061,378,,,/,/,/
+Image Classification,,General,PyTorch,pt_inceptionv3_0.3_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.775/0.936,0.772/0.935,8,30.00%,,835.80 ,1776.02 ,1289.55 
+Image Classification,,General,PyTorch,pt_inceptionv3_0.4_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.768/0.931,0.764/0.929,6.8,40.00%,,855.50 ,1935.91 ,1366.46 
+Image Classification,,General,PyTorch,pt_inceptionv3_0.5_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.757/0.921,0.752/0.918,5.7,50.00%,,909.83 ,2181.70 ,1482.21 
+Image Classification,,General,PyTorch,pt_inceptionv3_0.6_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.739/0.911,0.732/0.908,4.5,60.00%,,966.01 ,2415.77 ,1684.68 
+Image Classification,,General,PyTorch,pt_inceptionv3_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.775/0.936,0.771/0.935,11.4,,,794.99 ,1462.85 ,1143.74 
+Pose Detection,Smart Cities,Pose Estimation,PyTorch,pt_movenet_3.5,,No,MoveNet,https://arxiv.org/abs/2105.04154,COCO,https://cocodataset.org/#download,192*192*3,0.7972,0.7984,0.5,,,239.12 ,428.21 ,8326.82 
+Image Classification,,General,PyTorch,pt_OFA-depthwise-res50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,176*176*3,0.7633/0.9292,0.7629/0.9306,2.49,,,336.85 ,527.26 ,12925.70 
+Super Resolution,Medical Imaging,Super Resolution,PyTorch,pt_OFA-rcan_3.5,,No,OFA-RCAN,,DIV2K,https://data.vision.ee.ethz.ch/cvl/DIV2K/,360*640*3,"(Set5) PSNR/SSIM= 37.654/0.959
+(Set14) PSNR/SSIM= 33.169/ 0.914
+(B100) PSNR/SSIM= 31.891/ 0.897
+(Urban100) PSNR/SSIM = 30.978/0.917","(Set5) PSNR/SSIM= 37.384/0.956
+(Set14) PSNR/SSIM= 33.012/ 0.911
+(B100) PSNR/SSIM= 31.785/ 0.894
+(Urban100) PSNR/SSIM = 30.839/0.913",45.7,,,62.83 ,100.65 ,53.00 
+Image Classification,,General,PyTorch,pt_OFA-resnet50_0.88_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,160*160*3,0.752/0.918,0.744/0.918,1.8,88.00%,,2549.20 ,6595.03 ,7780.10 
+Image Classification,,General,PyTorch,pt_OFA-resnet50_0.74_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,192*192*3,0.777/0.937,0.770/0.933,3.6,74.00%,,2014.20 ,5274.48 ,3609.05 
+Image Classification,,General,PyTorch,pt_OFA-resnet50_0.45_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.795/0.945,0.784/0.941,8.2,45.00%,,1515.01 ,3636.90 ,5265.23 
+Image Classification,,General,PyTorch,pt_OFA-resnet50_0.60_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.791/0.943,0.780/0.939,6,60.00%,,1562.12 ,4064.77 ,3165.36 
+Image Classification,,General,PyTorch,pt_OFA-resnet50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.799/0.948,0.789/0.944,15,,,/,/,/
+Object Detection,,General,PyTorch,pt_OFA-yolo_0.3_3.5,,No,OFA-YOLO,,COCO,https://cocodataset.org/#download,640*640*3,0.42,0.401,34.72,30.00%,,173.53 ,383.53 ,323.62 
+Object Detection,,General,PyTorch,pt_OFA-yolo_0.5_3.5,,No,OFA-YOLO,,COCO,https://cocodataset.org/#download,640*640*3,0.392,0.378,24.62,60.00%,,193.87 ,406.21 ,456.91 
+Object Detection,,General,PyTorch,pt_OFA-yolo_3.5,,No,OFA-YOLO,,COCO,https://cocodataset.org/#download,640*640*3,0.436,0.421,48.88,,,165.66 ,370.41 ,295.25 
+Semantic Segmentation,Automotive,ADAS 3D Detection,PyTorch,pt_pointpillars_3.5,,No,PointPillars,https://arxiv.org/abs/1812.05784,KITTI,http://www.cvlibs.net/datasets/kitti/,12000*100*4,"Car 3D AP@0.5(easy, moderate, hard)","Car 3D AP@0.5(easy, moderate, hard)",11.2,,,55.96 ,70.06 ,187.11 
+Industrial Vision / Robotics,Industrial Vision / Robotics,Stereo Depth Estimation,PyTorch,pt_psmnet_0.68_3.5,,No,PSMNet,https://arxiv.org/abs/1803.08669,Sceneflow,https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html,576*960*3,EPE: 0.961,EPE: 1.022,696,68.00%,,/,/,/
+Image Classification,,General,PyTorch,pt_resnet50_0.3_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.760/0.929,0.757/0.928,5.8,30.00%,,1628.45 ,4247.61 ,4132.65 
+Image Classification,,General,PyTorch,pt_resnet50_0.4_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.755/0.926,0.752/0.925,4.9,40.00%,,1666.52 ,4268.98 ,4401.23 
+Image Classification,,General,PyTorch,pt_resnet50_0.5_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.748/0.921,0.745/0.920,4.1,50.00%,,1701.21 ,4265.80 ,4671.20 
+Image Classification,,General,PyTorch,pt_resnet50_0.6_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.742/0.917,0.738/0.915,3.3,60.00%,,1744.41 ,4272.31 ,5126.95 
+Image Classification,,General,PyTorch,pt_resnet50_0.7_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.726/0.908,0.720/0.906,2.5,70.00%,,1807.90 ,4243.46 ,5842.50 
+Image Classification,,General,PyTorch,pt_resnet50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.761/0.929,0.760/0.928,8.2,,,1708.50 ,4432.04 ,3792.31 
+Super Resolution,Medical Imaging,Super Resolution,PyTorch,pt_SESR-S_3.5,,No,SESR-S,https://arxiv.org/abs/1801.10319,DIV2K,https://data.vision.ee.ethz.ch/cvl/DIV2K/,360*640*3,"(Set5) PSNR/SSIM= 37.309/0.958
+(Set14) PSNR/SSIM= 32.894/ 0.911
+(B100) PSNR/SSIM= 31.663/ 0.893
+(Urban100) PSNR/SSIM = 30.276/0.908","(Set5) PSNR/SSIM= 36.813/0.954
+(Set14) PSNR/SSIM= 32.607/ 0.906
+(B100) PSNR/SSIM= 31.443/ 0.889
+(Urban100) PSNR/SSIM = 29.901/0.899",10.2,,,262.49 ,576.34 ,298.31 
+Image Classification,,General,PyTorch,pt_squeezenet_3.5,Non-Commercial Use Only,No,SqueezeNet,https://arxiv.org/abs/1602.07360,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.582/0.806,0.582/0.806,0.7035,,,3768.00 ,8598.33 ,4500.98 
+Image Classification,Automotive,Vehicle Classification,PyTorch,pt_vehicle-color-classification_3.5,,No,AMD Custom,AMD Custom,VCoR,https://www.kaggle.com/datasets/landrykezebou/vcor-vehicle-color-recognition-dataset,224*224*3,0.8885,0.882,3.64,,,2593.27 ,6145.02 ,9679.80 
+Image Classification,Automotive,Vehicle Classification,PyTorch,pt_vehicle-make-classification_3.5,,No,AMD Custom,AMD Custom,VMMR,https://github.com/faezetta/VMMRdb,224*224*3,0.9536,0.9522,3.64,,,2589.52 ,6151.85 ,9686.00 
+Image Classification,Automotive,Vehicle Classification,PyTorch,pt_vehicle-type-classification_3.5,,No,AMD Custom,AMD Custom,CarBodyStyle,https://www.kaggle.com/datasets/darshan1504/car-body-style-dataset,224*224*3,0.8482,0.8467,3.64,,,2603.06 ,6187.62 ,9690.45 
+Super Resolution,Medical Imaging,Super Resolution,PyTorch,pt_xilinxSR_3.5,,No,AMD Custom,AMD Custom,DIV2K,https://data.vision.ee.ethz.ch/cvl/DIV2K/,360*640*3,29.04dB,28.66dB,364.88,,,/,/,/
+Object Detection,,General,PyTorch,pt_yolov4csp_3.5,,Yes,YOLOv4-CSP,https://arxiv.org/abs/2004.10934,COCO,https://cocodataset.org/#download,640*640*3,0.47,0.463,121,,,76.11 ,112.35 ,88.08 
+Object Detection,,General,PyTorch,pt_yolov6m_3.5,,Yes,YOLOv6m,https://arxiv.org/abs/2209.02976,COCO,https://cocodataset.org/#download,640*640*3,0.483,0.475,82.4,,,36.84 ,49.61 ,279.67 
+Object Detection,,General,PyTorch,pt_yolox-nano_3.5,,No,YOLOX-Nano,https://arxiv.org/abs/2107.08430,COCO,https://cocodataset.org/#download,416*416*3,0.22,0.21,1,,,691.64 ,1409.42 ,1253.45 
+Object Detection,,General,PyTorch,pt_yolov7_3.5,,Yes,YOLOv7,,COCO,https://cocodataset.org/#download,640*640*3,0.512,0.479,104.8,,,79.42 ,154.10 ,78.08 
+NLP,,Question and Answering,TensorFlow,tf_bert-base_3.5,,No,BERT,https://arxiv.org/abs/1810.04805,SQuAD,https://rajpurkar.github.io/SQuAD-explorer/,128,0.8694,0.8656,22.34,,,/,/,/
+Object Detection,,General,TensorFlow,tf_efficientdet-d2_3.5,,No,EfficientDet-d2,https://arxiv.org/abs/1911.09070,COCO,https://cocodataset.org/#download,768*768*3,0.413,0.327,11.06,,,/,/,/
+Image Classification,,General,TensorFlow,tf_efficientnet-edgetpu-L_3.5,Non-Commercial Use Only,No,EfficientNet-EdgeTPU Large,https://arxiv.org/abs/2003.02838,ILSVRC2012,https://www.image-net.org/download.php,300*300*3,0.8026/0.9514,0.7996/0.9491,19.36,,,573.78 ,847.17 ,757.68 
+Image Classification,,General,TensorFlow,tf_efficientnet-edgetpu-M_3.5,Non-Commercial Use Only,No,EfficientNet-EdgeTPU Medium,https://arxiv.org/abs/2003.02838,ILSVRC2012,https://www.image-net.org/download.php,240*240*3,0.7862/0.9440,0.7798/0.9406,7.34,,,1433.33 ,3312.43 ,2843.53 
+Image Classification,,General,TensorFlow,tf_efficientnet-edgetpu-S_3.5,Non-Commercial Use Only,No,EfficientNet-EdgeTPU Small,https://arxiv.org/abs/2003.02838,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7702/0.9377,0.7660/0.9337,4.72,,,1679.22 ,4246.41 ,3654.75 
+Industrial Vision / Robotics,Industrial Vision / Robotics,Hierarchical Localization,TensorFlow,tf_HFNet_3.5,,No,HFNet,https://arxiv.org/abs/1812.03506,Aachen - RobotCar Seasons - CMU Seasons - HPatches - SfM - Google Landmarks - Berkeley Deep Drive,https://github.com/ethz-asl/hfnet/blob/master/doc/datasets.md,960*960*3,"Day: 76.2/83.6/90.0, Night: 58.2/68.4/80.6","Day: 74.2/82.4/89.2, Night: 54.1/66.3/73.5",20.09,,,10.71 ,24.04 ,/
+Image Classification,,General,TensorFlow,tf_inceptionv1_0.09_3.5,Non-Commercial Use Only,No,Inception-v1,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.691,0.6818,2.73,9.00%,,1617.07 ,4037.49 ,3258.85 
+Image Classification,,General,TensorFlow,tf_inceptionv1_0.16_3.5,Non-Commercial Use Only,No,Inception-v1,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6826,0.6746,2.52,16.00%,,1635.10 ,4069.94 ,3008.47 
+Image Classification,,General,TensorFlow,tf_inceptionv1_3.5,Non-Commercial Use Only,No,Inception-v1,https://arxiv.org/abs/1801.04381,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6976,0.6794,3,,,1712.47 ,4424.24 ,3692.12 
+Image Classification,,General,TensorFlow,tf_inceptionv3_0.2_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7786,0.7668,9.1,20.00%,,803.14 ,1642.87 ,1234.00 
+Image Classification,,General,TensorFlow,tf_inceptionv3_0.4_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7669,0.7561,6.9,40.00%,,866.69 ,1926.97 ,1355.14 
+Image Classification,,General,TensorFlow,tf_inceptionv3_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7798,0.7735,11.45,,,808.24 ,1504.90 ,1296.26 
+Image Classification,,General,TensorFlow,tf_inceptionv4_0.2_3.5,Non-Commercial Use Only,No,Inception-v4,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7974,0.7882,19.56,20.00%,,470.43 ,664.16 ,410.59 
+Image Classification,,General,TensorFlow,tf_inceptionv4_0.4_3.5,Non-Commercial Use Only,No,Inception-v4,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.792,0.782,14.79,40.00%,,504.48 ,737.84 ,441.69 
+Image Classification,,General,TensorFlow,tf_inceptionv4_3.5,Non-Commercial Use Only,No,Inception-v4,https://arxiv.org/abs/1602.07261,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.8018,0.7928,24.55,,,471.90 ,646.84 ,403.08 
+Object Detection,,General,TensorFlow,tf_mlperf_resnet34_3.5,,No,ResNet34,https://arxiv.org/abs/1512.03385,COCO,https://cocodataset.org/#download,1200*1200*3,0.225,0.215,433,,Y,17.05 ,40.67 ,70.16 
+Image Classification,,General,TensorFlow,tf_mlperf_resnet50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7652,0.7606,8.19,,Y,1724.03 ,4515.75 ,3792.32 
+Image Classification,,General,TensorFlow,tf_mobilenetv1-0.25_3.5,Non-Commercial Use Only,No,MobileNetV1,https://arxiv.org/abs/1704.04861,ILSVRC2012,https://www.image-net.org/download.php,128*128*3,0.4144,0.3464,0.027,,,4044.64 ,8381.29 ,63108.60 
+Image Classification,,General,TensorFlow,tf_mobilenetv1-1.0_0.11_3.5,Non-Commercial Use Only,No,MobileNetV1,https://arxiv.org/abs/1704.04861,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7056,0.6822,0.11,11.00%,,2074.67 ,4270.96 ,14905.70 
+Image Classification,,General,TensorFlow,tf_mobilenetv1-1.0_0.12_3.5,Non-Commercial Use Only,No,MobileNetV1,https://arxiv.org/abs/1704.04861,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.706,0.685,0.12,12.00%,,2076.09 ,4208.04 ,14936.70 
+Image Classification,,General,TensorFlow,tf_mobilenetv1-1.0_3.5,Non-Commercial Use Only,No,MobileNetV1,https://arxiv.org/abs/1704.04861,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7102,0.678,1.14,,,2350.44 ,5167.04 ,14581.60 
+Image Classification,,General,TensorFlow,tf_mobilenetv2-1.0_3.5,Non-Commercial Use Only,No,MobileNetV2,https://arxiv.org/abs/1801.04381,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7013,0.6767,62,,,2030.30 ,4236.92 ,11544.90 
+Image Classification,,General,TensorFlow,tf_mobilenetv2-1.4_3.5,Non-Commercial Use Only,No,MobileNetV2,https://arxiv.org/abs/1801.04381,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7411,0.7194,1.16,,,1874.75 ,4207.31 ,8081.16 
+Super Resolution,Medical Imaging,Super Resolution,TensorFlow,tf_rcan_0.98_3.5,,No,RCAN,https://arxiv.org/abs/1807.02758,DIV2K,https://data.vision.ee.ethz.ch/cvl/DIV2K/,360*640*3,"Set5 Y_PSNR : 37.640
+SSIM : 0.959","Set5 Y_PSNR : 37.2495
+SSIM : 0.9556",86.95,98.00%,,59.33 ,83.34 ,43.08 
+Object Detection,Medical Imaging,Medical Detection,TensorFlow,tf_RefineDet-Medical_0.5_3.5,,No,RefineDet,https://arxiv.org/abs/1711.06897,EDD2020,https://ieee-dataport.org/competitions/endoscopy-disease-detection-and-segmentation-edd2020#files,320*320*3,0.7798,0.7772,41.42,50.00%,,393.94 ,868.81 ,683.10 
+Object Detection,Medical Imaging,Medical Detection,TensorFlow,tf_RefineDet-Medical_0.75_3.5,,No,RefineDet,https://arxiv.org/abs/1711.06897,EDD2020,https://ieee-dataport.org/competitions/endoscopy-disease-detection-and-segmentation-edd2020#files,320*320*3,0.7885,0.7826,20.54,75.00%,,475.20 ,1099.97 ,1101.20 
+Object Detection,Medical Imaging,Medical Detection,TensorFlow,tf_RefineDet-Medical_0.85_3.5,,No,RefineDet,https://arxiv.org/abs/1711.06897,EDD2020,https://ieee-dataport.org/competitions/endoscopy-disease-detection-and-segmentation-edd2020#files,320*320*3,0.7898,0.7877,12.32,85.00%,,534.28 ,1167.51 ,1561.50 
+Object Detection,Medical Imaging,Medical Detection,TensorFlow,tf_RefineDet-Medical_0.88_3.5,,No,RefineDet,https://arxiv.org/abs/1711.06897,EDD2020,https://ieee-dataport.org/competitions/endoscopy-disease-detection-and-segmentation-edd2020#files,320*320*3,0.7839,0.8002,9.83,88.00%,,624.73 ,1465.31 ,1769.71 
+Object Detection,Medical Imaging,Medical Detection,TensorFlow,tf_RefineDet-Medical_3.5,,No,RefineDet,https://arxiv.org/abs/1711.06897,EDD2020,https://ieee-dataport.org/competitions/endoscopy-disease-detection-and-segmentation-edd2020#files,320*320*3,0.7866,0.7857,81.28,,,277.93 ,445.91 ,339.95 
+Image Classification,,General,TensorFlow,tf_resnetv1-101_0.35_3.5,Non-Commercial Use Only,No,ResNet101,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7566,0.7488,9.4,35.00%,,1493.91 ,3478.36 ,2966.77 
+Image Classification,,General,TensorFlow,tf_resnetv1-101_0.57_3.5,Non-Commercial Use Only,No,ResNet101,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7502,0.7463,6.21,57.00%,,1584.16 ,4139.32 ,3638.47 
+Image Classification,,General,TensorFlow,tf_resnetv1-101_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.764,0.756,14.4,,,1444.95 ,3009.90 ,2542.30 
+Image Classification,,General,TensorFlow,tf_resnetv1-152_0.51_3.5,Non-Commercial Use Only,No,ResNet152,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7591,0.7558,10.68,51.00%,,1350.73 ,2832.52 ,2394.19 
+Image Classification,,General,TensorFlow,tf_resnetv1-152_0.6_3.5,Non-Commercial Use Only,No,ResNet152,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7568,0.7545,8.82,60.00%,,1411.05 ,3077.83 ,2614.17 
+Image Classification,,General,TensorFlow,tf_resnetv1-152_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7681,0.7463,21.83,,,1209.95 ,2155.49 ,1792.50 
+Image Classification,,General,TensorFlow,tf_resnetv1-50_0.38_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7442,0.7375,0.38,38.00%,,1716.20 ,4259.59 ,5038.76 
+Image Classification,,General,TensorFlow,tf_resnetv1-50_0.65_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7279,0.7167,2.45,65.00%,,1866.27 ,4261.81 ,6836.10 
+Image Classification,,General,TensorFlow,tf_resnetv1-50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.752,0.7436,6.97,,,1792.38 ,4793.76 ,4329.41 
+Image Classification,,General,TensorFlow,tf_resnetv2-101_3.5,Non-Commercial Use Only,No,ResNet50V2,https://arxiv.org/abs/1603.05027,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7695,0.7506,26.78,,,599.63 ,916.29 ,760.86 
+Image Classification,,General,TensorFlow,tf_resnetv2-152_3.5,Non-Commercial Use Only,No,ResNet50V2,https://arxiv.org/abs/1603.05027,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7779,0.7432,40.47,,,488.57 ,679.61 ,564.92 
+Image Classification,,General,TensorFlow,tf_resnetv2-50_3.5,Non-Commercial Use Only,No,ResNet50V2,https://arxiv.org/abs/1603.05027,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7559,0.7445,13.1,,,776.70 ,1398.72 ,1160.64 
+Object Detection,,General,TensorFlow,tf_ssdmobilenetv1_3.5,,No,SSD MobileNetV1,"No paper, based on TensorFlow model",COCO,https://cocodataset.org/#download,300*300*3,0.208,0.21,2.47,,,903.54 ,1932.60 ,6100.36 
+Object Detection,,General,TensorFlow,tf_ssdmobilenetv2_3.5,,No,SSD MobileNetV2,"No paper, based on TensorFlow model",COCO,https://cocodataset.org/#download,300*300*3,0.215,0.211,3.75,,,818.32 ,1904.04 ,2952.77 
+,Industrial Vision / Robotics,Interest Point Detection and Description,TensorFlow,tf_superpoint_3.5,,No,SuperPoint,https://arxiv.org/abs/2107.03601,COCO 2014,https://cocodataset.org/#download,480*640*3,83.4 (thr=3),84.3 (thr=3),52.4,,,54.53 ,123.68 ,/
+Image Classification,,General,TensorFlow,tf_vgg16_0.43_3.5,Non-Commercial Use Only,No,VGG16,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6929,0.6823,17.67,43.00%,,1179.57 ,2132.38 ,1958.96 
+Image Classification,,General,TensorFlow,tf_vgg16_0.5_3.5,Non-Commercial Use Only,No,VGG16,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6857,0.6729,15.64,50.00%,,1254.81 ,2463.84 ,2190.40 
+Image Classification,,General,TensorFlow,tf_vgg16_3.5,Non-Commercial Use Only,No,VGG16,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7089,0.7069,30.96,,,554.19 ,690.98 ,619.22 
+Image Classification,,General,TensorFlow,tf_vgg19_0.24_3.5,Non-Commercial Use Only,No,VGG19,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7075,0.7022,29.79,24.00%,,644.37 ,849.49 ,759.97 
+Image Classification,,General,TensorFlow,tf_vgg19_0.39_3.5,Non-Commercial Use Only,No,VGG19,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6954,0.6903,23.78,,,846.90 ,1243.95 ,1020.87 
+Image Classification,,General,TensorFlow,tf_vgg19_3.5,Non-Commercial Use Only,No,VGG19,https://arxiv.org/abs/1409.1556,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.71,0.7026,39.28,,,571.36 ,718.20 ,691.80 
+Image Classification,,General,TensorFlow,tf_ViT_3.5,Non-Commercial Use Only,No,ViT,https://arxiv.org/abs/2010.11929,ILSVRC2012,https://www.image-net.org/download.php,352*352*3,0.8282,0.8254,21.3,,,/,/,/
+Object Detection,,General,TensorFlow,tf_yolov3_3.5,,No,YOLOv3,https://arxiv.org/abs/1804.02767,VOC2012,http://host.robots.ox.ac.uk/pascal/VOC/voc2012/,416*416*3,0.7846,0.7744,65.63,,,319.75 ,528.49 ,421.89 
+Object Detection,,General,TensorFlow,tf_yolov4-416_3.5,,No,YOLOv4,https://arxiv.org/abs/2004.10934,COCO,https://cocodataset.org/#download,416*416*3,0.477,0.393,60.3,,,192.54 ,350.05 ,232.00 
+Object Detection,,General,TensorFlow,tf_yolov4-512_3.5,,No,YOLOv4,https://arxiv.org/abs/2004.10934,COCO,https://cocodataset.org/#download,512*512*3,0.487,0.412,91.2,,,133.80 ,225.89 ,96.77 
+Image Classification,,General,TensorFlow 2,tf2_efficientnet-b0_3.5,Non-Commercial Use Only,No,EfficientNet-B0,https://arxiv.org/abs/1905.11946,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7690/0.9320,0.7515/0.9273,0.78,,,/,/,/
+Image Classification,,General,TensorFlow 2,tf2_Efficientnet-lite_3.5,Non-Commercial Use Only,No,EfficientNet lite,,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7501,0.7444,0.77,,,2207.26 ,5138.35 ,9842.18 
+Image Classification,,General,TensorFlow 2,tf2_inceptionv3_3.5,Non-Commercial Use Only,No,Inception-v3,https://arxiv.org/abs/1512.00567,ILSVRC2012,https://www.image-net.org/download.php,299*299*3,0.7753,0.7694,11.5,,,874.55 ,1761.14 ,1503.39 
+Image Classification,,General,TensorFlow 2,tf2_mobilenetv1_3.5,Non-Commercial Use Only,No,MobileNetV1,https://arxiv.org/abs/1704.04861,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7005,0.5603,1.15,,,2380.94 ,5257.80 ,14585.10 
+Image Classification,,General,TensorFlow 2,tf2_mobilenetv3_3.5,Non-Commercial Use Only,No,MobileNetV3,https://arxiv.org/abs/1905.02244,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.6756/0.8728,0.6536/0.8544,0.132,,,/,/,/
+Image Classification,,General,TensorFlow 2,tf2_resnet50_3.5,Non-Commercial Use Only,No,ResNet50,https://arxiv.org/abs/1512.03385,ILSVRC2012,https://www.image-net.org/download.php,224*224*3,0.7513,0.7423,7.76,,,1747.67 ,4653.05 ,3912.34 
+Object Detection,,General,TensorFlow 2,tf2_yolov3_3.5,,No,YOLOv3,https://arxiv.org/abs/1804.02767,COCO,https://cocodataset.org/#download,416*416*3,0.377,0.331,65.9,,,267.82 ,521.20 ,414.54 
+Semantic Segmentation,Medical Imaging,Medical Segmentation,TensorFlow 2,tf2_2D-UNET_3.5,,No,2D-UNET,,BraTS,https://drive.google.com/file/d/1A2IU8Sgea1h3fYLpYtFb2v7NYdMjvEhU/view,144*144*3,Dice 0.8749                        ,Dice 0.8735,24.6,,,752.19 ,1563.61 ,1177.35 
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,

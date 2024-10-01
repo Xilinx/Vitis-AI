@@ -13,14 +13,20 @@
 # the License.
 
 cmake_minimum_required(VERSION 3.5)
-project(unilog VERSION 3.0.0 LANGUAGES C CXX)
+project(unilog VERSION 3.5.0 LANGUAGES C CXX)
 
 include(${PROJECT_SOURCE_DIR}/cmake/VitisCommon.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/vai_add_pybind11_module.cmake)
 
 option(BUILD_TEST "build test" OFF)
-
-find_package(glog QUIET)
+option(LIBGLOG_RESTRICT "find libglog restrict in install prefix" OFF)
+if (LIBGLOG_RESTRICT)
+  message(STATUS "Find glog in restrict mode")
+  find_package(glog PATHS ${CMAKE_INSTALL_PREFIX} NO_DEFAULT_PATH)
+else ()
+  message(STATUS "Find glog in public mode")
+  find_package(glog QUIET)
+endif (LIBGLOG_RESTRICT)
 if(NOT glog_FOUND)
     message(STATUS "cannot find glogConfig.cmake fallback to pkg-config")
     find_package(PkgConfig)
@@ -61,7 +67,7 @@ set(CPACK_PACKAGE_VENDOR "Humanity")
 set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_CONTACT "Jian Weng<jianweng@xilinx.com>")
+set(CPACK_PACKAGE_CONTACT "devops@amd.com")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 
 set(CPACK_DEB_COMPONENT_INSTALL OFF)
@@ -99,6 +105,7 @@ endif()
 include(CPack)
 
 if(BUILD_PYTHON)
-  vai_add_pybind11_module(py_unilog MODULE_NAME unilog python/unilog_py.cpp)
+  vai_add_pybind11_module(py_unilog MODULE_NAME py_unilog python/unilog_py.cpp)
   target_link_libraries(py_unilog PRIVATE glog::glog)
+  target_compile_options(py_unilog PUBLIC $<$<CONFIG:DEBUG>:-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0>)
 endif(BUILD_PYTHON)

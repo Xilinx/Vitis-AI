@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,7 +254,7 @@ std::vector<std::vector<OpenPoseResult::PosePoint>> getPoses(
     }
   }
   for (size_t i = 0; i < subset.size(); ++i) {
-    if (subset[i][15] < 4 || subset[i][14] / subset[i][15] < 0.4) {
+    if (subset[i][15] < 4 || (float)subset[i][14] / subset[i][15] < 0.4) {
       subset.erase(subset.begin() + i);
       --i;
     }

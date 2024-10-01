@@ -1,0 +1,35 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: Superpoint Self-Supervised Interest Point Detection and Description
+input size: 480x640
+float ops: 52.4G
+task: Interest Point Detection
+framework: tensorflow
+prune: none
+version: 3.5
+files:
+- name: tf_superpoint_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=tf_superpoint_3.5.zip
+  checksum: 81742d44195572a12cbe90adc1d94ad4
+- name: superpoint_tf
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=superpoint_tf-vek280-r3.5.0.tar.gz
+  checksum: 8d6ac04d4a77eaf4c532fae9eb8cf74c
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

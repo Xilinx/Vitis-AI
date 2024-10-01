@@ -1,8 +1,0 @@
-name: vitis-ai-optimizer_pytorch
-
-channels:
-  - pytorch
-  - anaconda
-
-dependencies:
-  - vai_optimizer_pytorch_gpu

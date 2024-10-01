@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,16 +50,16 @@ class FTD_Trajectory {
   bool GetShown();
   OutputCharact GetOut();
   std::vector<cv::Mat> GetFeatures();
-  int B2G;
-  int G2B;
-  int B2D;
-  int leap;
+  int B2G=0;
+  int G2B=0;
+  int B2D=0;
+  int leap=0;
   int hit_streak = 0;
   int age = 0;
   int time_since_update = 0;
 
  private:
-  int id;
+  int id=0;
   InputCharact charact;
   // FTD_Filter filter;
   // FTD_Filter_Light filter;
@@ -68,8 +68,8 @@ class FTD_Trajectory {
   SpecifiedCfg specified_cfg_;
   std::vector<cv::Mat> features;
   cv::Mat feature;
-  int status;
-  bool have_been_shown;
+  int status=0;
+  bool have_been_shown=false;
 };
 
 }  // namespace ai

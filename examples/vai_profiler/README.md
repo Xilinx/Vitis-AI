@@ -1,10 +1,3 @@
-<table class="sphinxhide">
- <tr>
-   <td align="center"><img src="https://raw.githubusercontent.com/Xilinx/Image-Collateral/main/xilinx-logo.png" width="30%"/><h1>Vitis AI</h1><h0>Adaptable & Real-Time AI Inference Acceleration</h0>
-   </td>
- </tr>
-</table>
-
 
 # Xilinx Vitis AI Profiler
 
@@ -133,12 +126,12 @@ We use vai_runtime resnet50 sample
     ```
     - For C++ programs, add vaitrace in front of the test command, the test command is:
     ```bash
-      # cd ~/Vitis_AI/examples/vai_runtime/resnet50
+      # cd ~/Vitis-AI/examples/vai_runtime/resnet50
       # vaitrace ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
     - For Python programs, add -m vaitrace_py to the python interpreter command
     ``` bash
-      # cd ~/Vitis_AI/examples/vai_runtime/resnet50_mt_py
+      # cd ~/Vitis-AI/examples/vai_runtime/resnet50_mt_py
       # python3 -m vaitrace_py ./resnet50.py 2 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
     ```
   -	vaitrace and XRT generates some files in the working directory  
@@ -163,9 +156,8 @@ usage: Xilinx Vitis AI Trace [-h] [-c [CONFIG]] [-d] [-o [TRACESAVETO]] [-t [TIM
   -c [CONFIG]       Specify the configuration file
   -o [TRACESAVETO]  Save trace file to
   -t [TIMEOUT]      Tracing time limitation, default value is 30(s)
-  --txt_summary
   --txt             Display txt summary
-  --fine_grained    Fine grained mode
+  --json            Display json summary
 
 ```
 ### Important and frequently used arguments
@@ -179,7 +171,6 @@ usage: Xilinx Vitis AI Trace [-h] [-c [CONFIG]] [-d] [-o [TRACESAVETO]] [-t [TIM
 
 - --txt  Output text summary, vaitrace will not generate report for Vitis Analyzer in this mode
 
-- --fine_grained  Start trace with fine grained mode, this mode will generate a mass of trace data, the trace time is limited to 10 (seconds)
 
 ### Configuration
 Another way to launch a trace is to save all necessary information for vaitrace into a configuration file then use __vaitrace -c [config_name.json]__

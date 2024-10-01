@@ -1,9 +1,0 @@
-name: vitis-ai-optimizer_tensorflow
-
-channels:
-  - conda-forge
-  - anaconda
-
-dependencies:
-  - python=3.6
-  - vai_optimizer_tensorflow_gpu

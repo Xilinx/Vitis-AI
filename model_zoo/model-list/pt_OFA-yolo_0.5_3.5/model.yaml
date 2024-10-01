@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: OFA-Yolo for Detection.
+input size: 640*640
+float ops: 24.62G
+task: detection
+framework: pytorch
+prune: 0.5
+version: 3.5
+files:
+- name: pt_OFA-yolo_0.5_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_OFA-yolo_0.5_3.5.zip
+  checksum: 73bf1ec9cbcf66820aa69b2fbb1d839c
+- name: ofa_yolo_pruned_0_50_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-vek280-r3.5.0.tar.gz
+  checksum: 9fe947777b9ee1112615297fc253495d
+- name: ofa_yolo_pruned_0_50_pt
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=ofa_yolo_pruned_0_50_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: a43477bae9af13f0da594fea9fd2d0d4
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

@@ -12,10 +12,11 @@ message YoloV3Param {
   enum Type {
     NORMAL = 0;
     YOLOV4_CSP = 1;
-    YOLOV5 = 2; 
-    YOLOX_NANO = 3; 
+    YOLOV5 = 2;
+    YOLOX_NANO = 3;
   }
   Type type = 8;
+  int32 iou_type = 9;
 }
 
 message MedicalPriorBoxParam {
@@ -63,6 +64,13 @@ message SSDParam {
   bool is_mlperf = 7;
   repeated int32 bbox_layer_index = 8;
   repeated OutputInfo output_info = 9;
+}
+
+message RetinaNetParam {
+  float box_threshold = 1;
+  float nms_threshold = 2;
+  float conf_threshold = 3;
+  int32 top_k = 4;
 }
 
 message FairMotParam {
@@ -385,6 +393,36 @@ message YoloV6Param {
   bool without_dfl = 12;
 }
 
+message YoloV7Param {
+  float conf_thresh = 1;
+  float nms_threshold = 2;
+  int32 num_classes = 3;
+  repeated string detect_layer_name = 4;
+  repeated float biases = 5;
+}
+
+message YoloV8Param {
+  float conf_thresh = 1;
+  float max_boxes_num = 2;
+  float nms_threshold = 3;
+  float max_nms_num = 4;
+  int32 num_classes = 5;
+  repeated string detect_layer_name = 6;
+  repeated float stride = 7;
+}
+
+message FcosParam {
+  float pre_nms_thresh = 1;
+  int32 pre_nms_top_n = 2;
+  float nms_threshold = 3;
+  float fpn_post_nms_top_n = 4;
+  int32 num_classes = 5;
+  repeated string center_layer_name = 6;
+  repeated string cls_layer_name = 7;
+  repeated string offset_layer_name = 8;
+  repeated float stride = 9;
+}
+
 message BTSParam {
   float mul_factor = 1;
   float depth_scaled_factor = 2;
@@ -523,6 +561,9 @@ message DpuModelParam {
     EFFICIENTDET_D2 = 42;
     MOVENET = 43;
     YOLOv6 = 44;
+    FCOS = 45;
+    YOLOv8 = 46;
+    YOLOv7 = 47;
   }
   enum OrderType {
     UNKNOWNORDER = 0;
@@ -569,6 +610,10 @@ message DpuModelParam {
   MovenetParam movenet_param = 38;
   RcanParam rcan_param = 39;
   YoloV6Param yolo_v6_param = 40;
+  FcosParam fcos_param = 41;
+  YoloV8Param yolo_v8_param = 42;
+  RetinaNetParam retinanet_param = 43;
+  YoloV7Param yolo_v7_param = 44;
 }
 
 message DpuModelParamList {
@@ -734,3 +779,5 @@ message DpuModelResult {
     ClassificationResult vehicleclassification_result = 18;
   }
 }
+
+

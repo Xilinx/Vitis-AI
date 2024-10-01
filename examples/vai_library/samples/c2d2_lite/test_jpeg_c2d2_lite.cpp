@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,10 +54,14 @@ int main(int argc, char* argv[]) {
   std::vector<std::string> names;
   LoadImageNames(argv[3], names);
   std::vector<cv::Mat> images;
-  for (auto name : names) {
+  for (auto& name : names) {
     images.push_back(cv::imread(name, cv::IMREAD_GRAYSCALE));
   }
   auto model = vitis::ai::C2D2_lite::create(argv[1], argv[2]);
+  if (!model) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   auto result = model->run(images);
   cout << result << "\n";
   return 0;

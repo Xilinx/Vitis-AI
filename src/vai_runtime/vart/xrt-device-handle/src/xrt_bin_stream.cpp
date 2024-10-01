@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 #include "./xrt_bin_stream.hpp"
-#include <UniLog/UniLog.hpp>
-#include <fstream>
+
 #include <glog/logging.h>
 #include <xclbin.h>
 #include <xrt.h>
+#include <xrt/xrt_device.h>
 
+#include <UniLog/UniLog.hpp>
 #include <cstring>
+#include <fstream>
 #include <map>
 #include <numeric>
 
@@ -37,19 +39,18 @@ XrtBinStream::XrtBinStream(const std::string filename) {
   init_cu_names();
   init_cu_indices();
   guess_lpddr();
+  init_bank_id();
 }
 
-XrtBinStream::~XrtBinStream() {
-}
+XrtBinStream::~XrtBinStream() {}
 void XrtBinStream::init_fd(const std::string filename) {
   std::ifstream t(filename, std::ifstream::binary);
-  if(!t.good()) {
+  if (!t.good()) {
     LOG(INFO) << "Please check your /etc/vart.conf\n"
               << "Its format should be :\n    firmware: xx\n"
               << "Example:\n"
               << "    firmware: /run/media/mmcblk0p1/dpu.xclbin";
-    UNI_LOG_FATAL(VART_OPEN_DEVICE_FAIL)
-      << "open(" << filename << ") failed.";
+    UNI_LOG_FATAL(VART_OPEN_DEVICE_FAIL) << "open(" << filename << ") failed.";
   }
   t.seekg(0, t.end);
   size_t length = t.tellg();
@@ -99,11 +100,24 @@ void XrtBinStream::guess_lpddr() {
   }
 }
 
+void XrtBinStream::init_bank_id() {
+  bank_id_ = -1;
+  for (int i = 0; i < topology_->m_count; ++i) {
+    if (topology_->m_mem_data[i].m_used) {
+      bank_id_ = i;
+      break;
+    }
+  }
+  CHECK_GE(bank_id_, 0) << "hardware design issue: xclbin has no mem_data used";
+  return;
+}
+
 static std::string to_string(const xuid_t x) {
-  char buf[sizeof(xuid_t) * 4 + 1];
+  constexpr size_t size = sizeof(xuid_t) * 4 + 1;
+  char buf[size];
   char* p = &buf[0];
   for (auto i = 0u; i < sizeof(xuid_t); ++i) {
-    sprintf(p, " %02x", x[i]);
+    snprintf(p, size, " %02x", x[i]);
     p = p + strlen(p);
   }
   return std::string(buf);
@@ -155,8 +169,13 @@ void XrtBinStream::burn(xclDeviceHandle handle) {
       << "burning " << to_string(uuid_);
   const xclBin* blob = (const xclBin*)data_;
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  UNI_LOG_CHECK(xclLockDevice(handle) == 0, VART_LOCK_DEVICE_FAIL);
-  UNI_LOG_CHECK(xclLoadXclBin(handle, blob) ==0 , VART_LOAD_XCLBIN_FAIL);
+  //  from 2.15.0, loading xclbin by xclLoadXclBin() will lead to dead loop
+  //  new c++ class device can solve it
+  xrt::device device = xrt::device(handle);
+  auto uuid = device.load_xclbin(blob);
+  LOG_IF(INFO, ENV_PARAM(DEBUG_XRT_BIN_STREAM))
+      << "load xclbin by handle " << handle << ", get uuid "
+      << to_string(uuid.get());
 }
 std::array<unsigned char, sizeof(xuid_t)> XrtBinStream::get_uuid() const {
   auto ret = std::array<unsigned char, sizeof(xuid_t)>();
@@ -165,7 +184,8 @@ std::array<unsigned char, sizeof(xuid_t)> XrtBinStream::get_uuid() const {
 }
 size_t XrtBinStream::get_num_of_cu() const { return cu_names_.size(); }
 std::string XrtBinStream::get_cu(size_t idx) const {
-  UNI_LOG_CHECK(idx < indices_.size(), VART_OUT_OF_RANGE) << " current cu index larger than the total size!";
+  UNI_LOG_CHECK(idx < indices_.size(), VART_OUT_OF_RANGE)
+      << " current cu index larger than the total size!";
   return cu_names_[indices_[idx]];
 }
 uint64_t XrtBinStream::get_cu_base_addr(size_t idx) const {

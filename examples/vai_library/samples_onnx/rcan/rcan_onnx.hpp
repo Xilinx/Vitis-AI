@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,19 +35,6 @@ struct RcanOnnxResult {
   cv::Mat feat;
 };
 
-//(image_data - mean) * scale, and hwc2chw
-static void set_input_image(const cv::Mat& image, float* data) {
-  for (int c = 0; c < 3; c++) {
-    for (int h = 0; h < image.rows; h++) {
-      for (int w = 0; w < image.cols; w++) {
-        auto image_data = image.at<cv::Vec3b>(h, w)[c];
-        data[c * image.rows * image.cols + h * image.cols + w] =
-            (float)image_data;
-      }
-    }
-  }
-}
-
 // chw -> hwc
 void get_output_image(cv::Mat& image, const float* data) {
   auto H = image.rows;
@@ -63,31 +50,6 @@ void get_output_image(cv::Mat& image, const float* data) {
     mat_channels.push_back(dst);
   }
   cv::merge(mat_channels, image);
-}
-
-static void preprocess(const std::vector<cv::Mat>& images,
-                       std::vector<float>& input_tensor_values,
-                       std::vector<int64_t>& input_shape, int valid_batch) {
-  // auto batch = input_shape[0];
-  auto channel = input_shape[1];
-  auto height = input_shape[2];
-  auto width = input_shape[3];
-  auto batch_size = channel * height * width;
-
-  auto size = cv::Size((int)width, (int)height);
-  // CHECK_EQ(images.size(), batch)
-  //    << "images number be read into input buffer must be equal to batch";
-
-  for (auto index = 0; index < valid_batch; ++index) {
-    cv::Mat resize_image;
-    if (images[index].size() != size) {
-      cv::resize(images[index], resize_image, size);
-    } else {
-      resize_image = images[index];
-    }
-    set_input_image(resize_image,
-                    input_tensor_values.data() + batch_size * index);
-  }
 }
 
 std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor,
@@ -170,13 +132,39 @@ class RcanOnnx : public OnnxTask {
  protected:
   void preprocess(const std::vector<cv::Mat>& images,
                   std::vector<float>& input_tensor_values,
-                  std::vector<int64_t>& input_shape, int valid_batch) {
-    ::preprocess(images, input_tensor_values, input_shape, valid_batch);
-  }
+                  std::vector<int64_t>& input_shape, int valid_batch);
 
   std::vector<RcanOnnxResult> postprocess(Ort::Value& output_tensor,
                                           int valid_batch) {
     return ::postprocess(output_tensor, valid_batch);
   }
 };
+
+void RcanOnnx::preprocess(const std::vector<cv::Mat>& images,
+                       std::vector<float>& input_tensor_values,
+                       std::vector<int64_t>& input_shape, int valid_batch) {
+  // auto batch = input_shape[0];
+  auto channel = input_shape[1];
+  auto height = input_shape[2];
+  auto width = input_shape[3];
+  auto batch_size = channel * height * width;
+
+  auto size = cv::Size((int)width, (int)height);
+  // CHECK_EQ(images.size(), batch)
+  //    << "images number be read into input buffer must be equal to batch";
+
+  for (auto index = 0; index < valid_batch; ++index) {
+    cv::Mat resize_image;
+    if (images[index].size() != size) {
+      cv::resize(images[index], resize_image, size);
+    } else {
+      resize_image = images[index];
+    }
+    set_input_image_bgr(resize_image,
+                    input_tensor_values.data() + batch_size * index,
+                    std::vector<float>{0.f, 0.f, 0.f},
+                    std::vector<float>{1.f, 1.f, 1.f}
+                  );
+  }
+}
 

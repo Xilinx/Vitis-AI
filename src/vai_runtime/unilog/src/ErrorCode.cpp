@@ -62,22 +62,44 @@ ErrorCodeFactory &ErrorCodeFactory::Instance() {
   return instanceErrorCodeFactory;
 }
 
+static std::map<std::string, std::shared_ptr<ErrorCode>> &mapErrorCode() {
+  static std::map<std::string, std::shared_ptr<ErrorCode>> mapErrorCode_;
+  return mapErrorCode_;
+};
+
 void ErrorCodeFactory::registerErrorCode(
     const string &errID, const shared_ptr<ErrorCode> errCodePtr) {
-  auto keyValue = mapErrorCode_.find(errID);
-  if (keyValue != mapErrorCode_.end()) {
+#if UNILOG_USE_DLL == 0
+  // when linking with static lib, error code might not be
+  // registered, because we cannot control the initialization order.
+  // so that a error code might be registered more than twice.
+#else
+  auto keyValue = mapErrorCode().find(errID);
+  if (keyValue != mapErrorCode().end()) {
     cerr << "Error ID (" << errID << ") has been registered, please modify!!!"
          << endl;
     abort();
   }
-  mapErrorCode_[errID] = errCodePtr;
+#endif
+  mapErrorCode()[errID] = errCodePtr;
 }
 
 ErrorCode &ErrorCodeFactory::genErrorCode(const string &errID) {
-  auto generator = mapErrorCode_.find(errID);
-  if (generator == mapErrorCode_.end()) {
+  auto generator = mapErrorCode().find(errID);
+  if (generator == mapErrorCode().end()) {
+#if UNILOG_USE_DLL == 0
+    // when linking with static lib, error code might not be
+    // registered, because we cannot control the initialization order.
+    mapErrorCode()[errID] = std::make_shared<ErrorCode>(errID);
+#else
     cerr << errID << " is not registered, please register before using it!"
          << endl;
+    abort();
+#endif
+  }
+  generator = mapErrorCode().find(errID);
+  if (generator == mapErrorCode().end()) {
+    cerr << "never goes here";
     abort();
   }
   auto ret = generator->second;
@@ -89,7 +111,7 @@ void ErrorCodeFactory::dumpErrorCodeMap(const string &errMapFileName) {
   ofstream dumpfile;
   dumpfile.open(errMapFileName, ios::out | ios::trunc);
   dumpfile << "Error ID, Error Description, Error Debug Info" << endl;
-  for (auto iter : mapErrorCode_) {
+  for (auto iter : mapErrorCode()) {
     auto errorcode = iter.second;
     dumpfile << errorcode->getErrID() << ",\"" << errorcode->getErrDsp()
              << "\",\"" << errorcode->getErrDebugInfo() << "\"" << endl;

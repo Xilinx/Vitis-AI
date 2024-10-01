@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,13 @@
 namespace vart {
 namespace assistant {
 /// @brief BatchTensorBuffer does not own the underlying tensor buffers.
+/// BatchTensorBuffer will manage the input tensor buffers and from the view of
+/// consumers, it seems to be a tensor buffer combining the batches of all input
+/// tensor buffers
+/// note: the input tensor buffers should have the same shape except the batch
+/// for example:
+/// two input tensor buffers: [3,224,224,3] and [5,224,224,3]
+/// BatchTensorBuffer object seems to be [8,224,224,3]
 class BatchTensorBuffer : public vart::TensorBuffer {
  public:
   static std::unique_ptr<vart::TensorBuffer> create(

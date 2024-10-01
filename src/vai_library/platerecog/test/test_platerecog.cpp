@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ using namespace vitis::ai;
 
 int main(int argc, char *argv[]) {
   auto det = vitis::ai::PlateRecog::create(argv[1], argv[2], true);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   for (int i = 3; i < argc; i++) {
     auto image = cv::imread(argv[i]);

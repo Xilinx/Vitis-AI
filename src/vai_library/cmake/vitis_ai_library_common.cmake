@@ -1,4 +1,4 @@
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 #
 # Distributed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -317,8 +317,6 @@ function(_get_all_properties target_name)
   set(_RET "")
   foreach(_prop ${CMAKE_PROPERTY_LIST})
     string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" _prop ${_prop})
-    # Fix
-    # https://stackoverflow.com/questions/32197663/how-can-i-remove-the-the-location-property-may-not-be-read-from-target-error-i
     if(_prop STREQUAL "LOCATION"
        OR _prop MATCHES "^LOCATION_"
        OR _prop MATCHES "_LOCATION$")

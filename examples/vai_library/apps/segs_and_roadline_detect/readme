@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-compile:
-  sh build.sh
-  or
-  sh builddrm.sh(board only)
 
-4 ways multitask(segmetation + detect) + roadline, running on board ZCU102.
-  This sample include 4 ways multitask and 1 way roadline detection.Multitask windows are in the left of screen anf the roadline detection is in the right.
-  It's neccesary to follow the instruction to run this sample. The first five parameters are each video input and last five parameters are thread number.
-  drm mode: ./segs_and_roadline_detect_drm seg_512_288.avi seg_512_288.avi seg_512_288.avi seg_512_288.avi lane_640_480.avi -t 2 -t 2 -t 2 -t 2 -t 2 > /dev/null 2>&1
-  X mode: ./segs_and_roadline_detect_x seg_512_288.avi seg_512_288.avi seg_512_288.avi seg_512_288.avi lane_640_480.avi -t 2 -t 2 -t 2 -t 2 -t 2 > /dev/null 2>&1
+4 ways multitask(segmetation + detect) + roadline, running on board vek280.
+
+1. Start up
+ /etc/init.d/xserver-nodm stop
+
+2. compile:
+  sh build.sh
+
+3. Run demo
+ sh ./run_hdmi.sh
+  
+
 
 
   

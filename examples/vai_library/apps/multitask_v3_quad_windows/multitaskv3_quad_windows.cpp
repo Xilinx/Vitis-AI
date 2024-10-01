@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <glog/logging.h>
 
 #include <eigen3/Eigen/Dense>
@@ -20,10 +21,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vitis/ai/demo.hpp>
+#include <vitis/ai/demo_b1.hpp>
 #include <vitis/ai/multitaskv3.hpp>
-
-
 
 static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
   const int imsize = src1.cols * src2.rows * 3;
@@ -36,12 +35,13 @@ static void overLay1(cv::Mat& src1, const cv::Mat& src2) {
 }
 
 static void overLay2(cv::Mat& src1, const cv::Mat& src2, uint8_t ig_value) {
-  for (auto row_ind = 0; row_ind < src1.rows; row_ind++) { 
-      for (auto col_ind = 0; col_ind < src1.cols; col_ind++) { 
-        if (src1.at<cv::Vec3b>(row_ind, col_ind)[0] == ig_value) {
-          src1.at<cv::Vec3b>(row_ind, col_ind) = src2.at<cv::Vec3b>(row_ind, col_ind);
-        }
+  for (auto row_ind = 0; row_ind < src1.rows; row_ind++) {
+    for (auto col_ind = 0; col_ind < src1.cols; col_ind++) {
+      if (src1.at<cv::Vec3b>(row_ind, col_ind)[0] == ig_value) {
+        src1.at<cv::Vec3b>(row_ind, col_ind) =
+            src2.at<cv::Vec3b>(row_ind, col_ind);
       }
+    }
   }
 }
 
@@ -55,8 +55,8 @@ static cv::Mat process_result_multitaskv3(
   cv::Mat image_ln;
   cv::Mat image_dp(result.depth.rows, result.depth.cols, CV_8UC3);
   if (false) {
-    //cv::resize(m1, image, result.segmentation.size());
-    //overLay1(image, result.segmentation);
+    // cv::resize(m1, image, result.segmentation.size());
+    // overLay1(image, result.segmentation);
   } else {
     cv::resize(result.segmentation, image_seg, m1.size());
     cv::resize(result.drivable, image_dr, m1.size());
@@ -88,16 +88,28 @@ static cv::Mat process_result_multitaskv3(
   return canvas;
 }
 
+[[maybe_unused]]  static std::vector<cv::Mat> process_result_multitaskv3_batch(
+    std::vector<cv::Mat>& images,
+    const std::vector<vitis::ai::MultiTaskv3Result>& results, bool is_jpeg) {
+  size_t size = std::min(images.size(), results.size());
+  std::vector<cv::Mat> image_results(size);
+  for (auto i = 0u; i < size; ++i) {
+    image_results[i] =
+        process_result_multitaskv3(images[i], results[i], is_jpeg);
+  }
+  return image_results;
+}
 
 int main(int argc, char* argv[]) {
   gui_layout() = {{320, 180, 1280, 720}};
-  gui_background() = cv::imread("/etc/alternatives/background.jpg");
+
   return vitis::ai::main_for_video_demo_multiple_channel(
-      argc, argv,
-      {[] {
-         return vitis::ai::create_dpu_filter(
-             [] { return vitis::ai::MultiTaskv38UC3::create("multi_task_v3_pt"); },
-             process_result_multitaskv3);
-       }
-       });
+      argc, argv, {[] {
+        return vitis::ai::create_dpu_filter(
+            [] {
+              return vitis::ai::MultiTaskv38UC3::create("multi_task_v3_pt");
+            },
+            process_result_multitaskv3);
+            //process_result_multitaskv3_batch);
+      }});
 }

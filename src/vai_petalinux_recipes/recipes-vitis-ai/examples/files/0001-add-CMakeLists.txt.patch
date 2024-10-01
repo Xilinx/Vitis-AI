@@ -1,0 +1,1975 @@
+From d2043ba526ecd8e2a276f8dcb1021f4787d60556 Mon Sep 17 00:00:00 2001
+From: ylia <ylia@xilinx.com>
+Date: Tue, 11 Jul 2023 10:00:02 +0800
+Subject: [PATCH] add CMakeLists
+
+---
+ CMakeLists.txt                       | 147 ++++++++++++++++++
+ .../pointpillars_graph_runner/CMakeLists.txt  |  25 +++
+ .../multitask_v3_quad_windows/CMakeLists.txt  |   6 +
+ .../apps/seg_and_pose_detect/CMakeLists.txt   |   6 +
+ .../segs_and_roadline_detect/CMakeLists.txt   |   7 +
+ .../apps/vek280_4video/CMakeLists.txt         |   5 +
+ .../samples/3Dsegmentation/CMakeLists.txt     |  11 ++
+ .../samples/RGBDsegmentation/CMakeLists.txt   |  10 ++
+ .../vai_library/samples/bcc/CMakeLists.txt    |  16 ++
+ .../vai_library/samples/bevdet/CMakeLists.txt |  11 ++
+ .../samples/c2d2_lite/CMakeLists.txt          |   8 +
+ .../samples/centerpoint/CMakeLists.txt        |  11 ++
+ .../samples/cflownet/CMakeLists.txt           |  11 ++
+ .../samples/classification/CMakeLists.txt     |  26 ++++
+ .../vai_library/samples/clocs/CMakeLists.txt  |  11 ++
+ .../covid19segmentation/CMakeLists.txt        |  11 ++
+ .../samples/dpu_task/CMakeLists.txt           |   7 +
+ .../samples/dpu_task/fadnet/CMakeLists.txt    |  27 ++++
+ .../samples/dpu_task/hfnet/CMakeLists.txt     |  11 ++
+ .../samples/dpu_task/ssr/CMakeLists.txt       |  18 +++
+ .../dpu_task/superpoint/CMakeLists.txt        |   9 ++
+ .../samples/dpu_task/yolov3/CMakeLists.txt    |   6 +
+ .../samples/efficientdet_d2/CMakeLists.txt    |  13 ++
+ .../samples/facedetect/CMakeLists.txt         |  17 ++
+ .../samples/facefeature/CMakeLists.txt        |  14 ++
+ .../samples/facelandmark/CMakeLists.txt       |  14 ++
+ .../samples/facequality5pt/CMakeLists.txt     |  13 ++
+ .../samples/fairmot/CMakeLists.txt            |  13 ++
+ .../samples/graph_runner/CMakeLists.txt       |   7 +
+ .../platenum_graph_runner/CMakeLists.txt      |   6 +
+ .../CMakeLists.txt                            |   5 +
+ .../CMakeLists.txt                            |   1 +
+ .../CMakeLists.txt                            |   5 +
+ .../samples/hourglass/CMakeLists.txt          |  13 ++
+ .../samples/lanedetect/CMakeLists.txt         |  13 ++
+ .../samples/medicaldetection/CMakeLists.txt   |  17 ++
+ .../samples/medicalsegcell/CMakeLists.txt     |  17 ++
+ .../medicalsegmentation/CMakeLists.txt        |  14 ++
+ .../samples/monodepth2/CMakeLists.txt         |  11 ++
+ .../samples/movenet/CMakeLists.txt            |  15 ++
+ .../samples/multitask/CMakeLists.txt          |  16 ++
+ .../samples/multitaskv3/CMakeLists.txt        |  16 ++
+ .../samples/ofa_yolo/CMakeLists.txt           |  14 ++
+ .../samples/openpose/CMakeLists.txt           |  16 ++
+ .../samples/platedetect/CMakeLists.txt        |  17 ++
+ .../samples/platenum/CMakeLists.txt           |  16 ++
+ .../vai_library/samples/pmg/CMakeLists.txt    |  13 ++
+ .../samples/pointpainting/CMakeLists.txt      |  16 ++
+ .../samples/pointpillars/CMakeLists.txt       |  10 ++
+ .../pointpillars_nuscenes/CMakeLists.txt      |  10 ++
+ .../samples/polypsegmentation/CMakeLists.txt  |  16 ++
+ .../samples/posedetect/CMakeLists.txt         |  22 +++
+ .../vai_library/samples/rcan/CMakeLists.txt   |  13 ++
+ .../samples/refinedet/CMakeLists.txt          |  19 +++
+ .../vai_library/samples/reid/CMakeLists.txt   |  11 ++
+ .../samples/retinaface/CMakeLists.txt         |  13 ++
+ .../samples/segmentation/CMakeLists.txt       |  22 +++
+ .../vai_library/samples/solo/CMakeLists.txt   |  10 ++
+ .../vai_library/samples/ssd/CMakeLists.txt    |  29 ++++
+ .../samples/textmountain/CMakeLists.txt       |  10 ++
+ .../vai_library/samples/tfssd/CMakeLists.txt  |  17 ++
+ .../samples/ultrafast/CMakeLists.txt          |  10 ++
+ .../vai_library/samples/unet2d/CMakeLists.txt |  10 ++
+ .../vehicleclassification/CMakeLists.txt      |  16 ++
+ .../vai_library/samples/yolov2/CMakeLists.txt |  13 ++
+ .../vai_library/samples/yolov3/CMakeLists.txt |  32 ++++
+ .../vai_library/samples/yolov4/CMakeLists.txt |  15 ++
+ .../vai_library/samples/yolov5/CMakeLists.txt |  14 ++
+ .../vai_library/samples/yolov6/CMakeLists.txt |  13 ++
+ .../vai_library/samples/yolov7/CMakeLists.txt |  13 ++
+ .../vai_library/samples/yolov8/CMakeLists.txt |  13 ++
+ .../vai_library/samples/yolovx/CMakeLists.txt |  16 ++
+ .../vai_library/samples_onnx/CMakeLists.txt   | 108 +++++++++++++
+ .../vai_runtime/adas_detection/CMakeLists.txt |  10 ++
+ vai_runtime/common/CMakeLists.txt    |   3 +
+ .../inception_v1_mt_py/CMakeLists.txt         |   3 +
+ .../vai_runtime/pose_detection/CMakeLists.txt |  13 ++
+ vai_runtime/resnet50/CMakeLists.txt  |   9 ++
+ .../vai_runtime/resnet50_ext/CMakeLists.txt   |   7 +
+ .../vai_runtime/resnet50_mt_py/CMakeLists.txt |   3 +
+ .../vai_runtime/resnet50_pt/CMakeLists.txt    |   9 ++
+ .../vai_runtime/segmentation/CMakeLists.txt   |   9 ++
+ .../squeezenet_pytorch/CMakeLists.txt         |   9 ++
+ .../vai_runtime/video_analysis/CMakeLists.txt |  10 ++
+ 84 files changed, 1292 insertions(+)
+ create mode 100644 CMakeLists.txt
+ create mode 100644 custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner/CMakeLists.txt
+ create mode 100644 vai_library/apps/multitask_v3_quad_windows/CMakeLists.txt
+ create mode 100644 vai_library/apps/seg_and_pose_detect/CMakeLists.txt
+ create mode 100644 vai_library/apps/segs_and_roadline_detect/CMakeLists.txt
+ create mode 100644 vai_library/apps/vek280_4video/CMakeLists.txt
+ create mode 100644 vai_library/samples/3Dsegmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/RGBDsegmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/bcc/CMakeLists.txt
+ create mode 100644 vai_library/samples/bevdet/CMakeLists.txt
+ create mode 100644 vai_library/samples/c2d2_lite/CMakeLists.txt
+ create mode 100644 vai_library/samples/centerpoint/CMakeLists.txt
+ create mode 100644 vai_library/samples/cflownet/CMakeLists.txt
+ create mode 100644 vai_library/samples/classification/CMakeLists.txt
+ create mode 100644 vai_library/samples/clocs/CMakeLists.txt
+ create mode 100644 vai_library/samples/covid19segmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/fadnet/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/hfnet/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/ssr/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/superpoint/CMakeLists.txt
+ create mode 100644 vai_library/samples/dpu_task/yolov3/CMakeLists.txt
+ create mode 100644 vai_library/samples/efficientdet_d2/CMakeLists.txt
+ create mode 100644 vai_library/samples/facedetect/CMakeLists.txt
+ create mode 100644 vai_library/samples/facefeature/CMakeLists.txt
+ create mode 100644 vai_library/samples/facelandmark/CMakeLists.txt
+ create mode 100644 vai_library/samples/facequality5pt/CMakeLists.txt
+ create mode 100644 vai_library/samples/fairmot/CMakeLists.txt
+ create mode 100644 vai_library/samples/graph_runner/CMakeLists.txt
+ create mode 100644 vai_library/samples/graph_runner/platenum_graph_runner/CMakeLists.txt
+ create mode 100644 vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner/CMakeLists.txt
+ create mode 100644 vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner_py/CMakeLists.txt
+ create mode 100644 vai_library/samples/graph_runner/tfssd_gridanchor_nms_op_graph_runner/CMakeLists.txt
+ create mode 100644 vai_library/samples/hourglass/CMakeLists.txt
+ create mode 100644 vai_library/samples/lanedetect/CMakeLists.txt
+ create mode 100644 vai_library/samples/medicaldetection/CMakeLists.txt
+ create mode 100644 vai_library/samples/medicalsegcell/CMakeLists.txt
+ create mode 100644 vai_library/samples/medicalsegmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/monodepth2/CMakeLists.txt
+ create mode 100644 vai_library/samples/movenet/CMakeLists.txt
+ create mode 100644 vai_library/samples/multitask/CMakeLists.txt
+ create mode 100644 vai_library/samples/multitaskv3/CMakeLists.txt
+ create mode 100644 vai_library/samples/ofa_yolo/CMakeLists.txt
+ create mode 100644 vai_library/samples/openpose/CMakeLists.txt
+ create mode 100644 vai_library/samples/platedetect/CMakeLists.txt
+ create mode 100644 vai_library/samples/platenum/CMakeLists.txt
+ create mode 100644 vai_library/samples/pmg/CMakeLists.txt
+ create mode 100644 vai_library/samples/pointpainting/CMakeLists.txt
+ create mode 100644 vai_library/samples/pointpillars/CMakeLists.txt
+ create mode 100644 vai_library/samples/pointpillars_nuscenes/CMakeLists.txt
+ create mode 100644 vai_library/samples/polypsegmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/posedetect/CMakeLists.txt
+ create mode 100644 vai_library/samples/rcan/CMakeLists.txt
+ create mode 100644 vai_library/samples/refinedet/CMakeLists.txt
+ create mode 100644 vai_library/samples/reid/CMakeLists.txt
+ create mode 100644 vai_library/samples/retinaface/CMakeLists.txt
+ create mode 100644 vai_library/samples/segmentation/CMakeLists.txt
+ create mode 100644 vai_library/samples/solo/CMakeLists.txt
+ create mode 100644 vai_library/samples/ssd/CMakeLists.txt
+ create mode 100644 vai_library/samples/textmountain/CMakeLists.txt
+ create mode 100644 vai_library/samples/tfssd/CMakeLists.txt
+ create mode 100644 vai_library/samples/ultrafast/CMakeLists.txt
+ create mode 100644 vai_library/samples/unet2d/CMakeLists.txt
+ create mode 100644 vai_library/samples/vehicleclassification/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov2/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov3/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov4/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov5/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov6/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov7/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolov8/CMakeLists.txt
+ create mode 100644 vai_library/samples/yolovx/CMakeLists.txt
+ create mode 100644 vai_library/samples_onnx/CMakeLists.txt
+ create mode 100644 vai_runtime/adas_detection/CMakeLists.txt
+ create mode 100644 vai_runtime/common/CMakeLists.txt
+ create mode 100644 vai_runtime/inception_v1_mt_py/CMakeLists.txt
+ create mode 100644 vai_runtime/pose_detection/CMakeLists.txt
+ create mode 100644 vai_runtime/resnet50/CMakeLists.txt
+ create mode 100644 vai_runtime/resnet50_ext/CMakeLists.txt
+ create mode 100644 vai_runtime/resnet50_mt_py/CMakeLists.txt
+ create mode 100644 vai_runtime/resnet50_pt/CMakeLists.txt
+ create mode 100644 vai_runtime/segmentation/CMakeLists.txt
+ create mode 100644 vai_runtime/squeezenet_pytorch/CMakeLists.txt
+ create mode 100644 vai_runtime/video_analysis/CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 000000000..08d0d0666
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,147 @@
++
++cmake_minimum_required(VERSION 3.5)
++project( vitis-ai-demo     VERSION 3.5    LANGUAGES C CXX)
++include(GNUInstallDirs)
++
++# comment out to set outside
++# set(INSTALL_PATH "vitis-ai-demo")
++
++# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 ")
++set (CMAKE_CXX_STANDARD 17)
++set (CMAKE_C_STANDARD 99)
++set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -O0 -fno-inline -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0")
++set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17 -Wall -Werror -Wno-pessimizing-move -Wno-deprecated-declarations")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
++set(CMAKE_EXE "${CMAKE_C_FLAGS} -Wall -Werror")
++set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
++if(CMAKE_BUILD_TYPE MATCHES "Release")
++  ADD_DEFINITIONS(-DUNI_LOG_NDEBUG)
++endif()
++include(CMakePackageConfigHelpers)
++if(NOT CMAKE_CROSSCOMPILING)
++  set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
++endif()
++
++
++find_package(unilog)
++find_package(xir)
++find_package( vart COMPONENTS 
++	     util
++             xrt-device-handle
++             buffer-object
++             dpu-controller
++             runner
++             dpu-runner
++             runner-assistant
++             mem-manager       REQUIRED)
++find_package(Protobuf 3.4.0 REQUIRED)
++find_package(Eigen3 REQUIRED)
++find_package(Xrt MODULE)
++find_package(vitis_ai_library)
++
++find_package(OpenCV COMPONENTS opencv_core opencv_video opencv_videoio opencv_imgproc opencv_imgcodecs opencv_highgui)
++if(NOT OpenCV_FOUND)
++  find_package(
++    OpenCV_LIBS
++    opencv_core
++    opencv_video
++    opencv_videoio
++    opencv_imgproc
++    opencv_imgcodecs
++    opencv_highgui)
++endif(NOT OpenCV_FOUND)
++find_package(PkgConfig REQUIRED)
++pkg_search_module(JSONC REQUIRED IMPORTED_TARGET json-c)
++
++find_path(DRM_PATH drm)
++if(NOT ${DRM_PATH} EQUAL "DRM_PATH-NOTFOUND")
++  set(CMAKE_REQUIRED_INCLUDES ${DRM_PATH}/drm)
++endif()
++
++macro(SUBDIRLIST result curdir)
++    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
++    set(dirlist "")
++    foreach(child ${children})
++        if(IS_DIRECTORY ${curdir}/${child})
++            LIST(APPEND dirlist ${child})
++        endif()
++    endforeach()
++    set(${result} ${dirlist})
++endmacro()
++
++function(vart_add_oplib oplib_name src_name)
++  include_directories(${CMAKE_INSTALL_PREFIX}/include)
++  add_library(${oplib_name} SHARED  ${src_name}.cpp )
++  target_link_libraries( ${oplib_name} PUBLIC vitis_ai_library::runner_helper vart::runner xir::xir glog)
++  install(
++      TARGETS ${oplib_name}
++      DESTINATION
++        ${INSTALL_PATH}/custom_operator/lib) 
++endfunction(vart_add_oplib)
++
++function(my_add_subdirectory dir_name)
++  SUBDIRLIST(subd_val ${CMAKE_SOURCE_DIR}/${dir_name} )
++  FOREACH(subd ${subd_val})
++    add_subdirectory( ${CMAKE_SOURCE_DIR}/${dir_name}/${subd} )
++  ENDFOREACH()
++endfunction(my_add_subdirectory)
++
++function(vai_add_sample )
++  set(oneValueArgs NAME INCLUDE_DIR ENABLE_NEON ENABLE_DRM)	
++  set(multiValueArgs SRCS PUBLIC_REQUIRE)
++  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
++  
++  add_executable(${ARG_NAME}  ${ARG_SRCS})
++
++  include_directories(${CMAKE_INSTALL_PREFIX}/include)
++  include_directories(${ARG_INCLUDE_DIR})
++  if(ARG_ENABLE_NEON)
++    target_compile_definitions(${ARG_NAME} PRIVATE ENABLE_NEON=1)	  
++  endif(ARG_ENABLE_NEON)
++  if(ARG_PUBLIC_REQUIRE)
++    target_link_libraries(${ARG_NAME} PUBLIC ${ARG_PUBLIC_REQUIRE})
++  endif(ARG_PUBLIC_REQUIRE)
++  if(ARG_ENABLE_DRM)
++    target_include_directories( ${ARG_NAME} PRIVATE ${DRM_PATH}/drm)
++    target_link_libraries(${ARG_NAME} PUBLIC  drm)
++    target_compile_definitions(${ARG_NAME}  PRIVATE USE_DRM=1)
++  endif(ARG_ENABLE_DRM)
++  target_link_libraries(${ARG_NAME} PUBLIC ${OpenCV_LIBS} pthread unilog::unilog vart::runner xir::xir  glog::glog)
++
++  set(install_dir "")
++  FOREACH(varx "vai_library/samples/"  "vai_library/apps/" "custom_operator/" "vai_runtime/")
++    if( ${CMAKE_CURRENT_SOURCE_DIR} MATCHES  ${varx} )
++      string(FIND ${CMAKE_CURRENT_SOURCE_DIR} ${varx}  S_index)
++      string(LENGTH ${CMAKE_CURRENT_SOURCE_DIR} lenall)
++      math(EXPR mylen "${lenall}-${S_index}")
++      string(SUBSTRING  ${CMAKE_CURRENT_SOURCE_DIR} ${S_index}  ${mylen}  install_dir)
++    endif()
++  ENDFOREACH(varx)
++  
++  install(
++      TARGETS ${ARG_NAME}
++      DESTINATION
++      ${INSTALL_PATH}/${install_dir})
++endfunction(vai_add_sample)
++
++# 1.1 Vitis-AI-Library/samples : done
++my_add_subdirectory( vai_library/samples )
++
++# 1.2 Vitis-AI-Library/samples/ dpu_task graph_runner: special 2 cases. in it's own CMakeLists.txt
++
++# 1.3 Vitis-AI-Library/apps
++my_add_subdirectory( vai_library/apps)
++
++# 1.4 Vitis-AI-Library/samples_onnx
++# add_subdirectory( ${CMAKE_SOURCE_DIR}/vai_library/samples_onnx )
++
++# 2 VART samples  : done
++my_add_subdirectory( vai_runtime)
++ 
++# 3 Custom_OP_Demo : done
++add_subdirectory( ${CMAKE_SOURCE_DIR}/custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner )
++add_subdirectory( ${CMAKE_SOURCE_DIR}/custom_operator/pytorch_example/op_registration/cpp/op_PPScatter )
++add_subdirectory( ${CMAKE_SOURCE_DIR}/custom_operator/tensorflow2_example/deployment/cpp )
++add_subdirectory( ${CMAKE_SOURCE_DIR}/custom_operator/tensorflow2_example/op_registration/cpp/op_Mylayer )
++  
+diff --git a/custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner/CMakeLists.txt b/custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner/CMakeLists.txt
+new file mode 100644
+index 000000000..d103e3130
+--- /dev/null
++++ b/custom_operator/pytorch_example/deployment/cpp/pointpillars_graph_runner/CMakeLists.txt
+@@ -0,0 +1,25 @@
++#
++# Copyright 2022-2023 Advanced Micro Devices Inc.
++#
++# Licensed under the Apache License, Version 2.0 (the "License"); you may not
++# use this file except in compliance with the License. You may obtain a copy of
++# the License at
++#
++# http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++# License for the specific language governing permissions and limitations under
++# the License.
++#
++vai_add_sample(NAME sample_pointpillars_graph_runner 
++               SRCS 
++                 src/anchor.cpp
++                 src/helper.cpp
++                 src/preprocess.cpp
++                 src/pointpillars_post.cpp
++                 src/parse_display_result.cpp
++                 src/main.cpp
++               PUBLIC_REQUIRE  vitis_ai_library::graph_runner vart::runner  Eigen3::Eigen xir::xir )
++
+diff --git a/vai_library/apps/multitask_v3_quad_windows/CMakeLists.txt b/vai_library/apps/multitask_v3_quad_windows/CMakeLists.txt
+new file mode 100644
+index 000000000..822907ec0
+--- /dev/null
++++ b/vai_library/apps/multitask_v3_quad_windows/CMakeLists.txt
+@@ -0,0 +1,6 @@
++
++vai_add_sample(NAME multitaskv3_quad_windows
++	       SRCS multitaskv3_quad_windows.cpp
++	       PUBLIC_REQUIRE vitis_ai_library::multitaskv3 
++	      )
++              
+diff --git a/vai_library/apps/seg_and_pose_detect/CMakeLists.txt b/vai_library/apps/seg_and_pose_detect/CMakeLists.txt
+new file mode 100644
+index 000000000..6734e634c
+--- /dev/null
++++ b/vai_library/apps/seg_and_pose_detect/CMakeLists.txt
+@@ -0,0 +1,6 @@
++
++vai_add_sample(NAME seg_and_pose_detect
++               SRCS seg_and_pose_detect.cpp
++               PUBLIC_REQUIRE  vitis_ai_library::multitask vitis_ai_library::posedetect vitis_ai_library::ssd
++              )
++
+diff --git a/vai_library/apps/segs_and_roadline_detect/CMakeLists.txt b/vai_library/apps/segs_and_roadline_detect/CMakeLists.txt
+new file mode 100644
+index 000000000..6aac14134
+--- /dev/null
++++ b/vai_library/apps/segs_and_roadline_detect/CMakeLists.txt
+@@ -0,0 +1,7 @@
++
++vai_add_sample(NAME segs_and_roadline_detect
++               SRCS segs_and_roadline_detect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask  vitis_ai_library::lanedetect
++              )
++
++
+diff --git a/vai_library/apps/vek280_4video/CMakeLists.txt b/vai_library/apps/vek280_4video/CMakeLists.txt
+new file mode 100644
+index 000000000..aae37f4c2
+--- /dev/null
++++ b/vai_library/apps/vek280_4video/CMakeLists.txt
+@@ -0,0 +1,5 @@
++vai_add_sample(NAME vek280_4video
++               SRCS vek280_4video.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask vitis_ai_library::posedetect vitis_ai_library::ssd vitis_ai_library::lanedetect vitis_ai_library::facedetect vitis_ai_library::openpose 
++              )
++
+diff --git a/vai_library/samples/3Dsegmentation/CMakeLists.txt b/vai_library/samples/3Dsegmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..03f4d2cc6
+--- /dev/null
++++ b/vai_library/samples/3Dsegmentation/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_3Dsegmentation
++               SRCS test_accuracy_3Dsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::3Dsegmentation)
++vai_add_sample(NAME test_jpeg_3Dsegmentation
++               SRCS test_jpeg_3Dsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::3Dsegmentation)
++vai_add_sample(NAME test_performance_3Dsegmentation
++               SRCS test_performance_3Dsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::3Dsegmentation)
++
+diff --git a/vai_library/samples/RGBDsegmentation/CMakeLists.txt b/vai_library/samples/RGBDsegmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..baf6a175a
+--- /dev/null
++++ b/vai_library/samples/RGBDsegmentation/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_RGBDsegmentation
++               SRCS test_accuracy_RGBDsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::RGBDsegmentation)
++vai_add_sample(NAME test_jpeg_RGBDsegmentation
++               SRCS test_jpeg_RGBDsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::RGBDsegmentation)
++vai_add_sample(NAME test_performance_RGBDsegmentation
++               SRCS test_performance_RGBDsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::RGBDsegmentation)
+diff --git a/vai_library/samples/bcc/CMakeLists.txt b/vai_library/samples/bcc/CMakeLists.txt
+new file mode 100644
+index 000000000..3b1861d58
+--- /dev/null
++++ b/vai_library/samples/bcc/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_bcc
++               SRCS test_accuracy_bcc.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bcc)
++vai_add_sample(NAME test_accuracy_bcc_mt
++               SRCS test_accuracy_bcc_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bcc)
++vai_add_sample(NAME test_jpeg_bcc
++               SRCS test_jpeg_bcc.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bcc)
++vai_add_sample(NAME test_performance_bcc
++               SRCS test_performance_bcc.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bcc)
++vai_add_sample(NAME test_video_bcc
++               SRCS test_video_bcc.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bcc)
+diff --git a/vai_library/samples/bevdet/CMakeLists.txt b/vai_library/samples/bevdet/CMakeLists.txt
+new file mode 100644
+index 000000000..79a5c9a1d
+--- /dev/null
++++ b/vai_library/samples/bevdet/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_bevdet_mt
++               SRCS test_accuracy_bevdet_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bevdet)
++vai_add_sample(NAME test_jpeg_bevdet
++               SRCS test_jpeg_bevdet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bevdet)
++vai_add_sample(NAME test_performance_bevdet
++               SRCS test_performance_bevdet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::bevdet)
++
+diff --git a/vai_library/samples/c2d2_lite/CMakeLists.txt b/vai_library/samples/c2d2_lite/CMakeLists.txt
+new file mode 100644
+index 000000000..316ce54bf
+--- /dev/null
++++ b/vai_library/samples/c2d2_lite/CMakeLists.txt
+@@ -0,0 +1,8 @@
++
++vai_add_sample(NAME test_jpeg_c2d2_lite
++               SRCS test_jpeg_c2d2_lite.cpp
++               PUBLIC_REQUIRE vitis_ai_library::c2d2_lite)
++vai_add_sample(NAME test_performance_c2d2_lite
++               SRCS test_performance_c2d2_lite.cpp
++               PUBLIC_REQUIRE vitis_ai_library::c2d2_lite)
++
+diff --git a/vai_library/samples/centerpoint/CMakeLists.txt b/vai_library/samples/centerpoint/CMakeLists.txt
+new file mode 100644
+index 000000000..1265e9374
+--- /dev/null
++++ b/vai_library/samples/centerpoint/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_centerpoint
++               SRCS test_accuracy_centerpoint.cpp
++               PUBLIC_REQUIRE vitis_ai_library::centerpoint)
++vai_add_sample(NAME test_file_centerpoint
++               SRCS test_file_centerpoint.cpp
++               PUBLIC_REQUIRE vitis_ai_library::centerpoint)
++vai_add_sample(NAME test_performance_centerpoint
++               SRCS test_performance_centerpoint.cpp
++               PUBLIC_REQUIRE vitis_ai_library::centerpoint)
++
+diff --git a/vai_library/samples/cflownet/CMakeLists.txt b/vai_library/samples/cflownet/CMakeLists.txt
+new file mode 100644
+index 000000000..9c723d3e1
+--- /dev/null
++++ b/vai_library/samples/cflownet/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_cflownet
++               SRCS test_accuracy_cflownet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::cflownet)
++vai_add_sample(NAME test_bin_cflownet
++               SRCS test_bin_cflownet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::cflownet)
++vai_add_sample(NAME test_performance_cflownet
++               SRCS test_performance_cflownet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::cflownet)
++
+diff --git a/vai_library/samples/classification/CMakeLists.txt b/vai_library/samples/classification/CMakeLists.txt
+new file mode 100644
+index 000000000..b59944880
+--- /dev/null
++++ b/vai_library/samples/classification/CMakeLists.txt
+@@ -0,0 +1,26 @@
++
++
++vai_add_sample(NAME test_accuracy_classification
++               SRCS test_accuracy_classification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_accuracy_classification_mt
++               SRCS test_accuracy_classification_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_accuracy_classification_squeezenet
++               SRCS test_accuracy_classification_squeezenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_jpeg_classification
++               SRCS test_jpeg_classification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_jpeg_classification_squeezenet
++               SRCS test_jpeg_classification_squeezenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_performance_classification
++               SRCS test_performance_classification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_performance_classification_squeezenet
++               SRCS test_performance_classification_squeezenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
++vai_add_sample(NAME test_video_classification
++               SRCS test_video_classification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::classification)
+diff --git a/vai_library/samples/clocs/CMakeLists.txt b/vai_library/samples/clocs/CMakeLists.txt
+new file mode 100644
+index 000000000..de0e6e7b4
+--- /dev/null
++++ b/vai_library/samples/clocs/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_clocs
++               SRCS test_accuracy_clocs.cpp
++               PUBLIC_REQUIRE vitis_ai_library::clocs)
++vai_add_sample(NAME test_bin_clocs
++               SRCS test_bin_clocs.cpp
++               PUBLIC_REQUIRE vitis_ai_library::clocs)
++vai_add_sample(NAME test_performance_clocs
++               SRCS test_performance_clocs.cpp
++               PUBLIC_REQUIRE vitis_ai_library::clocs)
++
+diff --git a/vai_library/samples/covid19segmentation/CMakeLists.txt b/vai_library/samples/covid19segmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..577b76daf
+--- /dev/null
++++ b/vai_library/samples/covid19segmentation/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_covid19segmentation
++               SRCS test_accuracy_covid19segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::covid19segmentation)
++vai_add_sample(NAME test_jpeg_covid19segmentation
++               SRCS test_jpeg_covid19segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::covid19segmentation)
++vai_add_sample(NAME test_performance_covid19segmentation
++               SRCS test_performance_covid19segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::covid19segmentation)
++
+diff --git a/vai_library/samples/dpu_task/CMakeLists.txt b/vai_library/samples/dpu_task/CMakeLists.txt
+new file mode 100644
+index 000000000..944c37857
+--- /dev/null
++++ b/vai_library/samples/dpu_task/CMakeLists.txt
+@@ -0,0 +1,7 @@
++
++my_add_subdirectory( vai_library/samples/dpu_task )
++#SUBDIRLIST(subd_val ${CMAKE_SOURCE_DIR}/Vitis-AI-Library/samples/dpu_task )
++#FOREACH(subd ${subd_val})
++#  add_subdirectory( ${CMAKE_SOURCE_DIR}/Vitis-AI-Library/samples/dpu_task/${subd} )
++#ENDFOREACH()
++
+diff --git a/vai_library/samples/dpu_task/fadnet/CMakeLists.txt b/vai_library/samples/dpu_task/fadnet/CMakeLists.txt
+new file mode 100644
+index 000000000..226d52d3c
+--- /dev/null
++++ b/vai_library/samples/dpu_task/fadnet/CMakeLists.txt
+@@ -0,0 +1,27 @@
++
++#add_executable(demo_fadnet  ${CMAKE_CURRENT_SOURCE_DIR}/demo_fadnet.cpp ${CMAKE_CURRENT_SOURCE_DIR}/fadnet.cpp)
++#target_link_libraries(demo_fadnet ${OpenCV_LIBS} glog unilog vart-util vitis_ai_library-dpu_task)
++#add_executable(test_performance_fadnet ${CMAKE_CURRENT_SOURCE_DIR}/demo_fadnet.cpp ${CMAKE_CURRENT_SOURCE_DIR}/fadnet.cpp)
++#target_link_libraries(test_performance_fadnet ${OpenCV_LIBS} glog unilog vart-util vitis_ai_library-dpu_task)
++
++vai_add_sample(NAME demo_fadnet
++                SRCS demo_fadnet.cpp  fadnet.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task
++                ENABLE_NEON 1
++        )
++vai_add_sample(NAME test_performance_fadnet
++                SRCS test_performance_fadnet.cpp  fadnet.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task
++                ENABLE_NEON 1
++        )
++
++vai_add_sample(NAME demo_fadnet_v2
++                SRCS demo_fadnet_v2.cpp  fadnet_v2.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task
++                ENABLE_NEON 1
++        )
++vai_add_sample(NAME test_performance_fadnet_v2
++                SRCS test_performance_fadnet_v2.cpp  fadnet_v2.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task
++                ENABLE_NEON 1
++        )
+diff --git a/vai_library/samples/dpu_task/hfnet/CMakeLists.txt b/vai_library/samples/dpu_task/hfnet/CMakeLists.txt
+new file mode 100644
+index 000000000..59241fb7d
+--- /dev/null
++++ b/vai_library/samples/dpu_task/hfnet/CMakeLists.txt
+@@ -0,0 +1,11 @@
++vai_add_sample(NAME demo_hfnet
++                SRCS demo_hfnet.cpp hfnet.cpp
++                PUBLIC_REQUIRE  vitis_ai_library::dpu_task vitis_ai_library::math
++        )
++
++vai_add_sample(NAME test_performance_hfnet
++                SRCS test_performance_hfnet.cpp  hfnet.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task vitis_ai_library::math
++        )
++
++
+diff --git a/vai_library/samples/dpu_task/ssr/CMakeLists.txt b/vai_library/samples/dpu_task/ssr/CMakeLists.txt
+new file mode 100644
+index 000000000..f74641722
+--- /dev/null
++++ b/vai_library/samples/dpu_task/ssr/CMakeLists.txt
+@@ -0,0 +1,18 @@
++
++# vai_add_test( platenum_graph_runner REQUIRE vitis_ai_library::graph_runner vart::runner)   
++
++#add_executable(demo_ssr  ${CMAKE_CURRENT_SOURCE_DIR}/demo_ssr.cpp ${CMAKE_CURRENT_SOURCE_DIR}/ssr.cpp)
++#target_link_libraries(demo_ssr ${OpenCV_LIBS} glog unilog vart-util vitis_ai_library-dpu_task)
++#add_executable(test_performance_ssr ${CMAKE_CURRENT_SOURCE_DIR}/demo_ssr.cpp ${CMAKE_CURRENT_SOURCE_DIR}/ssr.cpp)
++#target_link_libraries(test_performance_ssr ${OpenCV_LIBS} glog unilog vart-util vitis_ai_library-dpu_task)
++#
++vai_add_sample(NAME demo_ssr
++                SRCS demo_ssr.cpp ssr.cpp
++		PUBLIC_REQUIRE  vitis_ai_library::dpu_task
++        )
++	
++vai_add_sample(NAME test_performance_ssr
++                SRCS test_performance_ssr.cpp  ssr.cpp
++		PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task
++        )
++	
+diff --git a/vai_library/samples/dpu_task/superpoint/CMakeLists.txt b/vai_library/samples/dpu_task/superpoint/CMakeLists.txt
+new file mode 100644
+index 000000000..0f94d3f3f
+--- /dev/null
++++ b/vai_library/samples/dpu_task/superpoint/CMakeLists.txt
+@@ -0,0 +1,9 @@
++vai_add_sample(NAME demo_superpoint
++                SRCS demo_superpoint.cpp  superpoint.cpp
++                PUBLIC_REQUIRE  vitis_ai_library::dpu_task vitis_ai_library::math
++        )
++
++vai_add_sample(NAME test_performance_superpoint
++                SRCS test_performance_superpoint.cpp  superpoint.cpp
++                PUBLIC_REQUIRE vart::util vitis_ai_library::dpu_task  vitis_ai_library::math
++        )
+diff --git a/vai_library/samples/dpu_task/yolov3/CMakeLists.txt b/vai_library/samples/dpu_task/yolov3/CMakeLists.txt
+new file mode 100644
+index 000000000..0502489b9
+--- /dev/null
++++ b/vai_library/samples/dpu_task/yolov3/CMakeLists.txt
+@@ -0,0 +1,6 @@
++
++vai_add_sample(NAME demo_yolov3
++               SRCS demo_yolov3.cpp 
++               PUBLIC_REQUIRE vitis_ai_library::dpu_task vitis_ai_library::xnnpp protobuf::libprotobuf
++        )
++
+diff --git a/vai_library/samples/efficientdet_d2/CMakeLists.txt b/vai_library/samples/efficientdet_d2/CMakeLists.txt
+new file mode 100644
+index 000000000..47f0bccfe
+--- /dev/null
++++ b/vai_library/samples/efficientdet_d2/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_jpeg_efficientdet_d2 
++               SRCS test_jpeg_efficientdet_d2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::efficientdet_d2)
++vai_add_sample(NAME test_video_efficientdet_d2 
++               SRCS test_video_efficientdet_d2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::efficientdet_d2)
++vai_add_sample(NAME test_performance_efficientdet_d2 
++               SRCS test_performance_efficientdet_d2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::efficientdet_d2)
++vai_add_sample(NAME test_accuracy_efficientdet_d2 
++               SRCS test_accuracy_efficientdet_d2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::efficientdet_d2)
+diff --git a/vai_library/samples/facedetect/CMakeLists.txt b/vai_library/samples/facedetect/CMakeLists.txt
+new file mode 100644
+index 000000000..734cd6532
+--- /dev/null
++++ b/vai_library/samples/facedetect/CMakeLists.txt
+@@ -0,0 +1,17 @@
++
++vai_add_sample(NAME test_accuracy_facedetect
++               SRCS test_accuracy_facedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facedetect)
++vai_add_sample(NAME test_accuracy_facedetect_mt
++               SRCS test_accuracy_facedetect_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facedetect)
++vai_add_sample(NAME test_jpeg_facedetect
++               SRCS test_jpeg_facedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facedetect)
++vai_add_sample(NAME test_performance_facedetect
++               SRCS test_performance_facedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facedetect)
++vai_add_sample(NAME test_video_facedetect
++               SRCS test_video_facedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facedetect)
++
+diff --git a/vai_library/samples/facefeature/CMakeLists.txt b/vai_library/samples/facefeature/CMakeLists.txt
+new file mode 100644
+index 000000000..252562027
+--- /dev/null
++++ b/vai_library/samples/facefeature/CMakeLists.txt
+@@ -0,0 +1,14 @@
++
++vai_add_sample(NAME test_accuracy_facefeature
++               SRCS test_accuracy_facefeature.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facefeature)
++vai_add_sample(NAME test_accuracy_facerec_pretrain_res20
++               SRCS test_accuracy_facerec_pretrain_res20.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facefeature)
++vai_add_sample(NAME test_jpeg_facefeature
++               SRCS test_jpeg_facefeature.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facefeature)
++vai_add_sample(NAME test_performance_facefeature
++               SRCS test_performance_facefeature.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facefeature)
++
+diff --git a/vai_library/samples/facelandmark/CMakeLists.txt b/vai_library/samples/facelandmark/CMakeLists.txt
+new file mode 100644
+index 000000000..5876ecb42
+--- /dev/null
++++ b/vai_library/samples/facelandmark/CMakeLists.txt
+@@ -0,0 +1,14 @@
++
++vai_add_sample(NAME test_accuracy_facelandmark
++               SRCS test_accuracy_facelandmark.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facelandmark)
++vai_add_sample(NAME test_accuracy_facelandmark_mt
++               SRCS test_accuracy_facelandmark_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facelandmark)
++vai_add_sample(NAME test_jpeg_facelandmark
++               SRCS test_jpeg_facelandmark.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facelandmark)
++vai_add_sample(NAME test_performance_facelandmark
++               SRCS test_performance_facelandmark.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facelandmark)
++
+diff --git a/vai_library/samples/facequality5pt/CMakeLists.txt b/vai_library/samples/facequality5pt/CMakeLists.txt
+new file mode 100644
+index 000000000..f20dc6f9b
+--- /dev/null
++++ b/vai_library/samples/facequality5pt/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_facequality5pt
++               SRCS test_accuracy_facequality5pt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facequality5pt)
++vai_add_sample(NAME test_accuracy_facequality5pt_mt
++               SRCS test_accuracy_facequality5pt_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facequality5pt)
++vai_add_sample(NAME test_jpeg_facequality5pt
++               SRCS test_jpeg_facequality5pt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facequality5pt)
++vai_add_sample(NAME test_performance_facequality5pt
++               SRCS test_performance_facequality5pt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::facequality5pt)
+diff --git a/vai_library/samples/fairmot/CMakeLists.txt b/vai_library/samples/fairmot/CMakeLists.txt
+new file mode 100644
+index 000000000..1215108f6
+--- /dev/null
++++ b/vai_library/samples/fairmot/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_fairmot
++               SRCS test_accuracy_fairmot.cpp
++               PUBLIC_REQUIRE vitis_ai_library::fairmot  vitis_ai_library::reidtracker)
++vai_add_sample(NAME test_jpeg_fairmot
++               SRCS test_jpeg_fairmot.cpp
++               PUBLIC_REQUIRE vitis_ai_library::fairmot)
++vai_add_sample(NAME test_performance_fairmot
++               SRCS test_performance_fairmot.cpp
++               PUBLIC_REQUIRE vitis_ai_library::fairmot)
++vai_add_sample(NAME test_video_fairmot
++               SRCS test_video_fairmot.cpp
++               PUBLIC_REQUIRE vitis_ai_library::fairmot)
+diff --git a/vai_library/samples/graph_runner/CMakeLists.txt b/vai_library/samples/graph_runner/CMakeLists.txt
+new file mode 100644
+index 000000000..578711b1f
+--- /dev/null
++++ b/vai_library/samples/graph_runner/CMakeLists.txt
+@@ -0,0 +1,7 @@
++
++my_add_subdirectory( Vitis-AI-Library/samples/graph_runner)
++#SUBDIRLIST(subd_val ${CMAKE_SOURCE_DIR}/Vitis-AI-Library/samples/graph_runner )
++#FOREACH(subd ${subd_val})
++# add_subdirectory( ${CMAKE_SOURCE_DIR}/Vitis-AI-Library/samples/graph_runner/${subd} )
++#ENDFOREACH()
++
+diff --git a/vai_library/samples/graph_runner/platenum_graph_runner/CMakeLists.txt b/vai_library/samples/graph_runner/platenum_graph_runner/CMakeLists.txt
+new file mode 100644
+index 000000000..5eadc2f9a
+--- /dev/null
++++ b/vai_library/samples/graph_runner/platenum_graph_runner/CMakeLists.txt
+@@ -0,0 +1,6 @@
++
++vai_add_sample(NAME platenum_graph_runner
++               SRCS platenum_graph_runner.cpp
++               PUBLIC_REQUIRE vitis_ai_library::graph_runner vart::runner 
++       	      )
++
+diff --git a/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner/CMakeLists.txt b/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner/CMakeLists.txt
+new file mode 100644
+index 000000000..16d42757c
+--- /dev/null
++++ b/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner/CMakeLists.txt
+@@ -0,0 +1,5 @@
++
++vai_add_sample(NAME resnet_v1_50_tf_graph_runner
++               SRCS resnet_v1_50_tf_graph_runner.cpp
++               PUBLIC_REQUIRE vitis_ai_library::graph_runner vart::runner 
++       	      )
+diff --git a/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner_py/CMakeLists.txt b/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner_py/CMakeLists.txt
+new file mode 100644
+index 000000000..1a4baf536
+--- /dev/null
++++ b/vai_library/samples/graph_runner/resnet_v1_50_tf_graph_runner_py/CMakeLists.txt
+@@ -0,0 +1 @@
++  
+diff --git a/vai_library/samples/graph_runner/tfssd_gridanchor_nms_op_graph_runner/CMakeLists.txt b/vai_library/samples/graph_runner/tfssd_gridanchor_nms_op_graph_runner/CMakeLists.txt
+new file mode 100644
+index 000000000..a5d78414a
+--- /dev/null
++++ b/vai_library/samples/graph_runner/tfssd_gridanchor_nms_op_graph_runner/CMakeLists.txt
+@@ -0,0 +1,5 @@
++
++vai_add_sample(NAME tfssd_gridanchor_nms_op_graph_runner
++               SRCS tfssd_gridanchor_nms_op_graph_runner.cpp
++               PUBLIC_REQUIRE vitis_ai_library::graph_runner vart::runner 
++       	      )
+diff --git a/vai_library/samples/hourglass/CMakeLists.txt b/vai_library/samples/hourglass/CMakeLists.txt
+new file mode 100644
+index 000000000..9a59ed1df
+--- /dev/null
++++ b/vai_library/samples/hourglass/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_hourglass
++               SRCS test_accuracy_hourglass.cpp
++               PUBLIC_REQUIRE vitis_ai_library::hourglass PkgConfig::JSONC)
++vai_add_sample(NAME test_jpeg_hourglass
++               SRCS test_jpeg_hourglass.cpp
++               PUBLIC_REQUIRE vitis_ai_library::hourglass)
++vai_add_sample(NAME test_performance_hourglass
++               SRCS test_performance_hourglass.cpp
++               PUBLIC_REQUIRE vitis_ai_library::hourglass)
++vai_add_sample(NAME test_video_hourglass
++               SRCS test_video_hourglass.cpp
++               PUBLIC_REQUIRE vitis_ai_library::hourglass)
+diff --git a/vai_library/samples/lanedetect/CMakeLists.txt b/vai_library/samples/lanedetect/CMakeLists.txt
+new file mode 100644
+index 000000000..e9fb30d5d
+--- /dev/null
++++ b/vai_library/samples/lanedetect/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_lanedetect
++               SRCS test_accuracy_lanedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::lanedetect)
++vai_add_sample(NAME test_jpeg_lanedetect
++               SRCS test_jpeg_lanedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::lanedetect)
++vai_add_sample(NAME test_performance_lanedetect
++               SRCS test_performance_lanedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::lanedetect)
++vai_add_sample(NAME test_video_lanedetect
++               SRCS test_video_lanedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::lanedetect)
+diff --git a/vai_library/samples/medicaldetection/CMakeLists.txt b/vai_library/samples/medicaldetection/CMakeLists.txt
+new file mode 100644
+index 000000000..032f69968
+--- /dev/null
++++ b/vai_library/samples/medicaldetection/CMakeLists.txt
+@@ -0,0 +1,17 @@
++
++
++vai_add_sample(NAME test_accuracy_medicaldetection
++               SRCS test_accuracy_medicaldetection.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicaldetection)
++vai_add_sample(NAME test_accuracy_medicaldetection_mt
++               SRCS test_accuracy_medicaldetection_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicaldetection)
++vai_add_sample(NAME test_jpeg_medicaldetection
++               SRCS test_jpeg_medicaldetection.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicaldetection)
++vai_add_sample(NAME test_performance_medicaldetection
++               SRCS test_performance_medicaldetection.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicaldetection)
++vai_add_sample(NAME test_video_medicaldetection
++               SRCS test_video_medicaldetection.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicaldetection)
+diff --git a/vai_library/samples/medicalsegcell/CMakeLists.txt b/vai_library/samples/medicalsegcell/CMakeLists.txt
+new file mode 100644
+index 000000000..8457443a3
+--- /dev/null
++++ b/vai_library/samples/medicalsegcell/CMakeLists.txt
+@@ -0,0 +1,17 @@
++
++
++vai_add_sample(NAME test_accuracy_medicalsegcell
++               SRCS test_accuracy_medicalsegcell.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegcell)
++vai_add_sample(NAME test_accuracy_medicalsegcell_mt
++               SRCS test_accuracy_medicalsegcell_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegcell)
++vai_add_sample(NAME test_jpeg_medicalsegcell
++               SRCS test_jpeg_medicalsegcell.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegcell)
++vai_add_sample(NAME test_performance_medicalsegcell
++               SRCS test_performance_medicalsegcell.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegcell)
++vai_add_sample(NAME test_video_medicalsegcell
++               SRCS test_video_medicalsegcell.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegcell)
+diff --git a/vai_library/samples/medicalsegmentation/CMakeLists.txt b/vai_library/samples/medicalsegmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..d66e82840
+--- /dev/null
++++ b/vai_library/samples/medicalsegmentation/CMakeLists.txt
+@@ -0,0 +1,14 @@
++
++
++vai_add_sample(NAME test_accuracy_medicalsegmentation
++               SRCS test_accuracy_medicalsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegmentation)
++vai_add_sample(NAME test_accuracy_medicalsegmentation_mt
++               SRCS test_accuracy_medicalsegmentation_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegmentation)
++vai_add_sample(NAME test_jpeg_medicalsegmentation
++               SRCS test_jpeg_medicalsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegmentation)
++vai_add_sample(NAME test_performance_medicalsegmentation
++               SRCS test_performance_medicalsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::medicalsegmentation)
+diff --git a/vai_library/samples/monodepth2/CMakeLists.txt b/vai_library/samples/monodepth2/CMakeLists.txt
+new file mode 100644
+index 000000000..082727e4e
+--- /dev/null
++++ b/vai_library/samples/monodepth2/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_monodepth2
++               SRCS test_accuracy_monodepth2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::monodepth2)
++vai_add_sample(NAME test_jpeg_monodepth2
++               SRCS test_jpeg_monodepth2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::monodepth2)
++vai_add_sample(NAME test_performance_monodepth2
++               SRCS test_performance_monodepth2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::monodepth2)
++
+diff --git a/vai_library/samples/movenet/CMakeLists.txt b/vai_library/samples/movenet/CMakeLists.txt
+new file mode 100644
+index 000000000..e389312f7
+--- /dev/null
++++ b/vai_library/samples/movenet/CMakeLists.txt
+@@ -0,0 +1,15 @@
++
++
++vai_add_sample(NAME test_accuracy_movenet
++               SRCS test_accuracy_movenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::movenet PkgConfig::JSONC)
++vai_add_sample(NAME test_jpeg_movenet
++               SRCS test_jpeg_movenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::movenet)
++vai_add_sample(NAME test_performance_movenet
++               SRCS test_performance_movenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::movenet)
++vai_add_sample(NAME test_video_movenet
++               SRCS test_video_movenet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::movenet)
++
+diff --git a/vai_library/samples/multitask/CMakeLists.txt b/vai_library/samples/multitask/CMakeLists.txt
+new file mode 100644
+index 000000000..53b81265b
+--- /dev/null
++++ b/vai_library/samples/multitask/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_multitask
++               SRCS test_accuracy_multitask.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask)
++vai_add_sample(NAME test_accuracy_multitask_mt
++               SRCS test_accuracy_multitask_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask)
++vai_add_sample(NAME test_jpeg_multitask
++               SRCS test_jpeg_multitask.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask)
++vai_add_sample(NAME test_performance_multitask
++               SRCS test_performance_multitask.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask)
++vai_add_sample(NAME test_video_multitask
++               SRCS test_video_multitask.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitask)
+diff --git a/vai_library/samples/multitaskv3/CMakeLists.txt b/vai_library/samples/multitaskv3/CMakeLists.txt
+new file mode 100644
+index 000000000..c6987bfe6
+--- /dev/null
++++ b/vai_library/samples/multitaskv3/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_multitaskv3_detection
++               SRCS test_accuracy_multitaskv3_detection.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitaskv3)
++vai_add_sample(NAME test_accuracy_multitaskv3_segmentation
++               SRCS test_accuracy_multitaskv3_segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitaskv3)
++vai_add_sample(NAME test_jpeg_multitaskv3
++               SRCS test_jpeg_multitaskv3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitaskv3)
++vai_add_sample(NAME test_performance_multitaskv3
++               SRCS test_performance_multitaskv3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitaskv3)
++vai_add_sample(NAME test_video_multitaskv3
++               SRCS test_video_multitaskv3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::multitaskv3)
+diff --git a/vai_library/samples/ofa_yolo/CMakeLists.txt b/vai_library/samples/ofa_yolo/CMakeLists.txt
+new file mode 100644
+index 000000000..d4f779aee
+--- /dev/null
++++ b/vai_library/samples/ofa_yolo/CMakeLists.txt
+@@ -0,0 +1,14 @@
++
++vai_add_sample(NAME test_accuracy_ofa_yolo_mt
++               SRCS test_accuracy_ofa_yolo_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ofa_yolo)
++vai_add_sample(NAME test_jpeg_ofa_yolo
++               SRCS test_jpeg_ofa_yolo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ofa_yolo)
++vai_add_sample(NAME test_performance_ofa_yolo
++               SRCS test_performance_ofa_yolo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ofa_yolo)
++vai_add_sample(NAME test_video_ofa_yolo
++               SRCS test_video_ofa_yolo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ofa_yolo)
++
+diff --git a/vai_library/samples/openpose/CMakeLists.txt b/vai_library/samples/openpose/CMakeLists.txt
+new file mode 100644
+index 000000000..a267f8228
+--- /dev/null
++++ b/vai_library/samples/openpose/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_openpose
++               SRCS test_accuracy_openpose.cpp
++               PUBLIC_REQUIRE vitis_ai_library::openpose PkgConfig::JSONC)
++vai_add_sample(NAME test_accuracy_openpose_mt
++               SRCS test_accuracy_openpose_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::openpose PkgConfig::JSONC)
++vai_add_sample(NAME test_jpeg_openpose
++               SRCS test_jpeg_openpose.cpp
++               PUBLIC_REQUIRE vitis_ai_library::openpose)
++vai_add_sample(NAME test_performance_openpose
++               SRCS test_performance_openpose.cpp
++               PUBLIC_REQUIRE vitis_ai_library::openpose)
++vai_add_sample(NAME test_video_openpose
++               SRCS test_video_openpose.cpp
++               PUBLIC_REQUIRE vitis_ai_library::openpose)
+diff --git a/vai_library/samples/platedetect/CMakeLists.txt b/vai_library/samples/platedetect/CMakeLists.txt
+new file mode 100644
+index 000000000..f93829be8
+--- /dev/null
++++ b/vai_library/samples/platedetect/CMakeLists.txt
+@@ -0,0 +1,17 @@
++
++
++vai_add_sample(NAME test_accuracy_platedetect
++               SRCS test_accuracy_platedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platedetect)
++vai_add_sample(NAME test_accuracy_platedetect_mt
++               SRCS test_accuracy_platedetect_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platedetect)
++vai_add_sample(NAME test_jpeg_platedetect
++               SRCS test_jpeg_platedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platedetect)
++vai_add_sample(NAME test_performance_platedetect
++               SRCS test_performance_platedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platedetect)
++vai_add_sample(NAME test_video_platedetect
++               SRCS test_video_platedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platedetect)
+diff --git a/vai_library/samples/platenum/CMakeLists.txt b/vai_library/samples/platenum/CMakeLists.txt
+new file mode 100644
+index 000000000..58904659d
+--- /dev/null
++++ b/vai_library/samples/platenum/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_platenum
++               SRCS test_accuracy_platenum.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platenum)
++vai_add_sample(NAME test_accuracy_platenum_mt
++               SRCS test_accuracy_platenum_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platenum)
++vai_add_sample(NAME test_jpeg_platenum
++               SRCS test_jpeg_platenum.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platenum)
++vai_add_sample(NAME test_performance_platenum
++               SRCS test_performance_platenum.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platenum)
++vai_add_sample(NAME test_video_platenum
++               SRCS test_video_platenum.cpp
++               PUBLIC_REQUIRE vitis_ai_library::platenum)
+diff --git a/vai_library/samples/pmg/CMakeLists.txt b/vai_library/samples/pmg/CMakeLists.txt
+new file mode 100644
+index 000000000..ebdf96f54
+--- /dev/null
++++ b/vai_library/samples/pmg/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_pmg
++               SRCS test_accuracy_pmg.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pmg)
++vai_add_sample(NAME test_jpeg_pmg
++               SRCS test_jpeg_pmg.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pmg)
++vai_add_sample(NAME test_performance_pmg
++               SRCS test_performance_pmg.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pmg)
++vai_add_sample(NAME test_video_pmg
++               SRCS test_video_pmg.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pmg)
+diff --git a/vai_library/samples/pointpainting/CMakeLists.txt b/vai_library/samples/pointpainting/CMakeLists.txt
+new file mode 100644
+index 000000000..f33770f62
+--- /dev/null
++++ b/vai_library/samples/pointpainting/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_pointpainting
++               SRCS test_accuracy_pointpainting.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpainting)
++vai_add_sample(NAME test_accuracy_pointpainting_nuscenes
++               SRCS test_accuracy_pointpainting_nuscenes.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpainting)
++vai_add_sample(NAME test_accuracy_pointpainting_seg
++               SRCS test_accuracy_pointpainting_seg.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpainting)
++vai_add_sample(NAME test_bin_pointpainting
++               SRCS test_bin_pointpainting.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpainting)
++vai_add_sample(NAME test_performance_pointpainting
++               SRCS test_performance_pointpainting.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpainting)
+diff --git a/vai_library/samples/pointpillars/CMakeLists.txt b/vai_library/samples/pointpillars/CMakeLists.txt
+new file mode 100644
+index 000000000..37ca4b86e
+--- /dev/null
++++ b/vai_library/samples/pointpillars/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_pointpillars
++               SRCS test_accuracy_pointpillars.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars)
++vai_add_sample(NAME test_bin_pointpillars
++               SRCS test_bin_pointpillars.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars)
++vai_add_sample(NAME test_performance_pointpillars
++               SRCS test_performance_pointpillars.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars)
+diff --git a/vai_library/samples/pointpillars_nuscenes/CMakeLists.txt b/vai_library/samples/pointpillars_nuscenes/CMakeLists.txt
+new file mode 100644
+index 000000000..9ccbd82f0
+--- /dev/null
++++ b/vai_library/samples/pointpillars_nuscenes/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_pointpillars_nuscenes
++               SRCS test_accuracy_pointpillars_nuscenes.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars_nuscenes)
++vai_add_sample(NAME test_bin_pointpillars_nuscenes
++               SRCS test_bin_pointpillars_nuscenes.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars_nuscenes)
++vai_add_sample(NAME test_performance_pointpillars_nuscenes
++               SRCS test_performance_pointpillars_nuscenes.cpp
++               PUBLIC_REQUIRE vitis_ai_library::pointpillars_nuscenes)
+diff --git a/vai_library/samples/polypsegmentation/CMakeLists.txt b/vai_library/samples/polypsegmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..c577957fe
+--- /dev/null
++++ b/vai_library/samples/polypsegmentation/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_polypsegmentation
++               SRCS test_accuracy_polypsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::polypsegmentation)
++vai_add_sample(NAME test_accuracy_polypsegmentation_mt
++               SRCS test_accuracy_polypsegmentation_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::polypsegmentation)
++vai_add_sample(NAME test_jpeg_polypsegmentation
++               SRCS test_jpeg_polypsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::polypsegmentation)
++vai_add_sample(NAME test_performance_polypsegmentation
++               SRCS test_performance_polypsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::polypsegmentation)
++vai_add_sample(NAME test_video_polypsegmentation
++               SRCS test_video_polypsegmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::polypsegmentation)
+diff --git a/vai_library/samples/posedetect/CMakeLists.txt b/vai_library/samples/posedetect/CMakeLists.txt
+new file mode 100644
+index 000000000..c5310140a
+--- /dev/null
++++ b/vai_library/samples/posedetect/CMakeLists.txt
+@@ -0,0 +1,22 @@
++
++vai_add_sample(NAME test_accuracy_posedetect
++               SRCS test_accuracy_posedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect)
++vai_add_sample(NAME test_accuracy_posedetect_mt
++               SRCS test_accuracy_posedetect_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect)
++vai_add_sample(NAME test_jpeg_posedetect
++               SRCS test_jpeg_posedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect)
++vai_add_sample(NAME test_jpeg_posedetect_with_ssd
++               SRCS test_jpeg_posedetect_with_ssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect  vitis_ai_library::ssd)
++vai_add_sample(NAME test_performance_posedetect
++               SRCS test_performance_posedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect)
++vai_add_sample(NAME test_video_posedetect
++               SRCS test_video_posedetect.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect)
++vai_add_sample(NAME test_video_posedetect_with_ssd
++               SRCS test_video_posedetect_with_ssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::posedetect  vitis_ai_library::ssd)
+diff --git a/vai_library/samples/rcan/CMakeLists.txt b/vai_library/samples/rcan/CMakeLists.txt
+new file mode 100644
+index 000000000..2373d32d9
+--- /dev/null
++++ b/vai_library/samples/rcan/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_rcan
++               SRCS test_accuracy_rcan.cpp
++               PUBLIC_REQUIRE vitis_ai_library::rcan)
++vai_add_sample(NAME test_jpeg_rcan
++               SRCS test_jpeg_rcan.cpp
++               PUBLIC_REQUIRE vitis_ai_library::rcan)
++vai_add_sample(NAME test_performance_rcan
++               SRCS test_performance_rcan.cpp
++               PUBLIC_REQUIRE vitis_ai_library::rcan)
++vai_add_sample(NAME test_video_rcan
++               SRCS test_video_rcan.cpp
++               PUBLIC_REQUIRE vitis_ai_library::rcan)
+diff --git a/vai_library/samples/refinedet/CMakeLists.txt b/vai_library/samples/refinedet/CMakeLists.txt
+new file mode 100644
+index 000000000..09f3f9747
+--- /dev/null
++++ b/vai_library/samples/refinedet/CMakeLists.txt
+@@ -0,0 +1,19 @@
++
++vai_add_sample(NAME test_accuracy_refinedet
++               SRCS test_accuracy_refinedet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
++vai_add_sample(NAME test_accuracy_refinedet_mt
++               SRCS test_accuracy_refinedet_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
++vai_add_sample(NAME test_jpeg_refinedet
++               SRCS test_jpeg_refinedet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
++vai_add_sample(NAME test_jpeg_refinedet_tf
++               SRCS test_jpeg_refinedet_tf.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
++vai_add_sample(NAME test_performance_refinedet
++               SRCS test_performance_refinedet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
++vai_add_sample(NAME test_video_refinedet
++               SRCS test_video_refinedet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::refinedet)
+diff --git a/vai_library/samples/reid/CMakeLists.txt b/vai_library/samples/reid/CMakeLists.txt
+new file mode 100644
+index 000000000..ded04d47d
+--- /dev/null
++++ b/vai_library/samples/reid/CMakeLists.txt
+@@ -0,0 +1,11 @@
++
++vai_add_sample(NAME test_accuracy_reid 
++               SRCS test_accuracy_reid.cpp
++               PUBLIC_REQUIRE vitis_ai_library::reid)
++vai_add_sample(NAME test_jpeg_reid 
++               SRCS test_jpeg_reid.cpp
++               PUBLIC_REQUIRE vitis_ai_library::reid)
++vai_add_sample(NAME test_performance_reid 
++               SRCS test_performance_reid.cpp
++               PUBLIC_REQUIRE vitis_ai_library::reid)
++
+diff --git a/vai_library/samples/retinaface/CMakeLists.txt b/vai_library/samples/retinaface/CMakeLists.txt
+new file mode 100644
+index 000000000..1319c4325
+--- /dev/null
++++ b/vai_library/samples/retinaface/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_retinaface
++               SRCS test_accuracy_retinaface.cpp
++               PUBLIC_REQUIRE vitis_ai_library::retinaface)
++vai_add_sample(NAME test_jpeg_retinaface
++               SRCS test_jpeg_retinaface.cpp
++               PUBLIC_REQUIRE vitis_ai_library::retinaface)
++vai_add_sample(NAME test_performance_retinaface
++               SRCS test_performance_retinaface.cpp
++               PUBLIC_REQUIRE vitis_ai_library::retinaface)
++vai_add_sample(NAME test_video_retinaface
++               SRCS test_video_retinaface.cpp
++               PUBLIC_REQUIRE vitis_ai_library::retinaface)
+diff --git a/vai_library/samples/segmentation/CMakeLists.txt b/vai_library/samples/segmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..147961654
+--- /dev/null
++++ b/vai_library/samples/segmentation/CMakeLists.txt
+@@ -0,0 +1,22 @@
++
++vai_add_sample(NAME test_accuracy_endov
++               SRCS test_accuracy_endov.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_accuracy_segmentation
++               SRCS test_accuracy_segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_accuracy_segmentation_mt
++               SRCS test_accuracy_segmentation_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_accuracy_unet
++               SRCS test_accuracy_unet.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_jpeg_segmentation
++               SRCS test_jpeg_segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_performance_segmentation
++               SRCS test_performance_segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
++vai_add_sample(NAME test_video_segmentation
++               SRCS test_video_segmentation.cpp
++               PUBLIC_REQUIRE vitis_ai_library::segmentation)
+diff --git a/vai_library/samples/solo/CMakeLists.txt b/vai_library/samples/solo/CMakeLists.txt
+new file mode 100644
+index 000000000..50466afc5
+--- /dev/null
++++ b/vai_library/samples/solo/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_jpeg_solo
++               SRCS test_jpeg_solo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::solo)
++vai_add_sample(NAME test_performance_solo
++               SRCS test_performance_solo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::solo)
++vai_add_sample(NAME test_video_solo
++               SRCS test_video_solo.cpp
++               PUBLIC_REQUIRE vitis_ai_library::solo)
+diff --git a/vai_library/samples/ssd/CMakeLists.txt b/vai_library/samples/ssd/CMakeLists.txt
+new file mode 100644
+index 000000000..91ff83b3c
+--- /dev/null
++++ b/vai_library/samples/ssd/CMakeLists.txt
+@@ -0,0 +1,29 @@
++
++
++vai_add_sample(NAME test_accuracy_mlperf_ssd_resnet34_tf 
++               SRCS test_accuracy_mlperf_ssd_resnet34_tf.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_accuracy_ssd_adas_pruned_0_95
++               SRCS test_accuracy_ssd_adas_pruned_0_95.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_accuracy_ssd_mobilenet_v2
++               SRCS test_accuracy_ssd_mobilenet_v2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_accuracy_ssd_mt
++               SRCS test_accuracy_ssd_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_accuracy_ssd_pedestrian_pruned_0_97
++               SRCS test_accuracy_ssd_pedestrian_pruned_0_97.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_accuracy_ssd_traffic_pruned_0_9
++               SRCS test_accuracy_ssd_traffic_pruned_0_9.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_jpeg_ssd
++               SRCS test_jpeg_ssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_performance_ssd
++               SRCS test_performance_ssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
++vai_add_sample(NAME test_video_ssd
++               SRCS test_video_ssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ssd)
+diff --git a/vai_library/samples/textmountain/CMakeLists.txt b/vai_library/samples/textmountain/CMakeLists.txt
+new file mode 100644
+index 000000000..f82127168
+--- /dev/null
++++ b/vai_library/samples/textmountain/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_textmountain
++               SRCS test_accuracy_textmountain.cpp
++               PUBLIC_REQUIRE vitis_ai_library::textmountain)
++vai_add_sample(NAME test_jpeg_textmountain
++               SRCS test_jpeg_textmountain.cpp
++               PUBLIC_REQUIRE vitis_ai_library::textmountain)
++vai_add_sample(NAME test_performance_textmountain
++               SRCS test_performance_textmountain.cpp
++               PUBLIC_REQUIRE vitis_ai_library::textmountain)
+diff --git a/vai_library/samples/tfssd/CMakeLists.txt b/vai_library/samples/tfssd/CMakeLists.txt
+new file mode 100644
+index 000000000..4f7e0c619
+--- /dev/null
++++ b/vai_library/samples/tfssd/CMakeLists.txt
+@@ -0,0 +1,17 @@
++
++
++vai_add_sample(NAME test_accuracy_tfssd
++               SRCS test_accuracy_tfssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::tfssd PkgConfig::JSONC)
++vai_add_sample(NAME test_accuracy_tfssd_mt
++               SRCS test_accuracy_tfssd_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::tfssd PkgConfig::JSONC)
++vai_add_sample(NAME test_jpeg_tfssd
++               SRCS test_jpeg_tfssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::tfssd)
++vai_add_sample(NAME test_performance_tfssd
++               SRCS test_performance_tfssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::tfssd)
++vai_add_sample(NAME test_video_tfssd
++               SRCS test_video_tfssd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::tfssd)
+diff --git a/vai_library/samples/ultrafast/CMakeLists.txt b/vai_library/samples/ultrafast/CMakeLists.txt
+new file mode 100644
+index 000000000..9b81f7bbd
+--- /dev/null
++++ b/vai_library/samples/ultrafast/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_ultrafast
++               SRCS test_accuracy_ultrafast.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ultrafast)
++vai_add_sample(NAME test_jpeg_ultrafast
++               SRCS test_jpeg_ultrafast.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ultrafast)
++vai_add_sample(NAME test_performance_ultrafast
++               SRCS test_performance_ultrafast.cpp
++               PUBLIC_REQUIRE vitis_ai_library::ultrafast)
+diff --git a/vai_library/samples/unet2d/CMakeLists.txt b/vai_library/samples/unet2d/CMakeLists.txt
+new file mode 100644
+index 000000000..8c0896070
+--- /dev/null
++++ b/vai_library/samples/unet2d/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++vai_add_sample(NAME test_accuracy_unet2d
++               SRCS test_accuracy_unet2d.cpp
++               PUBLIC_REQUIRE vitis_ai_library::unet2d)
++vai_add_sample(NAME test_bin_unet2d
++               SRCS test_bin_unet2d.cpp
++               PUBLIC_REQUIRE vitis_ai_library::unet2d)
++vai_add_sample(NAME test_performance_unet2d
++               SRCS test_performance_unet2d.cpp
++               PUBLIC_REQUIRE vitis_ai_library::unet2d)
+diff --git a/vai_library/samples/vehicleclassification/CMakeLists.txt b/vai_library/samples/vehicleclassification/CMakeLists.txt
+new file mode 100644
+index 000000000..c3607b198
+--- /dev/null
++++ b/vai_library/samples/vehicleclassification/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_vehicleclassification
++               SRCS test_accuracy_vehicleclassification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::vehicleclassification)
++vai_add_sample(NAME test_accuracy_vehicleclassification_mt
++               SRCS test_accuracy_vehicleclassification_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::vehicleclassification)
++vai_add_sample(NAME test_jpeg_vehicleclassification
++               SRCS test_jpeg_vehicleclassification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::vehicleclassification)
++vai_add_sample(NAME test_performance_vehicleclassification
++               SRCS test_performance_vehicleclassification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::vehicleclassification)
++vai_add_sample(NAME test_video_vehicleclassification
++               SRCS test_video_vehicleclassification.cpp
++               PUBLIC_REQUIRE vitis_ai_library::vehicleclassification)
+diff --git a/vai_library/samples/yolov2/CMakeLists.txt b/vai_library/samples/yolov2/CMakeLists.txt
+new file mode 100644
+index 000000000..6db824390
+--- /dev/null
++++ b/vai_library/samples/yolov2/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_yolov2_mt
++               SRCS test_accuracy_yolov2_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov2)
++vai_add_sample(NAME test_jpeg_yolov2
++               SRCS test_jpeg_yolov2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov2)
++vai_add_sample(NAME test_performance_yolov2
++               SRCS test_performance_yolov2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov2)
++vai_add_sample(NAME test_video_yolov2
++               SRCS test_video_yolov2.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov2)
+diff --git a/vai_library/samples/yolov3/CMakeLists.txt b/vai_library/samples/yolov3/CMakeLists.txt
+new file mode 100644
+index 000000000..f5be9fe4f
+--- /dev/null
++++ b/vai_library/samples/yolov3/CMakeLists.txt
+@@ -0,0 +1,32 @@
++
++
++vai_add_sample(NAME test_accuracy_yolov3_coco_416_tf2_mt
++               SRCS test_accuracy_yolov3_coco_416_tf2_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_tiny_yolov3_vmss
++               SRCS test_accuracy_tiny_yolov3_vmss.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_yolov3_adas_pruned_0_9
++               SRCS test_accuracy_yolov3_adas_pruned_0_9.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_yolov3_bdd
++               SRCS test_accuracy_yolov3_bdd.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_yolov3_mt
++               SRCS test_accuracy_yolov3_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_yolov3_voc
++               SRCS test_accuracy_yolov3_voc.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_accuracy_yolov3_voc_tf
++               SRCS test_accuracy_yolov3_voc_tf.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_jpeg_yolov3
++               SRCS test_jpeg_yolov3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_performance_yolov3
++               SRCS test_performance_yolov3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_video_yolov3
++               SRCS test_video_yolov3.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
+diff --git a/vai_library/samples/yolov4/CMakeLists.txt b/vai_library/samples/yolov4/CMakeLists.txt
+new file mode 100644
+index 000000000..c89eea15c
+--- /dev/null
++++ b/vai_library/samples/yolov4/CMakeLists.txt
+@@ -0,0 +1,15 @@
++
++
++vai_add_sample(NAME test_accuracy_yolov4_mt
++               SRCS test_accuracy_yolov4_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_jpeg_yolov4
++               SRCS test_jpeg_yolov4.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_performance_yolov4
++               SRCS test_performance_yolov4.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_video_yolov4
++               SRCS test_video_yolov4.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++
+diff --git a/vai_library/samples/yolov5/CMakeLists.txt b/vai_library/samples/yolov5/CMakeLists.txt
+new file mode 100644
+index 000000000..b2755ffba
+--- /dev/null
++++ b/vai_library/samples/yolov5/CMakeLists.txt
+@@ -0,0 +1,14 @@
++
++vai_add_sample(NAME test_accuracy_yolov5_mt
++               SRCS test_accuracy_yolov5_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_jpeg_yolov5
++               SRCS test_jpeg_yolov5.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_performance_yolov5
++               SRCS test_performance_yolov5.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++vai_add_sample(NAME test_video_yolov5
++               SRCS test_video_yolov5.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov3)
++
+diff --git a/vai_library/samples/yolov6/CMakeLists.txt b/vai_library/samples/yolov6/CMakeLists.txt
+new file mode 100644
+index 000000000..b898e1fa7
+--- /dev/null
++++ b/vai_library/samples/yolov6/CMakeLists.txt
+@@ -0,0 +1,13 @@
++vai_add_sample(NAME test_accuracy_yolov6_mt
++               SRCS test_accuracy_yolov6_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov6)
++vai_add_sample(NAME test_jpeg_yolov6
++               SRCS test_jpeg_yolov6.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov6)
++vai_add_sample(NAME test_performance_yolov6
++               SRCS test_performance_yolov6.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov6)
++vai_add_sample(NAME test_video_yolov6
++               SRCS test_video_yolov6.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov6)
++
+diff --git a/vai_library/samples/yolov7/CMakeLists.txt b/vai_library/samples/yolov7/CMakeLists.txt
+new file mode 100644
+index 000000000..52eecb8f0
+--- /dev/null
++++ b/vai_library/samples/yolov7/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_yolov7_mt
++               SRCS test_accuracy_yolov7_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov7)
++vai_add_sample(NAME test_jpeg_yolov7
++               SRCS test_jpeg_yolov7.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov7)
++vai_add_sample(NAME test_performance_yolov7
++               SRCS test_performance_yolov7.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov7)
++vai_add_sample(NAME test_video_yolov7
++               SRCS test_video_yolov7.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov7)
+diff --git a/vai_library/samples/yolov8/CMakeLists.txt b/vai_library/samples/yolov8/CMakeLists.txt
+new file mode 100644
+index 000000000..fe17498ac
+--- /dev/null
++++ b/vai_library/samples/yolov8/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++vai_add_sample(NAME test_accuracy_yolov8
++               SRCS test_accuracy_yolov8.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov8)
++vai_add_sample(NAME test_jpeg_yolov8
++               SRCS test_jpeg_yolov8.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov8)
++vai_add_sample(NAME test_performance_yolov8
++               SRCS test_performance_yolov8.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov8)
++vai_add_sample(NAME test_video_yolov8
++               SRCS test_video_yolov8.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolov8)
+diff --git a/vai_library/samples/yolovx/CMakeLists.txt b/vai_library/samples/yolovx/CMakeLists.txt
+new file mode 100644
+index 000000000..4a234d664
+--- /dev/null
++++ b/vai_library/samples/yolovx/CMakeLists.txt
+@@ -0,0 +1,16 @@
++
++vai_add_sample(NAME test_accuracy_yolovx_coco_mt
++               SRCS test_accuracy_yolovx_coco_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolovx PkgConfig::JSONC)
++vai_add_sample(NAME test_accuracy_yolovx_mt
++               SRCS test_accuracy_yolovx_mt.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolovx)
++vai_add_sample(NAME test_jpeg_yolovx
++               SRCS test_jpeg_yolovx.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolovx)
++vai_add_sample(NAME test_performance_yolovx
++               SRCS test_performance_yolovx.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolovx)
++vai_add_sample(NAME test_video_yolovx
++               SRCS test_video_yolovx.cpp
++               PUBLIC_REQUIRE vitis_ai_library::yolovx)
+diff --git a/vai_library/samples_onnx/CMakeLists.txt b/vai_library/samples_onnx/CMakeLists.txt
+new file mode 100644
+index 000000000..0f09360b0
+--- /dev/null
++++ b/vai_library/samples_onnx/CMakeLists.txt
+@@ -0,0 +1,108 @@
++#
++# Copyright 2022-2023 Advanced Micro Devices Inc.
++#
++# Licensed under the Apache License, Version 2.0 (the "License"); you may not
++# use this file except in compliance with the License. You may obtain a copy of
++# the License at
++#
++# http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++# License for the specific language governing permissions and limitations under
++# the License.
++#
++
++# set(SAMPLE_ONNX_INSTALL_PATH share/${PROJECT_NAME}/samples_onnx)
++
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 ")
++
++include_directories("${CMAKE_INSTALL_PREFIX}/include/onnxruntime")
++include_directories("${CMAKE_SYSROOT}/usr/include/onnxruntime")
++include_directories("${CMAKE_SYSROOT}/usr/include/xrt")
++#include_directories("${CMAKE_INSTALL_PREFIX}/include")
++#link_directories("${CMAKE_INSTALL_PREFIX}/lib")
++# message("CMAKE_INSTALL_PREFIX " ${CMAKE_INSTALL_PREFIX} )
++
++find_library(ORT_LIBRARY onnxruntime HINTS "${CMAKE_INSTALL_PREFIX}/lib" REQUIRED)
++# find_library(ORT_LIBRARY onnxruntime HINTS "/myspace//build/Release/lib/" REQUIRED)
++
++find_package(glog QUIET)
++find_package(OpenCV COMPONENTS core highgui imgproc)
++find_package(vitis_ai_library )
++find_package(vart COMPONENTS
++             util
++             xrt-device-handle
++             REQUIRED)
++
++if(NOT glog_FOUND)
++  message(STATUS "cannot find glogConfig.cmake fallback to pkg-config")
++  find_package(PkgConfig)
++  pkg_search_module(PKG_GLOG REQUIRED IMPORTED_TARGET GLOBAL libglog)
++  add_library(glog::glog ALIAS PkgConfig::PKG_GLOG)
++endif(NOT glog_FOUND)
++
++#for onnx
++function(vai_overview_add_onnx name model)
++  set(options NO_ACC)
++  set(oneValueArgs ENABLE_IF)
++  set(multiValueArgs REQUIRE)
++  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
++
++  install(
++    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${model}
++    DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/ )
++
++  add_executable( test_${name}_onnx
++    ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_${name}_onnx.cpp)
++
++  if(ARG_REQUIRE)
++    target_link_libraries(test_${name}_onnx PRIVATE ${ARG_REQUIRE} ${ORT_LIBRARY} xrt_core   glog::glog ${OpenCV_LIBS}  vart::util vart::xrt-device-handle) 
++  else(ARG_REQUIRE)
++    target_link_libraries(test_${name}_onnx PRIVATE ${ORT_LIBRARY}  xrt_core  glog::glog ${OpenCV_LIBS}    vart::util vart::xrt-device-handle)
++  endif(ARG_REQUIRE)
++  install(TARGETS test_${name}_onnx DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/${model})
++
++  add_executable( test_performance_${name}_onnx
++    ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_performance_${name}_onnx.cpp)
++  if(ARG_REQUIRE)
++    target_link_libraries(test_performance_${name}_onnx PRIVATE ${ORT_LIBRARY} xrt_core   glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} vitis_ai_library::benchmark vart::util vart::xrt-device-handle)
++  else(ARG_REQUIRE)
++    target_link_libraries( test_performance_${name}_onnx PRIVATE ${ORT_LIBRARY}  xrt_core  glog::glog ${OpenCV_LIBS} vitis_ai_library::benchmark vart::util vart::xrt-device-handle)
++  endif(ARG_REQUIRE)
++  install(TARGETS test_performance_${name}_onnx DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/${model})
++  
++  set(VAI_OVERVIEW_ONNX_WITH_ACC TRUE)
++  if(ARG_NO_ACC)
++    set(VAI_OVERVIEW_ONNX_WITH_ACC FALSE)
++  endif(ARG_NO_ACC)
++
++  if (VAI_OVERVIEW_ONNX_WITH_ACC) 
++    add_executable( test_accuracy_${name}_onnx
++      ${CMAKE_CURRENT_SOURCE_DIR}/${model}/test_accuracy_${name}_onnx.cpp)
++    if(ARG_REQUIRE)
++      target_link_libraries(test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}  xrt_core   glog::glog ${ARG_REQUIRE} ${OpenCV_LIBS} vitis_ai_library::benchmark  vart::util vart::xrt-device-handle)
++    else(ARG_REQUIRE)
++      target_link_libraries( test_accuracy_${name}_onnx PRIVATE ${ORT_LIBRARY}   xrt_core  glog::glog ${OpenCV_LIBS} vitis_ai_library::benchmark   vart::util vart::xrt-device-handle)
++    endif(ARG_REQUIRE)
++    install(TARGETS test_accuracy_${name}_onnx DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/${model})
++  endif(VAI_OVERVIEW_ONNX_WITH_ACC) 
++
++endfunction(vai_overview_add_onnx)
++
++vai_overview_add_onnx(inception_v3_pt inception_v3_pt) 
++vai_overview_add_onnx(resnet50_pt resnet50_pt) 
++vai_overview_add_onnx(vehicle_type_resnet18_pt vehicle_type_resnet18_pt) 
++vai_overview_add_onnx(movenet  movenet REQUIRE  json-c ) 
++vai_overview_add_onnx(rcan rcan NO_ACC)
++
++vai_overview_add_onnx(pointpillars pointpillars)
++vai_overview_add_onnx(yolov7 yolov7)
++vai_overview_add_onnx(yolovx_nano yolovx_nano)
++# vai_overview_add_onnx(inception_v3_multiep inception_v3_multiep)
++
++install(DIRECTORY resnet50_python DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/)
++install(DIRECTORY squeezenet_python DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/)
++install(DIRECTORY vehicle_classification_python DESTINATION ${INSTALL_PATH}/vai_library/samples_onnx/)
++
+diff --git a/vai_runtime/adas_detection/CMakeLists.txt b/vai_runtime/adas_detection/CMakeLists.txt
+new file mode 100644
+index 000000000..8fa930e29
+--- /dev/null
++++ b/vai_runtime/adas_detection/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++#add_executable(adas_detection ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(adas_detection  ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++#
++
++vai_add_sample(NAME adas_detection
++	        SRCS src/main.cc ../common/common.cpp
++                INCLUDE_DIR ../common
++	)
+diff --git a/vai_runtime/common/CMakeLists.txt b/vai_runtime/common/CMakeLists.txt
+new file mode 100644
+index 000000000..329377299
+--- /dev/null
++++ b/vai_runtime/common/CMakeLists.txt
+@@ -0,0 +1,3 @@
++
++# message("hello1")
++
+diff --git a/vai_runtime/inception_v1_mt_py/CMakeLists.txt b/vai_runtime/inception_v1_mt_py/CMakeLists.txt
+new file mode 100644
+index 000000000..6e2a07d40
+--- /dev/null
++++ b/vai_runtime/inception_v1_mt_py/CMakeLists.txt
+@@ -0,0 +1,3 @@
++
++#message("hello1")
++
+diff --git a/vai_runtime/pose_detection/CMakeLists.txt b/vai_runtime/pose_detection/CMakeLists.txt
+new file mode 100644
+index 000000000..ed5a31882
+--- /dev/null
++++ b/vai_runtime/pose_detection/CMakeLists.txt
+@@ -0,0 +1,13 @@
++
++#add_executable(pose_detection 
++#               ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp 
++#               ${CMAKE_CURRENT_SOURCE_DIR}/src/pose.cpp 
++#               ${CMAKE_CURRENT_SOURCE_DIR}/src/ssd.cpp 
++#       	       ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(pose_detection  ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++vai_add_sample(NAME pose_detection
++                SRCS src/main.cpp src/pose.cpp src/ssd.cpp ../common/common.cpp
++                INCLUDE_DIR ../common
++        )
++
+diff --git a/vai_runtime/resnet50/CMakeLists.txt b/vai_runtime/resnet50/CMakeLists.txt
+new file mode 100644
+index 000000000..61212935d
+--- /dev/null
++++ b/vai_runtime/resnet50/CMakeLists.txt
+@@ -0,0 +1,9 @@
++
++#add_executable(resnet50 ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(resnet50 ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++#
++vai_add_sample(NAME resnet50
++                SRCS src/main.cc  ../common/common.cpp
++                INCLUDE_DIR ../common
++        )
+diff --git a/vai_runtime/resnet50_ext/CMakeLists.txt b/vai_runtime/resnet50_ext/CMakeLists.txt
+new file mode 100644
+index 000000000..41cc65383
+--- /dev/null
++++ b/vai_runtime/resnet50_ext/CMakeLists.txt
+@@ -0,0 +1,7 @@
++
++#add_executable(resnet50_ext ${CMAKE_CURRENT_SOURCE_DIR}/resnet50.cpp )
++#target_link_libraries(resnet50_ext ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++vai_add_sample(NAME resnet50_ext
++                SRCS resnet50.cpp
++        )
++
+diff --git a/vai_runtime/resnet50_mt_py/CMakeLists.txt b/vai_runtime/resnet50_mt_py/CMakeLists.txt
+new file mode 100644
+index 000000000..329377299
+--- /dev/null
++++ b/vai_runtime/resnet50_mt_py/CMakeLists.txt
+@@ -0,0 +1,3 @@
++
++# message("hello1")
++
+diff --git a/vai_runtime/resnet50_pt/CMakeLists.txt b/vai_runtime/resnet50_pt/CMakeLists.txt
+new file mode 100644
+index 000000000..717b7dd74
+--- /dev/null
++++ b/vai_runtime/resnet50_pt/CMakeLists.txt
+@@ -0,0 +1,9 @@
++
++#add_executable(resnet50_pt ${CMAKE_CURRENT_SOURCE_DIR}/resnet50_pt.cpp  )
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(resnet50_pt ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++
++vai_add_sample(NAME resnet50_pt
++                SRCS resnet50_pt.cpp  
++                INCLUDE_DIR ../common
++        )
+diff --git a/vai_runtime/segmentation/CMakeLists.txt b/vai_runtime/segmentation/CMakeLists.txt
+new file mode 100644
+index 000000000..ead10a4e5
+--- /dev/null
++++ b/vai_runtime/segmentation/CMakeLists.txt
+@@ -0,0 +1,9 @@
++
++#add_executable(segmentation ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(segmentation ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++#
++vai_add_sample(NAME segmentation
++                SRCS src/main.cc ../common/common.cpp
++                INCLUDE_DIR ../common
++        )
+diff --git a/vai_runtime/squeezenet_pytorch/CMakeLists.txt b/vai_runtime/squeezenet_pytorch/CMakeLists.txt
+new file mode 100644
+index 000000000..bd00bf51f
+--- /dev/null
++++ b/vai_runtime/squeezenet_pytorch/CMakeLists.txt
+@@ -0,0 +1,9 @@
++
++#add_executable( squeezenet_pytorch ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries( squeezenet_pytorch  ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++
++vai_add_sample(NAME squeezenet_pytorch
++                SRCS src/main.cc ../common/common.cpp
++                INCLUDE_DIR ../common
++        )
+diff --git a/vai_runtime/video_analysis/CMakeLists.txt b/vai_runtime/video_analysis/CMakeLists.txt
+new file mode 100644
+index 000000000..a9d2217c6
+--- /dev/null
++++ b/vai_runtime/video_analysis/CMakeLists.txt
+@@ -0,0 +1,10 @@
++
++#add_executable(video_analysis ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc ${CMAKE_CURRENT_SOURCE_DIR}/../common/common.cpp)
++#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
++#target_link_libraries(video_analysis  ${OpenCV_LIBS} glog xir unilog vart-runner  pthread)
++
++vai_add_sample(NAME video_analysis
++                SRCS src/main.cc ../common/common.cpp
++                INCLUDE_DIR ../common
++        )
++
+-- 
+2.17.1
+

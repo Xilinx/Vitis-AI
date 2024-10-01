@@ -166,6 +166,12 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
         'convert_hard_sigmoid_to_dpu_version': [
             vitis_pof2s_quantize_transforms.ConvertHardSigmoidToDpuVersion(),
         ],
+        'convert_softmax_to_dpu_version': [
+            vitis_pof2s_quantize_transforms.ConvertSoftmaxToDpuVersion(),
+        ],
+        'convert_layernorm_to_dpu_version': [
+            vitis_pof2s_quantize_transforms.ConvertLayernormToDpuVersion(),
+        ],
         'convert_average_pooling2d_to_dpu_version': [
             vitis_pof2s_quantize_transforms.ConvertAveragePooling2DToDpuVersion(
             ),
@@ -186,7 +192,8 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
                              './debug/')
 
     annotate_transforms = [
-        vitis_pof2s_quantize_transforms.AnnotateConvBNAct(),
+        vitis_pof2s_quantize_transforms.AnnotateConvBNAct(
+            pre_annotated_model, quantize_registry),
         vitis_pof2s_quantize_transforms.AnnotateConvAct(pre_annotated_model,
                                                         quantize_registry),
         vitis_pof2s_quantize_transforms.AnnotateAddAct(pre_annotated_model,
@@ -194,6 +201,7 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
         vitis_pof2s_quantize_transforms.AnnotatePoolAct(pre_annotated_model,
                                                         quantize_registry),
     ]
+
     annotated_model, layer_metadata = model_transformer.ModelTransformer(
         pre_annotated_model, annotate_transforms, candidate_layers,
         layer_metadata).recursive_transform()
@@ -207,7 +215,8 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
         vitis_pof2s_quantize_transforms.ConvBNQuantize(
             quantize_registry, mode, configs['freeze_bn_delay']),
     ]
-    if "quantize_with_xcompiler" in configs and configs["quantize_with_xcompiler"]:
+    if "quantize_with_xcompiler" in configs and configs[
+        "quantize_with_xcompiler"]:
       for _, LayerQuantize in vitis_pof2s_quantize_transforms_with_xcompiler.quantize_pattern_dict.items(
       ):
         quantize_transforms.append(LayerQuantize(annotated_model, mode, target))
@@ -215,11 +224,20 @@ class VitisPof2SQuantizeTransformsPipeline(TransformsPipeline):
       quantize_transforms.append(
           vitis_pof2s_quantize_transforms.LayersQuantize(
               annotated_model, quantize_registry, mode))
-    quantize_transforms.extend([
+    quantize_transforms.append(
+        vitis_pof2s_quantize_transforms.TFOpLambdaQuantize(annotated_model,
+            quantize_registry, mode))
+    if "quantize_with_xcompiler" in configs and configs[
+        "quantize_with_xcompiler"]:
+      quantize_transforms.append(
+        vitis_pof2s_quantize_transforms_with_xcompiler.LayersInputQuantize(
+            quantize_registry, mode))
+    else:
+      quantize_transforms.append(
         vitis_pof2s_quantize_transforms.LayersInputQuantize(
-            quantize_registry, mode),
-        vitis_pof2s_quantize_transforms.CustomLayerWrapper(quantize_registry)
-    ])
+            quantize_registry, mode))
+    quantize_transforms.append(
+        vitis_pof2s_quantize_transforms.CustomLayerWrapper(quantize_registry))
 
     quantized_model, layer_metadata = model_transformer.ModelTransformer(
         annotated_model, quantize_transforms, candidate_layers,
@@ -305,7 +323,7 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
       refined_model, input_tensor_list = model_utils.modify_input_shape(
           refined_model, input_shape, calib_dataset=dataset)
       input_tensor_list = dataset
-      refined_model.predict(input_tensor_list, batch_size=1, steps=1);
+      refined_model.predict(input_tensor_list, batch_size=1, steps=1)
 
     if add_shape_info:
       logger.info("Start Getting Shape Information...")
@@ -317,10 +335,10 @@ class VitisPof2SRefineTransformsPipeline(TransformsPipeline):
                                './debug/')
       logger.info("Getting Shape Information Done.")
     if input_shape:
-      if isinstance(input_shape, list) or isinstance(input_shape,tuple):
+      if isinstance(input_shape, list) or isinstance(input_shape, tuple):
         input_shape_slice = input_shape[1:]
       elif isinstance(input_shape, dict):
-        for k,v in input_shape.items():
+        for k, v in input_shape.items():
           input_shape_slice = v[1:]
           input_shape = v
 
@@ -358,21 +376,6 @@ class VitisPof2SFinalizeTransformsPipeline(TransformsPipeline):
           "No `output_format` found, skip model format conversion and output.")
       return finalized_model, layer_metadata
 
-    formats = {'h5': '.h5', 'tf': '', 'onnx': '.onnx'}
-    if configs['output_format'] not in formats:
-      logger.error(
-          "Invalid output_format: {}, supported output_format are: {}".format(
-              configs['output_format'], list(formats.keys())))
-
-    finalized_model_name = 'quantized_model'
-    if configs['output_format'] == 'onnx':
-      onnx_opset_version = configs['onnx_opset_version']
-      model_utils.convert_to_onnx(finalized_model, configs['output_dir'],
-                                  finalized_model_name, onnx_opset_version)
-    else:
-      filepath = os.path.join(
-          configs['output_dir'],
-          'quantized_model' + formats[configs['output_format']])
-      finalized_model.save(filepath, save_format=configs['output_format'])
+    model_utils.save_func_model(finalized_model, configs)
 
     return finalized_model, layer_metadata

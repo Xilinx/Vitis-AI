@@ -5,7 +5,7 @@
  </tr>
 </table>
 
-## Vitis AI Runtime v3.0
+## Vitis AI Runtime v3.5
 
 # Introduction
 
@@ -26,7 +26,7 @@ Vitis AI Runtime directory structure introduction
 --------------------------------------------------
 
 ```
-vai_runtime
+vai_runtime/
 ├── plugin-samples
 │   ├── cmake
 │   ├── CMakeLists.txt
@@ -34,7 +34,6 @@ vai_runtime
 │   ├── README.md
 │   └── samples
 ├── quick_start_for_embedded.md
-├── quick_start_for_rnn.md
 ├── README.md
 ├── target_factory
 │   ├── build.bat
@@ -74,12 +73,10 @@ vai_runtime
 │   ├── dummy-runner
 │   ├── mem-manager
 │   ├── README.md
-│   ├── rnn-runner
 │   ├── runner
 │   ├── softmax-runner
 │   ├── softmax-runner-cpu
 │   ├── trace
-│   ├── trace-logging
 │   ├── util
 │   ├── xrnn-runner
 │   └── xrt-device-handle
@@ -101,5 +98,3 @@ vai_runtime
 For edge users, click 
 [Quick Start For Embedded](./quick_start_for_embedded.md) to get started quickly. 
 
-For rnn users, click 
-[Quick Start For RNN](./quick_start_for_rnn.md) to get started quickly.

@@ -1,0 +1,45 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: fadnetv2 for disparity estimation on tartanair
+input size: 576*960
+float ops: 412G
+task: disparity estimation
+framework: pytorch
+prune: 'no'
+version: 3.5
+files:
+- name: pt_fadnetv2_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_fadnetv2_3.5.zip 
+  checksum: f7f77355ded8363f12dd8ed3ef2cd783
+- name: FADNet_v2_0_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_0_pt-vek280-r3.5.0.tar.gz
+  checksum: c735f9ebb8ee4c2df7cdb535f7b2c4d9
+- name: FADNet_v2_1_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_1_pt-vek280-r3.5.0.tar.gz
+  checksum: 27afc5889d321eb9afec0a11ebe1f33f
+- name: FADNet_v2_2_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=FADNet_v2_2_pt-vek280-r3.5.0.tar.gz
+  checksum: 80fea34f248df197c4a387b1f190ecb4
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

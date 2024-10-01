@@ -1,0 +1,438 @@
+###############################
+Quick Start Guide for Alveo V70
+###############################
+
+The AMD **DPUCV2DX8G** for the Alveo |trade| V70 is a configurable computation engine dedicated to convolutional neural networks. It supports a highly optimized instruction set, enabling the deployment of most convolutional neural networks. The following instructions will help you install the software and packages required to support V70.
+
+.. image:: ../reference/images/V70.PNG
+	:width: 1300
+
+*************
+Prerequisites
+*************
+
+System Requirements
+===================
+
+-  Confirm that your development machine meets the minimum :doc:`Host System Requirements <../reference/system_requirements>`.
+-  Confirm that you have at least **100GB** of free space in the target partition.
+
+Applicable Targets
+==================
+
+-  This quickstart is applicable to the `V70 <https://www.xilinx.com/applications/data-center/v70.html>`__
+
+
+**********
+Quickstart
+**********
+
+Clone the Vitis AI Repository
+=============================
+
+.. code-block:: Bash
+
+        [Host] $ git clone https://github.com/Xilinx/Vitis-AI
+
+
+Alveo V70 Setup
+================
+
+A script is provided to drive the V70 card setup process.
+
+.. note:: You should run this script on the host machine, OUTSIDE of the Docker container. After the script has executed successfully, manually reboot the host server once. For data center DPUs, Vitis |trade| AI 3.5 specifically leverages the 2022.2 versions of the Vitis tools, V70 platform, XRT and XRM.  No, that is not a typo - 2022 is correct.
+
+This script will detect the operating system of the host, and will download and install the appropriate packages for that operating system.
+
+Execute this script as follows:
+
+.. code-block::
+
+   [Host] $ cd <Vitis-AI install path>/Vitis-AI/board_setup/v70
+   [Host] $ source ./install.sh
+
+
+
+The following installation steps are performed by this script:
+
+1. XRT Installation. The `Xilinx RunTime (XRT) <https://github.com/Xilinx/XRT>`__ is a combination of userspace and kernel driver components supporting PCIe accelerator cards such as the V70. 
+2. XRM Installation. The `Xilinx Resource Manager (XRM) <https://github.com/Xilinx/XRM/>`__ manages and controls FPGA resources on the host. It is required by the runtime.
+3. Installation of the V70 platform.
+4. Installation of the DPU xclbin for the V70 platform.
+
+After the script is executed successfully, use the XRT `xbutil` command to check that the installation was successful. The result should contain the correct information for System Configuration, XRT and Devices present.
+
+.. code-block::
+
+   [Host] $ /opt/xilinx/xrt/bin/xbutil examine
+	  
+
+Install Docker
+==============
+
+- Make sure that the Docker engine is installed according to the official Docker `documentation <https://docs.docker.com/engine/install/>`__.
+
+- The Docker daemon always runs as the root user. Non-root users must be `added <https://docs.docker.com/engine/install/linux-postinstall/>`__ to the docker group. Do this now.
+
+Verify Docker Installation
+==========================
+
+- Perform a quick and simple test of your Docker installation by executing the following command.  This command will download a test image from Docker Hub and run it in a container. When the container runs successfully, it prints a "Hello World" message and exits. 
+
+.. code-block:: Bash
+	
+	[Host] $ docker run hello-world
+
+- Finally, verify that the version of Docker that you have installed meets the minimum :doc:`Host System Requirements <../reference/system_requirements>` by running the following command
+
+.. code-block:: Bash
+	
+	[Host] $ docker --version
+
+Pull Vitis AI Docker
+====================
+
+In order to simplify this quickstart tutorial, we will utilize the Vitis-AI PyTorch CPU Docker to assess pre-built Vitis-AI examples, and subsequently perform quantization and compilation of our own model. The CPU docker image is generic, does not require the user to build the container, and has no specific GPU enablement requirements.  More advanced users can optionally skip this step and jump to the :doc:`Full Install Instructions <../install/install>` but we would recommend that new users start with this simpler first step.
+Pull and start the latest Vitis AI Docker using the following commands:
+
+.. code-block:: Bash
+
+	[Host] $ docker pull xilinx/vitis-ai-pytorch-cpu:latest
+	[Host] $ cd <Vitis-AI install path>/Vitis-AI/
+	[Host] $ ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+
+Docker Container Environment Variable Setup
+===========================================
+
+From inside the docker container, execute one of the following commands to set the required environment variables for the DPU.  Note that the chosen xclbin file must be in the ``/opt/xilinx/overlaybins`` directory prior to execution. Select the xclbin that matches your chosen DPU configuration.
+
+.. code-block:: Bash
+
+	[Docker] $ source /workspace/board_setup/v70/setup.sh DPUCV2DX8G_v70
+
+.. note:: You will need to execute this script each time you re-enter the Docker container.	  
+	  
+Vitis-AI Model Zoo
+==================
+   
+You can now select a model from the `Vitis AI Model Zoo <../workflow-model-zoo.html>`__.  Navigate to the  `model-list subdirectory  <https://github.com/Xilinx/Vitis-AI/tree/master/model_zoo/model-list>`__  and select the model that you wish to test. For each model, a YAML file provides key details of the model. In the YAML file there are separate hyperlinks to download the model for each supported target.  Choose the correct link for your target platform and download the model.
+
+- Take the ResNet50 model as an example.
+
+.. code-block:: Bash
+
+	[Docker] $ wget https://www.xilinx.com/bin/public/openDownload?filename=resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -O resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz
+	[Docker] $ tar -xzvf resnet50-v70-DPUCV2DX8G-r3.5.0.tar.gz -C /usr/share/vitis_ai_library/models/
+
+- If the ``/usr/share/vitis_ai_library/models`` folder does not exist, create it first.
+
+.. code-block:: Bash
+
+	[Docker] $ sudo mkdir /usr/share/vitis_ai_library/models
+
+Run the Vitis AI Examples
+=========================
+
+1. Download `vitis_ai_runtime_r3.5.0_image_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz>`__ to your host.
+
+.. code-block:: Bash
+
+	[Docker] $ cd ~
+	[Docker] $ wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_runtime_r3.5.0_image_video.tar.gz -O vitis_ai_runtime_r3.5.0_image_video.tar.gz
+
+
+2. Extract the ``vitis_ai_runtime_r3.5.0_image_video.tar.gz`` package.
+
+.. code-block:: Bash
+
+	[Docker] $ tar -xzvf vitis_ai_runtime_r3.5.0_image_video.tar.gz -C /workspace/examples/vai_runtime
+	
+3. Navigate to the example directory.
+
+.. code-block:: Bash
+	
+	[Docker] $ cd /workspace/examples/vai_runtime/resnet50
+	
+
+4. Compile the example.
+
+.. code-block:: Bash
+
+	[Docker] $ sudo chmod u+r+x build.sh
+	[Docker] $ bash -x build.sh
+
+5. Run the example.
+
+.. code-block:: Bash
+	
+	[Docker] $ ./resnet50 /usr/share/vitis_ai_library/models/resnet50/resnet50.xmodel
+	
+		
+6. The console should reflect the following output: 
+
+.. code-block:: Bash	
+		
+	Image : 001.jpg
+	top[0] prob = 0.982662  name = brain coral
+	top[1] prob = 0.008502  name = coral reef
+	top[2] prob = 0.006621  name = jackfruit, jak, jack
+	top[3] prob = 0.000543  name = puffer, pufferfish, blowfish, globefish
+	top[4] prob = 0.000330  name = eel
+
+These results reflect the classification of a single test image located in the ``Vitis-AI/examples/vai_library/images`` directory.
+			
+
+****************
+PyTorch Tutorial
+****************
+This tutorial assumes that Vitis AI has been installed and that the board has been configured as explained in the installation instructions above. For additional information on the Vitis AI Quantizer, Optimizer, or Compiler, please refer to the Vitis AI User Guide.
+
+
+Quantizing the Model
+====================
+
+Quantization reduces the precision of network weights and activations to optimize memory usage and computational efficiency while maintaining acceptable levels of accuracy. Inference is computationally expensive and requires high memory bandwidths to satisfy the
+low-latency and high-throughput requirements of Edge applications. Quantization and channel pruning techniques are employed to address these issues while achieving high performance and high energy efficiency with little degradation in accuracy. The Vitis AI Quantizer takes a 
+floating-point model as an input and performs pre-processing (folds batchnorms and removes nodes not required for inference), and finally quantizes the weights/biases and activations to the given bit width.
+
+
+1. Navigate to the cloned Vitis-AI directory and create a new workspace for your project.  Here you will store the test dataset, models, and python scripts required for quantization.
+
+.. code-block:: Bash
+
+	[Host] $ cd ~/Vitis-AI
+	[Host] $ mkdir -p resnet18/model
+	
+
+2. Download the `ImageNet 1000 (mini) <https://www.kaggle.com/datasets/ifigotin/imagenetmini-1000/download?datasetVersionNumber=1>`__ dataset from Kaggle. This dataset is subset of the ILSVRC 2012-2017 dataset and comprises 1000 object classes, and contains 1,281,167 training, 50,000 validation, and 100,000 test images.  You will need to create a Kaggle account to access this dataset.  Move the downloaded Archive.zip file into the created /Vitis-AI/resnet18 folder and unzip the dataset.
+
+.. code-block:: Bash
+
+	[Host] $ cd resnet18
+	[Host] $ unzip Archive.zip
+	
+- Your workspace directory should reflect the following: 
+
+::
+
+	├── Archive.zip
+	│
+	├── model    
+	│                                    
+	└── imagenet-mini
+		├── train                    # Training images folder. Will not be used in this tutorial. 
+		│   └─── n01440764           # Class folders to group images. 
+		└── val                      # Validation images that will be used for quantization and evaluation of the floating point model. 
+		    └─── n01440764
+    
+
+
+3. Navigate to the Vitis-AI directory and execute the following command to start Docker.
+	
+.. code-block:: Bash
+	
+	[Host] $ cd ..
+	[Host] ./docker_run.sh xilinx/vitis-ai-pytorch-cpu:latest
+
+* Note that when you start Docker appropriate as shown above, your ``/workspace`` folder will correspond to ``/Vitis-AI`` and your initial path in Docker will be ``/workspace``.  If you inspect ``docker_run.sh`` you can see that the -v option is leveraged which links the Docker file system to your Host file system.  Verify that you see the created ``/resnet18`` subfolder in your workspace:
+
+.. code-block:: Bash
+	
+	[Docker] $ ls
+
+4. Next, download the pre-trained resnet18 model from PyTorch to the docker environment and store it in the  ``model``  folder . This is the floating point (FP32) model that will be quantized to INT8 precision for deployment on the target. Also, since you have re-entered the Docker container, you need to re-run the setup script.  
+
+.. code-block:: Bash
+
+	[Docker] $ source /workspace/board_setup/v70/setup.sh DPUCV2DX8G_v70
+	[Docker] $ cd resnet18/model
+	[Docker] $ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -O resnet18.pth
+
+.. note:: The `Vitis AI Model Zoo <../workflow-model-zoo.html>`__ also provides optimized deep learning models to speed up the deployment of deep learning inference on adaptable AMD platforms. For this tutorial we have chosen to use an open-source PyTorch model to showcase that models from the community can also be deployed.
+
+
+5. Copy the example Vitis AI ResNet18 quantization script to your workspace. This script contains the Quantizer API calls that will be executed in order to quantize the model.
+
+.. code-block:: Bash	
+
+	[Docker] $ cd ..
+	[Docker] $ cp ../src/vai_quantizer/vai_q_pytorch/example/resnet18_quant.py ./
+
+* Your ``workspace/resnet18`` directory should reflect the following: 
+
+::
+
+	├── Archive.zip
+	│
+	├── model 
+	│   └── resnet18.pth             # ResNet18 floating point model downloaded from PyTorch.
+	│                                    
+	├── imagenet-mini
+	│   ├── train                    # Training images folder. Will not be used in this tutorial. 
+	│   │   └─── n01440764           # Class folders to group images. 
+	│   └── val                      # Validation images that will be used for quantization and evaluation of the floating point model. 
+	│       └─── n01440764
+	│
+	└── resnet18_quant.py            # Quantization python script.
+ 
+ 
+* Inspect ``resnet18_quant.py``.  Observe the parser arguments that can be passed to the script via command line switches ``subset_len`` ``quant_mode`` ``data_dir`` and ``model_dir``.  We will set the ``data_dir`` and ``model_dir`` arguments to align with our directory structure.  If you wish to avoid extraneous typing and are manually entering these commands, you can simply edit the script to suit your use case.
+
+.. code-block:: Bash	
+
+	[Docker] $ vim resnet18_quant.py
+
+* Use the sequence ``<esc> :q!`` to exit vim without saving.	
+
+6. Run the command below to evaluate the accuracy of the floating point model.
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode float --data_dir imagenet-mini --model_dir model
+
+* You should observe that the accuracy reported is similar to  ``top-1 / top-5 accuracy: 69.9975 / 88.7586``
+	
+7. Next, let's activate the pytorch conda env and run the Model Inspector to confirm that this model should be compatible with the target DPU architecture.
+
+.. code-block:: Bash	
+
+        [Docker] $ conda activate vitis-ai-pytorch
+	[Docker] $ python resnet18_quant.py --quant_mode float --inspect --target DPUCV2DX8G_ISA1_C20B14 --model_dir model
+	
+
+8. Run the command below to start quantization. Generally, 100-1000 images are required for quantization and the number of iterations can be controlled through the the ``subset_len`` data loading argument. In this case, 200 images are forward propagated through the network, and these images are chosen randomly from the validation image set.  Note that the displayed loss and accuracy that are output from this process are not representative of final model accuracy.
+
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode calib --data_dir imagenet-mini --model_dir model --subset_len 200
+
+* On most host machines this command should complete in less than 1 minute even with the CPU-only Docker.  If you leverage the CUDA or ROCm Dockers on a compatible machine, the Quantization process will be accelerated considerably.  Let's take a look at the output:
+
+.. code-block:: Bash	
+
+	[Docker] $ cd quantize_result
+	[Docker] $ ls
+
+* If the command ran successfully, the output directory ``quantize_result`` will be generated, containing two important files:
+
+	-``ResNet.py``
+		The quantized vai_q_pytorch format model.
+	-``Quant_info.json``
+		Quantization steps of tensors. Retain this file for evaluation of the quantized model./
+		
+		
+9. To evaluate the accuracy of the quantized model, return to the ``/resnet18`` directory run the following commands.  Note that on CPU-only host machines this command will take some time to complete (~20 minutes).  If you are in a hurry, you can skip this step and move to the next.
+
+.. code-block:: Bash	
+
+	[Docker] $ cd ..
+	[Docker] $ python resnet18_quant.py --model_dir model --data_dir imagenet-mini --quant_mode test
+
+You should observe that the accuracy reported will be similar to ``top-1 / top-5 accuracy: 69.1308 / 88.7076``.  The net accuracy loss due to quantization is less than 1%.
+
+10. To generate the quantized ``.xmodel`` file that will subsequently be compiled for the DPU, run the following command with ``batch_size`` and ``subset_len`` arguments set to 1 to avoid redundant iterations.
+
+.. code-block:: Bash	
+
+	[Docker] $ python resnet18_quant.py --quant_mode test --subset_len 1 --batch_size=1 --model_dir model --data_dir imagenet-mini --deploy
+
+
+Compile the Model
+=================
+The Vitis AI Compiler compiles the graph operators as a set of micro-coded instructions that are executed by the DPU.  In this step, we will compile the ResNet18 model that we quantized in the previous step.
+
+
+1. The compiler takes the quantized ``INT8.xmodel`` and generates the deployable ``DPU.xmodel`` by running the command below.  Note that you must modify the command to specify the appropriate ``arch.json`` file for your target.  For V70 targets, these are located in the folder ``/opt/vitis_ai/compiler/arch/DPUCV2DX8G`` inside the Docker container.
+
+.. code-block:: Bash
+	
+	[Docker] $ cd /workspace/resnet18
+	[Docker] $ vai_c_xir -x quantize_result/ResNet_int.xmodel -a /opt/vitis_ai/compiler/arch/DPUCV2DX8G/V70/arch.json -o resnet18_pt -n resnet18_pt 
+
+- If compilation is successful, the ``resnet18_pt.xmodel`` file should be generated according to the specified DPU architecture. 
+
+2. Create a new file with your text editor of choice and name the file ``resnet18_pt.prototxt``. Copy and paste the following lines of code:
+
+.. code-block:: Bash
+
+	model {
+	   name : "resnet18_pt"
+	   kernel {
+		 name: "resnet18_pt_0"
+		 mean: 103.53
+		 mean: 116.28
+		 mean: 123.675
+		 scale: 0.017429
+		 scale: 0.017507
+		 scale: 0.01712475
+	   }
+	   model_type : CLASSIFICATION
+	   classification_param {
+		  top_k : 5
+		  test_accuracy : false
+		  preprocess_type : VGG_PREPROCESS
+	   }
+	}
+
+- The ``.prototxt`` file is a Vitis |trade| AI configuration file that facilitates the uniform configuration management of model parameters. Please refer to the Vitis AI User Guide to learn more.
+
+
+- We can now deploy the quantized and compiled model on the V70 accelerator card. 
+
+Model Deployment
+================
+
+1. Copy the ``resnet18_pt`` folder into the ``/usr/share/vitis_ai_library/models/`` directory.  This will locate your compiled model in the default Vitis AI Library example model directory, alongside the other Vitis AI example models.  Our purpose in doing this is to simplify the commands that follow, in which we will execute the Vitis AI Library samples with our model.
+
+2. The `vitis_ai_library_r3.5.0_images.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz>`__ and `vitis_ai_library_r3.5.0_video.tar.gz <https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz>`__ packages 
+contain test images and videos that can be leveraged to evaluate our quantized model and other pre-built Vitis-AI Library examples. 
+
+	a. Download the packages.
+	
+	.. code-block:: Bash
+
+		[Docker] $ cd /workspace
+		[Docker] $ wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_images.tar.gz -O vitis_ai_library_r3.5.0_images.tar.gz
+		[Docker] $ wget https://www.xilinx.com/bin/public/openDownload?filename=vitis_ai_library_r3.5.0_video.tar.gz -O vitis_ai_library_r3.5.0_video.tar.gz
+	
+
+	b. Untar the files.
+
+	.. code-block:: Bash
+	
+		[Docker] $ tar -xzvf vitis_ai_library_r3.5.0_images.tar.gz -C /workspace/examples/vai_library/
+		[Docker] $ tar -xzvf vitis_ai_library_r3.5.0_video.tar.gz -C /workspace/examples/vai_library/
+
+3. Enter the directory of the sample and then compile it.
+
+.. code-block:: Bash
+
+	[Docker] $ cd /workspace/examples/vai_library/samples/classification
+	[Docker] $ ./build.sh
+
+4. Execute the single-image test application.
+
+.. code-block:: Bash
+
+	[Docker] $ ./test_jpeg_classification resnet18_pt /workspace/examples/vai_library/samples/classification/images/001.JPEG
+
+If you wish to do so, you can review the `result.jpg` file.  OpenCV function calls have been used to overlay the predictions.
+
+5. To run the video example, run the following command:
+
+.. code-block:: Bash
+
+	[Docker] $ ./test_video_classification resnet18_pt /workspace/examples/vai_library/apps/seg_and_pose_detect/pose_960_540.avi -t 8
+
+7. The output should be as follows:
+
+.. image:: ../reference/images/Wallace.png
+    :width: 1300
+
+- Congratulations! You have successfully quantized, compiled, and deployed a pre-trained model onto the V70 accelerator card. 
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

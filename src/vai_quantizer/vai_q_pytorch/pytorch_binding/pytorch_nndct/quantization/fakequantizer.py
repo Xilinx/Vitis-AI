@@ -25,40 +25,33 @@ import pathlib
 #from scipy import stats
 from collections import namedtuple
 from pytorch_nndct.version import __version__
-from nndct_shared.quantization import NewBaseQuantizer
+from nndct_shared.quantization import BaseQuantizer
+from pytorch_nndct.quantization import QuantizerImpl
+from pytorch_nndct.quantization import is_valid_tensor_for_quantizer, has_inf_nan
 from nndct_shared.base import GLOBAL_MAP, NNDCT_KEYS, NNDCT_OP
 from nndct_shared.base.key_names import FrameworkType
 from nndct_shared.utils import NndctOption, tensor_util, NndctScreenLogger, QError, QWarning, QNote
 import nndct_shared.utils as nndct_utils
+from nndct_shared.quantization import CPUGPUQConfigImp
 
-from pytorch_nndct.quantization import NndctCGQstrategy, TensorRTCGQStrategy
+from pytorch_nndct.quantization import TorchNndctQstrategy, TorchTRTQstrategy, TorchMPQstrategy
 from pytorch_nndct.quantization import PerChannelQuantAlgo
 from pytorch_nndct.parse.parse_utils import ValueDeviceInfo
 from pytorch_nndct.qproc.utils import quant_model_inferenced
 
-
-def has_inf_nan():
-  return hasattr(torch, "isinf") and hasattr(torch, "isnan")
-
-def is_valid_tensor_for_quantizer(tensor):
-  if has_inf_nan():
-    inf = torch.isinf(tensor)
-    nan = torch.isnan(tensor)
-    if inf.sum() > 0 or nan.sum() > 0:
-        return False
-  return True
-
-class FakeQuantizer(NewBaseQuantizer):
+class FakeQuantizer(BaseQuantizer, QuantizerImpl):
   
   def __init__(self, 
                quant_mode: int,
                output_dir: str,
                quant_config,
                is_lstm = False):
-    super().__init__(quant_mode,
-                     output_dir,
-                     quant_config,
-                     is_lstm)
+    BaseQuantizer.__init__(self,
+                           quant_mode,
+                           output_dir,
+                           quant_config,
+                           is_lstm)
+    QuantizerImpl.__init__(self)
     if NndctOption.nndct_param_corr.value > 0:
       if self.quant_mode == 2:
         path = pathlib.Path(self.bias_corr_file)
@@ -69,18 +62,19 @@ Please check calibration with bias correction is done or not.")
         self.bias_corr = torch.load(self.bias_corr_file)
         self._bias_corr_loaded = True
 
-    self.exporting = False
-    self.inplace = True
     self.serial = True
     self.inferenced = False
     #self._fast_finetuned = False
     self.output_dir = output_dir
     self._scripts = []
     
-    if NndctOption.nndct_tensorrt_strategy.value:
-      self.quant_strategy = TensorRTCGQStrategy(quant_config, is_lstm)
+    self.quant_config_imp = CPUGPUQConfigImp()
+    if NndctOption.nndct_only_int_quant.value is False:
+      self.quant_strategy = TorchMPQstrategy(quant_config, self.quant_config_imp, is_lstm)
+    elif NndctOption.nndct_tensorrt_strategy.value:
+      self.quant_strategy = TorchTRTQstrategy(quant_config, self.quant_config_imp, is_lstm)
     else:
-      self.quant_strategy = NndctCGQstrategy(quant_config, is_lstm)
+      self.quant_strategy = TorchNndctQstrategy(quant_config, self.quant_config_imp, is_lstm)
       
   def add_script(self, script):
     if script not in self._scripts:
@@ -100,42 +94,25 @@ Call load_ft_param to load them.')
     if self.bias_corrected and not self._bias_corr_loaded:
       NndctScreenLogger().warning2user(QWarning.BIAS_CORRECTION, f'Bias correction file is not loaded. Set \
 command line option \"--nndct_param_corr\" to load it.')
-  
-  def reset_status_for_exporting(self):
-    def _reset_param_quantized(model):
-      for mod in model.modules():
-        if hasattr(mod, "param_quantized"):
-          setattr(mod, "param_quantized", False)
-  
-    self.exporting = True
-    self.inplace = False
-    if isinstance(self._quant_model, list):
-      for q_model in self._quant_model:
-        _reset_param_quantized(q_model)
-    else:
-      _reset_param_quantized(self._quant_model)
 
-  def do_scan(self, 
-              res, 
-              name, 
-              node=None, 
-              tensor_type='input',
-              idx=0,
-              method=None):
+  def calibrate_int(self, 
+                  res, 
+                  name, 
+                  node=None, 
+                  tensor_type='input',
+                  idx=0,
+                  method=None):
     # keep quantization steps after fast finetune
     if self.keep_fp:
-      return self.do_quantize(res, name, node, tensor_type)
+      return self.quantize_int(res, name, node, tensor_type)
     
-    # forward quant graph but not quantize parameter and activation
-    if NndctOption.nndct_quant_off.value:
-      if self.inplace:
-        return res
-      else:
-        return res.clone().detach()
+    # Don't support non_tensor quantization
+    if (not isinstance(res, torch.Tensor)) and ((not hasattr(res, "values")) or (not isinstance(res.values, torch.Tensor))):
+      return res
     
     res_save = None
     if isinstance(res.values, torch.Tensor):
-      if res.values.data.numel() == 0:
+      if NndctOption.nndct_quant_off.value or res.values.data.numel() == 0:
         if self.inplace:
           return res
         else:
@@ -143,7 +120,7 @@ command line option \"--nndct_param_corr\" to load it.')
       res_save = res
       res = res.values.data
     else:
-      if res.data.numel() == 0:
+      if NndctOption.nndct_quant_off.value or res.data.numel() == 0:
         if self.inplace:
           return res
         else:
@@ -184,8 +161,8 @@ command line option \"--nndct_param_corr\" to load it.')
         q_config[2] = q_algorithm.zero_point
         q_config[3] = q_algorithm.float_max
         if tensor_type != 'param':
-          self.config_history[tensor_type][name].append([q_config[1], q_config[2], q_config[3]])
-          data = np.array(self.config_history[tensor_type][name]).transpose(1,0)
+          self.config_history[tensor_type][name][idx].append([q_config[1], q_config[2], q_config[3]])
+          data = np.array(self.config_history[tensor_type][name][idx]).transpose(1,0)
           q_config[1], q_config[2], q_config[3] = q_algorithm.act_scale_stats(data)
           #q_algorithm.scale, q_algorithm.zero_point, q_algorithm.float_max = q_config[1], q_config[2], q_config[3]
         self.set_quant_config(name, q_config, tensor_type, idx)
@@ -201,18 +178,26 @@ command line option \"--nndct_param_corr\" to load it.')
       res = res_save
     return res
 
-  def do_quantize(self, blob, name, node=None, tensor_type='input', idx=0, method=None):
-    # forward quant graph but not quantize parameter and activation
-    if NndctOption.nndct_quant_off.value:
-      if self.inplace:
-        return blob
-      else:
-        return blob.clone().detach()
+  def quantize_int(self, blob, name, node=None, tensor_type='input', idx=0, method=None):
+    # Don't support non_tensor quantization
+    if (not isinstance(blob, torch.Tensor)) and ((not hasattr(blob, "values")) or (not isinstance(blob.values, torch.Tensor))):
+      return blob
     
     blob_save = None
     if isinstance(blob.values, torch.Tensor):
+      if NndctOption.nndct_quant_off.value:
+        if self.inplace:
+          return blob
+        else:
+          return copy.deepcopy(blob)
       blob_save = blob
       blob = blob.values.data
+    else:
+      if NndctOption.nndct_quant_off.value:
+        if self.inplace:
+          return blob
+        else:
+          return blob.clone().detach()
       
     if blob.dtype != torch.float32 and blob.dtype != torch.double and blob.dtype != torch.float16:
       NndctScreenLogger().warning2user_once(QWarning.TENSOR_TYPE_NOT_QUANTIZABLE, f'The tensor type of {node.name} is {str(blob.dtype)}. Only support float32/double/float16 quantization.')
@@ -223,7 +208,7 @@ command line option \"--nndct_param_corr\" to load it.')
       return blob_save if blob_save is not None else blob
 
     q_config = self.get_quant_config(name, True, tensor_type, idx)
-    if q_config is None:
+    if q_config is None or q_config[1] is None:
       return blob_save if blob_save is not None else blob
     
     self._set_serial_or_not(node, tensor_type)
@@ -294,38 +279,6 @@ command line option \"--nndct_param_corr\" to load it.')
         self.serial = False
         return
 
-  def update_param_to_nndct(self, node, param_name, param_data):
-    for param_type, tensor in node.op.params.items():
-      if tensor.name == param_name:
-        if node.op.type in [NNDCT_OP.CONVTRANSPOSE2D, NNDCT_OP.CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
-            param_data = np.copy(param_data).swapaxes(1, 0)
-            param_data = np.ascontiguousarray(param_data)
-            
-        if node.op.type in [NNDCT_OP.DEPTHWISE_CONV2D, NNDCT_OP.DEPTHWISE_CONV3D] and param_type == node.op.ParamName.WEIGHTS:
-          in_channels = node.node_config("in_channels")
-          out_channels = node.node_config("out_channels")
-          kernel_size = node.node_config("kernel_size")
-          channel_mutiplier = int(out_channels / in_channels)
-          param_data = param_data.reshape((channel_mutiplier, in_channels, *kernel_size))
-        
-        if node.op.type in [NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D, NNDCT_OP.DEPTHWISE_CONVTRANSPOSE3D] and param_type == node.op.ParamName.WEIGHTS:
-          in_channels = node.node_config("in_channels")
-          out_channels = node.node_config("out_channels")
-          kernel_size = node.node_config("kernel_size")
-          channel_mutiplier = int(out_channels / in_channels)
-          param_data = param_data.reshape((in_channels, channel_mutiplier, *kernel_size))
-          param_data = np.copy(param_data).swapaxes(0, 1)
-          param_data = np.ascontiguousarray(param_data)
-        
-        origin_shape = tensor.shape
-        
-        tensor.from_ndarray(param_data)
-        tensor_util.convert_parameter_tensor_format(
-            tensor, FrameworkType.TORCH, FrameworkType.NNDCT)
-        
-        NndctScreenLogger().check2user(QError.SHAPE_MISMATCH, f"The shape of data '{tensor.shape}' must be consistent with that of original data \
-          '{origin_shape}' for {tensor.name}", origin_shape == tensor.shape)
-
   def export_quant_config(self, export_file=None, adjust_pos=True, inference_check=True):
     if inference_check and quant_model_inferenced(self.quant_model) is False:
       NndctScreenLogger().error2user(QError.NO_CALIBRATION, "Quantization is not performed completely, check if module FORWARD function is called!\n    FORWARD function of torch_quantizer.quant_model needs to be called in user code explicitly.\n    Please refer to the example code at https://github.com/Xilinx/Vitis-AI/blob/master/src/Vitis-AI-Quantizer/vai_q_pytorch/example/resnet18_quant.py.")
@@ -342,7 +295,7 @@ command line option \"--nndct_param_corr\" to load it.')
                               NNDCT_OP.DENSE,
                               NNDCT_OP.DEPTHWISE_CONVTRANSPOSE2D]:
             if node.module.bias is not None:
-              self.bias_corr[node.name] = node.module.bias_corr()
+              self.set_bias_corr(node.normalized_name, node.module.bias_corr())
 
         # export bias correction
         torch.save(self.bias_corr, self.bias_corr_file)
@@ -350,21 +303,26 @@ command line option \"--nndct_param_corr\" to load it.')
 
     # export quant steps
     self.version = __version__
+    self.graph_md5 = self.Nndctgraph.get_md5()
     file_name = export_file or self.export_file
     if isinstance(file_name, str):
-        NndctScreenLogger().info(f"=>Exporting quant config.({file_name})")
-        self.calib_global_param()
-        if adjust_pos and (not NndctOption.nndct_tensorrt_strategy.value):
-          self.organize_quant_pos()
-        with open(file_name, 'w') as f:
-          f.write(nndct_utils.to_jsonstr(self.quant_config))
+      NndctScreenLogger().info(f"=>Exporting quant config.({file_name})")
+      self.calib_global_param()
+      if adjust_pos and (not NndctOption.nndct_tensorrt_strategy.value) \
+      and (NndctOption.nndct_only_int_quant.value is True):
+        self.organize_quant_pos()
+      export_quant_config = self.normalized_quant_config()
+      if NndctOption.nndct_only_int_quant.value is False:
+        export_quant_config = self.add_quant_info_for_export('dtype', self.normalized_quant_dtype(), export_quant_config)
+      with open(file_name, 'w') as f:
+        f.write(nndct_utils.to_jsonstr(export_quant_config))
 
   def calib_global_param(self):
     #quant_device = GLOBAL_MAP.get_ele(NNDCT_KEYS.QUANT_DEVICE)
-    for tensor_type, algo_dict in self._QuantAlgo.items():
-      for name, algo in algo_dict.items():
+    for tensor_type, algo_dict in self.quant_algo.items():
+      for name, algo_list in algo_dict.items():
         for idx in range(self.get_quant_len(name, tensor_type)):
-          algo = algo[idx]
+          algo = algo_list[idx]
           if not algo.statistic_local:
             q_config = self.get_quant_config(name, False, tensor_type, idx)
             algo.calib_global_statis()
@@ -458,23 +416,7 @@ command line option \"--nndct_param_corr\" to load it.')
       #     bnfp[1] = 1.0 / (2**fp)
       #     self.set_quant_config(out_name, bnfp)
   
-  def _check_calibration_completion_for_target(self):
-    def _check(tensor_type):
-      ret = True
-      for item in self._QuantInfo[tensor_type]:
-        for idx in range(self.get_quant_len(item, tensor_type)):
-          qconfig = self._QuantInfo[tensor_type][item][idx]
-          if qconfig is None:
-            continue
-          if qconfig[1] is None:
-            NndctScreenLogger().warning2user(QWarning.TENSOR_NOT_QUANTIZED, f'{tensor_type.capitalize()} tensor is not quantized: {item}')
-            ret = False
-      return ret
-    return all([_check(tensor_type) for tensor_type in ["output", "input", "param"]])
-
   def _check_calibration_completion(self):
-    if hasattr(self.configer, "_device_allocator"):
-      return self._check_calibration_completion_for_target()
     
     ret = True
     # Check node output tensors
@@ -482,7 +424,7 @@ command line option \"--nndct_param_corr\" to load it.')
       if self.configer.is_node_quantizable(node, self.lstm):
         qout = self.configer.quant_output(node.name).name
         q_config = self.get_quant_config(qout, False)
-        if q_config[1] is None:
+        if q_config and q_config[1] is None:
           if node.op.type not in [NNDCT_OP.SIGMOID, NNDCT_OP.TANH]:
             NndctScreenLogger().warning2user(QWarning.TENSOR_NOT_QUANTIZED, f'Node ouptut tensor is not quantized: {node.name} type: {node.op.type}')
             ret = False
@@ -490,14 +432,14 @@ command line option \"--nndct_param_corr\" to load it.')
     for item in self.quant_config['input']:
       for idx in range(self.get_quant_len(item, 'input')):
         q_config = self.get_quant_config(item, False, 'input', idx)
-        if q_config[1] is None:
+        if q_config and q_config[1] is None:
           NndctScreenLogger().warning2user(QWarning.TENSOR_NOT_QUANTIZED, f'Input tensor is not quantized: {item}')
           ret = False
     # Check node parameters
     for item in self.quant_config['param']:
       for idx in range(self.get_quant_len(item, 'param')):
         q_config = self.get_quant_config(item, False, 'param', idx)
-        if q_config[1] is None:
+        if q_config and q_config[1] is None:
           NndctScreenLogger().warning2user(QWarning.TENSOR_NOT_QUANTIZED, f'Parameter tensor is not quantized: {item}. \
 If this parameter is not a parameter embedded in torch operation, like weights of CONV, \
 this kind of parameter will not be quantized. Please embed the parameter into CONV/Linear/BN.')

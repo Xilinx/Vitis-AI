@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,6 +104,10 @@ int main(int argc, char* argv[]) {
   string kernel = argv[1];
 
   auto det = vitis::ai::FusionCNN::create(kernel);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
   auto batch_size = det->get_input_batch();
   // vitis::ai::fusion_cnn::DetectResult detect_result_2d;
   // vitis::ai::fusion_cnn::DetectResult detect_result_3d;

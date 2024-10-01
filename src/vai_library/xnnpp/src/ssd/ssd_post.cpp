@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,7 +205,7 @@ vitis::ai::SSDResult SSDPost::ssd_post_process_internal_uniform(
       // std::cout << "Na " << Na << std::endl;
       for (auto n = 0u; n < Na; n++) {
         for (auto hw = 0u; hw < H * W; ++hw) {
-          for (auto ch = 0; ch < CH; ++ch) {
+          for (auto ch = 0u; ch < CH; ++ch) {
             copyed_data[k][n * H * W * CH + hw * CH + ch] =
                 ((int8_t*)output_tensors_[index].get_data(
                     idx))[hw * C + ch * Na + n];
@@ -231,7 +231,7 @@ vitis::ai::SSDResult SSDPost::ssd_post_process_internal_uniform(
   }
   __TOC__(SSD_softmax)
 
-  __TIC__(SSD_after)
+  __TIC__(SSD_detect)
   std::vector<SSDResult::BoundingBox> bboxes;
   SSDResult results{(int)input_tensors_[0].width, (int)input_tensors_[0].height,
                     bboxes};
@@ -244,7 +244,7 @@ vitis::ai::SSDResult SSDPost::ssd_post_process_internal_uniform(
   }
   detector_->detect(bbox_layer_infos, softmax_data_.data(), &results);
 
-  __TOC__(SSD_after)
+  __TOC__(SSD_detect)
   return results;
 }
 

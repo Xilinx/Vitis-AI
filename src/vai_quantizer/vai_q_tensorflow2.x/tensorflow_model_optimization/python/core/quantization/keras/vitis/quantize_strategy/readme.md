@@ -41,7 +41,8 @@ We provide 4 types of built-in quantizers now and, including:
     "narrow_range": false,
     "epsilon": 1e-7,
     "min_quantize_pos": -52,
-    "max_quantize_pos": 52
+    "max_quantize_pos": 52,
+    "use_fixneuron_quant": 0
   }
 }
 ```

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,6 +96,11 @@ int main(int argc, char* argv[]) {
   int length = path.size();
 
   auto task = vitis::ai::DpuTask::create(find_model(kernel_name));
+  if (!task) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
+
   if (model.compare("squeezenet_pt") == 0)
     task->setMeanScaleBGR({103.53f, 116.28f, 123.675f},
                           {0.017429f, 0.017507f, 0.01712475f});

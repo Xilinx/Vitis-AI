@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,10 @@ int main(int argc, char* argv[]) {
   auto model_name = std::string(argv[1]);
   auto input_file = std::string(argv[2]);
   auto dpu_task = vitis::ai::DpuTask::create(model_name);
+  if (!dpu_task) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }   
   auto inputs = dpu_task->getInputTensor(0u);
   CHECK_EQ(inputs.size(), 1u);
   CHECK(std::ifstream(input_file)

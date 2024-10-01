@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ class SubgraphImp : public Subgraph {
                               const std::string& right_bracket) const override;
 
  public:
-  const std::uint32_t get_id_() const;
+  std::uint32_t get_id_() const;
 
   void update_id_();
   std::uint32_t update_id_helper_(std::uint32_t id);

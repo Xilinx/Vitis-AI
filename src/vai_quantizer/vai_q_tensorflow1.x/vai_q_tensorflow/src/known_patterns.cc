@@ -942,7 +942,7 @@ const TpuNearestNeighborUpsamplingPattern tpu_nearest_neighbor_upsampling_patter
 
 // BatchNorm
 const OpTypePattern batchnorm_pattern(
-    {"Add|AddV2", // add node
+    {"BiasAdd", // add node
       {
         {"Mul", // mul node
           {
@@ -1020,7 +1020,7 @@ const ArrayReluPattern array_relu_pattern_wrapper(array_relu_pattern, "array_rel
 
 // mul_v1
 const OpTypePattern mul_v1_pattern(
-    {"Mul",
+    {"Mul|Add|AddV2",
       {
         {"*"}, // input node 1
         {"Const"}, // constant scale
@@ -1038,7 +1038,7 @@ const Mul_v1Pattern mul_v1_pattern_wrapper(mul_v1_pattern, "mul_v1");
 
 // Mul_v2
 const OpTypePattern mul_v2_pattern(
-    {"Mul",
+    {"Mul|Add|AddV2",
       {
         {"Const"}, // constant scale
         {"*"}, // input node 2
@@ -1093,9 +1093,29 @@ DEFINE_GET_WEIGHTS_NODES(ClipByValue) {
 }
 const ClipByValuePattern clip_by_value_pattern_wrapper(clip_by_value_pattern, "clip_by_value");
 
+// stridedslice
+const OpTypePattern stridedslice_pattern(
+    {"StridedSlice",
+      {
+        {"*"}, // input node
+        {"Const"}, // begin
+        {"Const"}, // end
+        {"Const"}, // stride
+      }
+    });
+DEFINE_GET_INPUT_NODES(StridedSlice) {
+  std::vector<const NodeDef*> input_nodes;
+  input_nodes.push_back(&(match.inputs[0].node));
+  return input_nodes;
+}
+DEFINE_GET_WEIGHTS_NODES(StridedSlice) {
+  return std::vector<const NodeDef*> ();
+}
+const StridedSlicePattern stridedslice_pattern_wrapper(stridedslice_pattern, "stridedslice");
+
 // Other
 const OpTypePattern other_pattern(
-    {"Max|AvgPool|MaxPool|Mean|Pad|MirrorPad|Transpose|Concat|ConcatV2|Squeeze|Reshape|ExpandDims|Relu|Relu6|AddN"});
+    {"Maximum|Max|AvgPool|MaxPool|Mean|Pad|MirrorPad|Transpose|Concat|ConcatV2|Squeeze|Reshape|ExpandDims|Relu|Relu6|AddN|Sum|Softmax"});
 DEFINE_GET_INPUT_NODES(Other) {
   return std::vector<const NodeDef*> ();
 }
@@ -1170,6 +1190,7 @@ const std::vector<const OpTypePatternBase*> known_patterns ({
   &mul_v2_pattern_wrapper,
   &array_pattern_wrapper,
   &clip_by_value_pattern_wrapper,
+  &stridedslice_pattern_wrapper,
   &other_relu_pattern_wrapper,
   &other_pattern_wrapper
   });
@@ -1308,5 +1329,5 @@ std::vector<const NodeDef *> get_weights_nodes(const NodeMatch &match,
   return weights_nodes;
 }
 
-} // namespace decent_q
-} // namespace tensorflow
+}  // namespace decent_q
+}  // namespace tensorflow

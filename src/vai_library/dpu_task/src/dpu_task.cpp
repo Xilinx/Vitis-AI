@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,23 @@ DpuTask::DpuTask() {}
 DpuTask::~DpuTask() {}
 
 std::unique_ptr<DpuTask> DpuTask::create(const std::string& model_name) {
-  return std::unique_ptr<DpuTask>(new DpuTaskImp(model_name));
+  // supress coverity complain
+  try{ 
+    std::unique_ptr<DpuTask> ret = std::unique_ptr<DpuTask>(new DpuTaskImp(model_name));
+    return ret;
+  }catch(...){
+    std::cerr <<"should never run here ...\n";
+    abort();
+  }
 }
 std::unique_ptr<DpuTask> DpuTask::create(const std::string& model_name, xir::Attrs *attrs) {
-  return std::unique_ptr<DpuTask>(new DpuTaskImp(model_name, attrs));
+  // supress coverity complain
+  try{ 
+    std::unique_ptr<DpuTask> ret = std::unique_ptr<DpuTask>(new DpuTaskImp(model_name, attrs));
+    return ret;
+  }catch(...){
+    std::cerr <<"should never run here ...\n";
+    abort();
+  }
 }
+

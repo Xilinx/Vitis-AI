@@ -31,7 +31,6 @@ from pytorch_nndct import utils as py_utils
 from pytorch_nndct.nn.modules import functional
 from pytorch_nndct.nn.quantization.modules import conv_fused
 from pytorch_nndct.nn.quantization.modules import tqt as tqt_mod
-from pytorch_nndct.parse.parse_utils import get_short_name
 from pytorch_nndct.qproc import base as qproc
 from pytorch_nndct.qproc.ModuleHooker import ModuleHooker
 from pytorch_nndct.quantization import model_topo as model_topo_mod
@@ -44,16 +43,64 @@ from pytorch_nndct.utils import module_util as mod_util
 _QUANT_INFO_FILE_NAME = 'quant_info.json'
 _DEPLOYABLE_MODEL_NAME = 'deployable.pth'
 
+class TensorTypes(object):
+  PARAM = 'param'
+  INPUT = 'input'
+  OUTPUT = 'output'
+
+_valid_tensor_types = [TensorTypes.PARAM, TensorTypes.INPUT, TensorTypes.OUTPUT]
+
+class QatConfigItem(object):
+
+  def __init__(self,
+               tensor_type: str,
+               key: str,
+               index: int,
+               weight_name=None,
+               node=None,
+               quantizer=None):
+    self.tensor_type = tensor_type
+    self.key = key
+    self.index = index
+    self.weight_name = weight_name
+    self.node = node
+    self.quantizer = quantizer
+
+  def __str__(self):
+    node_name = self.node.name if self.node is not None else None
+    return (f'{self.__class__.__name__}(tensor_type={self.tensor_type}, '
+            f'key={self.key}, index={self.index}, node={node_name}, '
+            f'quantizer={self.quantizer})')
+
+class QatConfig(object):
+
+  def __init__(self, quantizer):
+    self._items = {}
+
+    for item in quantizer.quant_config:
+      if item not in _valid_tensor_types:
+        continue
+      group = quantizer.quant_config[item]
+      for key in group:
+        for index in range(quantizer.get_quant_len(key, item)):
+          self._items[self._config_key(item, key, index)] = QatConfigItem(
+              item, key, index)
+
+  def _config_key(self, tensor_type, key, index):
+    return f'{tensor_type}_{key}_{index}'
+
+  def get(self, tensor_type, key, index):
+    return self._items[self._config_key(tensor_type, key, index)]
+
+  @property
+  def values(self):
+    return self._items.values()
+
 def logging_warn(code, message):
   NndctScreenLogger().warning2user(code, message)
 
 def logging_error(code, message):
   NndctScreenLogger().check2user(code, message, False)
-
-class TensorTypes(object):
-  PARAM = 'param'
-  INPUT = 'input'
-  OUTPUT = 'output'
 
 def enable_quant(model):
   model.apply(tqt_mod.enable_quant)
@@ -116,9 +163,9 @@ class QatProcessor(object):
     self._mix_bit = mix_bit
 
     if device is not None:
-      logging_warn(QWarning.DEPRECATED_ARGUMENT,
-                   ('The argument "device" is no longer needed. '
-                    'Device information is get from the model directly.'))
+      logging_warn(
+          QWarning.DEPRECATED_ARGUMENT,
+          ('The argument "device" is no longer used and will be ignored.'))
     self._device = next(model.parameters()).device
 
     # Original module name to transformed module name.
@@ -141,18 +188,8 @@ class QatProcessor(object):
     quantizer = qprocessor.quantizer
     self._torch_quantizer = quantizer
 
-    self._qinfo_keys = [
-        TensorTypes.PARAM, TensorTypes.INPUT, TensorTypes.OUTPUT
-    ]
-
-    # Use hard-coded value to fill in fp_pos and export quant config,
-    # so that we can initialize a new TorchQuantProcessor in 'test' mode later.
-    quant_config = quantizer.quant_config
-    for key, group in quant_config.items():
-      if key not in self._qinfo_keys:
-        continue
-      for item in group:
-        quantizer.set_fix_position(item, 4, key)
+    # Have to export quant config first so that we can create a new
+    # TorchQuantProcessor in 'test' mode later.
     quantizer.export_quant_config(adjust_pos=False, inference_check=False)
 
     # Use quantizer's graph to build param_to_node as the quant_info is
@@ -174,52 +211,67 @@ class QatProcessor(object):
     else:
       quant_optimizer._tag_quant_nodes(self._graph)
 
-    def get_bitwidth(quant_info):
-      return quant_info[0] if quant_info[0] == 8 else bitwidth
+    self._qat_config = QatConfig(quantizer)
+    self._node_to_spec = self._create_quantizers(self._qat_config)
 
-    # Create quantizer for each item in quant config.
-    self._node_to_qconfig = {}
-    self._quant_config = copy.deepcopy(quant_config)
-    for name, group in self._quant_config.items():
-      if name not in self._qinfo_keys:
-        continue
-      for key in group:
-        qinfo = quantizer.get_quant_config(key, False, name)
-        if name == TensorTypes.PARAM:
-          node, param = self._tensor_to_node[key]
-          if self._graph.node(node).has_bound_params():
-            attr = ModuleHooker._parameter_map[param]
-          else:
-            attr = param.value
-          tensor_type = 'weight'
+  def _create_quantizers(self, qat_config):
+    """Create quantizer for each item in quant config."""
+
+    def input_index_to_node(node, tensor_name):
+      for index, tensor in enumerate(node.in_tensors):
+        if tensor_name == tensor.name:
+          return index
+      return None
+
+    def select_rounding_mode(node, tensor_type):
+      rounding_mode = 3 if tensor_type == TensorTypes.PARAM else 2
+      if tensor_type != TensorTypes.PARAM and \
+          NndctOption.nndct_ip_v70_bert_qat.value and \
+          node.op.type in [OpTypes.LAYER_NORM, OpTypes.SOFTMAX]:
+        rounding_mode = 4
+      return rounding_mode
+
+    node_to_spec = {}
+    for config in self._qat_config.values:
+      tensor_type = config.tensor_type
+      if tensor_type == TensorTypes.PARAM:
+        node_name, param = self._tensor_to_node[config.key]
+        node = self._graph.node(node_name)
+        if node.has_bound_params():
+          weight_name = ModuleHooker._parameter_map[param]
         else:
-          node, attr = key, None
-          tensor_type = 'act'
-        
-        quant_method = None
-        if (not name == TensorTypes.PARAM) and NndctOption.nndct_ip_v70_bert_qat.value:
-          specil_method_op = ['nndct_layer_norm', 'nndct_softmax']
-          if self._graph.node(node).op.type in specil_method_op:
-            print(node)
-            quant_method = 4
+          # If a tensor isn't bounded to a node, we treat it as input tensor.
+          tensor_index = input_index_to_node(node, config.key)
+          if not tensor_index:
+            raise RuntimeError(
+                f'Can not get input index: node={node.name}, tensor={config.key}'
+            )
+          tensor_type = TensorTypes.INPUT
+      else:
+        node_name, tensor_index = config.key, config.index
 
-        tqt_quantizer = tqt_mod.TQTQuantizer(get_bitwidth(qinfo), tensor_type, method = quant_method)
-        qconfig = self._node_to_qconfig.get(node, config_mod.LayerRuntimeSpec())
-        if name == TensorTypes.PARAM:
-          qconfig.add_weight_quantizer(attr, tqt_quantizer)
-        elif name == TensorTypes.INPUT:
-          qconfig.add_input_quantizer(tqt_quantizer)
-        else:
-          qconfig.add_output_quantizer(tqt_quantizer)
+      # See TorchQuantizer::do_quantize() in quantization/torchquantizer.py
+      node = self._graph.node(node_name)
+      quantizer = tqt_mod.TQTQuantizer(self._bitwidth, tensor_type,
+                                       select_rounding_mode(node, tensor_type))
+      config.node, config.quantizer = node, quantizer
 
-        self._node_to_qconfig[node] = qconfig
-        self._quant_config[name][key] = (node, attr)
-        logging.vlog(2, f'[{name}][{key}] = ({node}, {attr})')
+      spec = node_to_spec.get(node_name, config_mod.LayerRuntimeSpec())
+      if tensor_type == TensorTypes.PARAM:
+        spec.set_weight_quantizer(weight_name, quantizer)
+        config.weight_name = weight_name
+      elif tensor_type == TensorTypes.INPUT:
+        spec.set_input_quantizer(tensor_index, quantizer)
+      else:
+        spec.set_output_quantizer(tensor_index, quantizer)
+      node_to_spec[node_name] = spec
+      logging.vlog(2, f'Create quantizer for config: {config}')
+    return node_to_spec
 
   def trainable_model(self, calib_dir='', allow_reused_module=False):
     if calib_dir:
       self._torch_quantizer.load_quant_config(
-          os.path.join(calib_dir, _QUANT_INFO_FILE_NAME))
+          config=os.path.join(calib_dir, _QUANT_INFO_FILE_NAME))
       self._import_quant_info(self._torch_quantizer)
 
     self._check_reused_module(allow_reused_module)
@@ -227,7 +279,7 @@ class QatProcessor(object):
     self._check_op_quantizable()
 
     model_topo = model_topo_mod.build_model_topo(self._graph,
-                                                 self._node_to_qconfig)
+                                                 self._node_to_spec)
 
     excluded_nodes = []
     for node in model_topo.nodes:
@@ -253,16 +305,16 @@ class QatProcessor(object):
 
   def _check_reused_module(self, allow_reused_module):
     # If two or more nodes point to a same module, then we will let them
-    # use the same qconfig.
-    module_to_qconfig = {}
+    # use the same spec.
+    module_to_spec = {}
     for node in self._graph.nodes:
       module_name = mod_util.module_name_from_node(node)
-      if not module_name or node.name not in self._node_to_qconfig:
+      if not module_name or node.name not in self._node_to_spec:
         continue
 
-      if module_name in module_to_qconfig:
+      if module_name in module_to_spec:
         if allow_reused_module:
-          self._node_to_qconfig[node.name] = module_to_qconfig[module_name]
+          self._node_to_spec[node.name] = module_to_spec[module_name]
           logging_warn(
               QWarning.REUSED_MODULE,
               ('Reused module ({}) may lead to low accuracy of QAT, '
@@ -274,7 +326,7 @@ class QatProcessor(object):
                'times in forward pass. If you want to share quantized '
                'parameters in multiple calls, call trainable_model with '
                '"allow_reused_module=True"').format(module_name))
-      module_to_qconfig[module_name] = self._node_to_qconfig[node.name]
+      module_to_spec[module_name] = self._node_to_spec[node.name]
 
   def _check_op_quantizable(self):
     # Make sure all quantizable operations are instance of torch.nn.Module.
@@ -288,66 +340,60 @@ class QatProcessor(object):
         OpTypes.CLAMP: ('torch.clamp', functional.Clamp),
     }
 
-    for name, group in self._quant_config.items():
-      if name not in self._qinfo_keys:
-        continue
-      for key in group:
-        node_name, _ = self._quant_config[name][key]
+    for config in self._qat_config.values:
+      node = config.node
+      module = mod_util.get_module_by_node(self._model, node.name)
 
-        module = mod_util.get_module_by_node(self._model, node_name)
-        node = self._graph.node(node_name)
-
-        module_cls = type(module) if module else None
-        if node.op.type in replacement_map:
-          op, target_cls = replacement_map[node.op.type]
-          if module_cls != target_cls:
-            logging_error(QError.NOT_A_MODULE,
-                          ('Quantized operation({}) must be instance '
-                           'of "torch.nn.Module", please replace {} with {}.'
-                           'The original source range is:\n{}').format(
-                               node.name, op, target_cls, node.source_range))
-
-        # A quantized op must be implemented as a module.
-        if not module:
-          if node.op.type == OpTypes.INPUT:
-            logging_error(
-                QError.INPUT_NOT_QUANTIZED,
-                ('Input is not quantized. Please use QuantStub/DeQuantStub to '
-                 'define quantization scope.'))
-          else:
-            logging_error(
-                QError.NOT_A_MODULE,
-                ('Can not quantize node "{}({})" as it is not a '
-                 'torch.nn.Module object, please re-implement this operation '
-                 'as a module. The original source range:\n{}').format(
-                     node.name, node.op.type, node.source_range))
-
-        torch_op_type = py_utils.get_torch_op_type(node.op.type)
-        torch_op_attr = py_utils.get_torch_op_attr(torch_op_type)
-        if not torch_op_attr.op_name.startswith('torch'):
-          logging.vlog(1,
-                       'Non-torch op found: {}'.format(torch_op_attr.op_name))
-          continue
-
-        # Check if we get the correct module.
-        op_type_name = torch_op_attr.op_name.split('.')[-1]
-        logging.vlog(
-            1, '{}({}): {} vs. {}'.format(node.name, node.op.type,
-                                          module_cls.__name__,
-                                          torch_op_attr.op_name))
-        if not module_cls.__module__.startswith(
-            'pytorch_nndct') and module_cls.__name__ != op_type_name:
+      module_cls = type(module) if module else None
+      if node.op.type in replacement_map:
+        op, target_cls = replacement_map[node.op.type]
+        if module_cls != target_cls:
           logging_error(QError.NOT_A_MODULE,
-                        ('{} is a quantized operation, please re-implement '
-                         'your op as a nn.Module (Node: {})').format(
-                             torch_op_attr.op_name, node_name))
+                        ('Quantized operation({}) must be instance '
+                         'of "torch.nn.Module", please replace {} with {}.'
+                         'The original source range is:\n{}').format(
+                             node.name, op, target_cls, node.source_range))
+
+      # A quantized op must be implemented as a module.
+      if not module:
+        if node.op.type == OpTypes.INPUT:
+          logging_error(
+              QError.INPUT_NOT_QUANTIZED,
+              ('Input is not quantized. Please use QuantStub/DeQuantStub to '
+               'define quantization scope.'))
+        else:
+          logging_error(
+              QError.NOT_A_MODULE,
+              ('Can not quantize node "{}({})" as it is not a '
+               'torch.nn.Module object, please re-implement this operation '
+               'as a module. The original source range:\n{}').format(
+                   node.name, node.op.type, node.source_range))
+
+      torch_op_type = py_utils.get_torch_op_type(node.op.type)
+      torch_op_attr = py_utils.get_torch_op_attr(torch_op_type)
+      if not torch_op_attr.op_name.startswith('torch'):
+        logging.vlog(1, 'Non-torch op found: {}'.format(torch_op_attr.op_name))
+        continue
+
+      # Check if we get the correct module.
+      op_type_name = torch_op_attr.op_name.split('.')[-1]
+      logging.vlog(
+          1, '{}({}): {} vs. {}'.format(node.name, node.op.type,
+                                        module_cls.__name__,
+                                        torch_op_attr.op_name))
+      if not module_cls.__module__.startswith(
+          'pytorch_nndct') and module_cls.__name__ != op_type_name:
+        logging_warn(QWarning.OP_TYPE_MISMATCH,
+                     ('Module class name and op type name do not match: '
+                      '{} vs. {} (Node: {})'.format(module_cls.__name__,
+                                                    op_type_name, node.name)))
 
   def _check_module_quantized(self, model):
     """Check that all parameterized modules are transformed to the
     corresponding quantized version."""
 
-    for node, qconfig in self._node_to_qconfig.items():
-      if qconfig.weight_quantizers:
+    for node, spec in self._node_to_spec.items():
+      if spec.weight_quantizers:
         module = mod_util.get_module_by_node(model, node)
         if not hasattr(module, 'is_quantized'):
           logging_error(QError.UNSUPPORTED_OPS,
@@ -371,48 +417,58 @@ class QatProcessor(object):
         transforms_mod.QuantizeLinear(),
         transforms_mod.ReplacePooling2d(),
         transforms_mod.ReplaceLeakyReLU(),
+        transforms_mod.ReplaceLayerNorm()
     ]
-    if NndctOption.nndct_ip_v70_bert_qat.value:
-      transforms.append(transforms_mod.ReplaceLayerNorm())
     transformer = module_transform.ModuleTransformer(model, model_topo,
                                                      transforms)
     return transformer.transform(excluded_nodes)
 
-  def _quantizer_by_quant_config(self, tensor_type, key):
-    node, attr = self._quant_config[tensor_type][key]
-    qconfig = self._node_to_qconfig[node]
+  def _get_quantizer_by_config(self, tensor_type, key, index):
+    config = self._qat_config.get(tensor_type, key, index)
+    # We can't use config.quantizer directly. Reused modules lead to reused quantizer.
+    # The quantizers in spec are the ones that are actually used.
+    spec = self._node_to_spec[config.node.name]
     if tensor_type == TensorTypes.PARAM:
-      quantizer = qconfig.get_weight_quantizer(attr)
+      quantizer = spec.get_weight_quantizer(config.weight_name)
     elif tensor_type == TensorTypes.INPUT:
-      quantizer = qconfig.input_quantizers[0]
+      quantizer = spec.get_input_quantizers(index)
     else:
-      quantizer = qconfig.output_quantizers[0]
+      quantizer = spec.get_output_quantizer(index)
     return quantizer
 
-  def _fill_in_quant_config(self, quantizer):
-    for tensor_type, group in quantizer.quant_config.items():
-      if tensor_type not in self._qinfo_keys:
+  def _set_fix_position(self, torch_quantizer):
+    for tensor_type, group in torch_quantizer.quant_config.items():
+      if tensor_type not in _valid_tensor_types:
         continue
       for key in group:
-        tqt_quantizer = self._quantizer_by_quant_config(tensor_type, key)
-        if tqt_quantizer.is_warmup_enabled():
-          logging_warn(QWarning.SCALE_VALUE,
-                       'Exported scale values are not trained: {}.'.format(key))
-        group[key] = tqt_quantizer.export_quant_info()
+        for index in range(torch_quantizer.get_quant_len(key, tensor_type)):
+          quantizer = self._get_quantizer_by_config(tensor_type, key, index)
+          if quantizer.is_warmup_enabled():
+            logging_warn(
+                QWarning.SCALE_VALUE,
+                'Exported scale values are not trained: {}.'.format(key))
+          torch_quantizer.set_fix_position(key, quantizer.get_fix_position(),
+                                           tensor_type, index)
 
-  def _import_quant_info(self, quantizer):
-    for tensor_type, group in quantizer.quant_config.items():
-      if tensor_type not in self._qinfo_keys:
+  def _import_quant_info(self, torch_quantizer):
+    for tensor_type, group in torch_quantizer.quant_config.items():
+      if tensor_type not in _valid_tensor_types:
         continue
       for key in group:
-        qconfig = quantizer.get_quant_config(key, False, tensor_type)
-        tqt_quantizer = self._quantizer_by_quant_config(tensor_type, key)
-        tqt_quantizer.import_quant_info(qconfig)
+        for index in range(torch_quantizer.get_quant_len(key, tensor_type)):
+          bitwidth = torch_quantizer.get_bit_width(key, tensor_type, index)
+          fix_position = torch_quantizer.get_fix_position(
+              key, tensor_type, index)
+          quantizer = self._get_quantizer_by_config(tensor_type, key, index)
+          quantizer.import_quant_info(bitwidth, fix_position)
 
   def to_deployable(self, trained_model, output_dir):
     model = self._to_deployable(trained_model, output_dir)
-    torch.save(model.state_dict(),
-               os.path.join(output_dir, _DEPLOYABLE_MODEL_NAME))
+    saved_path = os.path.join(output_dir, _DEPLOYABLE_MODEL_NAME)
+    torch.save(model.state_dict(), saved_path)
+    logging.info(
+        f'Saving deployable model to {saved_path}, and you can get it by calling "deployable_model()"'
+    )
     return self._qprocessor.quant_model()
 
   def convert_to_deployable(self, trained_model, output_dir):
@@ -422,7 +478,7 @@ class QatProcessor(object):
     return self._to_deployable(trained_model, output_dir)
 
   def _to_deployable(self, trained_model, output_dir):
-    if not self._quant_config or self._module_map is None:
+    if not self._qat_config or self._module_map is None:
       logging_error(QError.QAT_PROCESS_ERROR,
                     'Must call "trainable_model" first.')
 
@@ -468,7 +524,7 @@ class QatProcessor(object):
         device=self._device)
 
     quantizer = qprocessor.quantizer
-    self._fill_in_quant_config(quantizer)
+    self._set_fix_position(quantizer)
 
     sub_dir = os.path.join(output_dir, 'test')
     io_util.create_work_dir(sub_dir)
@@ -502,9 +558,9 @@ class QatProcessor(object):
       inputs = self._inputs
 
     model = copy.deepcopy(self._model)
-    model.load_state_dict(
-        torch.load(
-            os.path.join(src_dir, _DEPLOYABLE_MODEL_NAME), map_location=device))
+    saved_path = os.path.join(src_dir, _DEPLOYABLE_MODEL_NAME)
+    logging.info(f'Loading deployable model from {saved_path}')
+    model.load_state_dict(torch.load(saved_path, map_location=device))
     qprocessor = qproc.TorchQuantProcessor(
         'test',
         model,
@@ -549,9 +605,14 @@ class QatProcessor(object):
                         output_dir,
                         verbose=False,
                         dynamic_batch=False,
-                        opset_version=None):
+                        opset_version=None,
+                        native_onnx=True,
+                        dump_layers=False,
+                        check_model=False,
+                        opt_graph=False):
     self._qprocessor.export_onnx_model(output_dir, verbose, dynamic_batch,
-                                       opset_version)
+                                       opset_version, native_onnx, dump_layers,
+                                       check_model, opt_graph)
 
   def export_torch_script(self, output_dir, verbose=False):
     self._qprocessor.export_torch_script(output_dir, verbose)

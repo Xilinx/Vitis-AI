@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -186,6 +186,9 @@ RoadLineResult RoadLinePost::road_line_post_process_internal(int inWidth,
         createIpm(config_);
     std::unique_ptr<vitis::nnpp::roadline::Predict> predict =
         createPredict(config_);
+    if (ipminfo == nullptr || predict == nullptr ) {
+       return RoadLineResult{sWidth, sHeight, lines};
+    }
     int ipm_width = config_.roadline_param().ipm_width();
     int ipm_height = config_.roadline_param().ipm_height();
     vector<int> datase;
@@ -214,15 +217,19 @@ RoadLineResult RoadLinePost::road_line_post_process_internal(int inWidth,
       }
     }
     if (!g_roadline_acc_outdir.empty()) {
-      if (access(g_roadline_acc_outdir.c_str(), 0) == -1)
-        mkdir(g_roadline_acc_outdir.c_str(), 0777);
+      if (access(g_roadline_acc_outdir.c_str(), 0) == -1){
+        if (mkdir(g_roadline_acc_outdir.c_str(), 0777)) {
+           // std::cout <<"mkdir failed " << g_roadline_acc_outdir <<"\n";
+           return RoadLineResult{sWidth, sHeight, lines};
+        }
+      }
       std::ofstream out_datase(g_roadline_acc_outdir + "/datase.txt", ios::app);
       std::ofstream out_seedx(g_roadline_acc_outdir + "/seedx.txt", ios::app);
       std::ofstream out_seedy(g_roadline_acc_outdir + "/seedy.txt", ios::app);
       for (size_t i = 0; i < datase.size(); ++i) {
         out_datase << datase[i] << " ";
       }
-      for (auto point : seed) {
+      for (auto& point : seed) {
         out_seedx << point.y << " ";
         out_seedy << point.x << " ";
       }

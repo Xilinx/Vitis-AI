@@ -187,7 +187,9 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2020 Xilinx, Inc.
+   Copyright © 2022 – 2023 Advanced Micro Devices, Inc. All rights reserved. 
+   Copyright © 2019 – 2022 Xilinx, Inc. All rights reserved.
+
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -203,12 +205,21 @@
    
 ----------------------------------------------------------------------
    
-   The Xilinx Vitis AI Compiler and Quantizer in this distribution are provided under the following free 
+   The Following Xilinx Vitis AI Tools in this distribution are provided under the following free
    and permissive binary-only license, but are not provided in source code form.  While the following free 
    and permissive license is similar to the BSD open source license, it is NOT the BSD open source license 
    nor other OSI-approved open source license.
+     - xcompiler
+     - WeGO-TF1.x
+     - WeGO-TF2.x
+     - WeGO-Torch
+     - target_explorer
+     - OnBoard
+     - VAIP
 
-    Copyright © 2020 Xilinx, Inc.
+   Copyright © 2022 – 2023 Advanced Micro Devices, Inc. All rights reserved. 
+   Copyright © 2019 – 2022 Xilinx, Inc. All rights reserved.
+
 
     Redistribution and use in binary form only, without modification, is permitted provided that the following conditions are met:
 

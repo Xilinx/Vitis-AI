@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
   auto graph = xir::Graph::deserialize(argv[1]);
   auto root = graph->get_root_subgraph();
   xir::Subgraph* s = nullptr;
-  for (auto c : root->get_children()) {
+  for (auto& c : root->get_children()) {
     if (c->get_attr<std::string>("device") == "CPU") {
       s = c;
       break;

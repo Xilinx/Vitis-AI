@@ -23,14 +23,17 @@
 #define UNI_LOG_DEBUG_MODE
 #endif
 
-#include "ErrorCode.hpp"
-#include "UniLogExport.hpp"
+#include "vitis_ai_pp.hpp"
+#include <cstdlib>
 #include <glog/logging.h>
+
 #include <iostream>
 #include <map>
-#include <stdlib.h>
 #include <string>
 #include <vector>
+
+#include "ErrorCode.hpp"
+#include "UniLogExport.hpp"
 // MSVC NOTE: must not using namespace std; it trigger an error, 'byte':
 // ambiguous symbol, because c++17 introduce std::byte and MSVC use byte
 // internally
@@ -141,6 +144,34 @@
       << "[" << GEN_ERROR(ERRID).getErrDsp() << "]"                            \
       << "[" << GEN_ERROR(ERRID).getErrDebugInfo() << "] "
 
+#define _UNI_LOG_GET_VALUE(V) #V
+#define _UNI_LOG_VALUE_1(_VALUE)                                               \
+  _UNI_LOG_GET_VALUE(_VALUE) << "=\"" << (_VALUE) << "\", " <<
+#define UNI_LOG_VALUES(...) VITIS_AI_PP_LOOP(_UNI_LOG_VALUE_1, __VA_ARGS__) "."
+
+#define _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, _OP)                           \
+  UNI_LOG_CHECK((_A)_OP(_B), _ERR_ID)                                          \
+      << #_A << " (value=" << (_A) << ") is not \"" << #_OP << "\" to " << #_B \
+      << " (value=" << (_B) << ")"
+
+#define UNI_LOG_CHECK_EQ(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, ==)
+
+#define UNI_LOG_CHECK_NE(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, !=)
+
+#define UNI_LOG_CHECK_LE(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, <=)
+
+#define UNI_LOG_CHECK_GE(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, >=)
+
+#define UNI_LOG_CHECK_LT(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, <)
+
+#define UNI_LOG_CHECK_GT(_A, _B, _ERR_ID)                                      \
+  _UNI_LOG_CHECK_COMPARE(_A, _B, _ERR_ID, >)
+
 // the enumerator for Log status set
 enum UniLogSet {
   UNI_LOG_SET_MIN = 0,
@@ -201,3 +232,16 @@ public:
 private:
   bool condition_;
 };
+
+#if UNILOG_USE_DLL == 0
+#undef UNI_LOG_INFO
+#undef UNI_LOG_WARNING
+#undef UNI_LOG_ERROR
+#undef UNI_LOG_FATAL
+#undef UNI_LOG_CHECK
+#define UNI_LOG_INFO LOG(INFO)
+#define UNI_LOG_WARNING LOG(WARNING)
+#define UNI_LOG_ERROR(id) LOG(ERROR)
+#define UNI_LOG_FATAL(id) LOG(FATAL)
+#define UNI_LOG_CHECK(condition, ERRID) CHECK(condition)
+#endif

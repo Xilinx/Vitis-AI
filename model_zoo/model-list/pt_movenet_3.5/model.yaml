@@ -1,0 +1,40 @@
+
+# Copyright 2022-2023 Advanced Micro Devices Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+description: MoveNet-lighting.
+input size: 192 * 192
+float ops: 0.5G
+task: Pose Estimation
+framework: pytorch
+prune: 'no'
+version: 3.5
+files:
+- name: pt_movenet_3.5
+  type: float & quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_movenet_3.5.zip
+  checksum: e3a7837b12e4f0f9a005192ba0af7b10
+- name: movenet_ntd_pt
+  type: xmodel
+  board: vek280
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-vek280-r3.5.0.tar.gz
+  checksum: a481afdc57708cfd56dc893c4b637cc9
+- name: movenet_ntd_pt
+  type: xmodel
+  board: v70
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=movenet_ntd_pt-v70-DPUCV2DX8G-r3.5.0.tar.gz
+  checksum: f3eeced381575979dd16df6cb0b650ce
+license: https://github.com/Xilinx/Vitis-AI/blob/master/LICENSE

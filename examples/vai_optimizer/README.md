@@ -7,4 +7,4 @@
 
 # Vitis AI Optimizer Examples
 
-The Vitis AI Optimizer is an optional component of Vitis AI.  For licensing and additional information, please review [this overview](https://xilinx.github.io/Vitis-AI/3.0/html/docs/workflow-model-development.html#model-optimization).
+The Vitis AI Optimizer is an optional component of Vitis AI.  For licensing and additional information, please review [this overview](https://xilinx.github.io/Vitis-AI/3.5/html/docs/workflow-model-development.html#model-optimization).

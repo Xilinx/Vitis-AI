@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,12 @@ int main(int argc, char *argv[]) {
   }
 
   // auto det = vitis::ai::MedicalDetection::create("RefineDet_Medical");
-  std::string model = argv[1] + string("_acc");
+  std::string model = argv[1] + std::string("_acc");
   auto det = vitis::ai::MedicalDetection::create(model);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
 
   std::string name(argv[2]);
   std::string fpath = name.substr(0, name.find_last_of('/')+1 );
@@ -72,7 +76,7 @@ int main(int argc, char *argv[]) {
   vector<string> names;
   LoadImageNames(argv[2], names);
  
-  for (auto name : names) {
+  for (auto& name : names) {
     std::string picname(fpath+name+".jpg");
     cv::Mat img = cv::imread(picname);
 

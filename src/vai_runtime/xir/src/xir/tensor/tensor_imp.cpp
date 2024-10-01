@@ -63,11 +63,11 @@ const std::int32_t TensorImp::get_dim_size(std::int32_t idx) const {
   return this->shape_.at(idx);
 }
 
-const std::int32_t TensorImp::get_element_num() const {
+const std::int64_t TensorImp::get_element_num() const {
   if (shape_.size() == 0)
     return 0;
   else {
-    std::int32_t size = 1;
+    std::int64_t size = 1;
     for (auto dim : this->shape_) {
       UNI_LOG_CHECK(dim != -1, XIR_OUT_OF_RANGE)
           << "the shape of each dimension has not been specified, so you "
@@ -84,13 +84,13 @@ const std::int32_t TensorImp::get_bit_width() const {
   return this->data_type_.bit_width;
 }
 
-const std::int32_t TensorImp::get_data_size() const {
+const std::uint64_t TensorImp::get_data_size() const {
   UNI_LOG_CHECK(this->data_type_.valid(), XIR_UNKNOWNTYPE_TENSOR)
       << this->to_string() << "'s data type is invalid";
-  std::int64_t size =
-      static_cast<std::int64_t>(get_element_num()) * this->data_type_.bit_width;
+  std::uint64_t size =
+      static_cast<std::uint64_t>(get_element_num()) * this->data_type_.bit_width;
   auto ret =
-      static_cast<std::int32_t>(std::ceil(static_cast<double>(size) / 8.0));
+      static_cast<std::uint64_t>(std::ceil(static_cast<double>(size) / 8.0));
   if (size % 8 != 0)
     UNI_LOG_DEBUG_WARNING << "the size of tensor " << this->name_ << " is "
                           << size << " bits."

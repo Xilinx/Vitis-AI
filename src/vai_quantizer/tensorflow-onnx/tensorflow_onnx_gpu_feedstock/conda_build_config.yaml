@@ -1,0 +1,8 @@
+c_compiler_version:    # [linux]
+  - 5.4.0                # [linux]
+cxx_compiler_version:  # [linux]
+  - 5.4.0                # [linux]
+# cudatoolkit:
+# - 10.0
+# cudnn:
+# - 7.6

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ static std::vector<std::unique_ptr<xir::Tensor>> copy_set_to_vector_tensor(
     const std::vector<const xir::Tensor*>& tensors) {
   auto ret = std::vector<std::unique_ptr<xir::Tensor>>();
   ret.reserve(tensors.size());
-  for (auto b : tensors) {
+  for (auto& b : tensors) {
     ret.emplace_back(xir::Tensor::clone(b));
   }
   return ret;
@@ -190,11 +190,11 @@ std::pair<uint32_t, int> CpuTask::execute_async(
         << "\n\toutput: " << my_op_args_[i].output->to_string()  //
         ;
     auto& inputs = my_op_args_[i].inputs;
-    auto& output = my_op_args_[i].output;
+    auto& output1 = my_op_args_[i].output;
     LOG_IF(INFO, ENV_PARAM(DEEPHI_PROFILING))
         << "op_name : " << ops_[i]->get_name();
     __TIC__(CPU_OP_EXEC)
-    auto error_code = op_imp_[i]->calculate(inputs, output);
+    auto error_code = op_imp_[i]->calculate(inputs, output1);
     __TOC__(CPU_OP_EXEC)
     if (ENV_PARAM(XLNX_ENABLE_DUMP)) {
       auto dir = std::string("dump") + "/" +
@@ -203,7 +203,7 @@ std::pair<uint32_t, int> CpuTask::execute_async(
       if (attrs_->has_attr("__batch_base__")) {
         batch_base = attrs_->get_attr<int>("__batch_base__");
       }
-      vart::dump_tensor_buffer(dir, output, batch_base);
+      vart::dump_tensor_buffer(dir, output1, batch_base);
     }
     CHECK_EQ(error_code, 0);
   }

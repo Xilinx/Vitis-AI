@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 MODEL="resnet50"
-CONFIG_FILE="config.json"
+BATCH_SIZE=128
 
-python resnet.py --model ${MODEL} --config_file ${CONFIG_FILE}
+DATA_DIR="/dataset/imagenet/pytorch"
+
+python -u resnet.py --model ${MODEL} --batch_size ${BATCH_SIZE} --data_dir ${DATA_DIR}

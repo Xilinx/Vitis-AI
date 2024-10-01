@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@
 #include <thread>
 #include <tuple>
 
+#include <vitis/ai/profiling.hpp>
 #include "vitis/ai/nnpp/apply_nms.hpp"
 
 using namespace cv;
@@ -64,6 +65,7 @@ void SSDdetector::detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
                          const float* conf_data, SSDResult* result) {
   decoded_bboxes_.clear();
 
+  //__TIC__(TOP_K)
   unsigned int num_det = 0;
   vector<vector<int>> indices(num_classes_);
   vector<vector<pair<float, int>>> score_index_vec(num_classes_);
@@ -72,8 +74,9 @@ void SSDdetector::detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
   get_multi_class_max_score_index_mt(conf_data, 1, num_classes_ - 1,
                                      &score_index_vec);
 
-  //__TOC__(Sort)
-  //__TIC__(NMS)
+  //__TOC__(TOP_K)
+  
+  //__TIC__(SSD_NMS)
   for (unsigned int c = 1; c < num_classes_; ++c) {
     // Perform NMS for one class
     apply_one_class_nms(loc_infos, conf_data, c, score_index_vec[c],
@@ -81,7 +84,9 @@ void SSDdetector::detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
 
     num_det += indices[c].size();
   }
+  //__TOC__(SSD_NMS)
 
+  //__TIC__(SORT_PICK)
   if (keep_top_k_ > 0 && num_det > keep_top_k_) {
     vector<tuple<float, int, int>> score_index_tuples;
     for (auto label = 0u; label < num_classes_; ++label) {
@@ -106,10 +111,11 @@ void SSDdetector::detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
     for (auto& item : score_index_tuples) {
       indices[get<1>(item)].push_back(get<2>(item));
     }
-
     // num_det = keep_top_k_;
   }
+  //__TOC__(SORT_PICK)
 
+  //__TIC__(SSD_COOR_MAP)
   for (auto label = 1u; label < indices.size(); ++label) {
     for (auto idx : indices[label]) {
       auto score = conf_data[idx * num_classes_ + label];
@@ -125,6 +131,7 @@ void SSDdetector::detect(const std::map<uint32_t, SSDOutputInfo>& loc_infos,
       result->bboxes.emplace_back(res);
     }
   }
+  //__TOC__(SSD_COOR_MAP)
 }
 
 void SSDdetector::apply_one_class_nms(
@@ -138,6 +145,7 @@ void SSDdetector::apply_one_class_nms(
 
   // float adaptive_threshold = nms_threshold_;
   indices->clear();
+  //__TIC__(SSD_DECODE)
   unsigned int i = 0;
   while (i < score_index_vec.size()) {
     const uint32_t idx = score_index_vec[i].second;
@@ -159,6 +167,7 @@ void SSDdetector::apply_one_class_nms(
     resultmap[i] = idx;
     ++i;
   }
+  //__TOC__(SSD_DECODE)
 
   applyNMS(boxes, scores, nms_threshold_, confidence_threshold_[label],
            results);
@@ -167,40 +176,38 @@ void SSDdetector::apply_one_class_nms(
   }
 }
 
-void SSDdetector::get_one_class_max_score_index(
-    const float* conf_data, int label,
-    vector<pair<float, int>>* score_index_vec) {
-  // __TIC__(PUSH2)
-  conf_data += label;
-  for (int i = 0; i < num_priors_; ++i) {
-    auto score = *conf_data;
-    // if (label == 1 && i == 13149) {
-    //  std::cout << "hi, id:13149 score:" << score << std::endl;
-    // }
-    if (score > nms_confidence_) {
-      score_index_vec->emplace_back(score, i);
-    }
-    conf_data += num_classes_;
-  }
-  // __TOC__(PUSH2)
-  // __TIC__(SORT2)
-  std::stable_sort(
-      score_index_vec->begin(), score_index_vec->end(),
-      [](const pair<float, int>& lhs, const pair<float, int>& rhs) {
-        return lhs.first > rhs.first;
-      });
-  // __TOC__(SORT2)
-  if (nms_top_k_ < score_index_vec->size()) {
-    score_index_vec->resize(nms_top_k_);
-  }
-}
-
 void SSDdetector::get_multi_class_max_score_index(
     const float* conf_data, int start_label, int num_classes,
     vector<vector<pair<float, int>>>* score_index_vec) {
-  for (auto i = start_label; i < start_label + num_classes; ++i) {
-    get_one_class_max_score_index(conf_data, i, &((*score_index_vec)[i]));
+  // __TIC__(PUSH2)
+  for (int i = 0; i < num_priors_; ++i) {
+    conf_data += start_label;
+    for (auto j = start_label; j < start_label + num_classes; ++j) {
+    //for (int j = 0; j < num_classes; ++j) {
+      auto score = *conf_data;
+    // if (label == 1 && i == 13149) {
+    //  std::cout << "hi, id:13149 score:" << score << std::endl;
+    // }
+      if (score > nms_confidence_) {
+        (*score_index_vec)[j].emplace_back(score, i);
+      }
+      conf_data += 1;
+    }
   }
+  // __TOC__(PUSH2)
+  // __TIC__(SORT2)
+  for (auto i = start_label; i < start_label + num_classes; ++i) {
+    // cout << "sort size: " << (*score_index_vec)[i].size() << endl;
+    std::stable_sort(
+      (*score_index_vec)[i].begin(), (*score_index_vec)[i].end(),
+      [](const pair<float, int>& lhs, const pair<float, int>& rhs) {
+        return lhs.first > rhs.first;
+      });
+    if (nms_top_k_ < (*score_index_vec)[i].size()) {
+      (*score_index_vec)[i].resize(nms_top_k_);
+    }
+  }
+  // __TOC__(SORT2)
 }
 
 void SSDdetector::get_multi_class_max_score_index_mt(

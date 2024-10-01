@@ -13,7 +13,8 @@
 # limitations under the License.
 
 name: "AMD_AIE2_4x5_Overlay"
-type: "IPUCVDX8G"
+ipu_overlay_type: "4x5_Overlay"
+type: "IPU_PHX"
 isa_version: 0x00
 feature_code: 0x20c23f
 bank_group {

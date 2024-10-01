@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,8 +184,16 @@ std::pair<uint64_t, size_t> CpuFlatTensorBuffer::data(
                         (elem_num - offset) * dtype_size);
 }
 
+static size_t tensor_real_size(const xir::Tensor* tensor) {
+  auto ret = tensor->get_data_size();
+  if (tensor->has_attr("stride")) {
+    auto strides = tensor->get_attr<std::vector<std::int32_t>>("stride");
+    ret = strides.at(0);
+  }
+  return ret;
+}
 CpuFlatTensorBufferOwned::CpuFlatTensorBufferOwned(const xir::Tensor* tensor)
-    : CpuFlatTensorBuffer(nullptr, tensor), buffer_(tensor_->get_data_size()) {
+    : CpuFlatTensorBuffer(nullptr, tensor), buffer_(tensor_real_size(tensor_)) {
   data_ = (void*)&buffer_[0];
 }
 

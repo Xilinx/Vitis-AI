@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ Important:
   ./test_jpeg_rcan, ./test_performance_rcan, ./test_video_rcan first param followed must be with model name.
   Valid model name:
     rcan_pruned_tf
-    drunet_pt
     SESR_S_pt
     ofa_rcan_latency_pt
     xilinxSR_pt
@@ -34,9 +33,6 @@ Important:
     
     sample : ./test_jpeg_rcan rcan_pruned_tf sample_rcan.png
     output : 
-   
-    sample : ./test_jpeg_rcan drunet_pt sample_drunet.png
-    output : 
   
     sample : ./test_jpeg_rcan SESR_S_pt sample_sesr.png
     output :
@@ -49,7 +45,6 @@ Important:
 
 Performance: 
     ./test_performance_rcan rcan_pruned_tf test_performance_rcan.list -s 60 -t <thread> 
-    ./test_performance_rcan drunet_pt test_performance_drunet.list -s 60 -t <thread> 
     ./test_performance_rcan ofa_rcan_latency_pt test_performance_rcan.list -s 60 -t <thread> 
     ./test_performance_rcan SESR_S_pt test_performance_sesr.list -s 60 -t <thread> 
     ./test_performance_rcan xilinxSR_pt test_performance_sesr.list -s 60 -t <thread> 
@@ -59,4 +54,4 @@ Accuracy:
     ./test_accuracy_rcan <model_name> <image_list_filename> <output_filename> -t <thread>
 
     sample:
-    ./test_accuracy_rcan drunet_pt image_list.txt result.txt -t 2
+    ./test_accuracy_rcan rcan_pruned_tf image_list.txt result.txt -t 2

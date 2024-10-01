@@ -1,0 +1,1574 @@
+{
+    "tensorflow": {
+        "xnnc": [
+            {
+                "name": "recover_leaky_relu_1",
+                "nodes": [
+                    {
+                        "name": "node0",
+                        "kind": "any"
+                    },
+                    {
+                        "name": "node1",
+                        "kind": "relu"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "elemnegative"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "relu"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "fixneuron"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "elemsub"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node0",
+                        "dest": "node1"
+                    },
+                    {
+                        "src": "node0",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node7"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node5"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node6",
+                        "dest": "node7"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "recover_leaky_relu_2",
+                "nodes": [
+                    {
+                        "name": "node0",
+                        "kind": "any"
+                    },
+                    {
+                        "name": "node1",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "fixneuron"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemmax"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node0",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node0",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "remove_shape_from_random_standard_normal",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "random_standard_normal"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    }
+                ],
+                "visible": true
+            }
+        ],
+        "xir": [
+            {
+                "name": "recover_hard_softmax",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemfloor"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "elemrealpow"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node8",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node9",
+                        "kind": "elemsub"
+                    },
+                    {
+                        "name": "node10",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node11",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node12",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node13",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node14",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node15",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node16",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node17",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node18",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node19",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node20",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node21",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node22",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node23",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node24",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node25",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node26",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node27",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node28",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node29",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node30",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node31",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node32",
+                        "kind": "permute"
+                    },
+                    {
+                        "name": "node33",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node34",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node35",
+                        "kind": "unsortedsegmentsum"
+                    },
+                    {
+                        "name": "node36",
+                        "kind": "permute"
+                    },
+                    {
+                        "name": "node37",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node38",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node39",
+                        "kind": "reducesum"
+                    },
+                    {
+                        "name": "node40",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node41",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node42",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node43",
+                        "kind": "elemsub"
+                    },
+                    {
+                        "name": "node44",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node45",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node46",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node47",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node48",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node49",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node50",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node51",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node52",
+                        "kind": "elemsub"
+                    },
+                    {
+                        "name": "node53",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node54",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node55",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node56",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node57",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node58",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node59",
+                        "kind": "elemsub"
+                    },
+                    {
+                        "name": "node60",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node61",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node62",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node63",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node64",
+                        "kind": "type_cast"
+                    },
+                    {
+                        "name": "node65",
+                        "kind": "elemmul"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node9"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node8"
+                    },
+                    {
+                        "src": "node7",
+                        "dest": "node8"
+                    },
+                    {
+                        "src": "node8",
+                        "dest": "node9"
+                    },
+                    {
+                        "src": "node11",
+                        "dest": "node12"
+                    },
+                    {
+                        "src": "node9",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node12",
+                        "dest": "node13"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node13"
+                    },
+                    {
+                        "src": "node13",
+                        "dest": "node16"
+                    },
+                    {
+                        "src": "node14",
+                        "dest": "node15"
+                    },
+                    {
+                        "src": "node15",
+                        "dest": "node16"
+                    },
+                    {
+                        "src": "node16",
+                        "dest": "node17"
+                    },
+                    {
+                        "src": "node17",
+                        "dest": "node18"
+                    },
+                    {
+                        "src": "node18",
+                        "dest": "node19"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node19"
+                    },
+                    {
+                        "src": "node20",
+                        "dest": "node21"
+                    },
+                    {
+                        "src": "node21",
+                        "dest": "node22"
+                    },
+                    {
+                        "src": "node19",
+                        "dest": "node22"
+                    },
+                    {
+                        "src": "node22",
+                        "dest": "node23"
+                    },
+                    {
+                        "src": "node23",
+                        "dest": "node24"
+                    },
+                    {
+                        "src": "node24",
+                        "dest": "node25"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node25"
+                    },
+                    {
+                        "src": "node26",
+                        "dest": "node27"
+                    },
+                    {
+                        "src": "node27",
+                        "dest": "node28"
+                    },
+                    {
+                        "src": "node25",
+                        "dest": "node28"
+                    },
+                    {
+                        "src": "node28",
+                        "dest": "node29"
+                    },
+                    {
+                        "src": "node29",
+                        "dest": "node30"
+                    },
+                    {
+                        "src": "node6",
+                        "dest": "node30"
+                    },
+                    {
+                        "src": "node30",
+                        "dest": "node31"
+                    },
+                    {
+                        "src": "node31",
+                        "dest": "node32"
+                    },
+                    {
+                        "src": "node32",
+                        "dest": "node35"
+                    },
+                    {
+                        "src": "node33",
+                        "dest": "node35"
+                    },
+                    {
+                        "src": "node34",
+                        "dest": "node35"
+                    },
+                    {
+                        "src": "node35",
+                        "dest": "node36"
+                    },
+                    {
+                        "src": "node36",
+                        "dest": "node37"
+                    },
+                    {
+                        "src": "node37",
+                        "dest": "node38"
+                    },
+                    {
+                        "src": "node38",
+                        "dest": "node39"
+                    },
+                    {
+                        "src": "node39",
+                        "dest": "node40"
+                    },
+                    {
+                        "src": "node40",
+                        "dest": "node41"
+                    },
+                    {
+                        "src": "node40",
+                        "dest": "node47"
+                    },
+                    {
+                        "src": "node41",
+                        "dest": "node43"
+                    },
+                    {
+                        "src": "node42",
+                        "dest": "node43"
+                    },
+                    {
+                        "src": "node43",
+                        "dest": "node44"
+                    },
+                    {
+                        "src": "node44",
+                        "dest": "node46"
+                    },
+                    {
+                        "src": "node45",
+                        "dest": "node46"
+                    },
+                    {
+                        "src": "node47",
+                        "dest": "node49"
+                    },
+                    {
+                        "src": "node44",
+                        "dest": "node48"
+                    },
+                    {
+                        "src": "node48",
+                        "dest": "node49"
+                    },
+                    {
+                        "src": "node50",
+                        "dest": "node51"
+                    },
+                    {
+                        "src": "node51",
+                        "dest": "node52"
+                    },
+                    {
+                        "src": "node49",
+                        "dest": "node52"
+                    },
+                    {
+                        "src": "node52",
+                        "dest": "node53"
+                    },
+                    {
+                        "src": "node53",
+                        "dest": "node54"
+                    },
+                    {
+                        "src": "node46",
+                        "dest": "node54"
+                    },
+                    {
+                        "src": "node54",
+                        "dest": "node55"
+                    },
+                    {
+                        "src": "node55",
+                        "dest": "node58"
+                    },
+                    {
+                        "src": "node47",
+                        "dest": "node58"
+                    },
+                    {
+                        "src": "node58",
+                        "dest": "node59"
+                    },
+                    {
+                        "src": "node56",
+                        "dest": "node57"
+                    },
+                    {
+                        "src": "node57",
+                        "dest": "node59"
+                    },
+                    {
+                        "src": "node59",
+                        "dest": "node60"
+                    },
+                    {
+                        "src": "node60",
+                        "dest": "node61"
+                    },
+                    {
+                        "src": "node61",
+                        "dest": "node62"
+                    },
+                    {
+                        "src": "node55",
+                        "dest": "node62"
+                    },
+                    {
+                        "src": "node62",
+                        "dest": "node63"
+                    },
+                    {
+                        "src": "node55",
+                        "dest": "node63"
+                    },
+                    {
+                        "src": "node63",
+                        "dest": "node64"
+                    },
+                    {
+                        "src": "node64",
+                        "dest": "node65"
+                    },
+                    {
+                        "src": "node30",
+                        "dest": "node65"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "recover_hard_sigmoid",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "relu6"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemmul, elemrealdiv"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "const"
+                    }
+                ],
+                "edges":[
+                    {
+                        "src": "node2",
+                        "dest": "node1"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node7",
+                        "dest": "node6"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "replace_conv2dbackpropinput_with_conv2dtranspose_pattern1",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node8",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node9",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node10",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node11",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node12",
+                        "kind": "elemadd"
+                    },
+                    {
+                        "name": "node13",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node14",
+                        "kind": "stack"
+                    },
+                    {
+                        "name": "node15",
+                        "kind": "conv2d_transpose"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node6"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node7"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node8"
+                    },
+                    {
+                        "src": "node8",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node9",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node12"
+                    },
+                    {
+                        "src": "node11",
+                        "dest": "node12"
+                    },
+                    {
+                        "src": "node6",
+                        "dest": "node14"
+                    },
+                    {
+                        "src": "node7",
+                        "dest": "node14"
+                    },
+                    {
+                        "src": "node12",
+                        "dest": "node14"
+                    },
+                    {
+                        "src": "node13",
+                        "dest": "node14"
+                    },
+                    {
+                        "src": "node14",
+                        "dest": "node15"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "replace_conv2dbackpropinput_with_conv2dtranspose_pattern2",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "elemmul"
+                    },
+                    {
+                        "name": "node8",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node9",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node10",
+                        "kind": "stack"
+                    },
+                    {
+                        "name": "node11",
+                        "kind": "conv2d_transpose"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node5"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node7"
+                    },
+                    {
+                        "src": "node6",
+                        "dest": "node7"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node8"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node7",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node8",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node9",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node11"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "merge_const_fix_elemadd_in_conv2d",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "fixneuron"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "conv2d, depthwise_conv2d, conv2d_transpose"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemadd"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "reduce_shape_stridedslice_stack_to_const",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "stack"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "reshape"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node5"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "recover_l2_normalize",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "elemsquare"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "reducesum"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemmax"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "elemrsqrt"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "elemmul"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node5"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node6"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "merge_round_typecast",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "elemround"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "type_cast"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    }
+                ],
+                "visible": true
+            }
+        ]
+    },
+    "tensorflow2": {
+        "xnnc": [
+            {
+                "name": "compute_shape_const_for_custom_upsamplelike",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "any"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "any"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "resize"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    }
+                ],
+                "visible": true
+            }
+        ],
+        "xir": [
+            {
+                "name": "xir_opt_decompose_hard_sigmoid",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "sigmoid"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            },
+            {
+                "name": "xir_opt_decompose_global_avgpool2d",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "avgpool"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            }
+        ]
+    },
+    "pytorch": {
+        "xnnc": [
+            {
+                "name": "merge_size_listconstruct_in_reshape",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "size"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "listconstruct"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "reshape"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "merge_listconstruct_concat_in_concat",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "listconstruct"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "concat"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "compute_scale_of_upsample_nearest",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "size"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "to_dtype"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "mul"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "to_dtype"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "floor"
+                    },
+                    {
+                        "name": "node6",
+                        "kind": "size"
+                    },
+                    {
+                        "name": "node7",
+                        "kind": "to_dtype"
+                    },
+                    {
+                        "name": "node8",
+                        "kind": "mul"
+                    },
+                    {
+                        "name": "node9",
+                        "kind": "to_dtype"
+                    },
+                    {
+                        "name": "node10",
+                        "kind": "floor"
+                    },
+                    {
+                        "name": "node11",
+                        "kind": "listconstruct"
+                    },
+                    {
+                        "name": "node12",
+                        "kind": "upsample"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node5"
+                    },
+                    {
+                        "src": "node5",
+                        "dest": "node11"
+                    },
+                    {
+                        "src": "node6",
+                        "dest": "node7"
+                    },
+                    {
+                        "src": "node7",
+                        "dest": "node8"
+                    },
+                    {
+                        "src": "node8",
+                        "dest": "node9"
+                    },
+                    {
+                        "src": "node9",
+                        "dest": "node10"
+                    },
+                    {
+                        "src": "node10",
+                        "dest": "node11"
+                    },
+                    {
+                        "src": "node11",
+                        "dest": "node12"
+                    }
+                ],
+                "visible": true
+            }
+        ],
+        "xir": [
+            {
+                "name": "remove_contiguous",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "contiguous"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            },
+            {
+                "name": "remove_permute",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "permute"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            }
+        ]
+    },
+    "caffe": {
+        "xir": [
+            {
+                "name": "patch_avgpool_followed_by_fix",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "avgpool"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "fixneuron"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "split_slice_into_multiple_stridedslice",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "slice"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            },
+            {
+                "name": "remove_silence_branch",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "silence"
+                    }
+                ],
+                "edges": [],
+                "visible": true
+            }
+        ]
+    },
+    "nndct": {
+        "xnnc": [
+            {
+                "name": "merge_into_dilated_conv2d_family",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "spacetobatchnd"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "conv2d, depthwise_conv2d"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "batchtospacend"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node3"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "reduce_shape_before_reshape",
+                "nodes": [
+                    {
+                        "name": "node0",
+                        "kind": "any"
+                    },
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "reshape"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node0",
+                        "dest": "node1"
+                    },
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "merge_const_fix_elemadd_in_conv2d_family",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "fixneuron"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "conv2d, depthwise_conv2d, conv2d_transpose"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "elemadd"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    }
+                ],
+                "visible": true
+            },
+            {
+                "name": "reduce_shape_stridedslice_stack_to_const",
+                "nodes": [
+                    {
+                        "name": "node1",
+                        "kind": "shape"
+                    },
+                    {
+                        "name": "node2",
+                        "kind": "stridedslice"
+                    },
+                    {
+                        "name": "node3",
+                        "kind": "const"
+                    },
+                    {
+                        "name": "node4",
+                        "kind": "stack"
+                    },
+                    {
+                        "name": "node5",
+                        "kind": "reshape"
+                    }
+                ],
+                "edges": [
+                    {
+                        "src": "node1",
+                        "dest": "node2"
+                    },
+                    {
+                        "src": "node2",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node3",
+                        "dest": "node4"
+                    },
+                    {
+                        "src": "node4",
+                        "dest": "node5"
+                    }
+                ],
+                "visible": true
+            }
+        ]
+    }
+}

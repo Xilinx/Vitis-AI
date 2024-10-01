@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ int main(int argc, char *argv[]) {
     abort();
   }
   auto det = vitis::ai::OpenPose::create(argv[1]);
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  } 
   vector<vector<int>> limbSeq = {{0, 1},  {1, 2},   {2, 3},  {3, 4}, {1, 5},
                                  {5, 6},  {6, 7},   {1, 8},  {8, 9}, {9, 10},
                                  {1, 11}, {11, 12}, {12, 13}};

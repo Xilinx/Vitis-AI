@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
          << endl;
   }
   vector<string> p5{".", "..", "./a/b/c", "./b/e/f/"};
-  for (auto p : p5) {
+  for (auto& p : p5) {
     vitis::ai::create_parent_path(p);
     cout << "p=" << p                                          //
          << " is_directory(p)=" << vitis::ai::is_directory(p)  //

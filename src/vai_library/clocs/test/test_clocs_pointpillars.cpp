@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,10 @@ int main(int argc, char* argv[]) {
   std::string model_1 = argv[2];
 
   auto pointpillars = vitis::ai::ClocsPointPillars::create(model_0, model_1);
+  if (!pointpillars) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   auto ret = pointpillars->run(input);
 

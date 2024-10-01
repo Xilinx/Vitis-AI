@@ -33,7 +33,7 @@
   "finalize_pipeline_config":
   {
     "output_format": "",
-    "onnx_opset_version": 11,
+    "onnx_opset_version": 13,
     "output_dir": "./quantize_results/"
   },
 
@@ -42,6 +42,7 @@
 
     "user_quantize_config":
     {
+      "data_format": null,
       "input_bit": null,
       "input_method": null,
       "input_method_percentile": null,
@@ -49,18 +50,21 @@
       "input_per_channel": null,
       "input_round_mode": null,
       "input_unsigned": null,
+      "input_narrow_range": null,
       "weight_bit": null,
       "weight_method": null,
       "weight_symmetry": null,
       "weight_per_channel": null,
       "weight_round_mode": null,
       "weight_unsigned": null,
+      "weight_narrow_range": null,
       "bias_bit": null,
       "bias_method": null,
       "bias_symmetry": null,
       "bias_per_channel": null,
       "bias_round_mode": null,
       "bias_unsigned": null,
+      "bias_narrow_range": null,
       "activation_bit": null,
       "activation_method": null,
       "activation_method_percentile": null,
@@ -68,7 +72,9 @@
       "activation_per_channel": null,
       "activation_round_mode": null,
       "activation_unsigned": null,
+      "activation_narrow_range": null,
       "use_framework_quant": null,
+      "use_fixneuron_quant": null,
       "input_layers": [],
       "output_layers": [],
       "ignore_layers": []

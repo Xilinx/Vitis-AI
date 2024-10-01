@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespaceget__inputs" kind="namespace" language="Python">
+    <compoundname>get_inputs</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespaceget__inputs_1ab79639cd851862be030a2a10968b6ae8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def get_inputs</definition>
+        <argsstring>()</argsstring>
+        <name>get_inputs</name>
+        <qualifiedname>get_inputs.get_inputs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="pydoc/get_inputs.py" line="13" column="1" bodyfile="pydoc/get_inputs.py" bodystart="13" bodyend="16"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Get all input tensor buffers of runner. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="return"><para>: List[<ref refid="classvart_1_1_tensor_buffer" kindref="compound">vart.TensorBuffer</ref>]. All input tensors. A vector of raw pointer to the input tensor.</para>
+</simplesect>
+Sample code:</para>
+<para><programlisting><codeline><highlight class="normal">input_tensor_buffers<sp/>=<sp/>runner.get_inputs()</highlight></codeline>
+<codeline><highlight class="normal">input_dim<sp/>=<sp/>tuple(input_tensor_buffers[0].get_tensor().dims)</highlight></codeline>
+</programlisting> </para>
+    </detaileddescription>
+    <location file="pydoc/get_inputs.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

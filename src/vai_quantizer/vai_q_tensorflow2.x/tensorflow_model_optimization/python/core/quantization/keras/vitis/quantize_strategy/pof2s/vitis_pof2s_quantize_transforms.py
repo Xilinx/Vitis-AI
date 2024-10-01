@@ -31,6 +31,7 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers i
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.layers import vitis_conv_bn
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.graph_transformations import transforms
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import common_utils
+from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils import model_utils
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.optimizations import vitis_optimize_transforms
 
 activations = tf.keras.activations
@@ -150,6 +151,163 @@ class CustomLayerWrapper(transforms.Transform):
     return {}
 
 
+class TFOpLambdaQuantize(transforms.Transform):
+  """Quantize TFOpLambda layers in the quantize support list, by wrapping them with QuantizeWrappers.
+  Layer => QuantizeWrapper(Layer inside)
+  """
+
+  def _add_lambda_function_quantize_info(self):
+    base_quantize_info = {
+        'quantizable_weights': [],
+        'weight_quantizers': [],
+        'quantizable_biases': [],
+        'bias_quantizers': [],
+        'quantizable_activations': [],
+        'activation_quantizers': [],
+        'quantizable_outputs': [0],
+        'output_quantizers': [{
+            "quantizer_type": "Pof2SQuantizer",
+            "quantizer_params": {
+                "bit_width": 8,
+                "method": 1,
+                "round_mode": 1,
+                "symmetry": True,
+                "per_channel": False,
+                "channel_axis": -1,
+                "narrow_range": False
+            }
+        }]
+    }
+    self._lambda_function_quantize_map['linalg.matmul'] = base_quantize_info
+    self._lambda_function_quantize_map['math.truediv'] = base_quantize_info
+    self._lambda_function_quantize_map['__operators__.add'] = base_quantize_info
+
+  def _is_suported_lambda_function(self, lambda_function_name):
+    return False if lambda_function_name not in self._lambda_function_quantize_map else True
+
+  def _get_lambda_function_quantize(self, lambda_func_type):
+    quantize_config = copy.deepcopy(
+        self._lambda_function_quantize_map.get(lambda_func_type))
+    return vitis_quantize_configs.VitisQuantizeConfig.from_config(
+        quantize_config)
+
+  def __init__(self, input_model, quantize_registry, mode):
+    super(TFOpLambdaQuantize, self).__init__()
+    self.quantize_registry = quantize_registry
+    self.mode = mode
+    self.input_model = input_model
+    self._lambda_function_quantize_map = dict()
+    self._add_lambda_function_quantize_info()
+
+  def pattern(self):
+    return LayerPattern('TFOpLambda', {}, [])
+
+  def replacement(self, match_layer):
+    layer_node = match_layer.layer
+    match_layer_name = match_layer.layer['config']['name']
+    metadata = match_layer.metadata
+    ins_res = metadata.get('inspect_result', None)
+
+    lambda_function = match_layer.layer['config']['function']
+    layer = self.input_model.get_layer(layer_node['config']['name'])
+
+    quantize_config = metadata.get('quantize_config')
+    if not quantize_config and self._is_suported_lambda_function(
+        lambda_function):
+      quantize_config = self._get_lambda_function_quantize(lambda_function)
+    if not quantize_config:
+      info_msg = (
+          'Layer {}({}) is not supported by DPU, it will not be quantized and may be mapped to run on CPU or other IPs. '
+          'Please see {} for list of supported operations and APIs of vai_q_tensorflow2.'
+      )
+      logger.info(info_msg.format(layer.name, layer.__class__, ug_link))
+      layer_name = match_layer.layer['config']['name']
+      if ins_res:
+        ins_res.add_notes('`{}` is not supported by target.'.format(
+            layer.__class__.__name__))
+      return match_layer
+
+    if ins_res:
+      ins_res.device = 'DPU'
+      ins_res.origin_layers = []
+
+    quant_metadata = copy.deepcopy(metadata)
+    quant_ins_res = quant_metadata.get('inspect_result', None)
+    if quant_ins_res:
+      quant_ins_res.device = 'DPU'
+      quant_ins_res.origin_layers = []
+
+    quantizer = quantize_config.get_output_quantizers()[0]
+    quant_layer = vitis_quantize.VitisQuantize(
+        quantizer, self.mode, name='{}_{}'.format('quant', match_layer_name))
+    layer_config = keras.layers.serialize(quant_layer)
+    layer_config['name'] = quant_layer.name
+
+    quant_layer_node = LayerNode(
+        layer_config, input_layers=[match_layer], metadata=quant_metadata)
+
+    return quant_layer_node
+
+  def custom_objects(self):
+    objs = vitis_quantizers._types_dict()
+    objs.update(vitis_quantize_configs._types_dict())
+    objs.update({
+        'QuantizeAwareActivation':
+            vitis_quantize_aware_activation.QuantizeAwareActivation,
+        'NoQuantizeActivation':
+            vitis_quantize_aware_activation.NoQuantizeActivation,
+        'QuantizeWrapper':
+            vitis_quantize_wrapper.QuantizeWrapper,
+        'VitisQuantize':
+            vitis_quantize.VitisQuantize,
+    })
+    return objs
+
+class TFOpLambdaRemoveQuantize(transforms.Transform):
+  """Quantize TFOpLambda layers in the quantize support list, by wrapping them with QuantizeWrappers.
+  Layer => QuantizeWrapper(Layer inside)
+  """
+  
+  def __init__(self, input_model, quantize_registry, mode):
+    super(TFOpLambdaRemoveQuantize, self).__init__()
+    self.quantize_registry = quantize_registry
+    self.mode = mode
+    self.input_model = input_model
+
+  def pattern(self):
+    return LayerPattern(
+        'TFOpLambda',
+        inputs=[
+            LayerPattern(
+                'Vitis>VitisQuantize',
+                inputs=[LayerPattern('TFOpLambda')])
+        ])
+
+
+  def replacement(self, match_layer):
+    layer_node = match_layer.layer
+    match_layer_name = match_layer.layer['config']['name']
+    metadata = match_layer.metadata
+    ins_res = metadata.get('inspect_result', None)
+
+    lambda_function = match_layer.layer['config']['function']
+    layer = self.input_model.get_layer(layer_node['config']['name'])
+    up_match_layer = match_layer.input_layers[0].input_layers[0]
+    up_layer_node = up_match_layer.layer
+    up_layer = self.input_model.get_layer(up_match_layer.layer['config']['name'])
+    up_lambda_function = up_match_layer.layer['config']['function']
+    if lambda_function == 'math.truediv' and up_lambda_function == 'linalg.matmul':
+      match_layer.input_layers = [up_match_layer]
+      #layer.input_layers = [up_match_layer]
+      #match_layer.layer['inbound_nodes'][0][0] = up_layer.layer['config']['name']
+      #LayerNode.from_layer(match_layer,input_layers=[up_layer], metadata=match_layer.metadata)
+    return  match_layer 
+
+  def custom_objects(self):
+    return {} 
+
+
+
 class LayersQuantize(transforms.Transform):
   """Quantize layers in the quantize support list, by wrapping them with QuantizeWrappers.
   Special layers like InputLayer and Convolution + BatchNormalization will be handled by
@@ -174,7 +332,7 @@ class LayersQuantize(transforms.Transform):
 
     skip_layers = [
         'InputLayer', 'Vitis>VitisQuantize', 'Vitis>QuantizeWrapper',
-        'Vitis>VitisConvBN', 'Vitis>VitisConvBNQuantize',
+        'Vitis>VitisConvBN', 'Vitis>VitisConvBNQuantize', 'TFOpLambda',
         'Vitis>VitisDepthwiseConvBN', 'Vitis>VitisDepthwiseConvBNQuantize'
     ]
     if layer_node['class_name'] in skip_layers:
@@ -205,6 +363,7 @@ class LayersQuantize(transforms.Transform):
             return layer_node['config']['activation']
           elif layer_node['class_name'] == 'Vitis>VitisSigmoid':
             return 'hard_sigmoid'
+
           return 'activation'
 
         info_msg = 'Standalone activation `{}` layer {} is not supported.'
@@ -218,9 +377,9 @@ class LayersQuantize(transforms.Transform):
                   _get_act_type(layer_node)))
         return match_layer
     if layer_node['class_name'] == 'TensorFlowOpLayer':
-      layer = self.input_model.get_layer(layer_node['name'])
+      layer = model_utils.get_layer(self.input_model, layer_node['name'])
     else:
-      layer = self.input_model.get_layer(layer_node['config']['name'])
+      layer = model_utils.get_layer(self.input_model, layer_node['config']['name'])
 
     if not quantize_config and self.quantize_registry.supports(layer):
       quantize_config = self.quantize_registry.get_quantize_config(layer)
@@ -291,22 +450,23 @@ class LayersInputQuantize(transforms.Transform):
     self.input_quantizer = vitis_quantize_configs._make_quantizer(
         input_quantizer['quantizer_type'], input_quantizer['quantizer_params'])
     self.mode = mode
-    self.quant_layers = [
-        'Vitis>QuantizeWrapper', 'Vitis>VitisConvBN',
-        'Vitis>VitisConvBNQuantize', 'Vitis>VitisDepthwiseConvBN',
-        'Vitis>VitisDepthwiseConvBNQuantize'
+    self.quant_layers = ['Vitis>QuantizeWrapper']
+    self.qat_layers = [
+        'Vitis>VitisConvBNQuantize', 'Vitis>VitisDepthwiseConvBNQuantize'
     ]
 
   def pattern(self):
-    return LayerPattern('|'.join(self.quant_layers), {}, [LayerPattern('.*')])
+    return LayerPattern('|'.join(self.quant_layers + self.qat_layers), {},
+                        [LayerPattern('.*')])
 
   def replacement(self, match_layer):
     input_layer_node = match_layer.input_layers[0]
     metadata = match_layer.metadata
 
     input_layer_type = input_layer_node.layer['class_name']
-    if input_layer_type in ['InputLayer', 'Vitis>VitisQuantize'
-                           ] or input_layer_type in self.quant_layers:
+    if input_layer_type in [
+        'InputLayer', 'Vitis>VitisQuantize'
+    ] or input_layer_type in (self.quant_layers + self.qat_layers):
       return match_layer
 
     input_layer_name = input_layer_node.layer['config']['name']
@@ -330,9 +490,15 @@ class LayersInputQuantize(transforms.Transform):
 
     match_layer.input_layers = [quant_layer_node]
 
-    logger.debug('Quantize input of layer: {}({}).'.format(
-        match_layer.layer['config']['layer']['config']['name'],
-        match_layer.layer['config']['layer']['class_name']))
+    match_layer_type = match_layer.layer['class_name']
+    if match_layer_type in self.qat_layers:
+      logger.debug('Quantize input of layer: {}({}).'.format(
+          match_layer.layer['config']['conv_layer']['config']['name'],
+          match_layer.layer['config']['conv_layer']['class_name']))
+    else:
+      logger.debug('Quantize input of layer: {}({}).'.format(
+          match_layer.layer['config']['layer']['config']['name'],
+          match_layer.layer['config']['layer']['class_name']))
 
     return match_layer
 
@@ -501,6 +667,84 @@ class AnnotateConvAct(transforms.Transform):
     conv_layer_node = act_layer_node.input_layers[0]
     conv_metadata = conv_layer_node.metadata
 
+    act_layer = model_utils.get_layer(self.input_model,
+        act_layer_node.layer['config']['name'])
+    conv_layer = model_utils.get_layer(self.input_model,
+        conv_layer_node.layer['config']['name'])
+
+    # No need to annotate if conv or act not quantizable
+    conv_quantize_config = conv_metadata.get('quantize_config')
+    if not conv_quantize_config and self.quantize_registry.supports(conv_layer):
+      conv_quantize_config = self.quantize_registry.get_quantize_config(
+          conv_layer)
+    if not conv_quantize_config:
+      return match_layer
+
+    # Check conv layer limits
+    layer_limits = self.quantize_registry.get_layer_limits(conv_layer)
+    if layer_limits:
+      is_in_limit, msgs = layer_limits.in_limits(conv_layer)
+      if not is_in_limit:
+        return match_layer
+
+    act_quantize_config = act_metadata.get('quantize_config')
+    if not act_quantize_config and self.quantize_registry.supports(act_layer):
+      act_quantize_config = self.quantize_registry.get_quantize_config(
+          act_layer)
+    if not act_quantize_config:
+      return match_layer
+
+    # Check conv + act limits
+    if layer_limits:
+      is_in_limit, msgs = layer_limits.in_act_limits(conv_layer, act_layer)
+      if not is_in_limit:
+        for msg in msgs:
+          logger.info('Layer {}({}): {}'.format(conv_layer.name,
+                                                conv_layer.__class__.__name__,
+                                                msg))
+        conv_ins_res = conv_metadata.get('inspect_result', None)
+        act_ins_res = act_metadata.get('inspect_result', None)
+        if conv_ins_res and act_ins_res:
+          conv_layer_name = conv_layer.name
+          if conv_layer.name == act_ins_res.origin_layers[0]:
+            conv_ins_res.add_notes(msgs)
+          else:
+            act_ins_res.add_notes(msgs)
+        return match_layer
+
+    if act_layer_node.layer['class_name'] not in ['Vitis>VitisSigmoid']:
+      conv_layer_node.layer['config']['activation'] = \
+        keras.activations.serialize(vitis_quantize_aware_activation.NoQuantizeActivation())
+    act_metadata['quantize_config'] = act_quantize_config
+
+    return match_layer
+
+  def custom_objects(self):
+    return {
+        'NoQuantizeActivation':
+            vitis_quantize_aware_activation.NoQuantizeActivation,
+    }
+
+
+class AnnotateConvBNAct(transforms.Transform):
+  """Ensure FQ does not get placed between ConvBN and Activation."""
+
+  def __init__(self, input_model, quantize_registry):
+    super(AnnotateConvBNAct, self).__init__()
+    self.input_model = input_model
+    self.quantize_registry = quantize_registry
+
+  def pattern(self):
+    return LayerPattern(
+        'ReLU|Activation|LeakyReLU|Vitis>VitisSigmoid',
+        inputs=[LayerPattern('Vitis>VitisConvBN|Vitis>VitisDepthwiseConvBN')])
+
+  def replacement(self, match_layer):
+    act_layer_node = match_layer
+    act_metadata = act_layer_node.metadata
+    conv_layer_node = act_layer_node.input_layers[0]
+    conv_metadata = conv_layer_node.metadata
+
     act_layer = self.input_model.get_layer(
         act_layer_node.layer['config']['name'])
     conv_layer = self.input_model.get_layer(
@@ -549,7 +793,6 @@ class AnnotateConvAct(transforms.Transform):
     if act_layer_node.layer['class_name'] not in ['Vitis>VitisSigmoid']:
       conv_layer_node.layer['config']['activation'] = \
         keras.activations.serialize(vitis_quantize_aware_activation.NoQuantizeActivation())
-    #  conv_metadata['quantize_config'] = conv_quantize_config
     act_metadata['quantize_config'] = act_quantize_config
 
     return match_layer
@@ -560,37 +803,69 @@ class AnnotateConvAct(transforms.Transform):
             vitis_quantize_aware_activation.NoQuantizeActivation,
     }
 
+class AnnotateDoubleTFOpLambda(transforms.Transform):
+  """Ensure FQ does not get placed between Add and Activation."""
 
-class AnnotateConvBNAct(transforms.Transform):
-  """Ensure FQ does not get placed between ConvBN and Activation."""
+  def __init__(self, input_model, quantize_registry):
+    self.input_model = input_model
+    self.quantize_registry = quantize_registry
+    self.TFOpLambda_quantize_info = {
+        'quantizable_weights': [],
+        'weight_quantizers': [],
+        'quantizable_biases': [],
+        'bias_quantizers': [],
+        'quantizable_activations': [],
+        'activation_quantizers': [],
+        'quantizable_outputs': [0],
+        'output_quantizers': [{
+            "quantizer_type": "Pof2SQuantizer",
+            "quantizer_params": {
+                "bit_width": 8,
+                "method": 1,
+                "round_mode": 1,
+                "symmetry": True,
+                "per_channel": False,
+                "channel_axis": -1,
+                "narrow_range": False
+            }
+        }]
+    }
+    self.TFOpLambda_quantize_config = vitis_quantize_configs.VitisQuantizeConfig.from_config(
+        copy.deepcopy(self.TFOpLambda_quantize_info))
+
 
   def pattern(self):
     return LayerPattern(
-        'ReLU|Activation|LeakyReLU',
-        inputs=[LayerPattern('Vitis>VitisConvBN|Vitis>VitisDepthwiseConvBN')])
+        'TFOpLambda', inputs=[LayerPattern('TFOpLambda')])
 
   def replacement(self, match_layer):
-    act_layer_node = match_layer
-    conv_layer_node = act_layer_node.input_layers[0]
+    second_lambda_layer_node = match_layer
+    second_lambda_metadata = second_lambda_layer_node.metadata
+    second_lambda_function = match_layer.layer['config']['function']
+    first_lambda_layer_node = second_lambda_layer_node.input_layers[0]
+    first_lambda_metadata = first_lambda_layer_node.metadata
+    first_lambda_function = first_lambda_layer_node.layer['config']['function']
+    second_lambda_layer = self.input_model.get_layer(
+        second_lambda_layer_node.layer['config']['name'])
+    first_lambda_layer = self.input_model.get_layer(
+        first_lambda_layer_node.layer['config']['name'])
 
-    if act_layer_node.layer[
-        'class_name'] == 'Activation' and act_layer_node.layer['config'][
-            'activation'] not in ['relu', 'linear']:
-      return match_layer
-    elif act_layer_node.layer[
-        'class_name'] == 'LeakyReLU' and not _is_leaky_relu_quantizable(
-            act_layer_node.layer, 26. / 256.):
-      return match_layer
+    # No need to annotate if add/mul or act not quantizable
+    second_lambda_quantize_config = second_lambda_metadata.get('quantize_config')
+    first_lambda_quantize_config = first_lambda_metadata.get('quantize_config')
 
-    conv_layer_node.layer['config']['activation'] = \
-      keras.activations.serialize(vitis_quantize_aware_activation.NoQuantizeActivation())
+    if second_lambda_function == 'math.truediv' and first_lambda_function == 'linalg.matmul':
+      first_lambda_layer_node.metadata['quantize_config'] = \
+      vitis_quantize_configs.NoQuantizeConfig()
+    #  add_metadata['quantize_config'] = add_quantize_config
+    #second_lambda_metadata['quantize_config'] = self.TFOpLambda_quantize_config
+    second_lambda_metadata['quantize_config'] =  vitis_quantize_configs.NoQuantizeConfig()
 
-    return match_layer
+    return second_lambda_layer_node
 
   def custom_objects(self):
     return {
-        'NoQuantizeActivation':
-            vitis_quantize_aware_activation.NoQuantizeActivation,
+        'NoQuantizeConfig': vitis_quantize_configs.NoQuantizeConfig,
     }
 
 
@@ -612,9 +887,9 @@ class AnnotateAddAct(transforms.Transform):
     add_layer_node = act_layer_node.input_layers[0]
     add_metadata = add_layer_node.metadata
 
-    act_layer = self.input_model.get_layer(
+    act_layer = model_utils.get_layer(self.input_model,
         act_layer_node.layer['config']['name'])
-    add_layer = self.input_model.get_layer(
+    add_layer = model_utils.get_layer(self.input_model,
         add_layer_node.layer['config']['name'])
 
     # No need to annotate if add/mul or act not quantizable
@@ -693,9 +968,9 @@ class AnnotatePoolAct(transforms.Transform):
     pool_layer_node = act_layer_node.input_layers[0]
     pool_metadata = pool_layer_node.metadata
 
-    act_layer = self.input_model.get_layer(
+    act_layer = model_utils.get_layer(self.input_model,
         act_layer_node.layer['config']['name'])
-    pool_layer = self.input_model.get_layer(
+    pool_layer = model_utils.get_layer(self.input_model,
         pool_layer_node.layer['config']['name'])
 
     # No need to annotate if pool or act not quantizable
@@ -828,6 +1103,69 @@ class ConvertActivationSigmoid(transforms.Transform):
     vitis_sigmoid_layer_node = LayerNode.from_layer(
         vitis_sigmoid_layer, metadata=act_metadata)
     return vitis_sigmoid_layer_node
+
+class ConvertLayernormToDpuVersion(transforms.Transform):
+  """Convert Layernorm to VitisLayernorm.
+
+  """
+
+  def pattern(self):
+    return LayerPattern('LayerNormalization')
+
+  def replacement(self, match_layer):
+    ln_layer_node = match_layer
+    ln_metadata = ln_layer_node.metadata
+    ln_layer_name = ln_layer_node.layer['name']
+
+    epsilon = ln_layer_node.layer['config']['epsilon']
+    axis = ln_layer_node.layer['config']['axis']
+    for key in ln_layer_node.weights: 
+      if 'gamma' in key:
+        gamma = ln_layer_node.weights[key]
+      elif 'beta' in key:
+        beta = ln_layer_node.weights[key]
+    vitis_layernorm_layer = vitis_activation.VitisLayernorm(axis, epsilon, name=ln_layer_name)
+
+    ln_ins_res = ln_metadata.get('inspect_result', None)
+    if ln_ins_res:
+      ln_ins_res.add_notes('Convert `layernorm` to VitisLayernorm.')
+
+    logger.debug('ConvertActivationLayernorm: {}({}).'.format(
+        ln_layer_node.layer['config']['name'],
+        ln_layer_node.layer['class_name']))
+
+    vitis_layernorm_layer_node = LayerNode.from_layer(
+        vitis_layernorm_layer, weights=ln_layer_node.weights, metadata=ln_metadata)
+    return vitis_layernorm_layer_node
+
+class ConvertSoftmaxToDpuVersion(transforms.Transform):
+  """Convert Softmax to VitisSoftmax.
+
+  """
+
+  def pattern(self):
+    return LayerPattern('Softmax')
+
+  def replacement(self, match_layer):
+    softmax_layer_node = match_layer
+    softmax_metadata = softmax_layer_node.metadata
+    softmax_layer_name = softmax_layer_node.layer['name']
+    softmax_layer_axis = match_layer.layer['config']['axis']
+
+    vitis_softmax_layer = vitis_activation.VitisSoftmax(softmax_layer_axis, name=softmax_layer_name)
+
+    softmax_ins_res = softmax_metadata.get('inspect_result', None)
+    if softmax_ins_res:
+      softmax_ins_res.add_notes('Convert `softmax` to VitisSoftmax.')
+
+    logger.debug('ConvertSoftmax: {}({}).'.format(
+        softmax_layer_node.layer['config']['name'],
+        softmax_layer_node.layer['class_name']))
+
+    vitis_softmax_layer_node = LayerNode.from_layer(
+        vitis_softmax_layer, metadata=softmax_metadata)
+    return vitis_softmax_layer_node
+
 
 
 class ConvertConvSwish(transforms.Transform):

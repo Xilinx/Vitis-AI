@@ -13,8 +13,6 @@ from torchvision.models.resnet import resnet18
 
 from tqdm import tqdm
 
-#device = torch.device("cuda")
-#device = torch.device("cpu")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
@@ -174,6 +172,7 @@ def accuracy(output, target, topk=(1,)):
       res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
+# Evalution function should be called in quantization test stage. 
 def evaluate(model, val_loader, loss_fn):
 
   model.eval()
@@ -195,6 +194,16 @@ def evaluate(model, val_loader, loss_fn):
     top1.update(acc1[0], images.size(0))
     top5.update(acc5[0], images.size(0))
   return top1.avg, top5.avg, Loss / total
+  
+# Extracted from the upper function 'evaluate'.
+# In calibration, cannot evaluate the model accuracy because the quantization scales of tensors are kept being tuned.
+def forward_loop(model, val_loader):
+  model.eval()
+  model = model.to(device)
+  for iteraction, (images, _) in tqdm(
+      enumerate(val_loader), total=len(val_loader)):
+    images = images.to(device)
+    outputs = model(images)
 
 def quantization(title='optimize',
                  model_name='', 
@@ -235,11 +244,14 @@ def quantization(title='optimize',
       sys.exit()
       
   else:
-    ## new api
     ####################################################################################
+    # This function call will create a quantizer object and setup it. 
+    # Eager mode model code will be converted to graph model. 
+    # Quantization is not done here if it needs calibration.
     quantizer = torch_quantizer(
         quant_mode, model, (input), device=device, quant_config_file=config_file, target=target)
 
+    # Get the converted model to be quantized.
     quant_model = quantizer.quant_model
     #####################################################################################
 
@@ -264,30 +276,27 @@ def quantization(title='optimize',
           data_dir=data_dir,
           model_name=model_name)
       if quant_mode == 'calib':
-        quantizer.fast_finetune(evaluate, (quant_model, ft_loader, loss_fn))
+        quantizer.fast_finetune(forward_loop, (quant_model, ft_loader))
       elif quant_mode == 'test':
         quantizer.load_ft_param()
    
-  # record  modules float model accuracy
-  # add modules float model accuracy here
-  acc_org1 = 0.0
-  acc_org5 = 0.0
-  loss_org = 0.0
-
-  #register_modification_hooks(model_gen, train=False)
-  acc1_gen, acc5_gen, loss_gen = evaluate(quant_model, val_loader, loss_fn)
-
-  # logging accuracy
-  print('loss: %g' % (loss_gen))
-  print('top-1 / top-5 accuracy: %g / %g' % (acc1_gen, acc5_gen))
+  if quant_mode == 'calib':
+    # This function call is to do forward loop for model to be quantized.
+    # Quantization calibration will be done after it.
+    forward_loop(quant_model, val_loader)
+    # Exporting intermediate files will be used when quant_mode is 'test'. This is must.
+    quantizer.export_quant_config()
+  else:
+    acc1_gen, acc5_gen, loss_gen = evaluate(quant_model, val_loader, loss_fn)
+    # logging accuracy
+    print('loss: %g' % (loss_gen))
+    print('top-1 / top-5 accuracy: %g / %g' % (acc1_gen, acc5_gen))
 
   # handle quantization result
-  if quant_mode == 'calib':
-    quantizer.export_quant_config()
-  if deploy:
+  if quant_mode == 'test' and  deploy:
     quantizer.export_torch_script()
     quantizer.export_onnx_model()
-    quantizer.export_xmodel(deploy_check=False)
+    quantizer.export_xmodel()
 
 
 if __name__ == '__main__':

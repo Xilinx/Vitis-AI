@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ namespace pointpillars_nus {
  */
 struct CamInfo {
   /// Timestamp of input points.
-  uint64_t timestamp;
+  uint64_t timestamp=0;
   /// Sensor to lidar translation params.
   std::array<float, 3> s2l_t;
   /// Sensor to lidar rotation params.
@@ -59,7 +59,7 @@ struct CamInfo {
  */
 struct Points {
   /// Points dim.
-  int dim;
+  int dim=0;
   /// Points data.
   std::shared_ptr<std::vector<float>> points;
 };
@@ -85,7 +85,7 @@ struct PointsInfo {
   /// Points.
   Points points;
   /// Timestamp of points.
-  uint64_t timestamp;
+  uint64_t timestamp=0;
   /// Sweeps information.
   std::vector<SweepInfo> sweep_infos;
 };

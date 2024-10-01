@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,15 @@ inline BenchMarkResult thread_main_for_performance(const PointsList *points_list
   while (!g_stop) {
     vitis::ai::TimeMeasure::getThreadLocalForDpu().reset();
     auto start = std::chrono::steady_clock::now();
-    model->run( (*points_list)[ret++]);
+    // model->run( (*points_list)[ret++]);
+    auto batch = model->get_input_batch();
+    std::vector<std::vector<float>> imgs;
+    imgs.reserve(batch);
+    for (auto n = 0u; n < batch; n++) {
+      imgs.push_back((*points_list)[ret++]);
+    }
+    model->run(imgs );
+
     auto end = std::chrono::steady_clock::now();
     auto end2endtime =
         int(std::chrono::duration_cast<std::chrono::microseconds>(end - start)
@@ -166,7 +174,7 @@ inline BenchMarkResult thread_main_for_performance(const PointsList *points_list
 
     e2e_stat_samples.addSample(end2endtime);
     dpu_stat_samples.addSample(dputime);
-    _counter += 1;
+    _counter += batch;
   }
   return BenchMarkResult{ret, std::move(e2e_stat_samples),
                          std::move(dpu_stat_samples)};

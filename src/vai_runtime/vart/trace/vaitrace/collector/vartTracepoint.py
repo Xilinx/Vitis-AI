@@ -1,5 +1,5 @@
 
-# Copyright 2019 Xilinx Inc.
+# Copyright 2022-2023 Advanced Micro Devices Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ class tracepointCollector(collector.collectorBase.Collector):
         # "VAI_TRACE_DIR"="/tmp/vai/"
         # "VAI_TRACE_TS" = "boot" or "x86_tsc"
 
-        os.environ.setdefault("VAI_TRACE_ENABLE", "1")
+        os.environ.setdefault("VAI_TRACE_ENABLE", "true")
         os.environ.setdefault("VAI_TRACE_DIR", self.logdirName)
 
         # preferClocks = ["boot", "x86-tsc", "global"]
@@ -114,7 +114,7 @@ class tracepointCollector(collector.collectorBase.Collector):
 
     def stop(self):
         """Clear env"""
-        os.environ.pop("VAI_TRACE_ENABLE", 0)
+        os.environ.pop("VAI_TRACE_ENABLE", None)
         super().stop()
 
     def getData(self):

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,13 @@ int main(int argc, char* argv[]) {
   LoadImageNames(argv[2], names);
   ofstream out(argv[3], std::ofstream::out);
   auto yolo = vitis::ai::OFAYOLO::create(string(argv[1]) + "_acc", true);
+  if (!yolo) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }  
   auto ccoco_id_map_dict = coco_id_map_dict();
   out << "[" << endl;
-  for (auto name : names) {
+  for (auto& name : names) {
     cv::Mat img = cv::imread(name);
     auto results = yolo->run(img);
     for (auto& box : results.bboxes) {

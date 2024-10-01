@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,15 +54,16 @@ SfmControllerXrtEdge::SfmControllerXrtEdge(size_t core_idx,
     : xir::SfmController{},
       core_idx_{core_idx},
       page_size_(
-          #ifdef _WIN32
+#ifdef _WIN32
           4096
-          #else
+#else
           getpagesize()
-        #endif
-      ),
+#endif
+          ),
       xrt_cu_{std::move(xrt_cu)},
       workspace_{create_workspace(xrt_cu_.get())},
-      mutex_{} {}
+      mutex_{} {
+}
 
 SfmControllerXrtEdge::~SfmControllerXrtEdge() {}
 
@@ -189,6 +190,14 @@ void SfmControllerXrtEdge::run_xrt_cu(size_t core_idx, const uint64_t input,
       << "cls: " << cls << " "
       << "group: " << group << " "
       << "scale: " << fixpos << " ";
+  CHECK_EQ(input & 0xFFFFFF0000000000, 0)
+      << "invalid input 0x" << std::hex << input                //
+      << ", only the low 40bits of physical address are valid"  //
+      << ", high 24bits should be 0" << std::dec;
+  CHECK_EQ(output & 0xFFFFFF0000000000, 0)
+      << "invalid output 0x" << std::hex << output              //
+      << ", only the low 40bits of physical address are valid"  //
+      << ", high 24bits should be 0" << std::dec;
   auto func = [=](ert_start_kernel_cmd* ecmd) -> void {
     auto rsz = 60u;
     ecmd->count = 1 + rsz;

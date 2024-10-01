@@ -25,6 +25,7 @@ import copy
 import collections
 import pprint
 
+from tensorflow_model_optimization.python.core.keras import compat as tf_compat
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_custom_wrapper
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_aware_activation
 from tensorflow_model_optimization.python.core.quantization.keras.vitis.common import vitis_quantize_wrapper
@@ -40,13 +41,83 @@ from tensorflow_model_optimization.python.core.quantization.keras.vitis.utils im
 logger = common_utils.VAILogger
 keras = tf.keras
 
+if model_transformer._is_tf_version_above(2, 11):
+  Optimizer = keras.optimizers.legacy.Optimizer
+else:
+  Optimizer = keras.optimizers.Optimizer
+
+
+def sublayers(subclass):
+  """Fetch sublayers of subclass model or subclass layer"""
+  # If we use subclass.submodules, it will raise a TypeError
+  # when the model had been compiled. Refer to this issue:
+  # https://github.com/keras-team/keras/issues/15183
+  return list(subclass._flatten_layers(include_self=False))
+
+
+def is_subclass_layer(layer):
+  """Check if Subclass Layer."""
+  if not isinstance(layer, keras.layers.Layer):
+    return False
+
+  if isinstance(layer, keras.layers.Wrapper):
+    # Exclude wrappers
+    return False
+  elif (not isinstance(layer, keras.Model)) and len(sublayers(layer)):
+    # Should exclude submodels
+    return True
+
+  return False
+
+
+def is_subclass_model(model):
+  """Check if Subclass Model."""
+  if not isinstance(model, keras.Model):
+    return False
+
+  if not isinstance(model, keras.Sequential) \
+     and not model._is_graph_network:  # pylint: disable=protected-access
+    # Keras official judging method
+    return True
+  '''
+  else:
+    # When the model contains subclass layer or nested subclass model,
+    # it will be classified into a subclass model
+    layers = sublayers(model)
+    for layer in layers:
+      if is_subclass_layer(layer) or is_subclass_model(layer):
+        return True
+  '''
+
+  return False
+
+
+def is_tf_graphdef(model):
+  """Check if tensorflow graph def"""
+  if isinstance(model, tf.compat.v1.GraphDef):
+    return True
+
+  return False
+
+
+def have_nested_submodel(model):
+  """Check having nested submodel or not"""
+  if not isinstance(model, keras.Model):
+    return False
+
+  for layer in model.layers:
+    if isinstance(layer, keras.Model):
+      return True
+
+  return False
+
 
 def create_input_tensor(shape):
   """create the input_shape tensor with tensor or inputlayer format"""
   if shape.count(None) or shape.count(-1):
-      return keras.layers.Input(shape=shape[1:])
-  else: 
-      return tf.convert_to_tensor(np.random.random(shape))
+    return keras.layers.Input(shape=shape[1:])
+  else:
+    return tf.convert_to_tensor(np.random.random(shape))
 
 
 def remove_layer(model, class_name, name='.*'):
@@ -57,21 +128,39 @@ def remove_layer(model, class_name, name='.*'):
   return transformed_model
 
 
-def convert_quantize_strategy(model, conversion='tqt_to_pof2s'):
-  allowed_conversions = ['tqt_to_pof2s']
+def convert_quantize_strategy(model, conversion='tqt_to_pof2s',
+        use_fixneuron_quant=0, use_framework_quant=True):
+  allowed_conversions = ['tqt_to_pof2s', 'pof2s_to_fs']
   if not conversion in allowed_conversions:
     logger.error('Invalid conversion {}, allowed conversions are: {}.'.format(
         conversion, allowed_conversions))
 
   if conversion == 'tqt_to_pof2s':
     transforms = [
-        vitis_tqt_refine_transforms.ConvertTQTToPof2SQuantizeStrategy()
+        vitis_tqt_refine_transforms.ConvertTQTToPof2SQuantizeStrategy(
+            use_fixneuron_quant=use_fixneuron_quant)
+    ]
+    transformed_model, _ = model_transformer.ModelTransformer(
+        model, transforms, None, None).recursive_transform()
+    return transformed_model
+  elif conversion == 'pof2s_to_fs':
+    transforms = [
+        vitis_pof2s_refine_transforms.ConvertPof2SToFSQuantizeStrategy(
+            use_framework_quant=use_framework_quant)
     ]
     transformed_model, _ = model_transformer.ModelTransformer(
         model, transforms, None, None).recursive_transform()
     return transformed_model
 
   return model
+
+
+def insert_fix_neuron(model):
+  transforms = [
+    vitis_pof2s_refine_transforms.ConvertPof2SToPof2SQuantizeStrategyWithFixNeuron()]
+  transformed_model, _ = model_transformer.ModelTransformer(
+        model, transforms, None, None).recursive_transform()
+  return transformed_model
 
 
 def separate_conv_act(model):
@@ -118,8 +207,13 @@ def replace_hard_sigmoid(model):
 
 def get_quantize_info(model):
   """Get the quantize info of the model"""
+  layers = sublayers(model) if is_subclass_model(model) else model.layers
+
   quantize_info = collections.OrderedDict()
-  for layer in model.layers:
+  for layer in layers:
+    if is_subclass_model(model) and not layer.built:
+      continue  # Skip those layers defined in init() but not used in call()
+
     if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper):
       quantize_info[layer.layer.name] = layer.get_quantize_info()
     elif isinstance(layer, vitis_quantize_layer.VitisQuantize):
@@ -132,7 +226,12 @@ def get_quantize_info(model):
 
 def set_quantize_info(model, new_quantize_info):
   """Set the quantize info of the model"""
-  for layer in model.layers:
+  layers = sublayers(model) if is_subclass_model(model) else model.layers
+
+  for layer in layers:
+    if is_subclass_model(model) and not layer.built:
+      continue  # Skip those layers defined in init() but not used in call()
+
     if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper
                  ) and layer.layer.name in new_quantize_info:
       layer.set_quantize_info(new_quantize_info[layer.layer.name])
@@ -174,7 +273,7 @@ def save_shape_info(shape_info, output_dir='./'):
   return
 
 
-class SSOptimizer(keras.optimizers.Optimizer):
+class SSOptimizer(Optimizer):
   # shape saving optimizer
   def __init__(self, shape_info={}, name="SSOptimizer", **kwargs):
     super().__init__(name, **kwargs)
@@ -194,6 +293,36 @@ class SSOptimizer(keras.optimizers.Optimizer):
         "shape_info": self._serialize_hyperparameter("shape_info"),
     })
     return config
+
+
+def get_layer(model, layer_name):
+  """ get the layer from mode by name in a recursive manner"""
+
+  def _get_layer_recursively(model, layer_name):
+    target_layer = None
+
+    for layer in model.layers:
+      if layer.name == layer_name:
+        target_layer = layer
+        break
+      elif isinstance(layer, keras.Model):
+        submodel = layer
+        target_layer = _get_layer_recursively(submodel, layer_name)
+        if target_layer is not None:
+          break
+
+    return target_layer
+
+  layer = None
+
+  if layer_name is not None:
+    layer = _get_layer_recursively(model, layer_name)
+
+  if layer is None:
+    logger.error("No such layer: {}".format(layer_name))
+    return model.get_layer(layer_name)
+
+  return layer
 
 
 def get_shape(model, calib_dataset=None, input_shape=None):
@@ -293,6 +422,56 @@ def save_model(model, filename, output_dir='./'):
   return
 
 
+def is_layer_wrapper(layer):
+  """Check if QuantizeWrapper."""
+  return isinstance(layer,
+                    vitis_quantize_wrapper.QuantizeWrapper)
+
+
+def keras_to_graphdef(model):
+  """Convert keras model to graph def"""
+  from .pb_utils import graph_from_keras
+
+  return graph_from_keras(model, model.input_names,
+          model.output_names, constfold=True)
+
+
+def save_func_model(model, configs):
+  """Save quantized functional model to specified formats"""
+
+  formats = {'h5': '.h5', 'tf': '', 'pb': '.pb', 'onnx': '.onnx'}
+  if configs['output_format'] not in formats:
+    logger.error(
+      "Invalid output_format: {}, supported output_format are: {}".format(
+      configs['output_format'], list(formats.keys())))
+
+  model_name = 'quantized_model'
+  model_path = os.path.join(configs['output_dir'],
+      model_name + formats[configs['output_format']])
+
+  if configs['output_format'] == 'onnx':
+    onnx_opset_version = configs['onnx_opset_version']
+
+    convert_to_onnx(model, configs['output_dir'],
+                    model_name, onnx_opset_version)
+  elif configs['output_format'] == 'pb':
+    from .pb_utils import graph_from_keras
+
+    graph_def = graph_from_keras(model,
+      model.input_names, model.output_names, constfold=False)
+
+    # Convert 'TRAIN' phase to 'EVAL' phase for FixNeuron
+    for node in graph_def.node:
+      if node.op == "FixNeuron":
+        if node.attr["phase"].i == 2:
+          node.attr["phase"].i = 1
+
+    with tf.io.gfile.GFile(model_path, mode='wb') as f:
+      f.write(graph_def.SerializeToString())
+  else:
+    model.save(model_path, save_format=configs['output_format'])
+
+
 def is_quantize_layer(layer):
   """Check if QuantizeWrapper or VitisQuantize Layer."""
   return isinstance(layer,
@@ -302,7 +481,12 @@ def is_quantize_layer(layer):
 
 def set_layer_mode(model, mode, layer_names=None):
   """Set the mode of QuantizeWrapper and VitisQuantize Layer."""
-  for layer in model.layers:
+  layers = sublayers(model) if is_subclass_model(model) else model.layers
+
+  for layer in layers:
+    if is_subclass_model(model) and not layer.built:
+      continue  # Skip those layers defined in init() but not used in call()
+
     if is_quantize_layer(layer):
       if not layer_names or layer.name in layer_names:
         layer.mode = mode
@@ -313,8 +497,28 @@ def set_layer_mode(model, mode, layer_names=None):
   return
 
 
+def get_quantize_layers(model):
+  """Get quantize layers within the model."""
+  layers = sublayers(model) if is_subclass_model(model) else model.layers
+
+  quantize_layers = {}
+
+  for layer in layers:
+    if is_subclass_model(model) and not layer.built:
+      continue # Skip those layers defined in init() but not used in call()
+
+    if is_quantize_layer(layer):
+      quantize_layers[layer.name] = layer
+
+  return quantize_layers
+
+
 def clone_model_with_weights(model_to_clone):
   """Clone keras model with weights."""
+  if is_subclass_model(model_to_clone):
+    logger.warning('clone subclass model is not supported')
+    return model_to_clone
+
   cloned_model = keras.models.clone_model(model_to_clone)
   cloned_model.set_weights(model_to_clone.get_weights())
   return cloned_model
@@ -323,15 +527,24 @@ def clone_model_with_weights(model_to_clone):
 def convert_to_onnx(tf_model, output_dir, quantized_model_name,
                     onnx_opset_version):
   """Convert tf.keras model to onnx model."""
-  filepath = os.path.join(output_dir, quantized_model_name + '.onnx')
-  saved_model_filepath = os.path.join(output_dir, quantized_model_name)
-  tf_model.save(saved_model_filepath, save_format='tf')
+  #saved_model_filepath = os.path.join(output_dir, quantized_model_name)
+  #tf_model.save(saved_model_filepath, save_format='tf')
+
   import tf2onnx
-  model_proto, external_tensor_storage = tf2onnx.convert.from_keras(tf_model,
-                input_signature=None, opset=onnx_opset_version, custom_ops=None,
-                custom_op_handlers=None, custom_rewriter=None,
-                inputs_as_nchw=None, extra_opset=None, shape_override=None,
-                target=None, large_model=False, output_path=filepath)
+  filepath = os.path.join(output_dir, quantized_model_name + '.onnx')
+  model_proto, external_tensor_storage = tf2onnx.convert.from_keras(
+      tf_model,
+      input_signature=None,
+      opset=onnx_opset_version,
+      custom_ops=None,
+      custom_op_handlers=None,
+      custom_rewriter=None,
+      inputs_as_nchw=None,
+      extra_opset=None,
+      shape_override=None,
+      target=None,
+      large_model=False,
+      output_path=filepath)
 
 
 def dump_model_weights(model, dump_float, output_dir):
@@ -349,7 +562,12 @@ def dump_model_weights(model, dump_float, output_dir):
       for name, value in layer_quantize_info.items():
         if value.get('type') == 'weight':
           w_name = "quant_" + name.rstrip(':0')
-          w_q_map[w_name] = value['info']['quant_pos_var']
+          #for scale exclude flost-scale
+          if 'quant_pos_var' in value['info']:
+            w_q_map[w_name] = 2**value['info']['quant_pos_var']
+          #for float scale
+          elif 'scale' in value['info']:
+            w_q_map[w_name] = value['info']['scale']
 
   logger.info("Dumping weights/biases...")
   dump_folder = os.path.join(output_dir, "dump_results_weights")
@@ -373,7 +591,7 @@ def dump_model_weights(model, dump_float, output_dir):
       np.savetxt(filename + "_float.txt", res_flatten, fmt="%s", delimiter=",")
 
     if w_name in w_q_map and w_q_map[w_name] is not None:
-      res = np.round(res * 2**w_q_map[w_name])
+      res = np.round(res * w_q_map[w_name])
       res = res.clip(-128, 127)
       res_flatten = res.flatten()
       res_flatten.astype(np.int8).tofile(filename + ".bin")
@@ -392,18 +610,32 @@ def dump_model_activations(model, dataset, dump_float, output_dir):
     if is_quantize_layer(layer):
       layer_quantize_info = layer.get_quantize_info()
       if isinstance(layer, vitis_quantize_layer.VitisQuantize):
-        a_q_map[layer.name] = layer_quantize_info['info']['quant_pos_var']
+        if 'quant_pos_var' in layer_quantize_info['info']:
+          # for pof2s
+          a_q_map[layer.name] = 2**layer_quantize_info['info']['quant_pos_var']
+        elif 'scale' in layer_quantize_info['info']:
+          #for float scale
+          a_q_map[layer.name] = layer_quantize_info['info']['scale']
       else:
         for name, value in layer_quantize_info.items():
           if value.get('type') in [
               'output', 'pre_activation', 'post_activation'
           ]:
-            a_q_map[layer.name] = value['info']['quant_pos_var']
+            if 'quant_pos_var' in value['info']:
+              a_q_map[layer.name] = 2**value['info']['quant_pos_var']
+            elif 'scale' in value['info']:
+              a_q_map[layer.name] = value['info']['scale']
 
+  # TODO: Support layers of nested models
   if dump_float:
-    quant_layers = model.layers
+    quant_layers = [
+        layer for layer in model.layers if not isinstance(layer, keras.Model)
+    ]
   else:
-    quant_layers = [layer for layer in model.layers if is_quantize_layer(layer)]
+    quant_layers = [
+        layer for layer in model.layers
+        if is_quantize_layer(layer) and not isinstance(layer, keras.Model)
+    ]
 
   model = keras.Model(
       inputs=model.inputs, outputs=[layer.output for layer in quant_layers])
@@ -435,7 +667,7 @@ def dump_model_activations(model, dataset, dump_float, output_dir):
         res.tofile(filename + '_float.bin')
         np.savetxt(filename + "_float.txt", res, fmt="%s", delimiter=",")
       else:
-        res = res * 2**a_q_map[a_name]
+        res = res * a_q_map[a_name]
         res.astype(np.int8).tofile(filename + ".bin")
         np.savetxt(
             filename + ".txt", res.astype(np.int8), fmt="%s", delimiter=",")
@@ -483,11 +715,11 @@ def get_candidate_layers(model, in_layers=[], out_layers=[], ignore_layers=[]):
                  'Functional model.')
 
   def _remove_ignore_layers(candidate_layers, ignore_layers):
+    is_remove = False
     if candidate_layers is None:
-      return None
+      return None, is_remove
 
     ret = set()
-    is_remove = False
     for l in candidate_layers:
       if l in ignore_layers:
         is_remove = True
@@ -508,24 +740,20 @@ def get_candidate_layers(model, in_layers=[], out_layers=[], ignore_layers=[]):
     return curr_in_layers
 
   def _get_layers_from_in_out(model, in_layers, out_layers):
+    no_visit_layer = set()
     candidate_layers = set()
-
     model_inputs = [l.name for l in model.inputs]
-    if len(out_layers) == 1:
-      if out_layers[0] in in_layers:
-        return set(out_layers)
-      elif out_layers[0] in model_inputs:
-        return None
-
     for layer in out_layers:
+      no_visit_layer.add(layer)
+    while(no_visit_layer):
+      layer = no_visit_layer.pop()
       candidate_layers.add(layer)
-      # get input layer of current output layer
-      curr_in_layers = _get_layer_input(layer)
-      layers_subset = _get_layers_from_in_out(model, in_layers, curr_in_layers)
-      if layers_subset:
-        candidate_layers.update(layers_subset)
-      else:
-        return None
+      curr_in_layers = _get_layer_input(layer) if layer not in (in_layers or model_inputs) else None
+      for in_layer in curr_in_layers:
+        if in_layer in (in_layers or model_inputs):
+          candidate_layers.add(in_layer)
+        if in_layer not in candidate_layers:
+          no_visit_layer.add(in_layer)
     return candidate_layers
 
   if not (in_layers or out_layers or ignore_layers):
@@ -626,3 +854,252 @@ def adjust_quantize_info(model,
       model, quantize_info, adjust_vitis_sigmoid, adjust_shift_cut,
       adjust_shift_bias, adjust_shift_read, adjust_shift_write,
       adjust_shift_swish, align_concat, align_pool)
+
+
+def get_sub_layers_dict(subclass_layer):
+  """Get sublayers defined in subclass layer's (or model's) init function"""
+  sub_layers_dict = {}
+
+  layer_attr = vars(subclass_layer)  # this is a dict
+  sub_layers = list(subclass_layer._flatten_layers(
+                    recursive=False, include_self=False))
+
+  for k, v in layer_attr.items():
+    for layer in sub_layers:
+      if v is layer:
+        sub_layers_dict[k] = v
+
+      # Sublayers maybe in a list(ListWrapper) or a tuple
+      elif (not k.startswith('_') and isinstance(v, (list, tuple))):
+        for l in v:
+          if not (l is layer):
+            continue
+
+          # This attribute will be a list
+          if k not in sub_layers_dict:
+            sub_layers_dict[k] = [layer]
+          elif isinstance(sub_layers_dict[k], list):
+            sub_layers_dict[k].append(layer)
+
+  return sub_layers_dict
+
+
+def set_sub_layer_weights(subclass_layer, quantizable_subclass_layer):
+  """Set quantizable sublayers weights from original sublayers.
+    Note that both the two input layers should have been built."""
+
+  # Clone the original sublayer's weights to the new sublayer
+  sub_layers_dict = get_sub_layers_dict(subclass_layer)
+
+  for name, layer in sub_layers_dict.items():
+    if (not isinstance(layer, list)) and (not is_subclass_layer(layer)):
+      if not layer.built:
+        logger.warning('Not built sublayer. Subclass {}, sublayer {}'.format(
+                                  subclass_layer.name, layer.name))
+        continue
+      #elif layer._build_input_shape is None and len(layer.get_weights()) == 0:
+      #  logger.warning('No weight sublayer. Subclass {}, sublayer {}'.format(
+      #                            subclass_layer.name, layer.name))
+      #  continue
+
+    qattr = getattr(quantizable_subclass_layer, name, None)
+
+    if isinstance(layer, list):
+      if not isinstance(qattr, (list, tuple)):
+        logger.warning('Not matched sublayers. subclass {}, attribute {}'.format(
+                                    subclass_layer.name, name))
+        continue
+
+      for i, l in enumerate(layer):
+        if is_subclass_layer(l):
+          set_sub_layer_weights(l, qattr[i])
+        elif isinstance(qattr[i], keras.layers.Layer):
+          qattr[i].set_weights(l.get_weights())
+        else:
+          logger.warning('Not matched sublayers. subclass {}, attribute {}, #{} sublayer {}'.format(
+                                      subclass_layer.name, name, i, l.name))
+    else:
+      if not isinstance(qattr, keras.layers.Layer):
+        logger.warning('Not matched sublayer. subclass {}, attribute {}'.format(
+                                    subclass_layer.name, name))
+        continue
+
+      if is_subclass_layer(layer):
+        set_sub_layer_weights(layer, qattr)
+      elif isinstance(qattr, keras.layers.Layer):
+        qattr.set_weights(layer.get_weights())
+      else:
+        logger.warning('Not matched sublayer. subclass {}, attribute {}, sublayer {}'.format(
+                                    subclass_layer.name, name, layer.name))
+
+  # Initialize the new variables from the original variables
+  layer_attrs_dict = vars(subclass_layer)
+
+  for name, attr in layer_attrs_dict.items():
+    if name.startswith('_') or not isinstance(attr, tf.Variable):
+      continue
+
+    qattr = getattr(quantizable_subclass_layer, name, None)
+
+    if qattr is None:
+      logger.warning('Not found variable. subclass {}, attribute {}'.format(
+                                  subclass_layer.name, name))
+
+      continue
+    elif not isinstance(qattr, tf.Variable):
+      logger.warning('Not matched variable. subclass {}, attribute {}'.format(
+                                  subclass_layer.name, name))
+
+      continue
+    else:
+      logger.info('Init from variable. subclass {}, attribute {}'.format(
+                                  subclass_layer.name, name))
+
+      setattr(quantizable_subclass_layer, name,
+              tf_compat.assign(qattr, tf.keras.backend.get_value(attr)))
+
+  #return  # Following is only suitable for embedding layer
+
+  # Deal with the new added sublayers of quantizable subclass
+  sub_layers_dict = get_sub_layers_dict(quantizable_subclass_layer)
+
+  for name, layer in sub_layers_dict.items():
+    if isinstance(layer, list):  # Do not support list here
+      continue
+
+    layer_type = layer.__class__.__name__
+
+    attr = getattr(subclass_layer, name, None)
+
+    if attr is None:
+      logger.info('This is new sublayer. quantizable subclass {}, attribute {}, type {}'.format(
+                                  quantizable_subclass_layer.name, name, layer_type))
+
+      continue
+    elif is_subclass_layer(attr) and attr.__class__.__name__ == layer_type:
+      logger.info('Reserved original subclass layer. quantizable subclass {}, attribute {}, type {}'.format(
+                                  quantizable_subclass_layer.name, name, layer_type))
+
+      setattr(quantizable_subclass_layer, name, attr)
+    elif isinstance(attr, tf.Variable):
+      logger.info('Get weights from variables. quantizable subclass {}, attribute {}, type {}'.format(
+                                  quantizable_subclass_layer.name, name, layer_type))
+
+      layer_initial = False
+
+      if (len(layer.get_weights()) == 1):
+        # Extract from tf.Variables
+        '''
+        tf.compat.v1.disable_eager_execution()
+        with tf.compat.v1.Session() as sess:
+          layer.set_weights([sess.run(attr)])
+          layer_initial = True
+        '''
+
+        # Get from layer.weights
+        for weight in subclass_layer.get_weights():
+          weight_shape = weight.shape if hasattr(weight, "shape") else ()
+          if attr.shape.is_compatible_with(weight_shape):
+            layer.set_weights([weight])
+            layer_initial = True
+            break
+
+      if layer_initial == False:
+        logger.warning('Not found correspond weights. quantizable subclass {}, attribute {}'.format(
+                                  quantizable_subclass_layer.name, name))
+
+
+def show_sub_layers_tree(subclass_model, show_leaf=False, caption_str=''):
+  """Show subclass model's sublayers hierarchical tree"""
+
+  def _gen_indent_str(indent):
+    """Add indent to show hierarchy"""
+    space_str = ''
+    for i in range(indent):
+      space_str += '   '
+    return space_str
+
+  def _going_to_deeper(layer):
+    """Goto deeper layer or not"""
+    if show_leaf:
+      return len(sublayers(layer)) > 0
+    else:
+      return is_subclass_layer(layer)
+
+  def _show_sub_layers(subclass, indent=0):
+    """Print out hierarchical tree"""
+    sub_layers_dict = get_sub_layers_dict(subclass)
+
+    for name, layer in sub_layers_dict.items():
+      if isinstance(layer, list):
+        for l in layer:
+          print(_gen_indent_str(indent) + '|--' + l.name +
+                        '(' + l.__class__.__name__ + ')')
+
+          if _going_to_deeper(l):
+            _show_sub_layers(l, indent+1)
+      else:
+        print(_gen_indent_str(indent) + '|--' + layer.name +
+                      '(' + layer.__class__.__name__ + ')')
+
+        if _going_to_deeper(layer):
+          _show_sub_layers(layer, indent+1)
+
+  if logger.debug_enabled():
+    print(subclass_model.name+'('+subclass_model.__class__.__name__+')')
+    _show_sub_layers(subclass_model)
+    print("+++++++++++++++++++{}+++++++++++++++++++".format(caption_str))
+
+def specific_layers_with_layer_config(quantized_model, specific_layers):
+  int_data_type_bit_width = {'int8': 8, 'int16': 16, 'int32': 32}
+  quant_prefix_len = len("quant_")
+  if specific_layers and len(specific_layers):
+    for layer in quantized_model.layers:
+      if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper
+                   ) and layer.layer.name in specific_layers.keys():
+        layer_quantizer_list = [
+            'activation_quantizers', 'bias_quantizers', 'weight_quantizers',
+            'output_quantizers'
+        ]
+        for layer_quantizer_key in layer_quantizer_list:
+          if hasattr(layer.quantize_config, layer_quantizer_key):
+            layer_quantizer_value = getattr(layer.quantize_config,
+                                            layer_quantizer_key)
+            for i_quan in layer_quantizer_value:
+              int_data_type = specific_layers[layer.layer.name]
+              i_quan['quantizer_params']['bit_width'] = int_data_type_bit_width[
+                  int_data_type]
+      elif isinstance(
+          layer, vitis_quantize_layer.VitisQuantize
+      ) and layer.name[quant_prefix_len:] in specific_layers.keys():
+        int_data_type = specific_layers[layer.name[quant_prefix_len:]]
+        layer.quantizer.bit_width = int_data_type_bit_width[int_data_type]
+  return quantized_model
+
+def specific_layers_check_datatype(quantized_model, specific_layers):
+  int_data_type_bit_width = {'int8': 8, 'int16': 16, 'int32': 32}
+  quant_prefix_len = len("quant_")
+  if len(specific_layers):
+    for layer in quantized_model.layers:
+      if isinstance(layer, vitis_quantize_wrapper.QuantizeWrapper
+                   ) and layer.layer.name in specific_layers.keys():
+        layer_quantizer_list = [
+            'activation_quantizers', 'bias_quantizers', 'weight_quantizers',
+            'output_quantizers'
+        ]
+        for layer_quantizer_key in layer_quantizer_list:
+          if hasattr(layer.quantize_config, layer_quantizer_key):
+            layer_quantizer_value = getattr(layer.quantize_config,
+                                            layer_quantizer_key)
+            for i_quan in layer_quantizer_value:
+              int_data_type = specific_layers[layer.layer.name]
+              i_quan['quantizer_params']['bit_width'] = int_data_type_bit_width[
+                  int_data_type]
+      elif isinstance(
+          layer, vitis_quantize_layer.VitisQuantize
+      ) and layer.name[quant_prefix_len:] in specific_layers.keys():
+        int_data_type = specific_layers[layer.name[quant_prefix_len:]]
+        layer.quantizer.bit_width = int_data_type_bit_width[int_data_type]
+  return quantized_model
+
+

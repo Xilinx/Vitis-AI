@@ -121,20 +121,40 @@ class ConvBNFold(transforms.Transform):
         return match_layer
 
     # TODO: see if can fetch the tensors without explict names
+    conv_name_prefix = '/'.join(conv_layer_node.layer['config']['name'].split('/')[1:]) 
     conv_layer_type = conv_layer_node.layer['class_name']
-    kernel_attr = 'depthwise_kernel:0' if conv_layer_type == 'DepthwiseConv2D' else 'kernel:0'
-    conv_kernel = conv_layer_node.weights[kernel_attr]
+    if conv_name_prefix:
+      kernel_attr = conv_name_prefix+'/depthwise_kernel:0' if conv_layer_type == 'DepthwiseConv2D' else conv_name_prefix+'/kernel:0'
+      conv_kernel = conv_layer_node.weights[kernel_attr]
 
-    use_bias = conv_layer_node.layer['config']['use_bias']
-    conv_bias = conv_layer_node.weights['bias:0'] if use_bias else None
-
-    if bn_layer_node.layer['config']['scale'] is True:
-      bn_gamma = bn_layer_node.weights['gamma:0']
+      use_bias = conv_layer_node.layer['config']['use_bias']
+      conv_bias = conv_layer_node.weights[conv_name_prefix+'/bias:0'] if use_bias else None
     else:
-      bn_gamma = None
-    bn_beta = bn_layer_node.weights['beta:0']
-    bn_mm = bn_layer_node.weights['moving_mean:0']
-    bn_mv = bn_layer_node.weights['moving_variance:0']
+      kernel_attr = 'depthwise_kernel:0' if conv_layer_type == 'DepthwiseConv2D' else 'kernel:0'
+      conv_kernel = conv_layer_node.weights[kernel_attr]
+
+      use_bias = conv_layer_node.layer['config']['use_bias']
+      conv_bias = conv_layer_node.weights['bias:0'] if use_bias else None
+
+    
+    bn_name_prefix = '/'.join(bn_layer_node.layer['config']['name'].split('/')[1:]) 
+    if bn_name_prefix:
+      if bn_layer_node.layer['config']['scale'] is True:
+        bn_gamma = bn_layer_node.weights[bn_name_prefix+'/gamma:0']
+      else:
+        bn_gamma = None
+      bn_beta = bn_layer_node.weights[bn_name_prefix+'/beta:0']
+      bn_mm = bn_layer_node.weights[bn_name_prefix+'/moving_mean:0']
+      bn_mv = bn_layer_node.weights[bn_name_prefix+'/moving_variance:0']
+    else:
+      if bn_layer_node.layer['config']['scale'] is True:
+        bn_gamma = bn_layer_node.weights['gamma:0']
+      else:
+        bn_gamma = None
+      bn_beta = bn_layer_node.weights['beta:0']
+      bn_mm = bn_layer_node.weights['moving_mean:0']
+      bn_mv = bn_layer_node.weights['moving_variance:0']
+
     bn_epsilon = bn_layer_node.layer['config']['epsilon']
 
     folded_conv_layer = conv_layer_node.layer
@@ -142,7 +162,7 @@ class ConvBNFold(transforms.Transform):
 
     folded_conv_weights = collections.OrderedDict()
     folded_conv_weights[kernel_attr], folded_conv_weights[
-        'bias:0'] = _get_folded_conv_weights(conv_layer_type, conv_kernel,
+            conv_name_prefix+'/bias:0' if conv_name_prefix else 'bias:0'] = _get_folded_conv_weights(conv_layer_type, conv_kernel,
                                              conv_bias, bn_gamma, bn_beta,
                                              bn_mm, bn_mv, bn_epsilon)
 

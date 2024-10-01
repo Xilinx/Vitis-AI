@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classvart_1_1_base_runner" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>vart::BaseRunner</compoundname>
+    <derivedcompoundref refid="classvart_1_1_runner" prot="public" virt="non-virtual">Runner</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename InputType</type>
+      </param>
+      <param>
+        <type>typename OutputType</type>
+        <defval>InputType</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classvart_1_1_base_runner_1a677e6d7a70447e9a747d1f955c490d40" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual ~BaseRunner</definition>
+        <argsstring>()=default</argsstring>
+        <name>~BaseRunner</name>
+        <qualifiedname>vart::BaseRunner::~BaseRunner</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="35" column="11"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>std::pair&lt; std::uint32_t, int &gt;</type>
+        <definition>virtual std::pair&lt; std::uint32_t, int &gt; execute_async</definition>
+        <argsstring>(InputType input, OutputType output)=0</argsstring>
+        <name>execute_async</name>
+        <qualifiedname>vart::BaseRunner::execute_async</qualifiedname>
+        <param>
+          <type>InputType</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>OutputType</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="namespaceexecute__async" kindref="compound">execute_async</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>inputs with a customized type</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>output</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>outputs with a customized type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>pair&lt;jobid, status&gt; status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="47" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classvart_1_1_base_runner_1a4749da8b1f941dfdecea936f355319b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>int</type>
+        <definition>virtual int wait</definition>
+        <argsstring>(int jobid, int timeout=-1)=0</argsstring>
+        <name>wait</name>
+        <qualifiedname>vart::BaseRunner::wait</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>jobid</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>timeout</declname>
+          <defval>-1</defval>
+        </param>
+        <briefdescription>
+<para>wait </para>
+        </briefdescription>
+        <detaileddescription>
+<para>modes: 1. Blocking wait for specific ID. 2. Non-blocking wait for specific ID. 3. Blocking wait for any ID. 4. Non-blocking wait for any ID</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jobid</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>job id, neg for any id, others for specific job id</para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>timeout, neg for block for ever, 0 for non-block, pos for block with a limitation(ms).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>status 0 for exit successfully, others for customized warnings or errors </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="65" column="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>BaseRunner&lt; InputType, OutputType &gt;</label>
+      </node>
+      <node id="2">
+        <label>Runner&lt; const std::vector&lt; TensorBuffer * &gt; &amp; &gt;</label>
+        <link refid="classvart_1_1_runner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" line="33" column="1" bodyfile="c:/Temp/vitis-ai-staging/src/vai_runtime/vart/runner/include/vart/runner.hpp" bodystart="33" bodyend="66"/>
+    <listofallmembers>
+      <member refid="classvart_1_1_base_runner_1a3a6ebaa53c9250e3c739c3c407c1c20f" prot="public" virt="pure-virtual"><scope>vart::BaseRunner</scope><name>execute_async</name></member>
+      <member refid="classvart_1_1_base_runner_1a4749da8b1f941dfdecea936f355319b5" prot="public" virt="pure-virtual"><scope>vart::BaseRunner</scope><name>wait</name></member>
+      <member refid="classvart_1_1_base_runner_1a677e6d7a70447e9a747d1f955c490d40" prot="public" virt="virtual"><scope>vart::BaseRunner</scope><name>~BaseRunner</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

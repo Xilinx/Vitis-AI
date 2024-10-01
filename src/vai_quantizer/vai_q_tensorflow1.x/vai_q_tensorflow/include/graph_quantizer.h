@@ -50,6 +50,9 @@ class QuantizeConfig {
   // normalize
   QuantizeMethod method;
 
+  // inspector target type
+  string target_type;
+
   // The bit width for weights/biases
   int weight_bit;
 
@@ -116,11 +119,15 @@ class QuantizeConfig {
   // if only fold bn when create optimized graph
   int fold_bn_only;
 
+  // fold inference nodes of reshape as a constant node
+  int fold_reshape;
+
   // replace softmax with dpu_softmax
   int replace_softmax;
 
   QuantizeConfig(const QuantizePhase& phase = QuantizePhase::CALIB,
                  const QuantizeMethod& method = QuantizeMethod::NOOF,
+                 const string target_type = "",
                  const int& weight_bit = 8, const int& activation_bit = 8,
                  const std::map<string, int> nodes_bit = {},
                  const std::map<string, int> nodes_method = {},
@@ -137,9 +144,11 @@ class QuantizeConfig {
                  const int& scale_all_avgpool = 1, const int& replace_relu6 = 1,
                  const int& replace_sigmoid = 0,
                  const int& fold_bn_only = 0,
+                 const int& fold_reshape = 0,
                  const int& replace_softmax = 0)
       : phase(phase),
         method(method),
+        target_type(target_type),
         weight_bit(weight_bit),
         activation_bit(activation_bit),
         nodes_bit(nodes_bit),
@@ -162,12 +171,14 @@ class QuantizeConfig {
         replace_relu6(replace_relu6),
         replace_sigmoid(replace_sigmoid),
         fold_bn_only(fold_bn_only),
+        fold_reshape(fold_reshape),
         replace_softmax(replace_softmax) {}
 
   Status FromString(const string config_string);
 };
 
 typedef std::vector<string> NodeGroup;
+typedef std::map<string, std::vector<string>> InspectMessage;
 
 class GraphQuantizer {
  public:

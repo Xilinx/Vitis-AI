@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
   auto attrs_ = xir::Attrs::create();
   auto ops = graph->get_head_ops();
   const xir::Op* input_op = nullptr;
-  for (auto op : ops) {
+  for (auto& op : ops) {
     if (op->get_type() == "data-fix") {
       input_op = op;
       break;

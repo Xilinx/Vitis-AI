@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,9 @@
 #include <vitis/ai/yolov3.hpp>
 
 #include "./process_result.hpp"
-extern int GLOBAL_ENABLE_NEW_IOU;
 using namespace std;
 int main(int argc, char* argv[]) {
   string model = argv[1];
-  GLOBAL_ENABLE_NEW_IOU = 1;
   return vitis::ai::main_for_video_demo(
       argc, argv, [model] { return vitis::ai::YOLOv3::create(model); },
       process_result, 2);

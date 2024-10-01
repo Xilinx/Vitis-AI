@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ void pad(const std::vector<signed char>& input, const int rows, const int cols,
 }
 
 void set_input(const cv::Mat& raw, const float iso,
-               vitis::ai::library::InputTensor tensor, int batch_idx) {
+               vitis::ai::library::InputTensor& tensor, int batch_idx) {
   constexpr int height = 3000;
   constexpr int width = 4000;
   constexpr int ph = (32 - ((height / 2) % 32)) / 2;

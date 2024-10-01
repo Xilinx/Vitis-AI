@@ -1,5 +1,3 @@
-
-
 # Copyright 2019 Xilinx Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +24,10 @@ from pytorch_nndct.utils.jit_utils import *
 from pytorch_nndct.utils.module_util import get_module_name
 from .opt_pass import OptPass
 from .torch_graph import *
+from .override_torch_function import TraceTensorMode, clear_override_import_redundant_op
+from pytorch_nndct.utils.torch_utils import CmpFlag, compare_torch_version
+
+from .rich_in_out_helper import FlattenInOutModelForTrace, StandardInputData
 
 class TorchGraphHandler(object):
 
@@ -42,28 +44,56 @@ class TorchGraphHandler(object):
     op_kind = {node.kind() for node in fw_graph.nodes()}
     return any([op in op_kind for op in ["prim::If", "prim::Loop"]])
 
-  def _get_fw_graph_from_module(self, module, input_args, train):
+  def _get_fw_graph_from_module(self, module, input_data, train):
     # 1. Only support trace jit script for torch vesion 1.12 and above
     # 2. If traced from model contain control flow("if"/"loop"), then fall back to trace jit script
-    if get_torch_version() >= 1120 and isinstance(module, torch.jit.ScriptModule):
+
+    if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0") and isinstance(module, torch.jit.ScriptModule):
+      if not isinstance(input_data, StandardInputData):
+        input_args = input_data
+      else:
+        input_args = input_data.args
       NndctScreenLogger().check2user(QError.TRACED_NOT_SUPPORT, "The model produced by 'torch.jit.script' is not supported in quantizer", type(module) == torch.jit._trace.TopLevelTracedModule)
       NndctScreenLogger().info(f"The input model {get_module_name(module)} is ScriptModule.")
       fw_graph = self._get_graph_from_script(module, input_args)
       _is_control_flow_graph = True
       #_is_control_flow_graph = self._check_control_flow(fw_graph)
     else:
-      NndctScreenLogger().info(f"The input model {get_module_name(module)} is torch.nn.Module.")
-      fw_graph = self._trace_graph_from_model(module, input_args, train)
-      _is_control_flow_graph = self._check_control_flow(fw_graph)
-      if _is_control_flow_graph or NndctOption.nndct_jit_trace.value is True:
-        NndctScreenLogger().check2user(QError.TORCH_VERSION, f"The quantizer only support network with control flow for torch version > 1.11.", get_torch_version() >= 1120)
-        NndctScreenLogger().info(f"Find the control flow operation in {get_module_name(module)} and retry jit trace to keep it.")
-        traced_module = torch.jit.trace(module.eval(), input_args)
-        fw_graph = self._get_graph_from_script(traced_module, input_args)
+      if not isinstance(input_data, StandardInputData):
+        if not isinstance(input_data, tuple):
+          input_data = (input_data,)
+        input_data = StandardInputData(input_data,{})
+      data_device = StandardInputData.get_data_device(input_data)  
+      module.to(data_device)
 
+      if not NndctOption.nndct_close_rich_input_output.value:
+        input_flatten, input_schema = input_data.make_flatten_data()
+        flatten_module = FlattenInOutModelForTrace(module, input_schema)
+        with torch.no_grad():  
+            with TraceTensorMode(input_flatten, module) as input_flatten:
+                NndctScreenLogger().info(f"The input model {get_module_name(flatten_module)} is torch.nn.Module.")
+                fw_graph = self._trace_graph_from_model(flatten_module, input_flatten, train)
+                _is_control_flow_graph = self._check_control_flow(fw_graph)
+                if _is_control_flow_graph or NndctOption.nndct_jit_trace.value is True:
+                    NndctScreenLogger().check2user(QError.TORCH_VERSION, f"The quantizer only support network with control flow for torch version > 1.11.", compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0"))
+                    NndctScreenLogger().info(f"Find the control flow operation in {get_module_name(flatten_module)} and retry jit trace to keep it.")
+                    traced_module = torch.jit.trace(flatten_module.eval(), input_flatten)
+                    fw_graph = self._get_graph_from_script(traced_module, input_flatten)
+                clear_override_import_redundant_op(fw_graph)
+      else:
+        input_args = input_data.args
+        with torch.no_grad():  
+          with TraceTensorMode(input_args) as input_args:
+              NndctScreenLogger().info(f"The input model {get_module_name(module)} is torch.nn.Module.")
+              fw_graph = self._trace_graph_from_model(module, input_args, train)
+              _is_control_flow_graph = self._check_control_flow(fw_graph)
+              if _is_control_flow_graph or NndctOption.nndct_jit_trace.value is True:
+                  NndctScreenLogger().check2user(QError.TORCH_VERSION, f"The quantizer only support network with control flow for torch version > 1.11.", compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0"))
+                  NndctScreenLogger().info(f"Find the control flow operation in {get_module_name(module)} and retry jit trace to keep it.")
+                  traced_module = torch.jit.trace(module.eval(), input_args)
+                  fw_graph = self._get_graph_from_script(traced_module, input_args)
+              clear_override_import_redundant_op(fw_graph)
     return fw_graph, _is_control_flow_graph
-
-
 
   def build_torch_graph(self, graph_name, module, input_args, train=False):
     # self._module = module
@@ -160,7 +190,7 @@ class TorchGraphHandler(object):
     graph_searcher = GraphSearcher(raw_block)
     
     # torch 1.8.x will generate redundant type_as op before element-wise add.
-    if get_torch_version() >= 180 and get_torch_version() < 190:
+    if compare_torch_version(CmpFlag.GREATER_EQUAL , "1.8.0") and compare_torch_version(CmpFlag.LESS, "1.9.0"):
       node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["type_as", "add"])])
       OptPass.merge_internal_type_as(raw_block, node_sets)
       
@@ -171,7 +201,9 @@ class TorchGraphHandler(object):
     
     # nd(>2) linear (JIRA 2646)
     node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["matmul", "add"]),
-                                                     PatternType(pattern=["matmul", "add_"])])
+                                                     PatternType(pattern=["matmul", "add_"]),
+                                                     PatternType(pattern=["t_matmul", "add"]),
+                                                     PatternType(pattern=["t_matmul", "add_"])])
     OptPass.merge_matmul_with_add(raw_block, node_sets)                                                
     
     # LSTM
@@ -201,9 +233,20 @@ class TorchGraphHandler(object):
   def _optimize(self, raw_block):
     
     graph_searcher = GraphSearcher(raw_block)
+    if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.12.0"):
+      node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["NumToTensor"]), 
+                                                      PatternType(pattern=["Int"]), 
+                                                      PatternType(pattern=["ScalarImplicit"])])
+      
+      OptPass.remove_simple_op(raw_block, node_sets)
     
+    # merge aten::size with param,like "using weight[-2:]"
+    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["size"])])
+    OptPass.merge_weight_size_to_constant(raw_block, node_sets)
+
+ 
     # torch 1.8.x will generate redundant type_as op before element-wise add.
-    if get_torch_version() >= 180 and get_torch_version() < 190:
+    if compare_torch_version(CmpFlag.GREATER_EQUAL, "1.8.0") and compare_torch_version(CmpFlag.LESS, "1.9.0"):
       node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["type_as", "add"])])
       OptPass.merge_internal_type_as(raw_block, node_sets)
       
@@ -242,7 +285,9 @@ class TorchGraphHandler(object):
     
     # nd(>2) linear (JIRA 2646)
     node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["matmul", "add"]),
-                                                     PatternType(pattern=["matmul", "add_"])])
+                                                     PatternType(pattern=["matmul", "add_"]),
+                                                     PatternType(pattern=["t_matmul", "add"]),
+                                                     PatternType(pattern=["t_matmul", "add_"])])
     OptPass.merge_matmul_with_add(raw_block, node_sets)                                                
     
     # LSTM
@@ -267,7 +312,7 @@ class TorchGraphHandler(object):
     node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["view"])])
     OptPass.remove_reduantant_view(raw_block, node_sets)
 
-    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["add"]), PatternType(pattern=["sub"]), PatternType(pattern=["mul"]), PatternType(pattern=["div"]), PatternType(pattern=["rsub"])])
+    node_sets = graph_searcher.find_nodes_from_type([PatternType(pattern=["add"]), PatternType(pattern=["sub"]), PatternType(pattern=["mul"]), PatternType(pattern=["div"]), PatternType(pattern=["rsub"]), PatternType(pattern=["remainder"])])
     OptPass.transform_const_scalar_to_const_tensor(raw_block, node_sets)
 
     # clamp
@@ -282,7 +327,7 @@ class TorchGraphHandler(object):
     assert self._cur_graph
     assert self._cur_block
     extra_count = 0
-    exclude_attributes = ["inplace", "module"]
+    exclude_attributes = ["inplace", "module", "Subgraph"]
     for name, fw_node in get_fw_op_nodes(graph):
       if node_type(fw_node) != "prim::Constant":
         for attr_name in fw_node.attributeNames():

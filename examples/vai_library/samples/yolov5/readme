@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ Important:
     yolov5_large_pt
     yolov5_nano_pt
     yolov5s6_pt
-
+    yolov5m_pt
+    yolov5l_pt
 
 1, compile
 
@@ -31,7 +32,9 @@ Important:
 
    run the executable file.
 
-    sample : ./test_jpeg_yolov5 yolov5_large_pt sample_yolov5.jpg
+    ./test_jpeg_yolov5 <model_name> <pic> 
+    sample : 
+    ./test_jpeg_yolov5 yolov5_large_pt sample_yolov5.jpg
 WARNING: Logging before InitGoogleLogging() is written to STDERR
 I1122 08:15:20.230055 17122 demo.hpp:1183] batch: 0     image: sample_yolov5.jpg
 I1122 08:15:20.230173 17122 process_result.hpp:44] RESULT: 0	411.883	158.419	465.898	290.212	0.582088
@@ -69,9 +72,13 @@ I1122 08:17:12.164940 17134 process_result.hpp:44] RESULT: 75	241.162	198.025	25
 
 
 Performance: 
-    ./test_performance_yolov5 yolov5_large_pt test_performance_yolov5.list -s 60 -t <thread> 
-    ./test_performance_yolov5 yolov5_nano_pt test_performance_yolov5.list -s 60 -t <thread> 
-    ./test_performance_yolov5 yolov5s6_pt test_performance_yolov5.list -s 60 -t <thread> 
+    ./test_performance_yolov5 <model_name> <file_list> -s <running_period_in_seconds> -t <threads_num> 
+    sample:
+    ./test_performance_yolov5 yolov5_large_pt test_performance_yolov5.list -s 60 -t 2
+    ./test_performance_yolov5 yolov5_nano_pt  test_performance_yolov5.list -s 60 -t 2
+    ./test_performance_yolov5 yolov5s6_pt     test_performance_yolov5.list -s 60 -t 2
+    ./test_performance_yolov5 yolov5m_pt      test_performance_yolov5.list -s 60 -t 2
+    ./test_performance_yolov5 yolov5l_pt      test_performance_yolov5.list -s 60 -t 2
 
 
 Accuracy:

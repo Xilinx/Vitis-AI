@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,10 +201,6 @@ uint64_t DpuControllerXrtCloud::get_fingerprint(size_t device_core_id) const {
 }
 
 size_t DpuControllerXrtCloud::get_batch_size(size_t device_core_id) const {
-  // see
-  // https://confluence.xilinx.com/display/~xfeng/V4E+CSR+Specification
-  // 12‘h1EC r dpu0_hardware_engine_num 32'h0 [3:0]: DPU engine number,
-  // possible rang is 1~8 [31:4]: reserved.
   auto value = xrt_cu_->read_register(device_core_id, 0x1ec);
   auto ret = 1;
   if (value >= 1u && value <= 8u) {

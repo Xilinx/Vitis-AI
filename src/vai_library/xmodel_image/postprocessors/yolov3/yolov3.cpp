@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,8 @@ static void detect(vector<vector<float>>& boxes, const float* result, const int 
 
 static vitis::ai::proto::BoundingBox build_bbobx(float x, float y, float w, float h,
                                           float score, float label = 0) {
-  auto ret = vitis::ai::proto::BoundingBox();
-  auto index = (unsigned int)label;
+  vitis::ai::proto::BoundingBox ret = vitis::ai::proto::BoundingBox();
+  unsigned int index = (unsigned int)label;
   ret.mutable_label()->set_index(index);
   ret.mutable_label()->set_score(score);
   ret.mutable_size()->set_width(w);

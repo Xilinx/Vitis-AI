@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,10 @@ int main(int argc, char *argv[]) {
   filenamepart1 = filenamepart1.substr(0, filenamepart1.find_last_of('.'));
 
   auto det = vitis::ai::MedicalDetection::create("RefineDet_Medical");
+  if (!det) { // supress coverity complain
+      std::cerr <<"create error\n";
+      abort();
+  }
 
   auto result = det->run(img);
 

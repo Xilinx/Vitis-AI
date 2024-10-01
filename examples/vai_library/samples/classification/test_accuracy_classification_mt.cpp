@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Xilinx Inc.
+ * Copyright 2022-2023 Advanced Micro Devices Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ struct ClassificationAccThread : public AccThread {
     if (g_last_frame_id == int(dpu_result.frame_id)) return -1;
     if (getQueue()->pop(dpu_result, std::chrono::milliseconds(5000))) {
       auto res = (ClassificationResult*)dpu_result.result_ptr.get();
-      for (auto score : res->scores) {
+      for (auto& score : res->scores) {
         of << "/" << dpu_result.single_name << " " << score.index << endl;
       }
       if (is_stopped()) {
