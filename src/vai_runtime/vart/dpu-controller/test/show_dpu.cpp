@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
          << " core = " << core_id                                             //
          << " fingerprint = " << std::hex << "0x" << fingerprint << std::dec  //
          << " batch = " << batch                                              //
-         << " full_cu_name=" << dpu->get_full_name_multi(device_core_id) << "\n";
+         << " full_cu_name_multi=" << dpu->get_full_name(device_core_id) << "\n";
   }
   cout << endl;
 }
