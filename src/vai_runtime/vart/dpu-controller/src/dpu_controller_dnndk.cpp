@@ -35,7 +35,7 @@ DEF_ENV_PARAM(DEBUG_DPU_KO_LOCK, "1")
 DEF_ENV_PARAM(DEBUG_DPU_CONTROLLER, "0")
 DEF_ENV_PARAM(XLNX_ENABLE_FINGERPRINT_CHECK, "1")
 DEF_ENV_PARAM(XLNX_SHOW_DPU_COUNTER, "0");
-
+string device;
 #include "../../buffer-object/src/dpu.h"
 
 namespace {
@@ -66,8 +66,9 @@ static uint64_t get_dpu_fingerprint() {
 #ifdef __QNX__
     return 0u;
 #else
-    auto fd = open("/dev/multidpu", O_RDWR | O_SYNC);
-    CHECK_GE(fd, 0) << "cannot open /dev/multidpu";
+    auto fd = open("/dev/" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(), O_RDWR | O_SYNC);
+    CHECK_GE(fd, 0) << "cannot open /dev/
+	    	   << (getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu");
     uint64_t ret = 0;
     auto retval = ioctl(fd, DPUIOC_G_TGTID, (void*)(&ret));
     close(fd);
@@ -83,9 +84,10 @@ static uint64_t get_dpu_fingerprint() {
 
 DpuControllerDnndk::DpuControllerDnndk()
     : xir::DpuController{},
-      fd_{open("/dev/multidpu", O_RDWR)},
+      fd_{open("/dev" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(), O_RDWR)},
       fingerprint_{get_dpu_fingerprint()} {
-  CHECK_GT(fd_, 0) << "cannot open /dev/multidpu";
+  CHECK_GT(fd_, 0) << "cannot open /dev/
+	  	   << (getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu");
 
   auto cu_device_id = 0;
   auto cu_core_id = 0;
@@ -226,7 +228,7 @@ size_t DpuControllerDnndk::get_num_of_dpus() const {
 #ifdef __QNX__
         "/dev/xdpu/0",
 #else
-        "/dev/multidpu",
+        "/dev/" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(),
 #endif
         O_RDWR);
     if (fd < 0) {
@@ -268,7 +270,7 @@ uint64_t DpuControllerDnndk::get_fingerprint(size_t device_core_id) const {
 
 static struct Registar {
   Registar() {
-    if (!access("/dev/multidpu", F_OK)) {
+    if (!access("/dev/" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(), F_OK)) {
       xir::DpuController::registar("00_dnndk", []() {
         return std::shared_ptr<xir::DpuController>(
             vitis::ai::WeakSingleton<DpuControllerDnndk>::create());
