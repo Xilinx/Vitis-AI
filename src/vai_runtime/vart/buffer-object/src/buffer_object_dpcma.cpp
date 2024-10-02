@@ -28,7 +28,7 @@
 #include "./buffer_object_fd.hpp"
 #include "./dpu.h"
 #include "vitis/ai/xxd.hpp"
-#define DEV "/dev/multidpu"
+//#define DEV "/dev/multidpu"
 DEF_ENV_PARAM(DEBUG_BUFFER_OBJECT, "0")
 
 namespace {
@@ -44,7 +44,7 @@ BufferObjectDpCma::BufferObjectDpCma(
     : BufferObject(),                                          //
       size_{size},                                             //
       cache_{read_env("BUFFER_OBJECT_CACHE", 1) != 0},         //
-      fd_{vitis::xir::buffer_object_fd::create(DEV, O_RDWR)},  //
+      fd_{vitis::xir::buffer_object_fd::create("/dev/" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(), O_RDWR)},  //
       mm_fd_{cache_ ? nullptr
                     : vitis::xir::buffer_object_fd::create("/dev/mem",
                                                            O_RDWR | O_SYNC)},
@@ -164,7 +164,7 @@ void BufferObjectDpCma::copy_to_host(void* buf, size_t size, size_t offset) {
 }  // namespace
 REGISTER_INJECTION_BEGIN(xir::BufferObject, 2, BufferObjectDpCma, size_t&,
                          size_t&, const std::string&) {
-  auto fd = open(DEV, O_RDWR);
+  auto fd = open("/dev/" + std::string(getenv("DPU_DEVICE_NAME") ? getenv("DPU_DEVICE_NAME") : "multidpu")).c_str(), O_RDWR);
   auto ret = fd >= 0;
   close(fd);
   LOG_IF(INFO, ENV_PARAM(DEBUG_BUFFER_OBJECT))
