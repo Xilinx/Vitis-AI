@@ -17,15 +17,13 @@ option(INSTALL_HOME "install python lib in cmake install path" OFF)
 option(INSTALL_USER "install python lib in user space" OFF)
 if(BUILD_PYTHON)
   if(CMAKE_CROSSCOMPILING)
-    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-    execute_process(
-      COMMAND
-        ${Python3_EXECUTABLE} -c
-        "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))"
-      OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
-    find_path(
-      _PYBIND11_PATH pybind11
-      HINTS
+     #    find_package (Python3 REQUIRED COMPONENTS Interpreter Development)
+     find_package (Python3 REQUIRED COMPONENTS Development)
+    
+    #    EXECUTE_PROCESS(COMMAND ${Python3_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; import os;stdout.write(os.path.basename(os.path.dirname(sysconfig.get_python_lib())))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+     find_path(
+       _PYBIND11_PATH pybind11
+       HINTS
         /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}m
         /usr/include/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR})
     get_filename_component(PYBIND11_PATH ${_PYBIND11_PATH} DIRECTORY)
