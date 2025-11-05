@@ -1,4 +1,0 @@
-Left
-Right
-Front
-Back

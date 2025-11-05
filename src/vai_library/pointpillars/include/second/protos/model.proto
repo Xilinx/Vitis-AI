@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package second.protos;
-import "second/protos/second.proto";
-message DetectionModel{
-    oneof model {
-        VoxelNet second = 1;
-    }
-}

@@ -1,4 +1,0 @@
-Namespace wait
-==============
-
-.. doxygennamespace:: wait

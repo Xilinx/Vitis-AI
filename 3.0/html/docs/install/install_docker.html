@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Installing Docker &mdash; Vitis™ AI 3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+            <img src="../../_static/xilinx-header-logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_notes_3.0.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Host Install Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/mpsoc.html">Zynq™ Ultrascale+™</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vck5000.html">Versal™ VCK5000 Development Card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vck190.html">Versal™ AI Core VCK190</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installing Docker</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/install/install_docker.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installing-docker">
+<h1>Installing Docker<a class="headerlink" href="#installing-docker" title="Permalink to this heading">¶</a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In most cases, Developers will want to leverage the CUDA-capable or ROCm Dockers as they support accelerated quantization. Before installing Docker for CUDA-capable GPUs, ensure that you understand the NVIDIA driver, CUDA <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a> for Vitis AI.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For ROCm distributions, developers should reference <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCm-docker/blob/master/quick-start.md">ROCm docker installation</a> for further details of docker installation.</p>
+</div>
+<section id="installing-nvidia-container-toolkit">
+<h2>Installing NVIDIA Container Toolkit<a class="headerlink" href="#installing-nvidia-container-toolkit" title="Permalink to this heading">¶</a></h2>
+<p>If you are building the Vitis AI Docker Image with CUDA-capable GPU acceleration, you must install the NVIDIA Container Toolkit, which enables GPU support inside the Docker container. Please refer to the official NVIDIA <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html">documentation</a> for additional information.</p>
+<p>For Ubuntu distributions, NVIDIA driver and Container Toolkit installation can generally be accomplished as displayed in the following example (use sudo for non-root users):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">purge</span> <span class="n">nvidia</span><span class="o">*</span> <span class="n">libnvidia</span><span class="o">*</span>
+<span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">driver</span><span class="o">-</span><span class="n">xxx</span>
+<span class="n">apt</span> <span class="n">install</span> <span class="n">nvidia</span><span class="o">-</span><span class="n">container</span><span class="o">-</span><span class="n">toolkit</span>
+</pre></div>
+</div>
+<p>Where xxx is the version of driver that you are choosing to install (i.e, <em>nvidia-driver-510</em>), and is a version that meets Vitis AI <a class="reference internal" href="../reference/system_requirements.html"><span class="doc">Host System Requirements</span></a>.</p>
+<p>A simple test to confirm driver installation is to run nvidia-smi:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
+</pre></div>
+</div>
+<p>The output should appear similar to this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Thu</span> <span class="n">Dec</span>  <span class="mi">8</span> <span class="mi">21</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">42</span> <span class="mi">2022</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">NVIDIA</span><span class="o">-</span><span class="n">SMI</span> <span class="mf">470.161.03</span>   <span class="n">Driver</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">470.161.03</span>   <span class="n">CUDA</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">11.4</span>     <span class="o">|</span>
+<span class="o">/|-------------------------------+----------------------+----------------------+</span>
+<span class="o">/|</span> <span class="n">GPU</span>  <span class="n">Name</span>        <span class="n">Persistence</span><span class="o">-</span><span class="n">M</span><span class="o">|</span> <span class="n">Bus</span><span class="o">-</span><span class="n">Id</span>        <span class="n">Disp</span><span class="o">.</span><span class="n">A</span> <span class="o">|</span> <span class="n">Volatile</span> <span class="n">Uncorr</span><span class="o">.</span> <span class="n">ECC</span> <span class="o">|</span>
+<span class="o">/|</span> <span class="n">Fan</span>  <span class="n">Temp</span>  <span class="n">Perf</span>  <span class="n">Pwr</span><span class="p">:</span><span class="n">Usage</span><span class="o">/</span><span class="n">Cap</span><span class="o">|</span>         <span class="n">Memory</span><span class="o">-</span><span class="n">Usage</span> <span class="o">|</span> <span class="n">GPU</span><span class="o">-</span><span class="n">Util</span>  <span class="n">Compute</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>               <span class="n">MIG</span> <span class="n">M</span><span class="o">.</span> <span class="o">|</span>
+<span class="o">/|===============================+======================+======================|</span>
+<span class="o">/|</span>   <span class="mi">0</span>  <span class="n">NVIDIA</span> <span class="n">GeForce</span> <span class="o">...</span>  <span class="n">Off</span>  <span class="o">|</span> <span class="mi">00000000</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mf">00.0</span> <span class="n">Off</span> <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/|</span>  <span class="mi">0</span><span class="o">%</span>   <span class="mi">40</span><span class="n">C</span>    <span class="n">P8</span>     <span class="mi">1</span><span class="n">W</span> <span class="o">/</span> <span class="mi">120</span><span class="n">W</span> <span class="o">|</span>     <span class="mi">15</span><span class="n">MiB</span> <span class="o">/</span>  <span class="mi">5944</span><span class="n">MiB</span> <span class="o">|</span>      <span class="mi">0</span><span class="o">%</span>      <span class="n">Default</span> <span class="o">|</span>
+<span class="o">/|</span>                               <span class="o">|</span>                      <span class="o">|</span>                  <span class="n">N</span><span class="o">/</span><span class="n">A</span> <span class="o">|</span>
+<span class="o">/+-------------------------------+----------------------+----------------------+</span>
+<span class="o">/</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+<span class="o">/|</span> <span class="n">Processes</span><span class="p">:</span>                                                                  <span class="o">|</span>
+<span class="o">/|</span>  <span class="n">GPU</span>   <span class="n">GI</span>   <span class="n">CI</span>        <span class="n">PID</span>   <span class="n">Type</span>   <span class="n">Process</span> <span class="n">name</span>                  <span class="n">GPU</span> <span class="n">Memory</span> <span class="o">|</span>
+<span class="o">/|</span>        <span class="n">ID</span>   <span class="n">ID</span>                                                   <span class="n">Usage</span>      <span class="o">|</span>
+<span class="o">/|=============================================================================|</span>
+<span class="o">/+-----------------------------------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Refer <a class="reference external" href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA driver installation</a> for further details of driver installation.</p>
+</section>
+<section id="docker-install">
+<h2>Docker Install<a class="headerlink" href="#docker-install" title="Permalink to this heading">¶</a></h2>
+<p>Once you are confident that your system meets any pre-requisites for Vitis AI Docker CUDA or ROCm GPU support, refer to official Docker <a class="reference external" href="https://docs.docker.com/engine/install/">documentation</a> to install the Docker engine.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022-2023, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on July 19, 2023.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

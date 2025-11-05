@@ -1,1 +1,0 @@
-Vitis Ai RunTime. Runner is an application level runtime interface for DPU IPs based on XRT. It use XIR subgraph as input, and run it on different targets. There are also emulators implemented with same interface to make debuging eaiser.

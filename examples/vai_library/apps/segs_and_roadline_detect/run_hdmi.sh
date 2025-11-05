@@ -1,1 +1,0 @@
- env XLNX_ENABLE_FINGERPRINT_CHECK=0 DEMO_USE_VIDEO_WRITER=1 DEBUG_VEK280_HDMI=1 ./segs_and_roadline_detect seg_512_288.avi seg_512_288.avi seg_512_288.avi seg_512_288.avi lane_640_480.avi -t 2 -t 2 -t 2 -t 2 -t 3

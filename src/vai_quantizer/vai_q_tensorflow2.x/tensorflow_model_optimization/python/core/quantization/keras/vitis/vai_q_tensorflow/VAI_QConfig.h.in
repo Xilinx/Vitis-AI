@@ -1,3 +1,0 @@
-// the configured options and settings for Tutorial
-#define VAI_Q_VERSION_MAJOR @VAI_Q_VERSION_MAJOR@
-#define VAI_Q_VERSION_MINOR @VAI_Q_VERSION_MINOR@

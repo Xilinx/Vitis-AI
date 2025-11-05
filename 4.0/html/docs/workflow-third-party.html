@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Third-party Inference Stack Integration &mdash; Vitis™ AI 4.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="IP and Tool Version Compatibility" href="reference/version_compatibility.html" />
+    <link rel="prev" title="Vitis AI User Guides / DPU Product Guides" href="reference/release_documentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
+          </a>
+              <div class="version">
+                4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Zynq™ Ultrascale+™</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Versal™ AI Core VCK190</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Third-party Inference Stack Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tvm">TVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#onnx-runtime">ONNX Runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorflow-lite">TensorFlow Lite</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Third-party Inference Stack Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/workflow-third-party.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="third-party-inference-stack-integration">
+<h1>Third-party Inference Stack Integration<a class="headerlink" href="#third-party-inference-stack-integration" title="Link to this heading">¶</a></h1>
+<p>Vitis™ AI provides integration support for TVM, ONNX Runtime, and TensorFlow Lite workflows. The developers can leverage these workflows through the subfolders. A brief description of these workflows is as follows:</p>
+<section id="tvm">
+<h2>TVM<a class="headerlink" href="#tvm" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://tvm.apache.org/">TVM.ai</a> is an Apache Software Foundation project and inference stack that can parse machine learning models from almost any training framework. The model is converted to an intermediate representation (TVM relay), and the stack can then compile the model for various targets, including embedded SoCs, CPUs, GPUs, and x86 and x64 platforms. TVM incorporates an open-source programmable-logic accelerator, the VTA, created using the AMD HLS compiler. TVM supports partitioning a graph into several sub-graphs. These sub-graphs can be targeted to specific accelerators within the target platform (CPU, GPU, VTA, and so on) to enable heterogeneous acceleration.</p>
+<p>The VTA is not used for the published Vitis AI - TVM workflow, instead opting to integrate the DPU for offloading compiled subgraphs. Subgraphs that can be partitioned for execution on the DPU are quantized and compiled by the Vitis AI compiler for a specific DPU target. In contrast, the TVM compiler compiles the remaining subgraphs and operations for execution on LLVM.</p>
+<p>For additional details of Vitis AI - TVM integration, refer <a class="reference external" href="https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html">here</a>.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_TVM.PNG"><img alt="../_images/VAI_3rd_party_TVM.PNG" src="../_images/VAI_3rd_party_TVM.PNG" style="width: 1300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With TVM.ai</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="onnx-runtime">
+<h2>ONNX Runtime<a class="headerlink" href="#onnx-runtime" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://onnxruntime.ai/">ONNX Runtime</a> was devised as a cross-platform inference deployment runtime for ONNX models. ONNX Runtime provides the benefit of runtime interpretation of models represented in the ONNX intermediate representation (IR) format.</p>
+<p>The <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/">ONNX Runtime Execution Provider</a> framework enables the integration of proprietary or customized tensor accelerator cores from any “execution provider.” Such “execution providers” are typically tensor acceleration IP blocks integrated into an SoC by the semiconductor vendor. Specific subgraphs or operations within the ONNX graph can be offloaded to that core based on the advertised capabilities of that execution provider. The ability of a given accelerator to offload operations is presented as a listing of capabilities to the ONNX Runtime.</p>
+<p>Starting with the release of Vitis AI 3.0, we have enhanced Vitis AI support for the ONNX Runtime.  The Vitis AI Quantizer can now be leveraged to export a quantized ONNX model to the runtime where subgraphs suitable for deployment on the DPU are compiled.  Remaining subgraphs are then deployed by ONNX Runtime, leveraging the AMD Versal™ and Zynq™ UltraScale+™ MPSoC APUs, or the AMD64 (or x64) host processor (Alveo™ targets) to deploy these subgraphs.  The underlying software infrastructure is named VOE or “<strong>V</strong> itis AI <strong>O</strong> NNX Runtime <strong>E</strong> ngine”.  Users should refer to the section “Programming with VOE” in <a class="reference internal" href="reference/release_documentation.html"><span class="doc">UG1414</span></a> for additional information on this powerful workflow.</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" src="../_images/VAI_3rd_party_ONNXRuntime_Edge.PNG" style="width: 1300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Edge)</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_ONNXRuntime.PNG"><img alt="../_images/VAI_3rd_party_ONNXRuntime.PNG" src="../_images/VAI_3rd_party_ONNXRuntime.PNG" style="width: 1300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With ONNX Runtime (Data Center)</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>As a reference, for AMD adaptable Data Center targets, Vitis AI Execution Provider support was also previously published as a <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/third_party/onnxruntime">workflow reference</a>.  The details of the Vitis AI Execution Provider used in this previous release can be found <a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">here</a>.  Our expectation is that the VOE workflow will supercede this historic workflow for most use cases.</p>
+</section>
+<section id="tensorflow-lite">
+<h2>TensorFlow Lite<a class="headerlink" href="#tensorflow-lite" title="Link to this heading">¶</a></h2>
+<p>TensorFlow Lite has been a preferred inference solution for TensorFlow users in the embedded space for many years. TensorFlow Lite provides support for embedded ARM processors, as well as NEON tensor acceleration. TensorFlow Lite provides the benefit of runtime interpretation of models trained in TensorFlow Lite, implying that no compilation is required to execute the model on target. This has made TensorFlow Lite a convenient solution for embedded and mobile MCU targets which did not incorporate purpose-built tensor acceleration cores.</p>
+<p>With the addition of <a class="reference external" href="https://www.tensorflow.org/lite/performance/delegates">TensorFlow Delegates</a>, it became possible for semiconductor vendors with purpose-built tensor accelerators to integrate support into the TensorFlow Lite framework. Certain operations can be offloaded (delegated) to these specialized accelerators, repositioning TensorFlow Lite runtime interpretation as a useful workflow in the high-performance space.</p>
+<p>Vitis AI Delegate support is integrated as an <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/third_party/tflite">experimental flow</a> in recent releases.</p>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/VAI_3rd_party_TFLite.PNG"><img alt="../_images/VAI_3rd_party_TFLite.PNG" src="../_images/VAI_3rd_party_TFLite.PNG" style="width: 1300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Vitis-AI Integration With TensorFlow Lite</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reference/release_documentation.html" class="btn btn-neutral float-left" title="Vitis AI User Guides / DPU Product Guides" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference/version_compatibility.html" class="btn btn-neutral float-right" title="IP and Tool Version Compatibility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on September 02, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

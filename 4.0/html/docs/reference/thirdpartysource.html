@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Third Party Source &mdash; Vitis™ AI 4.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../../index.html" class="icon icon-home"> Vitis™ AI
+          </a>
+              <div class="version">
+                4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Host Install Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/mpsoc.html">Zynq™ Ultrascale+™</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/vck190.html">Versal™ AI Core VCK190</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-system-integration.html">DPU IP Details and System Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-zoo.html">Vitis™ AI Model Zoo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Third Party Source</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/docs/reference/thirdpartysource.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="third-party-source">
+<h1>Third Party Source<a class="headerlink" href="#third-party-source" title="Link to this heading">¶</a></h1>
+<section id="ubuntu-packages">
+<h2>Ubuntu Packages<a class="headerlink" href="#ubuntu-packages" title="Link to this heading">¶</a></h2>
+<p>Following is a list of Ubuntu Apt packages used by Vitis™ AI:</p>
+<ol class="arabic simple">
+<li><p>sudo</p></li>
+<li><p>git</p></li>
+<li><p>zstd</p></li>
+<li><p>tree</p></li>
+<li><p>vim</p></li>
+<li><p>wget</p></li>
+<li><p>bzip2</p></li>
+<li><p>ca-certificates</p></li>
+<li><p>curl</p></li>
+<li><p>unzip</p></li>
+<li><p>python3-minimal</p></li>
+<li><p>python3-opencv</p></li>
+<li><p>python3-venv</p></li>
+<li><p>python3-pip</p></li>
+<li><p>python3-setuptools</p></li>
+<li><p>g++</p></li>
+<li><p>make</p></li>
+<li><p>cmake</p></li>
+<li><p>build-essential</p></li>
+<li><p>autoconf</p></li>
+<li><p>libgoogle-glog-dev</p></li>
+<li><p>libgflags-dev</p></li>
+<li><p>libunwind-dev</p></li>
+<li><p>libtool</p></li>
+</ol>
+<p>More details, source code and licensing information can be found from Ubuntu <a class="reference external" href="http://us.archive.ubuntu.com/ubuntu/dists/bionic/">here</a>.</p>
+<p>If you cannot access the internet pages for Ubuntu’s main source code repositories and obtain the source code for the Ubuntu Linux OS and base packages in this distribution, then Xilinx® hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.</p>
+</section>
+<section id="conda-packages">
+<h2>Conda Packages<a class="headerlink" href="#conda-packages" title="Link to this heading">¶</a></h2>
+<p>Following is a list of Conda packages used by Vitis AI:</p>
+<ol class="arabic simple">
+<li><p>_libgcc_mutex</p></li>
+<li><p>attrs</p></li>
+<li><p>backcall</p></li>
+<li><p>blas</p></li>
+<li><p>bleach</p></li>
+<li><p>boost</p></li>
+<li><p>bzip2</p></li>
+<li><p>ca-certificates</p></li>
+<li><p>caffe_decent</p></li>
+<li><p>cairo</p></li>
+<li><p>certifi</p></li>
+<li><p>ck</p></li>
+<li><p>cloudpickle</p></li>
+<li><p>cycler</p></li>
+<li><p>cytoolz</p></li>
+<li><p>dask-core</p></li>
+<li><p>dbus</p></li>
+<li><p>decorator</p></li>
+<li><p>defusedxml</p></li>
+<li><p>dill</p></li>
+<li><p>entrypoints</p></li>
+<li><p>expat</p></li>
+<li><p>ffmpeg</p></li>
+<li><p>fontconfig</p></li>
+<li><p>freeglut</p></li>
+<li><p>freetype</p></li>
+<li><p>fribidi</p></li>
+<li><p>gflags</p></li>
+<li><p>glib</p></li>
+<li><p>glog</p></li>
+<li><p>gmp</p></li>
+<li><p>graphite2</p></li>
+<li><p>graphviz</p></li>
+<li><p>gst-plugins-base</p></li>
+<li><p>gstreamer</p></li>
+<li><p>h5py</p></li>
+<li><p>harfbuzz</p></li>
+<li><p>hdf5</p></li>
+<li><p>icu</p></li>
+<li><p>imageio</p></li>
+<li><p>importlib_metadata</p></li>
+<li><p>intel-openmp</p></li>
+<li><p>ipykernel</p></li>
+<li><p>ipython</p></li>
+<li><p>ipython_genutils</p></li>
+<li><p>ipywidgets</p></li>
+<li><p>jasper</p></li>
+<li><p>jedi</p></li>
+<li><p>jinja2</p></li>
+<li><p>joblib</p></li>
+<li><p>jpeg</p></li>
+<li><p>json-c</p></li>
+<li><p>jsonschema</p></li>
+<li><p>jupyter</p></li>
+<li><p>jupyter_client</p></li>
+<li><p>jupyter_console</p></li>
+<li><p>jupyter_core</p></li>
+<li><p>kiwisolver</p></li>
+<li><p>leveldb</p></li>
+<li><p>libboost</p></li>
+<li><p>libedit</p></li>
+<li><p>libffi</p></li>
+<li><p>libgcc-ng</p></li>
+<li><p>libgfortran-ng</p></li>
+<li><p>libglu</p></li>
+<li><p>libopencv</p></li>
+<li><p>libopus</p></li>
+<li><p>libpng</p></li>
+<li><p>libprotobuf</p></li>
+<li><p>libsodium</p></li>
+<li><p>libstdcxx-ng</p></li>
+<li><p>libtiff</p></li>
+<li><p>libuuid</p></li>
+<li><p>libvpx</p></li>
+<li><p>libxcb</p></li>
+<li><p>libxml2</p></li>
+<li><p>lmdb</p></li>
+<li><p>markupsafe</p></li>
+<li><p>matplotlib</p></li>
+<li><p>mistune</p></li>
+<li><p>mkl</p></li>
+<li><p>mkl-service</p></li>
+<li><p>mkl_fft</p></li>
+<li><p>mkl_random</p></li>
+<li><p>more-itertools</p></li>
+<li><p>nbconvert</p></li>
+<li><p>nbformat</p></li>
+<li><p>ncurses</p></li>
+<li><p>networkx</p></li>
+<li><p>notebook</p></li>
+<li><p>numpy</p></li>
+<li><p>numpy-base</p></li>
+<li><p>olefile</p></li>
+<li><p>openblas</p></li>
+<li><p>opencv</p></li>
+<li><p>openssl</p></li>
+<li><p>orderedset</p></li>
+<li><p>packaging</p></li>
+<li><p>pandas</p></li>
+<li><p>pandoc</p></li>
+<li><p>pandocfilters</p></li>
+<li><p>pango</p></li>
+<li><p>parso</p></li>
+<li><p>pcre</p></li>
+<li><p>pexpect</p></li>
+<li><p>pickleshare</p></li>
+<li><p>pillow</p></li>
+<li><p>pip</p></li>
+<li><p>pixman</p></li>
+<li><p>pluggy</p></li>
+<li><p>progressbar2</p></li>
+<li><p>prometheus_client</p></li>
+<li><p>prompt_toolkit</p></li>
+<li><p>protobuf</p></li>
+<li><p>ptyprocess</p></li>
+<li><p>py</p></li>
+<li><p>py-boost</p></li>
+<li><p>py-opencv</p></li>
+<li><p>pybind11</p></li>
+<li><p>pydot</p></li>
+<li><p>pygments</p></li>
+<li><p>pyparsing</p></li>
+<li><p>pyqt</p></li>
+<li><p>pyrsistent</p></li>
+<li><p>pytest</p></li>
+<li><p>pytest-runner</p></li>
+<li><p>python</p></li>
+<li><p>python-dateutil</p></li>
+<li><p>python-gflags</p></li>
+<li><p>python-leveldb</p></li>
+<li><p>python-utils</p></li>
+<li><p>pytz</p></li>
+<li><p>pywavelets</p></li>
+<li><p>pyyaml</p></li>
+<li><p>pyzmq</p></li>
+<li><p>qt</p></li>
+<li><p>qtconsole</p></li>
+<li><p>readline</p></li>
+<li><p>scikit-image</p></li>
+<li><p>scikit-learn</p></li>
+<li><p>scipy</p></li>
+<li><p>send2trash</p></li>
+<li><p>setuptools</p></li>
+<li><p>sip</p></li>
+<li><p>six</p></li>
+<li><p>snappy</p></li>
+<li><p>sqlite</p></li>
+<li><p>terminado</p></li>
+<li><p>testpath</p></li>
+<li><p>tk</p></li>
+<li><p>toolz</p></li>
+<li><p>tornado</p></li>
+<li><p>traitlets</p></li>
+<li><p>vitis-ai</p></li>
+<li><p>wcwidth</p></li>
+<li><p>webencodings</p></li>
+<li><p>wheel</p></li>
+<li><p>widgetsnbextension</p></li>
+<li><p>xip</p></li>
+<li><p>xz</p></li>
+<li><p>yaml</p></li>
+<li><p>yaml-cpp</p></li>
+<li><p>zeromq</p></li>
+<li><p>zipp</p></li>
+<li><p>zlib</p></li>
+<li><p>zstd</p></li>
+</ol>
+<p>More details, source code and licensing information can be found from Ubuntu <a class="reference external" href="https://anaconda.org">here</a></p>
+<p>If you cannot access the internet pages for Anaconda’s main source code repositories and obtain the source code for the Anaconda software packages in this distribution, then you may obtain the source code <a class="reference external" href="https://www.xilinx.com/products/design-tools/guest-resources.html">here</a>. Xilinx hereby offers (which offer is valid for as long as required by the applicable license; and we may charge you the cost thereof unless prohibited by the license) to provide you with a copy of such source code; and to accept such offer send a letter requesting such source code (please be specific by identifying the particular Xilinx Software you are inquiring about (name and version number), to: Xilinx, Inc., Legal Department, Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA U.S.A. 95124.</p>
+</section>
+<section id="xrt">
+<h2>XRT<a class="headerlink" href="#xrt" title="Link to this heading">¶</a></h2>
+<p>XRT userspace code includes software developed by the following (Apache 2.0)</p>
+<ul class="simple">
+<li><p>Copyright (C) 2019 Samsung Semiconductor, Inc.</p></li>
+<li><ol class="upperalpha simple" start="3">
+<li><p>Copyright 2019 OSR Open Systems Resources, Inc.</p></li>
+</ol>
+</li>
+<li><p>Copyright (C) Michael Preston <a class="reference external" href="mailto:mipres&#37;&#52;&#48;microsoft&#46;com">mipres<span>&#64;</span>microsoft<span>&#46;</span>com</a> Microsoft.</p></li>
+<li><p>Copyright (C) Jeff Baxter <a class="reference external" href="mailto:jeffb&#37;&#52;&#48;microsoft&#46;com">jeffb<span>&#64;</span>microsoft<span>&#46;</span>com</a> Microsoft.</p></li>
+</ul>
+<p>XRT xocl and xclmgmt Linux kernel drivers include software from Linux
+kernel (GPL 2.0) * Copyright 2012 Kim Phillips, Freescale
+Semiconductor. * Copyright (C) 2006 David Gibson, IBM Corporation. *
+Copyright (C) 2006 Peter Korsgaard <a class="reference external" href="mailto:jacmet&#37;&#52;&#48;sunsite&#46;dk">jacmet<span>&#64;</span>sunsite<span>&#46;</span>dk</a> * Copyright (C)
+2007 Secret Lab Technologies Ltd. * Copyright (c) 2009-2010 Intel
+Corporation * Copyright (C) 2012 David Gibson, IBM Corporation. *
+Copyright (C) 2014 David Gibson <a class="reference external" href="mailto:david&#37;&#52;&#48;gibson&#46;dropbear&#46;id&#46;au">david<span>&#64;</span>gibson<span>&#46;</span>dropbear<span>&#46;</span>id<span>&#46;</span>au</a> * Copyright
+(c) 2016-2019 The Khronos Group Inc. * Copyright (C) 2016 Free
+Electrons * Copyright (C) 2016 NextThing Co. * Copyright (C) 2018
+embedded brains GmbH</p>
+<p>XRT xocl and xclmgmt Linux kernel drivers include software developed by
+the following (GPL 2.0) * Copyright (C) Jan Stephan <a class="reference external" href="mailto:j&#46;stephan&#37;&#52;&#48;hzdr&#46;de">j<span>&#46;</span>stephan<span>&#64;</span>hzdr<span>&#46;</span>de</a>
+<em>XRT xclmgmt Linux kernel driver includes software developed by the
+following (dual Apache 2.0 OR GPL 2.0)</em> Copyright (C) Jan Stephan
+<a class="reference external" href="mailto:j&#46;stephan&#37;&#52;&#48;hzdr&#46;de">j<span>&#46;</span>stephan<span>&#64;</span>hzdr<span>&#46;</span>de</a></p>
+<p>XRT userspace includes software from Khronos Group Inc. * Copyright (c)
+2008-2019 The Khronos Group Inc. * Copyright (c) 2008-2015 The Khronos
+Group Inc. * Copyright (c) 2016-2019 The Khronos Group Inc. Permission
+is hereby granted, free of charge, to any person obtaining a copy of
+this software and/or associated documentation files (the “Materials”),
+to deal in the Materials without restriction, including without
+limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Materials, and to permit persons
+to whom the Materials are furnished to do so, subject to the following
+conditions:</p>
+<p>The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Materials.</p>
+<p>MODIFICATIONS TO THIS FILE MAY MEAN IT NO LONGER ACCURATELY REFLECTS
+KHRONOS STANDARDS. THE UNMODIFIED, NORMATIVE VERSIONS OF KHRONOS
+SPECIFICATIONS AND HEADER INFORMATION ARE LOCATED AT
+<a class="reference external" href="https://www.khronos.org/registry/">https://www.khronos.org/registry/</a></p>
+<p>THE MATERIALS ARE PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.</p>
+<p>With respect to any license that requires Xilinx to make available to
+recipients of object code distributed by Xilinx pursuant to such license
+the corresponding source code, and if you desire to receive such source
+code from Xilinx, then refer to <a class="reference external" href="https://github.com/Xilinx/XRT">https://github.com/Xilinx/XRT</a>. If you
+cannot access the internet to obtain a copy thereof, then Xilinx hereby
+offers (which offer is valid for as long as required by the applicable
+license; and we may charge you the cost thereof unless prohibited by the
+license) to provide you with a copy of such source code; and to accept
+such offer send a letter requesting such source code (please be specific
+by identifying the particular Xilinx Software you are inquiring about
+(name and version number), to: Xilinx, Inc., Legal Department,
+Attention: Software Compliance Officer, 2100 Logic Drive, San Jose, CA
+U.S.A. 95124.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on September 02, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
