@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+<!-- OneTrust Cookies Consent Notice start for xilinx.github.io -->
+
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="03af8d57-0a04-47a6-8f10-322fa00d8fc7" ></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for xilinx.github.io -->
+<!-- Google Tag Manager -->
+<script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RHQV7');</script>
+<!-- End Google Tag Manager -->
+  <title>Vitis AI Model Zoo &mdash; Vitis™ AI 4.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=9f5556dd"></script>
+        <script src="../_static/doctools.js?v=9bcbadda"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developing a Model" href="workflow-model-development.html" />
+    <link rel="prev" title="DPU IP Details and System Integration" href="workflow-system-integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5RHQV7" height="0" width="0" style="display:none;visibility:hidden" class="optanon-category-C0002"></iframe></noscript>
+<!-- End Google Tag Manager --> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+            <a href="../index.html" class="icon icon-home"> Vitis™ AI
+          </a>
+              <div class="version">
+                4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Setup and Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/system_requirements.html">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/install.html">Host Install Instructions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Start Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/mpsoc.html">Zynq™ Ultrascale+™</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/vck190.html">Versal™ AI Core VCK190</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Workflow and Components</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-system-integration.html">DPU IP Details and System Integration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Vitis™ AI Model Zoo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#model-zoo-details-and-performance">Model Zoo Details and Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-file-nomenclature">Model File Nomenclature</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-file-nomenclature-decoder">Model File Nomenclature Decoder</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-download">Model Download</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#automated-download-script">Automated Download Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-directory-structure">Model Directory Structure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tensorflow-model-directory-structure">Tensorflow Model Directory Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pytorch-model-directory-structure">Pytorch Model Directory Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-retraining">Model Retraining</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-development.html">Developing a Model for Vitis AI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-model-deployment.html">Deploying a Model with Vitis AI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/release_documentation.html">Vitis™ AI User Guides &amp; IP Product Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/Vitis-AI-Tutorials">Vitis™ AI Developer Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow-third-party.html">Third-party Inference Stack Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/version_compatibility.html">IP and Tools Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install/branching_tagging_strategy.html">Branching and Tagging Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Resources and Support</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html">Technical Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/additional_resources.html#additional-resources">Additional Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Related AMD Solutions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Xilinx/DPU-PYNQ">DPU-PYNQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/finn/">FINN &amp; Brevitas</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/inference-server/">Inference Server</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/amd/UIF">Unified Inference Frontend</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://ryzenai.docs.amd.com/en/latest/">Ryzen™ AI Developer Guide ~July 29</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://onnxruntime.ai/docs/execution-providers/community-maintained/Vitis-AI-ExecutionProvider.html">Vitis™ AI ONNX Runtime Execution Provider</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://xilinx.github.io/VVAS/">Vitis™ Video Analytics SDK</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: black" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vitis™ AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Vitis AI Model Zoo</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/workflow-model-zoo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vitis-ai-model-zoo">
+<span id="workflow-model-zoo"></span><h1>Vitis AI Model Zoo<a class="headerlink" href="#vitis-ai-model-zoo" title="Link to this heading">¶</a></h1>
+<p>The Vitis™ AI Model Zoo, incorporated into the Vitis AI repository, includes optimized deep learning models to speed up the deployment of deep learning inference on AMD platforms. These models cover different applications, including but not limited to ADAS/AD, medical, video surveillance, robotics, data center, and so on. You can get started with these free pre-trained models to enjoy the benefits of deep learning acceleration.</p>
+<section id="model-zoo-details-and-performance">
+<h2>Model Zoo Details and Performance<a class="headerlink" href="#model-zoo-details-and-performance" title="Link to this heading">¶</a></h2>
+<p>All the models in the Model Zoo are deployed on AMD adaptable hardware with <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI</a> and the <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_library">Vitis AI Library</a>. The performance benchmark data includes end-to-end throughput and latency for each model, targeting various boards with varied DPU configurations.</p>
+<p>To make the job of using the Model Zoo a little easier, we have provided a downloadable spreadsheet and an online table that incorporates key data about the Model Zoo models. The spreadsheet and tables include comprehensive information about all models, including links to the original papers and datasets, source framework, input size, computational cost (GOPs), and float and quantized accuracy. <strong>You can download the spreadsheet</strong> <a class="reference download internal" download="" href="../_downloads/08f25862a0dd85eb493ab84edb004a0e/ModelZoo_VAI3.0_Github.xlsx"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<a href="reference/ModelZoo_VAI3.0_Github_web.htm"><h4>Click here to view the Model Zoo Details & Performance table online.</h4></a><br><br><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please note that if the models are marked as “Non-Commercial Use Only”, users must comply with this <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/blob/master/model_zoo/Xilinx-license-agreement-for-non-commercial-models.md">AMD license agreement</a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The model performance benchmarks listed in these tables are verified using Vitis AI v3.0 and Vitis AI Library v3.0. For each platform, specific DPU configurations are used and highlighted in the table’s header. Free download of Vitis AI and Vitis AI Library from <a class="reference external" href="https://github.com/Xilinx/Vitis-AI">Vitis AI Github</a> and <a class="reference external" href="https://github.com/Xilinx/Vitis-AI/tree/3.0/examples/vai_library">Vitis AI Library Github</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unless otherwise specified, the benchmarks for all models can be assumed to employ the maximum number of channels (i.e., for benchmarking, the images used for test have three color channels if the specified input dimensions are 299*299*3 (HWC)).</p>
+</div>
+</section>
+<section id="model-file-nomenclature">
+<h2>Model File Nomenclature<a class="headerlink" href="#model-file-nomenclature" title="Link to this heading">¶</a></h2>
+<p>When downloading and using models from the Model Zoo, it will be important to you to understand the nomenclature used for each file.</p>
+<section id="model-file-nomenclature-decoder">
+<h3>Model File Nomenclature Decoder<a class="headerlink" href="#model-file-nomenclature-decoder" title="Link to this heading">¶</a></h3>
+<p>AMD Model Zoo file names assume the format: <cite>F_M_(D)_H_W_(P)_C_V</cite>, where:</p>
+<ul class="simple">
+<li><p><cite>F</cite> specifies the training framework: <cite>tf</cite> is TensorFlow 1.x, <cite>tf2</cite> is TensorFlow 2.x, <cite>pt</cite> is PyTorch</p></li>
+<li><p><cite>M</cite> specifies the industry/base name of the model</p></li>
+<li><p><cite>D</cite> specifies the public dataset used to train the model.  This field is not present if the model was trained using private datasets</p></li>
+<li><p><cite>H</cite> specifies the height of the input tensor to the first input layer</p></li>
+<li><p><cite>W</cite> specifies the width of the input tensor to the first input layer</p></li>
+<li><p><cite>P</cite> specifies the pruning ratio (percentage computational complexity reduction from the base model). This field is present only if the model has been pruned</p></li>
+<li><p><cite>C</cite> specifies the computational cost of the model for deployment in GOPs (billion quantized operations) per image</p></li>
+<li><p><cite>V</cite> specifies the version of Vitis-AI in which the model was deployed</p></li>
+</ul>
+<p>For example, <cite>pt_inceptionv3_imagenet_299_299_0.6_4.5G_3.0</cite> is the <cite>inception v3</cite> model trained with <cite>PyTorch</cite> using the <cite>ImageNet</cite> dataset, the input size for the network is <cite>299*299</cite>, <cite>60%</cite> pruned, the computational cost per image is <cite>4.5 G FLOPs</cite> and the Vitis AI version for that model is <cite>3.0</cite>.</p>
+</section>
+</section>
+<section id="model-download">
+<h2>Model Download<a class="headerlink" href="#model-download" title="Link to this heading">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each model is associated with a <cite>.yaml</cite> file encapsulating the download link and MD5 checksum for a tar.gz file. These YAML files are in the Vitis AI repository <code class="docutils literal notranslate"><span class="pre">/model_zoo/model-list</span></code>. There is a separate tar.gz file for each specific target platform. A simple way to download an individual model is to use the URLs provided in the .yaml file. This can be useful if you want to download and inspect the model outside a Python environment.</p>
+</div>
+<p>The download package includes the pre-compiled, pre-trained model, which you can leverage as a base reference (layer types, activation types, layer ordering) for your implementation or directly deploy that model on an AMD target.</p>
+<section id="automated-download-script">
+<h3>Automated Download Script<a class="headerlink" href="#automated-download-script" title="Link to this heading">¶</a></h3>
+<p>The Vitis AI Model Zoo repository provides a Python <code class="docutils literal notranslate"><span class="pre">/model_zoo/downloader.py</span></code> that quickly downloads specific models.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that the <code class="docutils literal notranslate"><span class="pre">downloader.py</span></code> script and the <code class="docutils literal notranslate"><span class="pre">/model_zoo/model-list</span></code> folder are at the same level in the directory hierarchy when executing this script.</p>
+</div>
+<ol class="arabic">
+<li><p>Execute the script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span>  <span class="n">downloader</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p>Input the framework keyword followed by a short-form version of the model name (if known) (example: resnet). Use a space as a separator (example: tf2 vgg16). If you input all, you will get a list of all models.</p>
+<p>The available framework keywords are listed here:</p>
+<p><strong>tf</strong>: tensorflow1.x,  <strong>tf2</strong>: tensorflow2.x,  <strong>pt</strong>: pytorch,  <strong>cf</strong>: caffe,  <strong>dk</strong>: darknet, <strong>all</strong>: list all models</p>
+</li>
+<li><p>Select the desired target hardware platform for the version of the model you need.</p>
+<p>For example, after running downloader.py, input <code class="docutils literal notranslate"><span class="pre">tf</span> <span class="pre">resnet</span></code> and you will see a list of models that include the text <cite>resnet</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="p">:</span>  <span class="nb">all</span>
+<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="mi">2</span><span class="p">:</span>  <span class="n">tf_resnetv1_101_imagenet_224_224_14</span><span class="mf">.4</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="mi">3</span><span class="p">:</span>  <span class="n">tf_resnetv1_152_imagenet_224_224_21</span><span class="mf">.83</span><span class="n">G_3</span><span class="mf">.0</span>
+<span class="o">......</span>
+</pre></div>
+</div>
+<p>Proceed by entering one of the numbers from the list.  As an example, if you input ‘1’ the script will list all options that match your selection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span><span class="p">:</span>  <span class="nb">all</span>
+<span class="mi">1</span><span class="p">:</span>  <span class="n">tf_resnetv1_50_imagenet_224_224_6</span><span class="mf">.97</span><span class="n">G_3</span><span class="mf">.0</span>    <span class="n">GPU</span>
+<span class="mi">2</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">ZCU102</span> <span class="o">&amp;</span> <span class="n">ZCU104</span> <span class="o">&amp;</span> <span class="n">KV260</span>
+<span class="mi">3</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">VCK190</span>
+<span class="mi">4</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">vck50006pe</span><span class="o">-</span><span class="n">DPUCVDX8H</span>
+<span class="mi">5</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">vck50008pe</span><span class="o">-</span><span class="n">DPUCVDX8H</span><span class="o">-</span><span class="n">DWC</span>
+<span class="mi">6</span><span class="p">:</span>  <span class="n">resnet_v1_50_tf</span>    <span class="n">u50lv</span><span class="o">-</span><span class="n">DPUCAHX8H</span>
+<span class="o">......</span>
+</pre></div>
+</div>
+<p>Proceed by entering one of the numbers from the list.  The specified version of the model will be downloaded automatically to the current directory. Entering ‘0’ will download all models matching your search criteria.</p>
+</li>
+</ol>
+</section>
+<section id="model-directory-structure">
+<h3>Model Directory Structure<a class="headerlink" href="#model-directory-structure" title="Link to this heading">¶</a></h3>
+<p>Once you have downloaded one or more models, you can extract the model archive into your selected workspace.</p>
+<section id="tensorflow-model-directory-structure">
+<h4>Tensorflow Model Directory Structure<a class="headerlink" href="#tensorflow-model-directory-structure" title="Link to this heading">¶</a></h4>
+<p>TensorFlow models have the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── code                            # Contains test code that can execute the model on the target and showcase model performance.
+│
+│
+├── readme.md                       # Documents the environment requirements, data pre-processing requirements, and model information.
+│                                     Developers should refer to this to understand how to test the model with scripts.
+│
+├── data                            # The dataset target directory that can be used for model verification and training.
+│                                     When test or training scripts run successfully, the dataset will be placed in this directory.
+│
+├── quantized
+│   └── quantize_eval_model.pb      # Quantized model for evaluation.
+│
+└── float
+    └── frozen.pb                   # The floating-point frozen model is used as the input to the quantizer.
+                                      The naming of the protobuf file may differ from the model naming used in the model list.
+</pre></div>
+</div>
+</section>
+<section id="pytorch-model-directory-structure">
+<h4>Pytorch Model Directory Structure<a class="headerlink" href="#pytorch-model-directory-structure" title="Link to this heading">¶</a></h4>
+<p>PyTorch models have the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── code                            # Contains test and training code.
+│
+│
+├── readme.md                       # Contains the environment requirements, data pre-processing requirements and model information.
+│                                     Developers should refer to this to understand how to test and train the model with scripts.
+│
+├── data                            # The dataset target directory that is used for model verification and training.
+│                                     When test or training scripts run successfully, the dataset will be placed in this directory.
+│
+├── qat                             # Contains the QAT (Quantization Aware Training) results.
+│                                     For some models, the accuracy of QAT is higher than with Post Training Quantization (PTQ) methods.
+│                                     Some models, but not all, provide QAT reference results, and only these models have a QAT folder.
+│
+├── quantized
+│   ├── _int.pth                    # Quantized model.
+│   ├── quant_info.json             # Quantization steps of tensors got. Please keep it for evaluation of quantized model.
+│   ├── _int.py                     # Converted vai_q_pytorch format model.
+│   └── _int.xmodel                 # Deployed model. The name of different models may be different.
+│                                     For some models that support QAT you could find better quantization results in &#39;qat&#39; folder.
+│
+│
+└── float
+    └── _int.pth                    # Trained float-point model. The pth name of different models may be different.
+                                      Path and model name in test scripts could be modified according to actual situation.
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For more information on Vitis-AI Quantizer executables <code class="docutils literal notranslate"><span class="pre">vai_q_tensorflow</span></code> and <code class="docutils literal notranslate"><span class="pre">vai_q_pytorch</span></code>, please see the <a class="reference external" href="https://docs.xilinx.com/r/en-US/ug1414-vitis-ai">Vitis AI User Guide</a>.</p></li>
+<li><p>Due to licensing restrictions, some model archives include instructions as to how the user can leverage that model architecture with Vitis AI, but do not include the pretrained model.  In these cases, the user must leverage the documentation provided to build and train their own version of the model.</p></li>
+<li><p>For more information about the various AMD DPUs, see the <a class="reference internal" href="reference/release_documentation.html"><span class="doc">DPU IP Product Guides</span></a></p></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+<section id="model-retraining">
+<h2>Model Retraining<a class="headerlink" href="#model-retraining" title="Link to this heading">¶</a></h2>
+<p>AMD provides the original floating point model and training scripts for each model in the Model Zoo.  Review the <cite>.yaml</cite> file for your target model to locate the download link for the “GPU” model.</p>
+<p>Here is an example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>description: 3D Unet networks on KiTS19
+input size: 128*128*128
+float ops: 1065.44G
+task: 3D Segmentation
+framework: PyTorch
+prune: &#39;no&#39;
+version: 3.0
+files:
+- name: pt_3D-UNET_kits19_128_128_128_1065.44G_3.0
+  type: float &amp; quantized
+  board: GPU
+  download link: https://www.xilinx.com/bin/public/openDownload?filename=pt_3D-UNET_kits19_128_128_128_1065.44G_3.0.zip
+  checksum: 4532f161244d483d44739a7d6c0f7535
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+				  
+				  <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="workflow-system-integration.html" class="btn btn-neutral float-left" title="DPU IP Details and System Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow-model-development.html" class="btn btn-neutral float-right" title="Developing a Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025, Advanced Micro Devices, Inc.
+      <span class="lastupdated">Last updated on September 02, 2025.
+      </span></p>
+  </div>
+
+
+
+										<div class="aem-Grid aem-Grid--16">
+											<div class="aem-GridColumn aem-GridColumn--xxxlarge--none aem-GridColumn--xsmall--16 aem-GridColumn--offset--xsmall--0 aem-GridColumn--xlarge--none aem-GridColumn--xxlarge--none aem-GridColumn--default--none aem-GridColumn--offset--large--1 aem-GridColumn--xlarge--12 aem-GridColumn--offset--default--0 aem-GridColumn--xxlarge--10 aem-GridColumn--offset--xlarge--2 aem-GridColumn--offset--xxlarge--3 aem-GridColumn--offset--xxxlarge--4 aem-GridColumn--xsmall--none aem-GridColumn--large--none aem-GridColumn aem-GridColumn--large--14 aem-GridColumn--xxxlarge--8 aem-GridColumn--default--16">
+												<div class="container-fluid sub-footer">
+
+													                    <div class="row">
+                        <div class="col-xs-24">
+                          <p><a target="_blank" href="https://www.amd.com/en/corporate/copyright">Terms and Conditions</a> | <a target="_blank" href="https://www.amd.com/en/corporate/privacy">Privacy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/cookies">Cookie Policy</a> | <a target="_blank" href="https://www.amd.com/en/corporate/trademarks">Trademarks</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/statement-human-trafficking-forced-labor.pdf">Statement on Forced Labor</a> | <a target="_blank" href="https://www.amd.com/en/corporate/competition">Fair and Open Competition</a> | <a target="_blank" href="https://www.amd.com/system/files/documents/amd-uk-tax-strategy.pdf">UK Tax Strategy</a> | <a target="_blank" href="https://docs.xilinx.com/v/u/9x6YvZKuWyhJId7y7RQQKA">Inclusive Terminology</a> | <a href="#cookiessettings" class="ot-sdk-show-settings">Cookies Settings</a></p>
+                        </div>
+                    </div>
+												</div>
+											</div>
+										</div>
+										
+</br>
+
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
