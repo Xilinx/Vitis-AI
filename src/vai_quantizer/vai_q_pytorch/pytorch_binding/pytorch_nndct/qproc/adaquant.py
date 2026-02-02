@@ -882,7 +882,7 @@ please remove it if there is "torch.no_grad()" in forward process')
     total_loss = AverageMeter("layer_loss")
     best_params = self.get_layer_params(layer)
     # torch version >= 1.6
-    if compare_torch_version('1.6.0',CmpFlag.GREATER_EQUAL):
+    if compare_torch_version(CmpFlag.GREATER_EQUAL, '1.6.0'):
       act_func_map = {
         NNDCT_OP.RELU: F.relu,
         NNDCT_OP.RELU6: F.relu6,
