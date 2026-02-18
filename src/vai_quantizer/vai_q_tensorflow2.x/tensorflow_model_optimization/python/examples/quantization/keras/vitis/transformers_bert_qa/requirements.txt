@@ -4,5 +4,5 @@ tf2onnx==1.13.0
 protobuf==3.20.1
 tensorflow==2.12.0
 tokenizers==0.12.1
-torch==1.11.0
+torch==1.13.1
 transformers==4.28.1
